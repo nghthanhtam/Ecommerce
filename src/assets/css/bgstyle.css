@@ -1,0 +1,103 @@
+/* @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap"); */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.menu {
+  background: #000;
+  z-index: 3;
+  /* min-height: 200vh; */
+}
+.bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  color: white;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.6s;
+  padding: 40px 100px;
+}
+
+.bg .logo {
+  position: relative;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 2em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: 0.6s;
+}
+
+.bg ul {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.bg ul li {
+  position: relative;
+  list-style: none;
+}
+.bg ul li .item {
+  position: relative;
+  margin: 0 15px;
+  text-decoration: none;
+  color: white;
+  letter-spacing: 2px;
+  font-weight: 500px;
+  transition: 0.6s;
+}
+.banner {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.bg1 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.6s;
+  padding: 40px 100px;
+  background-color: grey;
+}
+.bg1 .logo {
+  position: relative;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  font-size: 2em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: 0.6s;
+}
+
+.bg1 ul {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.bg1 ul li {
+  position: relative;
+  list-style: none;
+}
+.bg1 ul li .item {
+  position: relative;
+  margin: 0 15px;
+  text-decoration: none;
+  color: #fff;
+  letter-spacing: 2px;
+  font-weight: 500px;
+  transition: 0.6s;
+}
