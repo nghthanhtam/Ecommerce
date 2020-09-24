@@ -7,6 +7,7 @@ class Header extends React.Component {
     this.state = {
       header: "header",
       left: 0,
+      hideSearchBar: "hidden",
     };
     this.handleScroll = this.handleScroll.bind(this);
   }
@@ -20,8 +21,10 @@ class Header extends React.Component {
   handleScroll = () => {
     if (window.scrollY > 10) {
       this.setState({ header: "header1" });
+      this.setState({ hideSearchBar: "visible" });
     } else {
       this.setState({ header: "header" });
+      this.setState({ hideSearchBar: "hidden" });
     }
     this.setState({
       left: (-window.scrollY * 0.5).toString() + "px",
@@ -29,12 +32,43 @@ class Header extends React.Component {
   };
 
   render() {
+    let { hideSearchBar } = this.state;
     return (
       <div className={this.state.header}>
         <Link className="logo" to="/home">
           Logo
         </Link>
-        <ul className="row-flex-center  ">
+        <div
+          className="searchbar"
+          style={{
+            width: "50%",
+            height: "50px",
+            visibility: hideSearchBar,
+          }}
+          class="ui action input"
+        >
+          <button
+            style={{ background: "#f5f5f5", borderRadius: "0 0 0 0" }}
+            class="ui icon button"
+          >
+            <i class="search icon"></i>
+          </button>
+          <input
+            style={{
+              background: "#f5f5f5",
+              border: "none",
+              borderRadius: "0 20% 20% 0",
+            }}
+            type="text"
+            placeholder="Search..."
+          />
+        </div>
+        <ul className="row-flex-center">
+          <li>
+            <Link className="item" to="/">
+              Need Help
+            </Link>
+          </li>
           <li>
             <Link
               className="item"

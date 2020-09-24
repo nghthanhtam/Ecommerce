@@ -454,3 +454,21 @@
   background-color: #3571a7;
   color: white;
 }
+
+/* ADMIN */
+.prop-tag {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f5f5f5;
+  padding: 13px;
+  width: 100px;
+  height: 20px;
+  margin: 5px;
+}
+.tag-box {
+  margin-top: -15px;
+}
+.tag-close {
+  cursor: pointer;
+}

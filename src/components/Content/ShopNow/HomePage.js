@@ -135,7 +135,7 @@ class HomePage extends React.Component {
           <Slider {...settings}>
             <div>
               <div className={this.state.section}>
-                <div className="content">
+                <div className="user-content">
                   <div className="textBox">
                     <h2>
                       why not <br />
@@ -210,7 +210,7 @@ class HomePage extends React.Component {
                   </ul>
                 </div>
 
-                <div className="content">
+                <div className="user-content">
                   <div className="textBox">
                     <h2>
                       why not <br />
