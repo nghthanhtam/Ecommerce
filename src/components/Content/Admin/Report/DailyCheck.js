@@ -357,11 +357,11 @@ class DailyCheck extends Component {
                                     ></td>
                                     <td>{this.convertDate(el.createAt)}</td>
                                     <td>
-                                      <a
+                                      <div
                                         style={{ cursor: "pointer" }}
                                         onClick={() => this.removeItem(index)}
                                         className="fa fa-trash-o"
-                                      ></a>
+                                      ></div>
                                     </td>
                                   </tr>
                                 ))}

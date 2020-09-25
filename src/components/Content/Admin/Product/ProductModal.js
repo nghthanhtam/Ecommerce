@@ -167,7 +167,7 @@ class ProductModal extends Component {
                     <input
                       type="text"
                       className="form-control"
-                      placeholder=".col-xs-4"
+                      placeholder="VD: Màu"
                     />
                   </div>
 
@@ -188,7 +188,7 @@ class ProductModal extends Component {
                           onKeyDown={this.propValueChange}
                           type="text"
                           className="form-control"
-                          placeholder=".col-xs-4"
+                          placeholder="VD: Hồng"
                           name="pvalue"
                         />
                       );

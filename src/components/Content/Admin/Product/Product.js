@@ -14,46 +14,108 @@ const mapStateToProps = (state) => ({
 
 class Product extends Component {
   state = {
-    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
-    select: "5",
-    currentPage: 1,
-    pages: [],
-    totalDocuments: 0,
-    query: "",
-    rows: [],
-    isPriceBoardHidden: false,
-  };
-
-  resetState = () => {
-    this.setState({ select: "5", currentPage: 1, query: "" });
-  };
-  componentDidMount() {}
-
-  getTotalDocuments = () => {
-    const { query } = this.state;
-
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
-    else newQuery = query;
-
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/count/${newQuery}`
-      )
-      .then((response) => {
-        this.setState({ totalDocuments: response.data });
-      })
-      .catch((er) => {
-        console.log(er.response);
-      });
+    propValueList: [],
+    isPriceBoardHidden: true,
+    skuproduct: { productId: "", sku: "", price: 0, qty: 0 },
+    skuProductList: [{ _id: 0, productId: "", sku: "", price: 0, qty: 0 }],
+    productList: [1, 2, 3, 4],
   };
 
   onsaveProp = (obj) => {
-    this.setState((prepState) => ({ rows: [...prepState.rows, obj] }));
+    this.setState({ isPriceBoardHidden: false });
+    this.setState((prepState) => ({
+      propValueList: [...prepState.propValueList, obj],
+    }));
+  };
+
+  addRow = () => {
+    let { skuproduct } = this.state,
+      obj = {};
+
+    obj = Object.assign(skuproduct);
+
+    this.setState((prepState) => ({
+      //add obj to list sku product
+      skuProductList: [...prepState.skuProductList, obj],
+    }));
+  };
+
+  onCellNameEdit = (e, index) => {
+    let val = e.target.textContent;
+    this.setState((state) => {
+      let skuProductList = [...state.skuProductList];
+
+      for (var product of skuProductList) {
+        if (product._id == index) {
+          const newItem = Object.assign(product);
+          newItem["quantity"] = product.quantitydb - val;
+          newItem["usedqty"] = val;
+          newItem["options"] = this.state.options;
+          newItem["createAt"] = new Date();
+
+          skuProductList.splice(index, 1); //xoa 1 phan tu o vi tri index
+          skuProductList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
+        }
+      }
+
+      return {
+        skuProductList,
+      };
+    });
+  };
+  removeItem = (index) => {
+    this.setState((prepState) => {
+      let skuProductList = [...prepState.skuProductList];
+      skuProductList.splice(index, 1);
+      return {
+        skuProductList,
+      };
+    });
   };
 
   render() {
-    const { select, rows } = this.state;
+    const { propValueList, skuProductList, productList } = this.state;
+    const dragOver = (e) => {
+      e.preventDefault();
+    };
+
+    const dragEnter = (e) => {
+      e.preventDefault();
+    };
+
+    const dragLeave = (e) => {
+      e.preventDefault();
+    };
+    const validateFile = (file) => {
+      const validTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/x-icon",
+      ];
+      if (validTypes.indexOf(file.type) === -1) {
+        return false;
+      }
+      return true;
+    };
+    const handleFiles = (files) => {
+      for (let i = 0; i < files.length; i++) {
+        if (validateFile(files[i])) {
+          this.setState((prepState) => ({
+            productList: [...prepState.productList, files[i].name],
+          }));
+        } else {
+          // set error message
+        }
+      }
+    };
+    const fileDrop = (e) => {
+      e.preventDefault();
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        handleFiles(files);
+      }
+    };
 
     return (
       <Fragment>
@@ -127,77 +189,87 @@ class Product extends Component {
                       </div>
                     </div>
 
-                    <section className="content">
-                      <div className="row">
-                        {/* left column */}
-                        <div className="col-md-121">
-                          <div className="box">
-                            {/* /.box-header */}
-                            <div className="box-body">
-                              <div
-                                id="example1_wrapper"
-                                className="dataTables_wrapper form-inline dt-bootstrap"
-                              >
-                                <div className="row">
-                                  <div>
-                                    <div className="col-sm-6">
-                                      <div
-                                        className="dataTables_length"
-                                        id="example1_length"
+                    <section
+                      style={{ marginLeft: "-15px" }}
+                      className="content"
+                    >
+                      <label for="exampleInputEmail1">
+                        Điền thông tin giá sản phẩm
+                      </label>
+
+                      {/* left column */}
+                      <div className="col-md-121">
+                        <div className="box">
+                          {/* /.box-header */}
+                          <div className="box-body">
+                            <div
+                              id="example1_wrapper"
+                              className="dataTables_wrapper form-inline dt-bootstrap"
+                            >
+                              <div className="row">
+                                <div>
+                                  <div className="col-sm-6">
+                                    <div
+                                      className="dataTables_length"
+                                      id="example1_length"
+                                    >
+                                      <button
+                                        type="button"
+                                        id="btnAdd"
+                                        style={{ float: "left" }}
+                                        className="btn btn-primary"
+                                        data-toggle="modal"
+                                        onClick={this.addRow}
                                       >
-                                        <button
-                                          type="button"
-                                          id="btnAdd"
-                                          style={{ float: "left" }}
-                                          className="btn btn-primary"
-                                          data-toggle="modal"
-                                          onClick={this.addRow}
-                                        >
-                                          + Thêm dòng
-                                        </button>
-                                      </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                      <div
-                                        id="example1_filter"
-                                        className="dataTables_filter"
-                                      ></div>
+                                        Thêm dòng
+                                      </button>
                                     </div>
                                   </div>
+                                  <div className="col-sm-6">
+                                    <div
+                                      id="example1_filter"
+                                      className="dataTables_filter"
+                                    ></div>
+                                  </div>
                                 </div>
+                              </div>
 
-                                <div className="row">
-                                  <div className="col-sm-12">
-                                    <table
-                                      id="example1"
-                                      className="table table-bordered table-striped"
-                                    >
-                                      <thead>
-                                        <tr>
-                                          {rows.map((item, index) => (
-                                            <th style={{ width: "15%" }}>
-                                              {item.name}
-                                            </th>
-                                          ))}
+                              <div className="row">
+                                <div className="col-sm-12">
+                                  <table
+                                    id="example1"
+                                    className="table table-bordered table-striped"
+                                  >
+                                    <thead>
+                                      <tr>
+                                        <th style={{ width: "2%" }}>#</th>
+                                        {propValueList.map((item) => (
+                                          <th style={{ width: "15%" }}>
+                                            {item.name}
+                                          </th>
+                                        ))}
 
-                                          <th style={{ width: "15%" }}>
-                                            Tên sản phẩm
-                                          </th>
-                                          <th style={{ width: "15%" }}>
-                                            Mã sản phẩm
-                                          </th>
-                                          <th style={{ width: "15%" }}>
-                                            Giá niêm yết
-                                          </th>
-                                          <th style={{ width: "15%" }}>
-                                            Giá bán
-                                          </th>
-                                          <th style={{ width: "2%" }}></th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
+                                        <th style={{ width: "15%" }}>
+                                          Tên sản phẩm
+                                        </th>
+                                        <th style={{ width: "15%" }}>
+                                          Mã sản phẩm
+                                        </th>
+                                        <th style={{ width: "15%" }}>
+                                          Giá niêm yết
+                                        </th>
+                                        <th style={{ width: "15%" }}>
+                                          Giá bán
+                                        </th>
+                                        <th style={{ width: "2%" }}></th>
+                                      </tr>
+                                    </thead>
+
+                                    <tbody>
+                                      {skuProductList.map((product, index) => (
                                         <tr>
-                                          {rows.map((item, index) => (
+                                          <td>{index + 1}</td>
+                                          {propValueList.map((item) => (
                                             <td bgcolor="#FFFFFF">
                                               <Select
                                                 styles={{
@@ -212,30 +284,29 @@ class Product extends Component {
                                           ))}
 
                                           <td
-                                            onBlur={(e) => this.handleClick(e)}
-                                            id="used-qty"
+                                            onBlur={(e) =>
+                                              this.onCellNameEdit(e, index)
+                                            }
+                                            name="name"
                                             bgcolor="#FFFFFF"
                                             style={inputField}
                                             contentEditable="true"
                                           ></td>
                                           <td
-                                            onBlur={(e) => this.handleClick(e)}
-                                            id="used-qty"
+                                            name="sku"
                                             bgcolor="#FFFFFF"
                                             style={inputField}
                                             contentEditable="true"
                                           ></td>
 
                                           <td
-                                            onBlur={(e) => this.handleClick(e)}
-                                            id="used-qty"
+                                            name="fakeprice"
                                             bgcolor="#FFFFFF"
                                             style={inputField}
                                             contentEditable="true"
                                           ></td>
                                           <td
-                                            onBlur={(e) => this.handleClick(e)}
-                                            id="used-qty"
+                                            name="price"
                                             bgcolor="#FFFFFF"
                                             style={inputField}
                                             contentEditable="true"
@@ -246,23 +317,62 @@ class Product extends Component {
                                                 cursor: "pointer",
                                                 float: "right",
                                               }}
-                                              onClick={() => this.removeItem()}
+                                              onClick={() =>
+                                                this.removeItem(index)
+                                              }
                                               className="fa fa-trash"
                                             ></div>
                                           </td>
                                         </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
+                                      ))}
+                                    </tbody>
+                                  </table>
                                 </div>
                               </div>
-                              {/*/.col (left) */}
                             </div>
-                            {/* /.row */}
+                            {/*/.col (left) */}
                           </div>
+                          {/* /.row */}
                         </div>
                       </div>
                     </section>
+                    <label for="exampleInputEmail1">
+                      Chọn hình ảnh cho sản phẩm
+                    </label>
+
+                    <div className="sku-grid">
+                      {productList.map((item, index) => {
+                        return (
+                          <label for={item} className="skuproduct-card">
+                            <img
+                              className="product-pic"
+                              src="../img/blue.png"
+                              alt="product"
+                            />
+                            <div className="product-info">
+                              <input
+                                className="color-checked"
+                                type="checkbox"
+                                id={item}
+                              />
+                            </div>
+                          </label>
+                        );
+                      })}
+
+                      <div
+                        onDragOver={dragOver}
+                        onDragEnter={dragEnter}
+                        onDragLeave={dragLeave}
+                        onDrop={fileDrop}
+                        className="upload-area"
+                      >
+                        <i className="fa fa-upload fa-3x" />
+                        <p className="upload-text">
+                          Nhấn hoặc kéo thả ảnh vào để tải ảnh lên
+                        </p>
+                      </div>
+                    </div>
                   </div>
                   {/* /.box-header */}
                   <div className="box-body"></div>
