@@ -5,7 +5,7 @@ import { addCategory } from "../../../../actions/categoryActions";
 
 import mongoose from "mongoose";
 
-class CategoryModal extends Component {
+class EmployeeModal extends Component {
   state = {
     name: "",
     _id: 0,
@@ -152,4 +152,4 @@ class CategoryModal extends Component {
 const mapStateToProps = (state) => ({
   category: state.category,
 });
-export default connect(mapStateToProps, { addCategory })(CategoryModal);
+export default connect(mapStateToProps, { addCategory })(EmployeeModal);

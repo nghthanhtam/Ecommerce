@@ -632,13 +632,13 @@ class OrderScreen extends Component {
                                     className="dataTables_filter"
                                   >
                                     <label style={{ float: "left" }}>
-                                      Search:
+                                      Tìm kiếm
                                       <input
                                         type="search"
                                         name="query"
                                         style={{ margin: "0px 5px" }}
                                         className="form-control input-sm"
-                                        placeholder="Find me  "
+                                        placeholder="Nhập từ khóa...  "
                                         aria-controls="example1"
                                         onChange={this.handleOnSearchChange}
                                         value={this.state.query}

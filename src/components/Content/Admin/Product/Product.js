@@ -1,402 +1,317 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { getCategories } from "../../../../actions/categoryActions";
+import { getPaySlips } from "../../../../actions/payslipActions";
+import { showNoti } from "../../../../actions/notificationActions";
+import "react-notifications/lib/notifications.css";
+import { NotificationContainer } from "react-notifications";
+import Loader from "react-loader";
 import PropTypes from "prop-types";
 import axios from "axios";
-import Loader from "react-loader";
-import Select from "react-select";
-import ProductModal from "./ProductModal";
 
 const mapStateToProps = (state) => ({
-  categories: state.category.categories,
-  isLoaded: state.category.isLoaded,
+  payslips: state.payslip,
+  isLoaded: state.payslip.isLoaded,
 });
 
 class Product extends Component {
   state = {
-    propValueList: [],
-    isPriceBoardHidden: true,
-    skuproduct: { productId: "", sku: "", price: 0, qty: 0 },
-    skuProductList: [{ _id: 0, productId: "", sku: "", price: 0, qty: 0 }],
-    productList: [1, 2, 3, 4],
+    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
+    select: "5",
+    currentPage: 1,
+    pages: [],
+    totalDocuments: 0,
+    query: "",
+    notiType: "",
   };
 
-  onsaveProp = (obj) => {
-    this.setState({ isPriceBoardHidden: false });
-    this.setState((prepState) => ({
-      propValueList: [...prepState.propValueList, obj],
-    }));
+  resetState = () => {
+    this.setState({ select: "5", currentPage: 1, query: "" });
+  };
+  componentDidMount() {
+    const { select, currentPage, query } = this.state;
+    this.getTotalDocuments();
+    this.getPages();
+    this.props.getPaySlips(select, currentPage, query);
+
+    if (!this.props.location.state) {
+      return;
+    }
+    if (this.props.location.state !== "") {
+      this.setState({ notiType: this.props.location.state.notiType });
+    }
+  }
+
+  getTotalDocuments = () => {
+    const { query } = this.state;
+    console.log(query);
+    let newQuery = "";
+    if (query === "") newQuery = "undefined";
+    else newQuery = query;
+
+    axios
+      .get(`/api/payslip/count/${newQuery}`)
+      .then((response) => {
+        this.setState({ totalDocuments: response.data });
+      })
+      .catch((er) => {
+        console.log(er.response);
+      });
   };
 
-  addRow = () => {
-    let { skuproduct } = this.state,
-      obj = {};
+  getPages = () => {
+    const { select, query } = this.state;
+    let newQuery = "";
+    if (query === "") newQuery = "undefined";
+    else newQuery = query;
 
-    obj = Object.assign(skuproduct);
+    axios
+      .get(`/api/payslip/count/${newQuery}`)
+      .then((response) => {
+        let pages = Math.floor(response.data / select);
+        let remainder = response.data % select;
+        let newArray = [];
+        if (remainder !== 0) pages += 1;
 
-    this.setState((prepState) => ({
-      //add obj to list sku product
-      skuProductList: [...prepState.skuProductList, obj],
-    }));
-  };
-
-  onCellNameEdit = (e, index) => {
-    let val = e.target.textContent;
-    this.setState((state) => {
-      let skuProductList = [...state.skuProductList];
-
-      for (var product of skuProductList) {
-        if (product._id == index) {
-          const newItem = Object.assign(product);
-          newItem["quantity"] = product.quantitydb - val;
-          newItem["usedqty"] = val;
-          newItem["options"] = this.state.options;
-          newItem["createAt"] = new Date();
-
-          skuProductList.splice(index, 1); //xoa 1 phan tu o vi tri index
-          skuProductList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
+        for (let i = 0; i < pages; i++) {
+          newArray.push({ pageNumber: i + 1 });
         }
-      }
 
-      return {
-        skuProductList,
-      };
+        this.setState({ pages: newArray });
+      })
+      .catch((er) => {
+        console.log(er.response);
+      });
+  };
+
+  handleOnChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      const { select, currentPage, query } = this.state;
+      this.props.getPaySlips(select, currentPage, query);
+      this.getPages();
+      this.getTotalDocuments();
     });
   };
-  removeItem = (index) => {
-    this.setState((prepState) => {
-      let skuProductList = [...prepState.skuProductList];
-      skuProductList.splice(index, 1);
-      return {
-        skuProductList,
-      };
+
+  handleChoosePage = (e) => {
+    this.setState({ currentPage: e }, () => {
+      const { select, currentPage, query } = this.state;
+      this.props.getPaySlips(select, currentPage, query);
     });
+  };
+
+  renderPageButtons = () => {
+    const { pages, currentPage } = this.state;
+
+    return pages.map((eachButton) => (
+      <li
+        key={eachButton.pageNumber}
+        className={
+          currentPage === eachButton.pageNumber
+            ? "paginae_button active"
+            : "paginate_button "
+        }
+      >
+        <a
+          name="currentPage"
+          onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+          aria-controls="example1"
+          data-dt-idx={eachButton.pageNumber}
+          tabIndex={0}
+        >
+          {eachButton.pageNumber}
+        </a>
+      </li>
+    ));
+  };
+
+  renderPayslips = () => {
+    const { payslips } = this.props;
+    // return payslips.map((eachPayslips, index) => (
+    //   <PaySlipRow
+    //     history={this.props.history}
+    //     key={eachPayslips._id}
+    //     payslip={eachPayslips}
+    //     index={index}
+    //   />
+    // ));
+  };
+
+  createNotification = () => {
+    this.props.showNoti(this.state.notiType);
+    this.setState({ notiType: "" });
   };
 
   render() {
-    const { propValueList, skuProductList, productList } = this.state;
-    const dragOver = (e) => {
-      e.preventDefault();
-    };
-
-    const dragEnter = (e) => {
-      e.preventDefault();
-    };
-
-    const dragLeave = (e) => {
-      e.preventDefault();
-    };
-    const validateFile = (file) => {
-      const validTypes = [
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
-        "image/x-icon",
-      ];
-      if (validTypes.indexOf(file.type) === -1) {
-        return false;
-      }
-      return true;
-    };
-    const handleFiles = (files) => {
-      for (let i = 0; i < files.length; i++) {
-        if (validateFile(files[i])) {
-          this.setState((prepState) => ({
-            productList: [...prepState.productList, files[i].name],
-          }));
-        } else {
-          // set error message
-        }
-      }
-    };
-    const fileDrop = (e) => {
-      e.preventDefault();
-      const files = e.dataTransfer.files;
-      if (files.length) {
-        handleFiles(files);
-      }
-    };
-
+    const { isLoaded } = this.props;
+    const { select, totalDocuments, notiType } = this.state;
     return (
       <Fragment>
-        <Fragment>
-          {/* Content Header (Page header) */}
-          <section className="content-header">
-            <h1>
-              Đăng ký sản phẩm mới
-              {/* <small>Preview</small> */}
-            </h1>
-            <ol className="breadcrumb">
-              <li>
-                <a href="fake_url">
-                  <i className="fa fa-dashboard" /> Trang chủ
-                </a>
-              </li>
-              <li>
-                <a href="fake_url">Sản phẩm</a>
-              </li>
-            </ol>
-          </section>
-          {/* Main content */}
-          <section className="content">
-            <div className="row">
-              {/* left column */}
-              <div className="col-md-12">
-                <div className="box">
-                  <div className="box-header" style={{ marginTop: "5px" }}>
-                    <div class="form-group">
-                      <label for="exampleInputEmail1">Tên sản phẩm</label>
-                      <input
-                        className="form-control"
-                        id="name"
-                        placeholder="Nhập tên sản phẩm ..."
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label>Danh mục</label>
-                      <select class="form-control">
-                        <option>option 1</option>
-                        <option>option 2</option>
-                        <option>option 3</option>
-                        <option>option 4</option>
-                        <option>option 5</option>
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label for="exampleInputEmail1">Thương hiệu</label>
-                      <input
-                        class="form-control"
-                        id="exampleInputEmail1"
-                        placeholder="Nhập tên sản phẩm ..."
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label for="exampleInputEmail1">
-                        Sản phẩm có nhiều lựa chọn theo màu sắc, kích cỡ,...?
-                      </label>
-                      <ProductModal onsaveProp={this.onsaveProp} />
-                    </div>
-                    <div className="tag-box">
-                      <div className="prop-tag">
-                        <div>Màu</div>
-                        <div onClick={this.removeProp} className="tag-close">
-                          ×
-                        </div>
-                      </div>
-                      <div className="prop-tag">
-                        <div>Kích cỡ</div>
-                        <div>×</div>
+        {!isLoaded ? (
+          <Loader></Loader>
+        ) : (
+          <React.Fragment>
+            {notiType !== "" ? this.createNotification() : null}
+            <NotificationContainer />
+
+            {/* Content Header (Page header) */}
+            <section className="content-header">
+              <h1>
+                Sản phẩm
+                {/* <small>Preview</small> */}
+              </h1>
+              <ol className="breadcrumb">
+                <li>
+                  <a href="fake_url">
+                    <i className="fa fa-dashboard" /> Trang chủ
+                  </a>
+                </li>
+                <li>
+                  <a href="fake_url">Sản phẩm</a>
+                </li>
+              </ol>
+            </section>
+            {/* Main content */}
+            <section className="content">
+              <div className="row">
+                {/* left column */}
+                <div className="col-md-12">
+                  <div className="box">
+                    <div className="box-header" style={{ marginTop: "5px" }}>
+                      <div style={{ paddingLeft: "5px" }} className="col-md-8">
+                        <h3 className="box-title">Quản lý sản phẩm</h3>
                       </div>
                     </div>
-
-                    <section
-                      style={{ marginLeft: "-15px" }}
-                      className="content"
-                    >
-                      <label for="exampleInputEmail1">
-                        Điền thông tin giá sản phẩm
-                      </label>
-
-                      {/* left column */}
-                      <div className="col-md-121">
-                        <div className="box">
-                          {/* /.box-header */}
-                          <div className="box-body">
-                            <div
-                              id="example1_wrapper"
-                              className="dataTables_wrapper form-inline dt-bootstrap"
-                            >
-                              <div className="row">
-                                <div>
-                                  <div className="col-sm-6">
-                                    <div
-                                      className="dataTables_length"
-                                      id="example1_length"
-                                    >
-                                      <button
-                                        type="button"
-                                        id="btnAdd"
-                                        style={{ float: "left" }}
-                                        className="btn btn-primary"
-                                        data-toggle="modal"
-                                        onClick={this.addRow}
-                                      >
-                                        Thêm dòng
-                                      </button>
-                                    </div>
-                                  </div>
-                                  <div className="col-sm-6">
-                                    <div
-                                      id="example1_filter"
-                                      className="dataTables_filter"
-                                    ></div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="row">
-                                <div className="col-sm-12">
-                                  <table
-                                    id="example1"
-                                    className="table table-bordered table-striped"
-                                  >
-                                    <thead>
-                                      <tr>
-                                        <th style={{ width: "2%" }}>#</th>
-                                        {propValueList.map((item) => (
-                                          <th style={{ width: "15%" }}>
-                                            {item.name}
-                                          </th>
-                                        ))}
-
-                                        <th style={{ width: "15%" }}>
-                                          Tên sản phẩm
-                                        </th>
-                                        <th style={{ width: "15%" }}>
-                                          Mã sản phẩm
-                                        </th>
-                                        <th style={{ width: "15%" }}>
-                                          Giá niêm yết
-                                        </th>
-                                        <th style={{ width: "15%" }}>
-                                          Giá bán
-                                        </th>
-                                        <th style={{ width: "2%" }}></th>
-                                      </tr>
-                                    </thead>
-
-                                    <tbody>
-                                      {skuProductList.map((product, index) => (
-                                        <tr>
-                                          <td>{index + 1}</td>
-                                          {propValueList.map((item) => (
-                                            <td bgcolor="#FFFFFF">
-                                              <Select
-                                                styles={{
-                                                  control: (base, state) => ({
-                                                    ...base,
-                                                    borderColor: "transparent",
-                                                  }),
-                                                }}
-                                                options={item.list}
-                                              />
-                                            </td>
-                                          ))}
-
-                                          <td
-                                            onBlur={(e) =>
-                                              this.onCellNameEdit(e, index)
-                                            }
-                                            name="name"
-                                            bgcolor="#FFFFFF"
-                                            style={inputField}
-                                            contentEditable="true"
-                                          ></td>
-                                          <td
-                                            name="sku"
-                                            bgcolor="#FFFFFF"
-                                            style={inputField}
-                                            contentEditable="true"
-                                          ></td>
-
-                                          <td
-                                            name="fakeprice"
-                                            bgcolor="#FFFFFF"
-                                            style={inputField}
-                                            contentEditable="true"
-                                          ></td>
-                                          <td
-                                            name="price"
-                                            bgcolor="#FFFFFF"
-                                            style={inputField}
-                                            contentEditable="true"
-                                          ></td>
-                                          <td bgcolor="#FFFFFF">
-                                            <div
-                                              style={{
-                                                cursor: "pointer",
-                                                float: "right",
-                                              }}
-                                              onClick={() =>
-                                                this.removeItem(index)
-                                              }
-                                              className="fa fa-trash"
-                                            ></div>
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </div>
-                            </div>
-                            {/*/.col (left) */}
-                          </div>
-                          {/* /.row */}
-                        </div>
-                      </div>
-                    </section>
-                    <label for="exampleInputEmail1">
-                      Chọn hình ảnh cho sản phẩm
-                    </label>
-
-                    <div className="sku-grid">
-                      {productList.map((item, index) => {
-                        return (
-                          <label for={item} className="skuproduct-card">
-                            <img
-                              className="product-pic"
-                              src="../img/blue.png"
-                              alt="product"
-                            />
-                            <div className="product-info">
-                              <input
-                                className="color-checked"
-                                type="checkbox"
-                                id={item}
-                              />
-                            </div>
-                          </label>
-                        );
-                      })}
-
+                    {/* /.box-header */}
+                    <div className="box-body">
                       <div
-                        onDragOver={dragOver}
-                        onDragEnter={dragEnter}
-                        onDragLeave={dragLeave}
-                        onDrop={fileDrop}
-                        className="upload-area"
+                        id="example1_wrapper"
+                        className="dataTables_wrapper form-inline dt-bootstrap"
                       >
-                        <i className="fa fa-upload fa-3x" />
-                        <p className="upload-text">
-                          Nhấn hoặc kéo thả ảnh vào để tải ảnh lên
-                        </p>
+                        <div className="row">
+                          <div>
+                            <div className="col-sm-6">
+                              <div
+                                className="dataTables_length"
+                                id="example1_length"
+                              >
+                                <label>
+                                  Show
+                                  <select
+                                    onChange={this.handleOnChange}
+                                    name="select"
+                                    aria-controls="example1"
+                                    style={{ margin: "0px 5px" }}
+                                    className="form-control input-sm"
+                                    value={this.state.select}
+                                  >
+                                    {this.state.sort.map((option) => (
+                                      <option
+                                        key={option.value}
+                                        value={option.value}
+                                      >
+                                        {option.value}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  entries
+                                </label>
+                              </div>
+                            </div>
+                            <div className="col-sm-6">
+                              <div
+                                id="example1_filter"
+                                className="dataTables_filter"
+                              >
+                                <label style={{ float: "right" }}>
+                                  Tìm kiếm
+                                  <input
+                                    type="search"
+                                    name="query"
+                                    style={{ margin: "0px 5px" }}
+                                    className="form-control input-sm"
+                                    placeholder="Nhập từ khóa...  "
+                                    aria-controls="example1"
+                                    onChange={this.handleOnChange}
+                                    value={this.state.query}
+                                  />
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="row">
+                          <div className="col-sm-12">
+                            <table
+                              id="example1"
+                              className="table table-bordered table-striped"
+                            >
+                              <thead>
+                                <tr>
+                                  <th style={{ width: "5%" }}>#</th>
+                                  <th style={{ width: "20%" }}>Tên sản phẩm</th>
+                                  <th style={{ width: "20%" }}>SKU</th>
+                                  <th style={{ width: "20%" }}>Đơn giá</th>
+                                  <th style={{ width: "15%" }}>Số lượng tồn</th>
+                                </tr>
+                              </thead>
+                              <tbody>{this.render}</tbody>
+                              <tfoot>
+                                <tr>
+                                  <th>#</th>
+                                  <th>Tên sản phẩm</th>
+                                  <th>SKU</th>
+                                  <th>Đơn giá</th>
+                                  <th>Số lượng tồn</th>
+                                </tr>
+                              </tfoot>
+                            </table>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-sm-5">
+                            <div
+                              className="dataTables_info"
+                              id="example1_info"
+                              role="status"
+                              aria-live="polite"
+                            >
+                              Hiển thị 1 đến {select} trong {totalDocuments} mục
+                            </div>
+                          </div>
+                          <div className="col-sm-7">
+                            <div
+                              className="dataTables_paginate paging_simple_numbers"
+                              id="example1_paginate"
+                            >
+                              <ul
+                                className="pagination"
+                                style={{ float: "right" }}
+                              >
+                                {this.renderPageButtons()}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
                       </div>
+                      {/*/.col (left) */}
                     </div>
+                    {/* /.row */}
                   </div>
-                  {/* /.box-header */}
-                  <div className="box-body"></div>
                 </div>
               </div>
-            </div>
-          </section>
-          {/* /.content */}
-        </Fragment>
+            </section>
+            {/* /.content */}
+          </React.Fragment>
+        )}
       </Fragment>
     );
   }
 }
 
-// Category.propTypes = {
-//   getCategories: PropTypes.func.isRequired,
-//   categories: PropTypes.array.isRequired,
-//   isLoaded: PropTypes.bool.isRequired,
-// };
-
-// export default connect(mapStateToProps, { getCategories })(Product);
-export default Product;
-const inputField = {
-  "&:focus": {
-    outline: "none",
-  },
+Product.propTypes = {
+  getPaySlips: PropTypes.func.isRequired,
+  payslips: PropTypes.object.isRequired,
 };
+
+export default connect(mapStateToProps, { getPaySlips, showNoti })(Product);

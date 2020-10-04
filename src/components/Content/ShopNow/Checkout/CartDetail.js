@@ -1,6 +1,6 @@
 import React from "react";
 import "font-awesome/css/font-awesome.min.css";
-import "../../assets/css/cart.css";
+import "../../../../assets/css/cart.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 

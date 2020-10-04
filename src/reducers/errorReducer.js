@@ -1,24 +1,24 @@
-import { GET_ERRORS, CLEAR_ERRORS } from "../actions/types";
+import { ERRORS_CLEARED, ERRORS_RETURNED } from "../actions/types";
 
 const initalState = {
   msg: {},
   status: null,
-  id: null
+  id: null,
 };
 
-export default function(state = initalState, action) {
+export default function (state = initalState, action) {
   switch (action.type) {
-    case GET_ERRORS:
+    case ERRORS_RETURNED:
       return {
-        msg: action.payload.msg,
+        msg: action.payload.msg.msg,
         status: action.payload.status,
-        id: action.payload.id
+        id: action.payload.id,
       };
-    case CLEAR_ERRORS:
+    case ERRORS_CLEARED:
       return {
         msg: {},
         status: null,
-        id: null
+        id: null,
       };
     default:
       return state;

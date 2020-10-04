@@ -10,7 +10,7 @@ class RoleEdit extends Component {
     _id: "",
     memberManagement: false,
     productManagement: false,
-    categoryManagement: false,
+    employeeManagement: false,
     userManagement: false,
     invoiceManagement: false,
     supplierManagement: false,
@@ -34,7 +34,7 @@ class RoleEdit extends Component {
             _id: response.data._id,
             memberManagement: response.data.memberManagement,
             productManagement: response.data.productManagement,
-            categoryManagement: response.data.categoryManagement,
+            employeeManagement: response.data.employeeManagement,
             userManagement: response.data.userManagement,
             invoiceManagement: response.data.invoiceManagement,
             supplierManagement: response.data.supplierManagement,
@@ -80,7 +80,7 @@ class RoleEdit extends Component {
       name,
       memberManagement,
       productManagement,
-      categoryManagement,
+      employeeManagement,
       userManagement,
       invoiceManagement,
       supplierManagement,
@@ -96,7 +96,7 @@ class RoleEdit extends Component {
       _id,
       memberManagement,
       productManagement,
-      categoryManagement,
+      employeeManagement,
       userManagement,
       invoiceManagement,
       supplierManagement,
@@ -118,7 +118,7 @@ class RoleEdit extends Component {
     const {
       memberManagement,
       productManagement,
-      categoryManagement,
+      employeeManagement,
       userManagement,
       invoiceManagement,
       supplierManagement,
@@ -157,9 +157,9 @@ class RoleEdit extends Component {
           <div>
             <label>
               <input
-                name="categoryManagement"
+                name="employeeManagement"
                 type="checkbox"
-                checked={categoryManagement}
+                checked={employeeManagement}
                 onChange={this.handleChange}
               />
               Category management

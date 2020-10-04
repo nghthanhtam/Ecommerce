@@ -9,7 +9,7 @@ const initialState = {
   _id: "",
   memberManagement: false,
   productManagement: false,
-  categoryManagement: false,
+  employeeManagement: false,
   userManagement: false,
   invoiceManagement: false,
   supplierManagement: false,
@@ -69,7 +69,7 @@ class RoleModal extends Component {
       name,
       memberManagement,
       productManagement,
-      categoryManagement,
+      employeeManagement,
       userManagement,
       invoiceManagement,
       supplierManagement,
@@ -83,7 +83,7 @@ class RoleModal extends Component {
       name,
       memberManagement,
       productManagement,
-      categoryManagement,
+      employeeManagement,
       userManagement,
       invoiceManagement,
       supplierManagement,
@@ -138,9 +138,9 @@ class RoleModal extends Component {
           <div>
             <label>
               <input
-                name="categoryManagement"
+                name="employeeManagement"
                 type="checkbox"
-                checked={this.state.categoryManagement}
+                checked={this.state.employeeManagement}
                 onChange={this.onChange}
               />
               Category management

@@ -25,10 +25,11 @@ class Login extends Component {
   }
   componentDidUpdate(prevProps) {
     const { error } = this.props;
+
     if (error !== prevProps.error) {
       // Check for register error
       if (error.id === "LOGIN_FAIL") {
-        this.setState({ msg: error.msg.msg });
+        this.setState({ msg: error.msg });
       } else {
         this.setState({ msg: null });
       }
@@ -82,7 +83,6 @@ class Login extends Component {
 
     if (isAuthenticated) {
       //Redirect to main page
-
       this.props.pushHistory("/");
     }
   };

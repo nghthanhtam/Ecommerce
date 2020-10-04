@@ -6,7 +6,7 @@ import Loader from "react-loader";
 import axios from "axios";
 import { updateCategory } from "../../../../actions/categoryActions";
 
-class CategoryEdit extends Component {
+class EmployeeEdit extends Component {
   state = {
     name: "",
     _id: "",
@@ -60,11 +60,11 @@ class CategoryEdit extends Component {
     //     console.log(error.response);
     //   });
     //Quay về trang chính
-    this.props.history.push("/category");
+    this.props.history.push("/employee");
   };
 
   handleCancel = (e) => {
-    this.props.history.push("/category");
+    this.props.history.push("/employee");
   };
   render() {
     const { name, _id } = this.state;
@@ -189,4 +189,4 @@ export default connect(mapStateToProps, {
   pushHistory,
 
   updateCategory,
-})(CategoryEdit);
+})(EmployeeEdit);

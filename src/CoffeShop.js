@@ -3,9 +3,10 @@ import React, { Component, Fragment } from "react";
 import Header from "./components/Content/Admin/Header";
 import Footer from "./components/Content/Admin/Footer";
 import Menu from "./components/Content/Admin/Menu";
-import Category from "./components/Content/Admin/Category/Category";
+import Employee from "./components/Content/Admin/Employee/Employee";
+import ProductAdd from "./components/Content/Admin/Product/ProductAdd";
 import Product from "./components/Content/Admin/Product/Product";
-import CategoryEdit from "./components/Content/Admin/Category/CategoryEdit";
+import EmployeeEdit from "./components/Content/Admin/Employee/EmployeeEdit";
 import Member from "./components/Content/Admin/Member/Member";
 import MemberEdit from "./components/Content/Admin/Member/MemberEdit";
 import PaySlip from "./components/Content/Admin/PaySlip/PaySlip";
@@ -16,7 +17,7 @@ import SaleReport from "./components/Content/Admin/Report/SaleReport";
 import DailyCheck from "./components/Content/Admin/Report/DailyCheck";
 import InvoiceEdit from "./components/Content/Admin/OrderAndInvoices/InvoiceEdit";
 import OrderScreen from "./components/Content/Admin/OrderAndInvoices/OrderScreen";
-import Supplier from "./components/Content/Admin/Supplier/Supplier";
+import Supplier from "./components/Content/Admin/Supplier/Supplier1";
 import SupplierEdit from "./components/Content/Admin/Supplier/SupplierEdit";
 import ErrorPage from "./components/Content/Admin/ErrorPage/ErrorPage";
 import Login from "./components/Content/Admin/Auth/Login";
@@ -35,7 +36,23 @@ import User from "./components/Content/Admin/User/User";
 import UserEdit from "./components/Content/Admin/User/UserEdit";
 import { PrivateRoute } from "./components/Content/Admin/PrivateRoute";
 import NoPermissionPage from "./components/Content/Admin/ErrorPage/NoPermissionPage";
+
+//SHOPNOW
 import HomePage from "./components/Content/ShopNow/HomePage";
+import ProductList from "./components/Content/ShopNow/Product/ProductList";
+import ProductDetail from "./components/Content/ShopNow/Product/ProductDetail";
+import Cart from "./components/Content/ShopNow/Checkout/Cart";
+import CartDetail from "./components/Content/ShopNow/Checkout/CartDetail";
+import Payment from "./components/Content/ShopNow/Checkout/Payment";
+import OrderReceipt from "./components/Content/ShopNow/Checkout/OrderReceipt";
+import Account from "./components/Content/ShopNow/User/Account";
+import LaterList from "./components/Content/ShopNow/User/LaterList";
+import LaterListDetail from "./components/Content/ShopNow/User/LaterListDetail";
+import OrderHistory from "./components/Content/ShopNow/User/OrderHistory";
+import AddressBook from "./components/Content/ShopNow/User/AddressBook";
+import Review from "./components/Content/ShopNow/User/Review";
+import Watchlist from "./components/Content/ShopNow/User/Watchlist";
+import Wishlist from "./components/Content/ShopNow/User/Wishlist";
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -46,7 +63,7 @@ const mapStateToProps = (state) => ({
   token: state.auth.token,
 });
 const roles = {
-  category: "categoryManagement",
+  employee: "employeeManagement",
   role: "roleManagement",
   member: "memberManagement",
   product: "productManagement",
@@ -65,6 +82,7 @@ class CoffeShop extends Component {
     this.setState({
       firstPathname: this.props.history.history.location.pathname,
     });
+
     this.props.loadUser();
   }
 
@@ -82,6 +100,12 @@ class CoffeShop extends Component {
             <Route exact path="/shopnow">
               <HomePage />
             </Route>
+            <Route exact path="/product-list">
+              <ProductList />
+            </Route>
+            <Route exact path="/product-detail">
+              <ProductDetail />
+            </Route>
             <Route
               exact
               path="/"
@@ -91,6 +115,7 @@ class CoffeShop extends Component {
                 ) : (
                   <Redirect to="/home" />
                 );
+                //return <Redirect to="/home" />;
               }}
             />
 
@@ -99,6 +124,7 @@ class CoffeShop extends Component {
               path="/login"
               render={() => {
                 return !isAuthenticated ? <Login /> : <Redirect to="/home" />;
+                //return <Redirect to="/home" />;
               }}
             />
             {isAuthenticated && (
@@ -119,17 +145,24 @@ class CoffeShop extends Component {
                     </Route>
                     <PrivateRoute
                       exact
-                      path="/category"
-                      component={Category}
-                      role={roles.category}
+                      path="/employee"
+                      component={Employee}
+                      role={roles.employee}
                       token={token}
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
                       path="/add-product"
-                      component={Product}
+                      component={ProductAdd}
                       role={roles.product}
                       token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/product"
+                      component={Product}
+                      // role={roles.product}
+                      // token={token}
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
@@ -162,9 +195,9 @@ class CoffeShop extends Component {
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
-                      path="/category/edit/:id"
-                      component={CategoryEdit}
-                      role={roles.category}
+                      path="/employee/edit/:id"
+                      component={EmployeeEdit}
+                      role={roles.employee}
                       token={token}
                     ></PrivateRoute>
                     <Route exact path="/material" component={Material}></Route>
@@ -226,8 +259,13 @@ class CoffeShop extends Component {
                     ></Route>
                     <Route
                       exact
-                      path="/storageReport"
+                      path="/warehouse-report"
                       component={StorageReport}
+                    ></Route>
+                    <Route
+                      exact
+                      path="/sale-report"
+                      component={SaleReport}
                     ></Route>
                     <Route
                       exact
@@ -235,12 +273,6 @@ class CoffeShop extends Component {
                       component={OrderScreen}
                     ></Route>
                     <Route path="*" render={() => <Redirect to="/404" />} />
-
-                    <Route
-                      exact
-                      path="/saleReport"
-                      component={SaleReport}
-                    ></Route>
                   </Switch>
                 </div>
                 <Footer />
@@ -255,7 +287,7 @@ class CoffeShop extends Component {
   }
 }
 
-Category.propTypes = {
+Employee.propTypes = {
   isAuthenticated: PropTypes.bool,
   isLoading: PropTypes.bool,
   isLoaded: PropTypes.bool,

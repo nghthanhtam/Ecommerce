@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 import "font-awesome/css/font-awesome.min.css";
-import "../../assets/css/cart.css";
+import "../../../../assets/css/cart.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Header from "../Header/Header";

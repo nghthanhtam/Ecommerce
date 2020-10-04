@@ -216,13 +216,13 @@ class Material extends Component {
                             className="dataTables_filter"
                           >
                             <label style={{ float: "right" }}>
-                              Search:
+                              Tìm kiếm
                               <input
                                 type="search"
                                 name="query"
                                 style={{ margin: "0px 5px" }}
                                 className="form-control input-sm"
-                                placeholder="Find me  "
+                                placeholder="Nhập từ khóa...  "
                                 aria-controls="example1"
                                 onChange={this.handleOnChange}
                                 value={this.state.query}
@@ -269,7 +269,7 @@ class Material extends Component {
                           role="status"
                           aria-live="polite"
                         >
-                          Showing 1 to{" "}
+                          Hiển thị 1 đến {select} trong {totalDocuments} trang{" "}
                           {totalDocuments < select ? totalDocuments : select} of{" "}
                           {totalDocuments} entries
                         </div>

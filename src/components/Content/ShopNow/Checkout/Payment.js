@@ -7,7 +7,7 @@ import Radio from "@material-ui/core/Radio";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import "font-awesome/css/font-awesome.min.css";
-import "../../assets/css/cart.css";
+import "../../../../assets/css/cart.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 

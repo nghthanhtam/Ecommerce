@@ -98,6 +98,7 @@
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   grid-column-gap: 8px;
   grid-row-gap: 3px;
+  margin-bottom: 20px;
 }
 .grid {
   display: inline-grid;
@@ -121,11 +122,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  z-index: 10;
+  width: 100%;
+  /* z-index: 10;
   margin-bottom: 300px;
   position: relative;
-  background-color: #f7f7f7;
+  background-color: #f7f7f7; */
 }
 
 .card1 {

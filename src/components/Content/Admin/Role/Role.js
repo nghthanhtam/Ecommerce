@@ -168,17 +168,17 @@ class Role extends Component {
             {/* Content Header (Page header) */}
             <section className="content-header">
               <h1>
-                Role
+                Phân quyền
                 {/* <small>Preview</small> */}
               </h1>
               <ol className="breadcrumb">
                 <li>
                   <a href="fake_url">
-                    <i className="fa fa-dashboard" /> Home
+                    <i className="fa fa-dashboard" /> Trang chủ
                   </a>
                 </li>
                 <li>
-                  <a href="fake_url">Role</a>
+                  <a href="fake_url">Phân quyền</a>
                 </li>
               </ol>
             </section>
@@ -225,13 +225,13 @@ class Role extends Component {
                                 className="dataTables_filter"
                               >
                                 <label style={{ float: "right" }}>
-                                  Search:
+                                  Tìm kiếm
                                   <input
                                     type="search"
                                     name="query"
                                     style={{ margin: "0px 5px" }}
                                     className="form-control input-sm"
-                                    placeholder="Find me  "
+                                    placeholder="Nhập từ khóa...  "
                                     aria-controls="example1"
                                     onChange={this.handleOnChange}
                                     value={this.state.query}
@@ -278,7 +278,7 @@ class Role extends Component {
                               role="status"
                               aria-live="polite"
                             >
-                              Showing 1 to {select} of {totalDocuments} entries
+                              Hiển thị 1 đến {select} trong {totalDocuments} mục
                             </div>
                           </div>
                           <div className="col-sm-7">

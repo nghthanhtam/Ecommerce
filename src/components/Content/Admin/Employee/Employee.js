@@ -1,21 +1,18 @@
 import React, { Component, Fragment } from "react";
-import PaySlipModal from "./PaySlipModal";
-import PaySlipRow from "./PaySlipRow";
+import EmployeeModal from "./EmployeeModal";
+import EmployeeRow from "./EmployeeRow";
 import { connect } from "react-redux";
-import { getPaySlips } from "../../../../actions/payslipActions";
-import { showNoti } from "../../../../actions/notificationActions";
-import "react-notifications/lib/notifications.css";
-import { NotificationContainer } from "react-notifications";
-import Loader from "react-loader";
+import { getCategories } from "../../../../actions/categoryActions";
 import PropTypes from "prop-types";
 import axios from "axios";
+import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
-  payslips: state.payslip,
-  isLoaded: state.payslip.isLoaded,
+  categories: state.category.categories,
+  isLoaded: state.category.isLoaded,
 });
 
-class PaySlip extends Component {
+class Employee extends Component {
   state = {
     sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
     select: "5",
@@ -23,7 +20,6 @@ class PaySlip extends Component {
     pages: [],
     totalDocuments: 0,
     query: "",
-    notiType: "",
   };
 
   resetState = () => {
@@ -32,26 +28,24 @@ class PaySlip extends Component {
   componentDidMount() {
     const { select, currentPage, query } = this.state;
     this.getTotalDocuments();
-    this.getPages();
-    this.props.getPaySlips(select, currentPage, query);
 
-    if (!this.props.location.state) {
-      return;
-    }
-    if (this.props.location.state !== "") {
-      this.setState({ notiType: this.props.location.state.notiType });
-    }
+    this.getPages();
+
+    //this.props.getCategories(select, currentPage, query);
+    this.props.getCategories({ show: select, page: currentPage, query });
   }
 
   getTotalDocuments = () => {
     const { query } = this.state;
-    console.log(query);
+
     let newQuery = "";
     if (query === "") newQuery = "undefined";
     else newQuery = query;
 
     axios
-      .get(`/api/payslip/count/${newQuery}`)
+      .get(
+        `${process.env.REACT_APP_BACKEND_HOST}/api/category/count/${newQuery}`
+      )
       .then((response) => {
         this.setState({ totalDocuments: response.data });
       })
@@ -67,7 +61,9 @@ class PaySlip extends Component {
     else newQuery = query;
 
     axios
-      .get(`/api/payslip/count/${newQuery}`)
+      .get(
+        `${process.env.REACT_APP_BACKEND_HOST}/api/category/count/${newQuery}`
+      )
       .then((response) => {
         let pages = Math.floor(response.data / select);
         let remainder = response.data % select;
@@ -86,19 +82,63 @@ class PaySlip extends Component {
   };
 
   handleOnChange = (e) => {
+    console.log(typeof e.target.name + " " + e.target.name);
+    e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      const { select, currentPage, query } = this.state;
-      this.props.getPaySlips(select, currentPage, query);
-      this.getPages();
-      this.getTotalDocuments();
+      if (e.target.name === "query") {
+        this.setState({ currentPage: 1 }, () => {
+          this.rerenderPage();
+        });
+      } else {
+        this.rerenderPage();
+      }
     });
   };
 
+  rerenderPage = () => {
+    const { select, currentPage, query } = this.state;
+    this.props.getCategories(select, currentPage, query);
+    this.getPages();
+    this.getTotalDocuments();
+  };
+
+  renderCategories = () => {
+    const { categories } = this.props;
+    return categories.map((eachEmployee, index) => (
+      <EmployeeRow
+        history={this.props.history}
+        key={eachEmployee._id}
+        employee={eachEmployee}
+        index={index}
+        // deleteCategory={this.props.deleteCategory}
+      />
+    ));
+  };
   handleChoosePage = (e) => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
-      this.props.getPaySlips(select, currentPage, query);
+      this.props.getCategories(select, currentPage, query);
     });
+  };
+
+  renderSelect = () => {
+    const { sort, select } = this.state;
+    return (
+      <select
+        onChange={this.handleOnChange}
+        name="select"
+        aria-controls="example1"
+        style={{ margin: "0px 5px" }}
+        className="form-control input-sm"
+        value={select}
+      >
+        {sort.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.value}
+          </option>
+        ))}
+      </select>
+    );
   };
 
   renderPageButtons = () => {
@@ -114,11 +154,10 @@ class PaySlip extends Component {
         }
       >
         <a
+          className="paga-link"
           name="currentPage"
+          href="fake_url"
           onClick={() => this.handleChoosePage(eachButton.pageNumber)}
-          aria-controls="example1"
-          data-dt-idx={eachButton.pageNumber}
-          tabIndex={0}
         >
           {eachButton.pageNumber}
         </a>
@@ -126,49 +165,29 @@ class PaySlip extends Component {
     ));
   };
 
-  renderPayslips = () => {
-    const { payslips } = this.props;
-    return payslips.map((eachPayslips, index) => (
-      <PaySlipRow
-        history={this.props.history}
-        key={eachPayslips._id}
-        payslip={eachPayslips}
-        index={index}
-      />
-    ));
-  };
-
-  createNotification = () => {
-    this.props.showNoti(this.state.notiType);
-    this.setState({ notiType: "" });
-  };
-
   render() {
+    const { select, totalDocuments } = this.state;
     const { isLoaded } = this.props;
-    const { select, totalDocuments, notiType } = this.state;
     return (
       <Fragment>
         {!isLoaded ? (
           <Loader></Loader>
         ) : (
-          <React.Fragment>
-            {notiType !== "" ? this.createNotification() : null}
-            <NotificationContainer />
-
+          <Fragment>
             {/* Content Header (Page header) */}
             <section className="content-header">
               <h1>
-                Pay Slip
+                Nhân viên
                 {/* <small>Preview</small> */}
               </h1>
               <ol className="breadcrumb">
                 <li>
                   <a href="fake_url">
-                    <i className="fa fa-dashboard" /> Home
+                    <i className="fa fa-dashboard" /> Trang chủ
                   </a>
                 </li>
                 <li>
-                  <a href="fake_url">Pay Slip</a>
+                  <a href="fake_url">Nhân viên</a>
                 </li>
               </ol>
             </section>
@@ -180,13 +199,11 @@ class PaySlip extends Component {
                   <div className="box">
                     <div className="box-header" style={{ marginTop: "5px" }}>
                       <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                        <h3 className="box-title">
-                          Data Table With Full Features
-                        </h3>
+                        <h3 className="box-title">Quản lý nhân viên</h3>
                       </div>
 
                       <div className="col-md-4">
-                        <PaySlipModal />
+                        <EmployeeModal />
                       </div>
                     </div>
                     {/* /.box-header */}
@@ -204,23 +221,7 @@ class PaySlip extends Component {
                               >
                                 <label>
                                   Show
-                                  <select
-                                    onChange={this.handleOnChange}
-                                    name="select"
-                                    aria-controls="example1"
-                                    style={{ margin: "0px 5px" }}
-                                    className="form-control input-sm"
-                                    value={this.state.select}
-                                  >
-                                    {this.state.sort.map((option) => (
-                                      <option
-                                        key={option.value}
-                                        value={option.value}
-                                      >
-                                        {option.value}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  {this.renderSelect()}
                                   entries
                                 </label>
                               </div>
@@ -231,13 +232,13 @@ class PaySlip extends Component {
                                 className="dataTables_filter"
                               >
                                 <label style={{ float: "right" }}>
-                                  Tìm kiếm
+                                  Tìm kiếm:
                                   <input
                                     type="search"
                                     name="query"
                                     style={{ margin: "0px 5px" }}
                                     className="form-control input-sm"
-                                    placeholder="Nhập từ khóa...  "
+                                    placeholder="Nhập từ khóa... "
                                     aria-controls="example1"
                                     onChange={this.handleOnChange}
                                     value={this.state.query}
@@ -256,21 +257,23 @@ class PaySlip extends Component {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: "5%" }}>#</th>
-                                  <th style={{ width: "20%" }}>User</th>
-                                  <th style={{ width: "20%" }}>Supplier</th>
-                                  <th style={{ width: "20%" }}>Created Date</th>
-                                  <th style={{ width: "15%" }}>Total Amount</th>
+                                  <th style={{ width: "10%" }}>#</th>
+                                  <th style={{ width: "20%" }}>
+                                    Tên tài khoản
+                                  </th>
+                                  <th style={{ width: "20%" }}>Vai trò</th>
+                                  <th style={{ width: "20%" }}>Trạng thái</th>
+                                  <th style={{ width: "30%" }}>Hành động</th>
                                 </tr>
                               </thead>
-                              <tbody>{this.render}</tbody>
+                              <tbody>{this.renderCategories()}</tbody>
                               <tfoot>
                                 <tr>
                                   <th>#</th>
-                                  <th>User</th>
-                                  <th>Supplier</th>
-                                  <th>Created Date</th>
-                                  <th>Total Amount</th>
+                                  <th>Tên tài khoản</th>
+                                  <th>Vai trò</th>
+                                  <th>Trạng thái</th>
+                                  <th>Hành động</th>
                                 </tr>
                               </tfoot>
                             </table>
@@ -310,16 +313,17 @@ class PaySlip extends Component {
               </div>
             </section>
             {/* /.content */}
-          </React.Fragment>
+          </Fragment>
         )}
       </Fragment>
     );
   }
 }
 
-PaySlip.propTypes = {
-  getPaySlips: PropTypes.func.isRequired,
-  payslips: PropTypes.object.isRequired,
+Employee.propTypes = {
+  getCategories: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
+  isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getPaySlips, showNoti })(PaySlip);
+export default connect(mapStateToProps, { getCategories })(Employee);

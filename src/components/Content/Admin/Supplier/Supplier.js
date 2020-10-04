@@ -109,18 +109,6 @@ class Supplier extends Component {
     });
   };
 
-  // renderSuppliers = () => {
-  //   const { suppliers } = this.state;
-  //   suppliers.map(eachSupplier => {
-  //     return (
-  //       <SupplierRow
-  //         history={this.props.history}
-  //         key={eachSupplier._id}
-  //         Supplier={eachSupplier}
-  //       />
-  //     );
-  //   });
-  // };
   handleChoosePage = (e) => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
@@ -140,7 +128,7 @@ class Supplier extends Component {
             : "paginate_button "
         }
       >
-        <a
+        <div
           name="currentPage"
           onClick={() => this.handleChoosePage(eachButton.pageNumber)}
           aria-controls="example1"
@@ -148,7 +136,7 @@ class Supplier extends Component {
           tabIndex={0}
         >
           {eachButton.pageNumber}
-        </a>
+        </div>
       </li>
     ));
   };
@@ -163,165 +151,326 @@ class Supplier extends Component {
           <Loader></Loader>
         ) : (
           <Fragment>
-            {/* Content Header (Page header) */}
-            <section className="content-header">
-              <h1>
-                Supplier
-                {/* <small>Preview</small> */}
-              </h1>
-              <ol className="breadcrumb">
+            <section class="content-header">
+              <h1>User Profile</h1>
+              <ol class="breadcrumb">
                 <li>
-                  <a href="fake_url">
-                    <i className="fa fa-dashboard" /> Home
+                  <a href="#">
+                    <i class="fa fa-dashboard"></i> Home
                   </a>
                 </li>
                 <li>
-                  <a href="fake_url">Supplier</a>
+                  <a href="#">Examples</a>
                 </li>
+                <li class="active">User profile</li>
               </ol>
             </section>
-            {/* Main content */}
-            <section className="content">
-              <div className="row">
-                {/* left column */}
-                <div className="col-md-12">
-                  <div className="box">
-                    <div className="box-header" style={{ marginTop: "5px" }}>
-                      <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                        <h3 className="box-title">
-                          Data Table With Full Features
-                        </h3>
+
+            <section class="content">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="box box-primary">
+                    <div class="box-body box-profile">
+                      <img
+                        class="profile-user-img img-responsive img-circle"
+                        src="../../dist/img/user4-128x128.jpg"
+                        alt="User profile picture"
+                      />
+
+                      <h3 class="profile-username text-center">
+                        Thế giới đồ chơi
+                      </h3>
+
+                      <p class="text-muted text-center">Software Engineer</p>
+
+                      <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                          <b>Đơn hàng</b> <a class="pull-right">320</a>
+                        </li>
+                        <li class="list-group-item">
+                          <b>Nhân viên</b> <a class="pull-right">5</a>
+                        </li>
+                      </ul>
+
+                      <a href="#" class="btn btn-primary btn-block">
+                        <b>Follow</b>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="box box-primary">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">About Me</h3>
+                    </div>
+
+                    <div class="box-body">
+                      <strong>
+                        <i class="fa fa-book margin-r-5"></i> Education
+                      </strong>
+
+                      <p class="text-muted">
+                        B.S. in Computer Science from the University of
+                        Tennessee at Knoxville
+                      </p>
+
+                      <hr />
+
+                      <strong>
+                        <i class="fa fa-map-marker margin-r-5"></i> Location
+                      </strong>
+
+                      <p class="text-muted">Malibu, California</p>
+
+                      <hr />
+
+                      <strong>
+                        <i class="fa fa-pencil margin-r-5"></i> Skills
+                      </strong>
+
+                      <p>
+                        <span class="label label-danger">UI Design</span>
+                        <span class="label label-success">Coding</span>
+                        <span class="label label-info">Javascript</span>
+                        <span class="label label-warning">PHP</span>
+                        <span class="label label-primary">Node.js</span>
+                      </p>
+
+                      <hr />
+
+                      <strong>
+                        <i class="fa fa-file-text-o margin-r-5"></i> Notes
+                      </strong>
+
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        Etiam fermentum enim neque.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-9">
+                  <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                      <li class="active">
+                        <a href="#activity" data-toggle="tab">
+                          Thông tin tài khoản
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#timeline" data-toggle="tab">
+                          Thông tin ngân hàng
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#settings" data-toggle="tab">
+                          Settings
+                        </a>
+                      </li>
+                    </ul>
+                    <div class="tab-content">
+                      <div class="active tab-pane" id="activity">
+                        <form class="form-horizontal">
+                          <div class="form-group">
+                            <label
+                              for="inputName"
+                              class="col-sm-2 control-label"
+                            >
+                              Mã gian hàng
+                            </label>
+
+                            <div class="col-sm-10">
+                              <input
+                                type="email"
+                                class="form-control"
+                                id="inputName"
+                              />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label
+                              for="inputEmail"
+                              class="col-sm-2 control-label"
+                            >
+                              Tên gian hàng
+                            </label>
+
+                            <div class="col-sm-10">
+                              <input
+                                type="email"
+                                class="form-control"
+                                id="inputEmail"
+                              />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label
+                              for="inputName"
+                              class="col-sm-2 control-label"
+                            >
+                              Hợp đồng số
+                            </label>
+
+                            <div class="col-sm-10">
+                              <input
+                                type="text"
+                                class="form-control"
+                                id="inputName"
+                              />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label
+                              for="inputSkills"
+                              class="col-sm-2 control-label"
+                            >
+                              Mã số thuế
+                            </label>
+
+                            <div class="col-sm-10">
+                              <input
+                                type="text"
+                                class="form-control"
+                                id="inputSkills"
+                              />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label
+                              for="inputSkills"
+                              class="col-sm-2 control-label"
+                            >
+                              Người phụ trách
+                            </label>
+
+                            <div class="col-sm-10">
+                              <input
+                                type="text"
+                                class="form-control"
+                                id="inputSkills"
+                              />
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                              <button type="submit" class="btn btn-danger">
+                                Lưu
+                              </button>
+                            </div>
+                          </div>
+                        </form>
                       </div>
 
-                      <div className="col-md-4">
-                        <SupplierModal />
+                      <div class="tab-pane" id="timeline">
+                        <p style={{ color: "grey" }}>
+                          Lưu ý đối với tài khoản ngân hàng
+                          <br />
+                          Trường hợp Công Ty: Tên chủ tài khoản ngân hàng trùng
+                          khớp với tên Công ty trên giấy phép kinh doanh
+                          <br />
+                          Trường hợp Hộ Kinh Doanh: Tên tài khoản ngân hàng là
+                          tên chủ hộ kinh doanh trên giấy phép kinh doanh
+                        </p>
                       </div>
-                    </div>
-                    {/* /.box-header */}
-                    <div className="box-body">
-                      <div
-                        id="example1_wrapper"
-                        className="dataTables_wrapper form-inline dt-bootstrap"
-                      >
-                        <div className="row">
-                          <div>
-                            <div className="col-sm-6">
-                              <div
-                                className="dataTables_length"
-                                id="example1_length"
-                              >
-                                <label>
-                                  Show
-                                  <select
-                                    onChange={this.handleOnChange}
-                                    name="select"
-                                    aria-controls="example1"
-                                    style={{ margin: "0px 5px" }}
-                                    className="form-control input-sm"
-                                    value={this.state.select}
-                                  >
-                                    {this.state.sort.map((option) => (
-                                      <option
-                                        key={option.value}
-                                        value={option.value}
-                                      >
-                                        {option.value}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  entries
-                                </label>
-                              </div>
-                            </div>
-                            <div className="col-sm-6">
-                              <div
-                                id="example1_filter"
-                                className="dataTables_filter"
-                              >
-                                <label style={{ float: "right" }}>
-                                  Search:
-                                  <input
-                                    type="search"
-                                    name="query"
-                                    style={{ margin: "0px 5px" }}
-                                    className="form-control input-sm"
-                                    placeholder="Find me  "
-                                    aria-controls="example1"
-                                    onChange={this.handleOnChange}
-                                    value={this.state.query}
-                                  />
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
 
-                        <div className="row">
-                          <div className="col-sm-12">
-                            <table
-                              id="example1"
-                              className="table table-bordered table-striped"
+                      <div class="tab-pane" id="settings">
+                        <form class="form-horizontal">
+                          <div class="form-group">
+                            <label
+                              for="inputName"
+                              class="col-sm-2 control-label"
                             >
-                              <thead>
-                                <tr>
-                                  <th style={{ width: "5%" }}>#</th>
-                                  <th style={{ width: "20%" }}>Supplier</th>
-                                  <th style={{ width: "10%" }}>Phone</th>
-                                  <th style={{ width: "25%" }}>Address</th>
-                                  <th style={{ width: "10%" }}>Created date</th>
-                                  <th style={{ width: "15%" }}>Creator</th>
-                                  <th style={{ width: "30%" }}>Action</th>
-                                </tr>
-                              </thead>
-                              <tbody>{this.renderSuppliers()}</tbody>
-                              <tfoot>
-                                <tr>
-                                  <th>#</th>
-                                  <th>Supplier</th>
-                                  <th>Phone</th>
-                                  <th>Address</th>
-                                  <th>Created date</th>
-                                  <th>Creator</th>
-                                  <th>Action</th>
-                                </tr>
-                              </tfoot>
-                            </table>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col-sm-5">
-                            <div
-                              className="dataTables_info"
-                              id="example1_info"
-                              role="status"
-                              aria-live="polite"
-                            >
-                              Showing 1 to {select} of {totalDocuments} entries
+                              Mã gian hàng
+                            </label>
+
+                            <div class="col-sm-10">
+                              <input
+                                type="email"
+                                class="form-control"
+                                id="inputName"
+                              />
                             </div>
                           </div>
-                          <div className="col-sm-7">
-                            <div
-                              className="dataTables_paginate paging_simple_numbers"
-                              id="example1_paginate"
+                          <div class="form-group">
+                            <label
+                              for="inputEmail"
+                              class="col-sm-2 control-label"
                             >
-                              <ul
-                                className="pagination"
-                                style={{ float: "right" }}
-                              >
-                                {this.renderPageButtons()}
-                              </ul>
+                              Tên gian hàng
+                            </label>
+
+                            <div class="col-sm-10">
+                              <input
+                                type="email"
+                                class="form-control"
+                                id="inputEmail"
+                              />
                             </div>
                           </div>
-                        </div>
+                          <div class="form-group">
+                            <label
+                              for="inputName"
+                              class="col-sm-2 control-label"
+                            >
+                              Hợp đồng số
+                            </label>
+
+                            <div class="col-sm-10">
+                              <input
+                                type="text"
+                                class="form-control"
+                                id="inputName"
+                              />
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label
+                              for="inputExperience"
+                              class="col-sm-2 control-label"
+                            >
+                              Mã số thuế
+                            </label>
+
+                            <div class="col-sm-10">
+                              <textarea
+                                class="form-control"
+                                id="inputExperience"
+                              ></textarea>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label
+                              for="inputSkills"
+                              class="col-sm-2 control-label"
+                            >
+                              Người phụ trách
+                            </label>
+
+                            <div class="col-sm-10">
+                              <input
+                                type="text"
+                                class="form-control"
+                                id="inputSkills"
+                                placeholder="Skills"
+                              />
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                              <button type="submit" class="btn btn-danger">
+                                Submit
+                              </button>
+                            </div>
+                          </div>
+                        </form>
                       </div>
-                      {/*/.col (left) */}
                     </div>
-                    {/* /.row */}
                   </div>
                 </div>
               </div>
             </section>
-            {/* /.content */}
           </Fragment>
         )}
       </Fragment>

@@ -70,8 +70,17 @@ export default class Menu extends Component {
                 </Link>
               </li>
               <li>
-                <Link to="/category">
+                <Link to="/employee">
                   <i className="fa fa-users" /> <span>Quản lý nhân viên</span>
+                  {/* <span className="pull-right-container">
+                    <small className="label pull-right bg-green">new</small>
+                  </span> */}
+                </Link>
+              </li>
+              <li>
+                <Link to="/role">
+                  <i className="fa fa-users" />{" "}
+                  <span>Phân quyền nhân viên</span>
                   {/* <span className="pull-right-container">
                     <small className="label pull-right bg-green">new</small>
                   </span> */}
@@ -87,37 +96,37 @@ export default class Menu extends Component {
                 </a>
                 <ul className="treeview-menu">
                   <li>
-                    <a href="pages/charts/chartjs.html">
+                    <Link to="/sale-report">
                       <i className="fa fa-circle-o" /> Thống kê doanh thu
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="pages/charts/morris.html">
+                    <Link to="/warehouse-report">
                       <i className="fa fa-circle-o" /> Thống kê tồn kho
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </li>
               <li>
-                <Link to="/role">
-                  <i className="fa fa-th" /> <span>Role</span>
-                  {/* <span className="pull-right-container">
-                    <small className="label pull-right bg-green">new</small>
-                  </span> */}
+                <Link to="/supplier">
+                  <i className="fa fa-building" />{" "}
+                  <span>Thông tin nhà bán</span>
                 </Link>
               </li>
               <li>
-                <Link to="/member">
-                  <i className="fa fa-th" /> <span>Member</span>
-                  {/* <span className="pull-right-container">
-                    <small className="label pull-right bg-green">new</small>
-                  </span> */}
-                </Link>
+                <a href="pages/mailbox/mailbox.html">
+                  <i className="fa fa-envelope" /> <span>Mailbox</span>
+                  <span className="pull-right-container">
+                    <small className="label pull-right bg-yellow">12</small>
+                    <small className="label pull-right bg-green">16</small>
+                    <small className="label pull-right bg-red">5</small>
+                  </span>
+                </a>
               </li>
 
-              <li>
-                <Link to="/supplier">
-                  <i className="fa fa-th" /> <span>Supplier</span>
+              {/* <li>
+                <Link to="/member">
+                  <i className="fa fa-th" /> <span>Member</span>
                   <span className="pull-right-container">
                     <small className="label pull-right bg-green">new</small>
                   </span>
@@ -267,16 +276,6 @@ export default class Menu extends Component {
                   </span>
                 </a>
               </li>
-              <li>
-                <a href="pages/mailbox/mailbox.html">
-                  <i className="fa fa-envelope" /> <span>Mailbox</span>
-                  <span className="pull-right-container">
-                    <small className="label pull-right bg-yellow">12</small>
-                    <small className="label pull-right bg-green">16</small>
-                    <small className="label pull-right bg-red">5</small>
-                  </span>
-                </a>
-              </li>
               <li className="treeview">
                 <a href="fake_url">
                   <i className="fa fa-folder" /> <span>Examples</span>
@@ -391,7 +390,7 @@ export default class Menu extends Component {
                 <a href="https://adminlte.io/docs">
                   <i className="fa fa-book" /> <span>Documentation</span>
                 </a>
-              </li>
+              </li> */}
             </ul>
           </section>
           {/* /.sidebar */}

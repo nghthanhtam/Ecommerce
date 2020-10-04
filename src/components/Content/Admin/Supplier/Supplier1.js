@@ -1,18 +1,18 @@
 import React, { Component, Fragment } from "react";
-import CategoryModal from "./CategoryModal";
-import CategoryRow from "./CategoryRow";
+import SupplierModal from "./SupplierModal";
+import SupplierRow from "./SupplierRow";
 import { connect } from "react-redux";
-import { getCategories } from "../../../../actions/categoryActions";
+import { getSuppliers } from "../../../../actions/supplierActions";
 import PropTypes from "prop-types";
 import axios from "axios";
 import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
-  categories: state.category.categories,
-  isLoaded: state.category.isLoaded,
+  suppliers: state.supplier.suppliers,
+  isLoaded: state.supplier.isLoaded,
 });
 
-class Category extends Component {
+class Supplier extends Component {
   state = {
     sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
     select: "5",
@@ -25,13 +25,14 @@ class Category extends Component {
   resetState = () => {
     this.setState({ select: "5", currentPage: 1, query: "" });
   };
+
   componentDidMount() {
     const { select, currentPage, query } = this.state;
     this.getTotalDocuments();
 
     this.getPages();
 
-    this.props.getCategories(select, currentPage, query);
+    this.props.getSuppliers(select, currentPage, query);
   }
 
   getTotalDocuments = () => {
@@ -43,7 +44,7 @@ class Category extends Component {
 
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/count/${newQuery}`
+        `${process.env.REACT_APP_BACKEND_HOST}/api/supplier/count/${newQuery}`
       )
       .then((response) => {
         this.setState({ totalDocuments: response.data });
@@ -55,13 +56,14 @@ class Category extends Component {
 
   getPages = () => {
     const { select, query } = this.state;
+
     let newQuery = "";
     if (query === "") newQuery = "undefined";
     else newQuery = query;
 
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/count/${newQuery}`
+        `${process.env.REACT_APP_BACKEND_HOST}/api/supplier/count/${newQuery}`
       )
       .then((response) => {
         let pages = Math.floor(response.data / select);
@@ -80,64 +82,50 @@ class Category extends Component {
       });
   };
 
-  handleOnChange = (e) => {
-    console.log(typeof e.target.name + " " + e.target.name);
-    e.persist();
-    this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === "query") {
-        this.setState({ currentPage: 1 }, () => {
-          this.rerenderPage();
-        });
-      } else {
-        this.rerenderPage();
-      }
-    });
-  };
-
-  rerenderPage = () => {
-    const { select, currentPage, query } = this.state;
-    this.props.getCategories(select, currentPage, query);
-    this.getPages();
-    this.getTotalDocuments();
-  };
-
-  renderCategories = () => {
-    const { categories } = this.props;
-    return categories.map((eachCategory, index) => (
-      <CategoryRow
+  renderSuppliers = () => {
+    const { suppliers } = this.props;
+    return suppliers.map((eachSup, index) => (
+      <SupplierRow
         history={this.props.history}
-        key={eachCategory._id}
-        category={eachCategory}
+        key={eachSup._id}
+        supplier={eachSup}
         index={index}
         // deleteCategory={this.props.deleteCategory}
       />
     ));
   };
-  handleChoosePage = (e) => {
-    this.setState({ currentPage: e }, () => {
+
+  handleOnChange = (e) => {
+    let format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    if (format.test(this.state.query)) {
+      return;
+    }
+    this.setState({ [e.target.name]: e.target.value }, () => {
       const { select, currentPage, query } = this.state;
-      this.props.getCategories(select, currentPage, query);
+
+      this.props.getSuppliers(select, currentPage, query);
+      this.getPages();
+      this.getTotalDocuments();
     });
   };
 
-  renderSelect = () => {
-    const { sort, select } = this.state;
-    return (
-      <select
-        onChange={this.handleOnChange}
-        name="select"
-        aria-controls="example1"
-        style={{ margin: "0px 5px" }}
-        className="form-control input-sm"
-        value={select}
-      >
-        {sort.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.value}
-          </option>
-        ))}
-      </select>
-    );
+  // renderSuppliers = () => {
+  //   const { suppliers } = this.state;
+  //   suppliers.map(eachSupplier => {
+  //     return (
+  //       <SupplierRow
+  //         history={this.props.history}
+  //         key={eachSupplier._id}
+  //         Supplier={eachSupplier}
+  //       />
+  //     );
+  //   });
+  // };
+  handleChoosePage = (e) => {
+    this.setState({ currentPage: e }, () => {
+      const { select, currentPage, query } = this.state;
+      this.props.getSuppliers(select, currentPage, query);
+    });
   };
 
   renderPageButtons = () => {
@@ -152,14 +140,15 @@ class Category extends Component {
             : "paginate_button "
         }
       >
-        <a
-          className="paga-link"
+        <div
           name="currentPage"
-          href="fake_url"
           onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+          aria-controls="example1"
+          data-dt-idx={eachButton.pageNumber}
+          tabIndex={0}
         >
           {eachButton.pageNumber}
-        </a>
+        </div>
       </li>
     ));
   };
@@ -167,6 +156,7 @@ class Category extends Component {
   render() {
     const { select, totalDocuments } = this.state;
     const { isLoaded } = this.props;
+
     return (
       <Fragment>
         {!isLoaded ? (
@@ -176,17 +166,17 @@ class Category extends Component {
             {/* Content Header (Page header) */}
             <section className="content-header">
               <h1>
-                Category
+                Nhà cung cấp
                 {/* <small>Preview</small> */}
               </h1>
               <ol className="breadcrumb">
                 <li>
                   <a href="fake_url">
-                    <i className="fa fa-dashboard" /> Home
+                    <i className="fa fa-dashboard" /> Trang chủ
                   </a>
                 </li>
                 <li>
-                  <a href="fake_url">Category</a>
+                  <a href="fake_url">Nhà cung cấp</a>
                 </li>
               </ol>
             </section>
@@ -204,7 +194,7 @@ class Category extends Component {
                       </div>
 
                       <div className="col-md-4">
-                        <CategoryModal />
+                        <SupplierModal />
                       </div>
                     </div>
                     {/* /.box-header */}
@@ -222,7 +212,23 @@ class Category extends Component {
                               >
                                 <label>
                                   Show
-                                  {this.renderSelect()}
+                                  <select
+                                    onChange={this.handleOnChange}
+                                    name="select"
+                                    aria-controls="example1"
+                                    style={{ margin: "0px 5px" }}
+                                    className="form-control input-sm"
+                                    value={this.state.select}
+                                  >
+                                    {this.state.sort.map((option) => (
+                                      <option
+                                        key={option.value}
+                                        value={option.value}
+                                      >
+                                        {option.value}
+                                      </option>
+                                    ))}
+                                  </select>
                                   entries
                                 </label>
                               </div>
@@ -233,13 +239,13 @@ class Category extends Component {
                                 className="dataTables_filter"
                               >
                                 <label style={{ float: "right" }}>
-                                  Search:
+                                  Tìm kiếm
                                   <input
                                     type="search"
                                     name="query"
                                     style={{ margin: "0px 5px" }}
                                     className="form-control input-sm"
-                                    placeholder="Find me  "
+                                    placeholder="Nhập từ khóa...  "
                                     aria-controls="example1"
                                     onChange={this.handleOnChange}
                                     value={this.state.query}
@@ -258,18 +264,22 @@ class Category extends Component {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: "10%" }}>#</th>
-                                  <th style={{ width: "20%" }}>Category</th>
-                                  <th style={{ width: "20%" }}>Created date</th>
-                                  <th style={{ width: "20%" }}>Creator</th>
+                                  <th style={{ width: "5%" }}>#</th>
+                                  <th style={{ width: "20%" }}>Supplier</th>
+                                  <th style={{ width: "10%" }}>Phone</th>
+                                  <th style={{ width: "25%" }}>Address</th>
+                                  <th style={{ width: "10%" }}>Created date</th>
+                                  <th style={{ width: "15%" }}>Creator</th>
                                   <th style={{ width: "30%" }}>Action</th>
                                 </tr>
                               </thead>
-                              <tbody>{this.renderCategories()}</tbody>
+                              <tbody>{this.renderSuppliers()}</tbody>
                               <tfoot>
                                 <tr>
                                   <th>#</th>
-                                  <th>Category</th>
+                                  <th>Supplier</th>
+                                  <th>Phone</th>
+                                  <th>Address</th>
                                   <th>Created date</th>
                                   <th>Creator</th>
                                   <th>Action</th>
@@ -286,7 +296,7 @@ class Category extends Component {
                               role="status"
                               aria-live="polite"
                             >
-                              Showing 1 to {select} of {totalDocuments} entries
+                              Hiển thị 1 đến {select} trong {totalDocuments} mục
                             </div>
                           </div>
                           <div className="col-sm-7">
@@ -319,10 +329,10 @@ class Category extends Component {
   }
 }
 
-Category.propTypes = {
-  getCategories: PropTypes.func.isRequired,
-  categories: PropTypes.array.isRequired,
+Supplier.propTypes = {
+  getSuppliers: PropTypes.func.isRequired,
+  supplier: PropTypes.object.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getCategories })(Category);
+export default connect(mapStateToProps, { getSuppliers })(Supplier);
