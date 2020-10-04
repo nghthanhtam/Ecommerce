@@ -104,6 +104,7 @@ class Employee extends Component {
 
   renderCategories = () => {
     const { categories } = this.props;
+    //console.log(categories);
     return categories.map((eachEmployee, index) => (
       <EmployeeRow
         history={this.props.history}

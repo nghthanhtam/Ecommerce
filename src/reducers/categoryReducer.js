@@ -23,7 +23,11 @@ export default function (state = initialState, action) {
     case CATEGORIES_RECEIVED:
       return { ...state, categories: action.payload.data, isLoaded: true };
     case CATEGORIES_ADDED:
-      return { ...state, categories: action.payload, isLoaded: true };
+      return {
+        ...state,
+        categories: [action.payload, ...state.categories],
+        isLoaded: true,
+      };
     case DELETE_CATEGORY:
       return {
         ...state,
@@ -34,7 +38,8 @@ export default function (state = initialState, action) {
     case ADD_CATEGORY:
       return {
         ...state,
-        categories: [action.payload, ...state.categories],
+        //categories: [action.payload, ...state.categories],
+        isLoaded: false,
       };
     case UPDATE_CATEGORY:
       return {

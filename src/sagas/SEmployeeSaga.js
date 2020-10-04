@@ -37,23 +37,26 @@ function* fetchCategories(params) {
   }
 }
 
-function* addCategories(newCategory) {
+function* addCategories(params) {
   const state = yield select();
+  console.log(params);
   try {
-    const response = yield call(() =>
-      axios
-        .post(
+    const response = yield call(
+      () =>
+        axios.post(
           `${process.env.REACT_APP_BACKEND_HOST}/api/category/`,
-          newCategory,
+          params.newCategory,
           tokenConfig(state)
         )
-        .then((response) => {
-          console.log(response);
-          if (newCategory._id instanceof mongoose.Types.ObjectId) {
-            newCategory._id = newCategory._id.toString();
-          }
-        })
+      // .then((res) => {
+      //   console.log(res);
+
+      // })
     );
+    if (response.data._id instanceof mongoose.Types.ObjectId) {
+      response.data._id = response.data._id.toString();
+    }
+
     yield put({ type: CATEGORIES_ADDED, payload: response.data });
   } catch (error) {
     yield put({ type: CATEGORIES_ADDED_FAILED, error });
