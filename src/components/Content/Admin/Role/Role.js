@@ -15,7 +15,7 @@ const mapStateToProps = (state) => ({
 class Role extends Component {
   state = {
     sort: [{ value: "5" }, { value: "10" }, { value: "15" }],
-    select: "10",
+    select: "5",
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
@@ -28,7 +28,7 @@ class Role extends Component {
 
     this.getPages();
 
-    this.props.getRoles(select, currentPage, query);
+    this.props.getRoles({ select, currentPage, query });
   }
 
   getTotalDocuments = () => {
@@ -88,7 +88,7 @@ class Role extends Component {
 
   rerenderPage = () => {
     const { select, currentPage, query } = this.state;
-    this.props.getRoles(select, currentPage, query);
+    this.props.getRoles({ select, currentPage, query });
     this.getPages();
     this.getTotalDocuments();
   };
@@ -107,7 +107,7 @@ class Role extends Component {
   handleChoosePage = (e) => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
-      this.props.getRoles(select, currentPage, query);
+      this.props.getRoles({ select, currentPage, query });
     });
   };
 
@@ -146,7 +146,7 @@ class Role extends Component {
         <a
           className="paga-link"
           name="currentPage"
-          href="fake_url"
+          href="#"
           onClick={() => this.handleChoosePage(eachButton.pageNumber)}
         >
           {eachButton.pageNumber}
@@ -313,7 +313,8 @@ class Role extends Component {
 
 Role.propTypes = {
   getRoles: PropTypes.func.isRequired,
-  role: PropTypes.object.isRequired,
+  roles: PropTypes.array.isRequired,
+  isLoaded: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, { getRoles })(Role);

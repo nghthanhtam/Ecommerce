@@ -2,6 +2,9 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { getAllInvoices } from "../../../../actions/invoiceActions";
 import Select from "react-select";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { DateRangePicker } from "react-date-range";
 import {
   BarChart,
   Bar,
@@ -41,6 +44,17 @@ class SaleReport extends Component {
     idMaterial: "",
     selectedYear: "",
     selectedMonth: "",
+    selectionRange: {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
+    select: "5",
+    currentPage: 1,
+    pages: [],
+    totalDocuments: 0,
+    query: "",
   };
 
   componentDidMount() {
@@ -178,18 +192,37 @@ class SaleReport extends Component {
   onChangeSelectedMaterial = (selectedMember) => {
     this.setState({ idMaterial: selectedMember.value });
   };
+  handleSelect = (ranges) => {
+    this.setState({
+      selectionRange: {
+        startDate: ranges.selection.startDate,
+        endDate: ranges.selection.endDate,
+        key: "selection",
+      },
+    });
+
+    console.log(ranges.selection);
+  };
 
   render() {
     const { isLoaded } = this.props;
-    const { options, yearData, monthData } = this.state;
+    const {
+      options,
+      yearData,
+      monthData,
+      selectionRange,
+      select,
+      sort,
+      totalDocuments,
+    } = this.state;
+
     return (
       <Fragment>
         {/* {!isLoaded ? (
                     <Loader></Loader>
                 ) : ( */}
         {/* Content Header (Page header) */}
-        <section className="content-header"></section>
-        {/* Main content */}
+
         <section className="content">
           <div className="row">
             {/* left column */}
@@ -253,23 +286,289 @@ class SaleReport extends Component {
                     <Bar dataKey="total" fill="#8884d8" barSize={40} />
                   </BarChart>
                   <br />
-                  <div className="col-sm-5">
-                    <div
-                      className="dataTables_info"
-                      id="example1_info"
-                      role="status"
-                      aria-live="polite"
-                    >
-                      Chart show yearly or monthly sale report
-                    </div>
-                  </div>
                 </div>
+
                 {/* /.row */}
               </div>
             </div>
           </div>
+          <div className="row">
+            {/* left column */}
+            <div className="col-md-12">
+              <div className="box">
+                {/* /.box-header */}
+                <div className="box-body">
+                  <div className="box-body">
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <div>
+                        <button
+                          style={{
+                            width: "100px",
+                            float: "right",
+                            marginTop: "5px",
+                          }}
+                          type="button"
+                          className="btn btn-block btn-success"
+                        >
+                          Export
+                        </button>
+                        <button
+                          type="button"
+                          style={{
+                            width: "100px",
+                            float: "right",
+                          }}
+                          className="btn btn-block btn-primary"
+                        >
+                          Clear
+                        </button>
+                        <button
+                          type="button"
+                          style={{ width: "100px", float: "right" }}
+                          className="btn btn-block btn-info"
+                        >
+                          Filter
+                        </button>
+                      </div>
+                      <div className="row-flex">
+                        <div
+                          style={{
+                            background: "#f5f5f5",
+                            padding: "10px",
+                            margin: "10px",
+                          }}
+                        >
+                          <h4>Ngày tạo đơn hàng</h4>
+                          <div>
+                            <DateRangePicker
+                              showSelectionPreview={true}
+                              ranges={[selectionRange]}
+                              onChange={this.handleSelect}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="column-flex"
+                          style={{
+                            background: "#f5f5f5",
+                            padding: "10px 20px 0 0",
+                            margin: "10px",
+                            flex: 1,
+                          }}
+                        >
+                          <div className="row-flex">
+                            <div style={menuStyle}>
+                              <h4> Tạo báo cáo theo</h4>
+                              <Select
+                                onChange={this.onChangeSelectedYear}
+                                isSearchable={true}
+                                options={yearData}
+                                placeholder="Chọn..."
+                              ></Select>
+                            </div>
+                            <div style={menuStyle}>
+                              <h4> Sắp xếp theo</h4>
+                              <Select
+                                onChange={this.onChangeSelectedYear}
+                                isSearchable={true}
+                                options={yearData}
+                                placeholder="Chọn..."
+                              ></Select>
+                            </div>
+                          </div>
+
+                          <div style={menuStyle}>
+                            <h4> Tình trạng đơn</h4>
+                            <Select
+                              onChange={this.onChangeSelectedYear}
+                              isSearchable={true}
+                              options={yearData}
+                              placeholder="Chọn..."
+                            ></Select>
+                          </div>
+                          <div style={menuStyle}>
+                            <h4> Giá trị đơn hàng</h4>
+                            <div class="row">
+                              <div class="col-xs-3">
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  placeholder="Từ..."
+                                />
+                              </div>
+
+                              <div class="col-xs-3">
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  placeholder="Đến..."
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div style={menuStyle}>
+                            <h4> Số hàng</h4>
+                            <Select
+                              onChange={this.onChangeSelectedYear}
+                              isSearchable={true}
+                              options={yearData}
+                              placeholder="Chọn..."
+                            ></Select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="box-body">
+                  <div
+                    id="example1_wrapper"
+                    className="dataTables_wrapper form-inline dt-bootstrap"
+                  >
+                    <div className="row">
+                      <div>
+                        <div className="col-sm-6">
+                          <div
+                            className="dataTables_length"
+                            id="example1_length"
+                          >
+                            <label
+                              style={{
+                                fontFamily: "Montserrat, sans-serif",
+                              }}
+                            >
+                              Hiển thị
+                              <select
+                                onChange={this.handleOnChange}
+                                name="select"
+                                aria-controls="example1"
+                                style={{ margin: "0px 5px" }}
+                                className="form-control input-sm"
+                                value={this.state.select}
+                              >
+                                {sort.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.value}
+                                  </option>
+                                ))}
+                              </select>
+                              kết quả
+                            </label>
+                          </div>
+                        </div>
+                        <div className="col-sm-6">
+                          <div
+                            id="example1_filter"
+                            className="dataTables_filter"
+                          >
+                            <label
+                              style={{
+                                float: "right",
+                                fontFamily: "Saira, sans-serif",
+                              }}
+                            >
+                              Tìm kiếm
+                              <input
+                                type="search"
+                                name="query"
+                                style={{ margin: "0px 5px" }}
+                                className="form-control input-sm"
+                                placeholder="Nhập từ khóa...  "
+                                aria-controls="example1"
+                                onChange={this.handleOnChange}
+                                value={this.state.query}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <div className="col-sm-12">
+                        <table
+                          id="example1"
+                          className="table table-bordered table-striped"
+                        >
+                          <thead>
+                            <tr>
+                              <th
+                                style={{
+                                  width: "5%",
+                                  fontFamily: "Saira, sans-serif",
+                                }}
+                              >
+                                Đơn hàng
+                              </th>
+                              <th
+                                style={{
+                                  width: "5%",
+                                  fontFamily: "Saira, sans-serif",
+                                }}
+                              >
+                                Khách hàng
+                              </th>
+                              <th
+                                style={{
+                                  width: "5%",
+                                  fontFamily: "Saira, sans-serif",
+                                }}
+                              >
+                                Sản phẩm
+                              </th>
+                              <th
+                                style={{
+                                  width: "5%",
+                                  fontFamily: "Saira, sans-serif",
+                                }}
+                              >
+                                Số lượng tồn
+                              </th>
+                            </tr>
+                          </thead>
+                          {/* <tbody>{this.renderProducts()}</tbody> */}
+                          <tfoot></tfoot>
+                        </table>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-sm-5">
+                        <div
+                          className="dataTables_info"
+                          id="example1_info"
+                          role="status"
+                          aria-live="polite"
+                        >
+                          Hiển thị 1 đến {select} trong {totalDocuments} mục
+                        </div>
+                      </div>
+                      <div className="col-sm-7">
+                        <div
+                          className="dataTables_paginate paging_simple_numbers"
+                          id="example1_paginate"
+                        >
+                          <ul className="pagination" style={{ float: "right" }}>
+                            {/* {this.renderPageButtons()} */}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/*/.col (left) */}
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
-        {/* /.content */}
 
         {/* )} */}
       </Fragment>
@@ -287,8 +586,8 @@ export default connect(mapStateToProps, { getAllInvoices })(SaleReport);
 
 const menuStyle = {
   display: "inline-block",
-  width: "20%",
-  marginRight: "30px",
+  width: "94%",
+  margin: "0 0 20px 30px",
 };
 
 const container = {

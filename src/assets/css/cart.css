@@ -311,3 +311,13 @@
   color: white;
   cursor: pointer;
 }
+
+/* Saler Sale report */
+.filter-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  float: left;
+  flex: 1;
+}

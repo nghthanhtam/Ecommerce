@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import { connect } from "react-redux";
-import { addCategory } from "../../../../actions/categoryActions";
+import { addEmployee } from "../../../../actions/employeeActions";
 
 import mongoose from "mongoose";
 
@@ -38,7 +38,7 @@ class EmployeeModal extends Component {
       _id: mongoose.Types.ObjectId(),
     };
 
-    this.props.addCategory(newItem);
+    this.props.addEmployee(newItem);
     this.setState({ name: "" });
     // Close modal
     document.getElementById("triggerButton").click();
@@ -60,7 +60,7 @@ class EmployeeModal extends Component {
           data-target="#exampleModalCenter"
           onClick={this.handleOnClick}
         >
-          Add new category
+          Thêm nhân viên mới
         </button>
         {/* Modal */}
         <div
@@ -76,7 +76,7 @@ class EmployeeModal extends Component {
               <div className="modal-header">
                 <span>
                   <h3 className="modal-title" id="exampleModalLongTitle">
-                    Add new Category
+                    Thêm nhân viên mới
                   </h3>
                 </span>
                 <span>
@@ -139,7 +139,7 @@ class EmployeeModal extends Component {
                       : true
                   }
                 >
-                  Add category
+                  Thêm nhân viên
                 </button>
               </div>
             </div>
@@ -150,6 +150,6 @@ class EmployeeModal extends Component {
   }
 }
 const mapStateToProps = (state) => ({
-  category: state.category,
+  employee: state.employee,
 });
-export default connect(mapStateToProps, { addCategory })(EmployeeModal);
+export default connect(mapStateToProps, { addEmployee })(EmployeeModal);

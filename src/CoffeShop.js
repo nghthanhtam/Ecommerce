@@ -161,8 +161,8 @@ class CoffeShop extends Component {
                       exact
                       path="/product"
                       component={Product}
-                      // role={roles.product}
-                      // token={token}
+                      role={roles.product}
+                      token={token}
                     ></PrivateRoute>
                     <PrivateRoute
                       exact

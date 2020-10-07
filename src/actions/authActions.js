@@ -1,20 +1,4 @@
-import {
-  USER_LOADED,
-  USER_LOADING,
-  USER_LOGIN,
-  USER_LOGOUT,
-  AUTH_ERROR,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  LOGOUT_SUCCESS,
-  CLEAR_ERRORS,
-  // REGISTER_SUCCESS,
-  // REGISTER_FAIL,
-  // GET_ERRORS
-} from "./types";
-import { returnErrors } from "./errorActions";
-import axios from "axios";
-
+import { USER_LOADING, USER_LOGIN, USER_LOGOUT } from "./types";
 //Check token and load user
 // export const loadUser = () => (dispatch, getState) => {
 //   //User loading

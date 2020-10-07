@@ -2,31 +2,53 @@ import {
   GET_PRODUCTS,
   ADD_PRODUCT,
   DELETE_PRODUCT,
-  GET_PRODUCT
+  PRODUCT_DELETED,
+  PRODUCTS_RECEIVED,
+  PRODUCT_ADDED,
+  PRODUCT_UPDATED,
 } from "../actions/types";
 
 const initialState = {
   products: [],
-  loading: false
+  isLoaded: false,
 };
 
-export default function(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case GET_PRODUCTS:
       return {
         ...state,
-        products: action.payload,
-        loading: false
+        isLoaded: true,
+      };
+    case PRODUCTS_RECEIVED:
+      return { ...state, products: action.payload.data, isLoaded: true };
+    case PRODUCT_ADDED:
+      return {
+        ...state,
+        products: [action.payload, ...state.products],
+        isLoaded: true,
       };
     case DELETE_PRODUCT:
       return {
         ...state,
-        products: state.products.filter(prod => prod._id !== action.payload._id)
+      };
+    case PRODUCT_DELETED:
+      return {
+        ...state,
+        products: state.products.filter(
+          (product) => product._id !== action.payload._id
+        ),
       };
     case ADD_PRODUCT:
       return {
         ...state,
-        products: [action.payload, ...state.products]
+        //products: [action.payload, ...state.products],
+        isLoaded: false,
+      };
+
+    case PRODUCT_UPDATED:
+      return {
+        ...state,
       };
 
     default:

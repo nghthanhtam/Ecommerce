@@ -1,16 +1,8 @@
 import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import { getCategories } from "../../../../actions/categoryActions";
-import PropTypes from "prop-types";
-import axios from "axios";
+
 import Loader from "react-loader";
 import Select from "react-select";
 import ProductModal from "./ProductModal";
-
-const mapStateToProps = (state) => ({
-  categories: state.category.categories,
-  isLoaded: state.category.isLoaded,
-});
 
 class ProductAdd extends Component {
   state = {

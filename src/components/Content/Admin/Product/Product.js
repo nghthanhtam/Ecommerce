@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { getPaySlips } from "../../../../actions/payslipActions";
+import ProductRow from "./ProductRow";
+//import ProductModal from ".ProductModal";
+import { getProducts } from "../../../../actions/productActions";
 import { showNoti } from "../../../../actions/notificationActions";
 import "react-notifications/lib/notifications.css";
 import { NotificationContainer } from "react-notifications";
@@ -9,8 +11,8 @@ import PropTypes from "prop-types";
 import axios from "axios";
 
 const mapStateToProps = (state) => ({
-  payslips: state.payslip,
-  isLoaded: state.payslip.isLoaded,
+  products: state.product.products,
+  isLoaded: state.product.isLoaded,
 });
 
 class Product extends Component {
@@ -21,7 +23,6 @@ class Product extends Component {
     pages: [],
     totalDocuments: 0,
     query: "",
-    notiType: "",
   };
 
   resetState = () => {
@@ -31,7 +32,7 @@ class Product extends Component {
     const { select, currentPage, query } = this.state;
     this.getTotalDocuments();
     this.getPages();
-    this.props.getPaySlips(select, currentPage, query);
+    this.props.getProducts({ select, currentPage, query });
 
     if (!this.props.location.state) {
       return;
@@ -40,7 +41,17 @@ class Product extends Component {
       this.setState({ notiType: this.props.location.state.notiType });
     }
   }
-
+  renderProducts = () => {
+    const { products } = this.props;
+    return products.map((eachProduct, index) => (
+      <ProductRow
+        history={this.props.history}
+        key={eachProduct._id}
+        product={eachProduct}
+        index={index}
+      />
+    ));
+  };
   getTotalDocuments = () => {
     const { query } = this.state;
     console.log(query);
@@ -86,7 +97,7 @@ class Product extends Component {
   handleOnChange = (e) => {
     this.setState({ [e.target.name]: e.target.value }, () => {
       const { select, currentPage, query } = this.state;
-      this.props.getPaySlips(select, currentPage, query);
+      this.props.getProducts({ select, currentPage, query });
       this.getPages();
       this.getTotalDocuments();
     });
@@ -95,7 +106,7 @@ class Product extends Component {
   handleChoosePage = (e) => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
-      this.props.getPaySlips(select, currentPage, query);
+      this.props.getProducts({ select, currentPage, query });
     });
   };
 
@@ -112,28 +123,15 @@ class Product extends Component {
         }
       >
         <a
+          className="paga-link"
           name="currentPage"
+          href="#"
           onClick={() => this.handleChoosePage(eachButton.pageNumber)}
-          aria-controls="example1"
-          data-dt-idx={eachButton.pageNumber}
-          tabIndex={0}
         >
           {eachButton.pageNumber}
         </a>
       </li>
     ));
-  };
-
-  renderPayslips = () => {
-    const { payslips } = this.props;
-    // return payslips.map((eachPayslips, index) => (
-    //   <PaySlipRow
-    //     history={this.props.history}
-    //     key={eachPayslips._id}
-    //     payslip={eachPayslips}
-    //     index={index}
-    //   />
-    // ));
   };
 
   createNotification = () => {
@@ -180,6 +178,9 @@ class Product extends Component {
                       <div style={{ paddingLeft: "5px" }} className="col-md-8">
                         <h3 className="box-title">Quản lý sản phẩm</h3>
                       </div>
+                      {/* <div className="col-md-4">
+                        <ProductModal />
+                      </div> */}
                     </div>
                     {/* /.box-header */}
                     <div className="box-body">
@@ -255,7 +256,7 @@ class Product extends Component {
                                   <th style={{ width: "15%" }}>Số lượng tồn</th>
                                 </tr>
                               </thead>
-                              <tbody>{this.render}</tbody>
+                              <tbody>{this.renderProducts()}</tbody>
                               <tfoot>
                                 <tr>
                                   <th>#</th>
@@ -310,8 +311,9 @@ class Product extends Component {
 }
 
 Product.propTypes = {
-  getPaySlips: PropTypes.func.isRequired,
-  payslips: PropTypes.object.isRequired,
+  getProducts: PropTypes.func.isRequired,
+  products: PropTypes.array.isRequired,
+  isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getPaySlips, showNoti })(Product);
+export default connect(mapStateToProps, { getProducts, showNoti })(Product);

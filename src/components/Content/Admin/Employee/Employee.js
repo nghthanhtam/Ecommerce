@@ -2,14 +2,14 @@ import React, { Component, Fragment } from "react";
 import EmployeeModal from "./EmployeeModal";
 import EmployeeRow from "./EmployeeRow";
 import { connect } from "react-redux";
-import { getCategories } from "../../../../actions/categoryActions";
+import { getEmployees } from "../../../../actions/employeeActions";
 import PropTypes from "prop-types";
 import axios from "axios";
 import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
-  categories: state.category.categories,
-  isLoaded: state.category.isLoaded,
+  employees: state.employee.employees,
+  isLoaded: state.employee.isLoaded,
 });
 
 class Employee extends Component {
@@ -28,11 +28,8 @@ class Employee extends Component {
   componentDidMount() {
     const { select, currentPage, query } = this.state;
     this.getTotalDocuments();
-
     this.getPages();
-
-    //this.props.getCategories(select, currentPage, query);
-    this.props.getCategories({ show: select, page: currentPage, query });
+    this.props.getEmployees({ select, currentPage, query });
   }
 
   getTotalDocuments = () => {
@@ -97,28 +94,26 @@ class Employee extends Component {
 
   rerenderPage = () => {
     const { select, currentPage, query } = this.state;
-    this.props.getCategories(select, currentPage, query);
+    this.props.getEmployees({ select, currentPage, query });
     this.getPages();
     this.getTotalDocuments();
   };
 
-  renderCategories = () => {
-    const { categories } = this.props;
-    //console.log(categories);
-    return categories.map((eachEmployee, index) => (
+  renderEmployees = () => {
+    const { employees } = this.props;
+    return employees.map((eachEmployee, index) => (
       <EmployeeRow
         history={this.props.history}
         key={eachEmployee._id}
         employee={eachEmployee}
         index={index}
-        // deleteCategory={this.props.deleteCategory}
       />
     ));
   };
   handleChoosePage = (e) => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
-      this.props.getCategories(select, currentPage, query);
+      this.props.getEmployees({ select, currentPage, query });
     });
   };
 
@@ -157,7 +152,7 @@ class Employee extends Component {
         <a
           className="paga-link"
           name="currentPage"
-          href="fake_url"
+          href="#"
           onClick={() => this.handleChoosePage(eachButton.pageNumber)}
         >
           {eachButton.pageNumber}
@@ -221,9 +216,9 @@ class Employee extends Component {
                                 id="example1_length"
                               >
                                 <label>
-                                  Show
+                                  Hiển thị
                                   {this.renderSelect()}
-                                  entries
+                                  kết quả
                                 </label>
                               </div>
                             </div>
@@ -267,7 +262,7 @@ class Employee extends Component {
                                   <th style={{ width: "30%" }}>Hành động</th>
                                 </tr>
                               </thead>
-                              <tbody>{this.renderCategories()}</tbody>
+                              <tbody>{this.renderEmployees()}</tbody>
                               <tfoot>
                                 <tr>
                                   <th>#</th>
@@ -288,7 +283,8 @@ class Employee extends Component {
                               role="status"
                               aria-live="polite"
                             >
-                              Hiển thị 1 đến {select} trong {totalDocuments} mục
+                              Hiển thị 1 đến {select} trong {totalDocuments} kết
+                              quả
                             </div>
                           </div>
                           <div className="col-sm-7">
@@ -322,9 +318,9 @@ class Employee extends Component {
 }
 
 Employee.propTypes = {
-  getCategories: PropTypes.func.isRequired,
-  categories: PropTypes.array.isRequired,
+  getEmployees: PropTypes.func.isRequired,
+  employees: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getCategories })(Employee);
+export default connect(mapStateToProps, { getEmployees })(Employee);

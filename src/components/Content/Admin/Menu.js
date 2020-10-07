@@ -30,7 +30,7 @@ export default class Menu extends Component {
             <ul className="sidebar-menu" data-widget="tree">
               <li className="header">MAIN NAVIGATION</li>
               <li>
-                <Link to="/order">
+                <Link to="/home">
                   <i className="fa fa-home" /> <span>Trang chủ</span>
                 </Link>
               </li>

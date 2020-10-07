@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { pushHistory } from "../../../../actions/historyActions";
 import Loader from "react-loader";
 import axios from "axios";
-import { updateCategory } from "../../../../actions/categoryActions";
+import { updateEmployee } from "../../../../actions/employeeActions";
 
 class EmployeeEdit extends Component {
   state = {
@@ -45,11 +45,11 @@ class EmployeeEdit extends Component {
     const { _id, name } = this.state;
     e.preventDefault();
 
-    const newCategory = {
+    const newEmployee = {
       name,
       _id,
     };
-    this.props.updateCategory(newCategory);
+    this.props.updateEmployee(newEmployee);
     // axios
     //   .put(`/api/category/${_id}`, newCategory)
 
@@ -78,20 +78,20 @@ class EmployeeEdit extends Component {
             {/* Content Header (Page header) */}
             <section className="content-header">
               <h1>
-                Category
+                Nhân viên
                 {/* <small>Preview</small> */}
               </h1>
               <ol className="breadcrumb">
                 <li>
                   <a href="fake_url">
-                    <i className="fa fa-dashboard" /> Home
+                    <i className="fa fa-dashboard" /> Trang chủ
                   </a>
                 </li>
                 <li>
-                  <a href="fake_url">Category</a>
+                  <a href="fake_url">Nhân viên</a>
                 </li>
                 <li>
-                  <a href="fake_url">Edit</a>
+                  <a href="fake_url">Sửa</a>
                 </li>
               </ol>
             </section>
@@ -187,6 +187,5 @@ const mapStateToProps = (state, props) => {
 
 export default connect(mapStateToProps, {
   pushHistory,
-
-  updateCategory,
+  updateEmployee,
 })(EmployeeEdit);

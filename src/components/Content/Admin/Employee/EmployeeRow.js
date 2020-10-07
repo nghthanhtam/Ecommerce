@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { deleteCategory } from "../../../../actions/categoryActions";
+import { deleteEmployee } from "../../../../actions/employeeActions";
 import { pushHistory } from "../../../../actions/historyActions";
 class EmployeeRow extends Component {
   convertDate = (date) => {
@@ -22,7 +22,7 @@ class EmployeeRow extends Component {
     this.props.pushHistory(`/employee/edit/${id}`);
   };
   handleDelete = (id) => {
-    this.props.deleteCategory(id);
+    this.props.deleteEmployee(id);
   };
 
   render() {
@@ -41,7 +41,7 @@ class EmployeeRow extends Component {
               type="button"
               className="btn btn-success"
             >
-              Edit
+              Sửa
             </button>
 
             <button
@@ -49,7 +49,7 @@ class EmployeeRow extends Component {
               type="button"
               className="btn btn-danger"
             >
-              Delete
+              Xóa
             </button>
           </div>
         </td>
@@ -58,4 +58,4 @@ class EmployeeRow extends Component {
   }
 }
 
-export default connect(null, { deleteCategory, pushHistory })(EmployeeRow);
+export default connect(null, { deleteEmployee, pushHistory })(EmployeeRow);

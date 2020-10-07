@@ -2,21 +2,20 @@ import { takeEvery, put, call, select } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../actions/authActions";
 import {
-  GET_EMPLOYEES,
-  ADD_EMPLOYEE,
-  EMPLOYEES_RECEIVED,
-  EMPLOYEES_ADDED,
-  DELETE_EMPLOYEE,
-  EMPLOYEE_DELETED,
-  UPDATE_EMPLOYEE,
-  EMPLOYEE_UPDATED,
+  GET_PRODUCTS,
+  ADD_PRODUCT,
+  PRODUCTS_RECEIVED,
+  PRODUCT_ADDED,
+  DELETE_PRODUCT,
+  PRODUCT_DELETED,
+  UPDATE_PRODUCT,
+  PRODUCT_UPDATED,
 } from "../actions/types";
 
 import mongoose from "mongoose";
 
-function* fetchEmployees(params) {
+function* fetchProducts(params) {
   try {
-    console.log(params);
     if (params.pages.query === "") params.pages.query = "undefined";
     const state = yield select();
 
@@ -29,17 +28,13 @@ function* fetchEmployees(params) {
         .catch((er) => console.log(er.response))
     );
 
-    // const response = yield call(getEmployeesAPI, {
-    //   params: params.pages,
-    //   state: state,
-    // });
-    yield put({ type: EMPLOYEES_RECEIVED, payload: response });
+    yield put({ type: PRODUCTS_RECEIVED, payload: response });
   } catch (error) {
     console.log(error);
   }
 }
 
-function* addEmployees(params) {
+function* addProduct(params) {
   const state = yield select();
   console.log(params);
   try {
@@ -47,7 +42,7 @@ function* addEmployees(params) {
       () =>
         axios.post(
           `${process.env.REACT_APP_BACKEND_HOST}/api/category/`,
-          params.newCategory,
+          params.newProduct,
           tokenConfig(state)
         )
       // .then((res) => {
@@ -58,13 +53,13 @@ function* addEmployees(params) {
       response.data._id = response.data._id.toString();
     }
 
-    yield put({ type: EMPLOYEES_ADDED, payload: response.data });
+    yield put({ type: PRODUCT_ADDED, payload: response.data });
   } catch (error) {
     console.log(error.response);
   }
 }
 
-function* updateEmployee(params) {
+function* updateProduct(params) {
   const state = yield select();
   try {
     const response = yield call(() =>
@@ -75,12 +70,12 @@ function* updateEmployee(params) {
       )
     );
 
-    yield put({ type: EMPLOYEE_UPDATED, payload: response.data });
+    yield put({ type: PRODUCT_UPDATED, payload: response.data });
   } catch (error) {
     console.log(error.response);
   }
 }
-function* deleteEmployees(params) {
+function* deleteProducts(params) {
   const state = yield select();
   try {
     const response = yield call(() =>
@@ -90,15 +85,15 @@ function* deleteEmployees(params) {
       )
     );
 
-    yield put({ type: EMPLOYEE_DELETED, payload: response.data });
+    yield put({ type: PRODUCT_DELETED, payload: response.data });
   } catch (error) {
     console.log(error.response);
   }
 }
 
-export default function* sEmployeeSaga() {
-  yield takeEvery(GET_EMPLOYEES, fetchEmployees);
-  yield takeEvery(ADD_EMPLOYEE, addEmployees);
-  yield takeEvery(UPDATE_EMPLOYEE, updateEmployee);
-  yield takeEvery(DELETE_EMPLOYEE, deleteEmployees);
+export default function* sProductSaga() {
+  yield takeEvery(GET_PRODUCTS, fetchProducts);
+  yield takeEvery(ADD_PRODUCT, addProduct);
+  yield takeEvery(UPDATE_PRODUCT, updateProduct);
+  yield takeEvery(DELETE_PRODUCT, deleteProducts);
 }

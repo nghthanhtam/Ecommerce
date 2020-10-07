@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PaySlipModal from "./PaySlipModal";
 import PaySlipRow from "./PaySlipRow";
 import { connect } from "react-redux";
-import { getPaySlips } from "../../../../actions/payslipActions";
+import { getProducts } from "../../../../actions/payslipActions";
 import { showNoti } from "../../../../actions/notificationActions";
 import "react-notifications/lib/notifications.css";
 import { NotificationContainer } from "react-notifications";
@@ -11,7 +11,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 
 const mapStateToProps = (state) => ({
-  payslips: state.payslip,
+  products: state.product,
   isLoaded: state.payslip.isLoaded,
 });
 
@@ -26,14 +26,11 @@ class PaySlip extends Component {
     notiType: "",
   };
 
-  resetState = () => {
-    this.setState({ select: "5", currentPage: 1, query: "" });
-  };
   componentDidMount() {
     const { select, currentPage, query } = this.state;
     this.getTotalDocuments();
     this.getPages();
-    this.props.getPaySlips(select, currentPage, query);
+    this.props.getProducts({ select, currentPage, query });
 
     if (!this.props.location.state) {
       return;
@@ -88,7 +85,7 @@ class PaySlip extends Component {
   handleOnChange = (e) => {
     this.setState({ [e.target.name]: e.target.value }, () => {
       const { select, currentPage, query } = this.state;
-      this.props.getPaySlips(select, currentPage, query);
+      this.props.getPaySlips({ select, currentPage, query });
       this.getPages();
       this.getTotalDocuments();
     });
@@ -97,7 +94,7 @@ class PaySlip extends Component {
   handleChoosePage = (e) => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
-      this.props.getPaySlips(select, currentPage, query);
+      this.props.getPaySlips({ select, currentPage, query });
     });
   };
 
@@ -318,8 +315,8 @@ class PaySlip extends Component {
 }
 
 PaySlip.propTypes = {
-  getPaySlips: PropTypes.func.isRequired,
-  payslips: PropTypes.object.isRequired,
+  getProducts: PropTypes.func.isRequired,
+  products: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps, { getPaySlips, showNoti })(PaySlip);
+export default connect(mapStateToProps, { getProducts, showNoti })(PaySlip);

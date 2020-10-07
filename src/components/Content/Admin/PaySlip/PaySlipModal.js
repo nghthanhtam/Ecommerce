@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { addPaySlip } from "../../../../actions/payslipActions";
+import { addProduct } from "../../../../actions/payslipActions";
 import { showNoti } from "../../../../actions/notificationActions";
 import { getSearchMembers } from "../../../../actions/memberActions";
 import "react-notifications/lib/notifications.css";
@@ -88,7 +88,7 @@ class PaySlipModal extends Component {
       totalAmt: this.state.totalAmt,
     };
 
-    this.props.addPaySlip(newItem);
+    this.props.addProduct(newItem);
     // Close modal
     document.getElementById("triggerButton").click();
   };
@@ -131,7 +131,7 @@ class PaySlipModal extends Component {
           data-toggle="modal"
           data-target="#exampleModalCenter"
         >
-          Add new pay slip
+          Thêm nhân viên mới
         </button>
         {/* Modal */}
         <form onSubmit={this.onSubmit}>
@@ -148,7 +148,7 @@ class PaySlipModal extends Component {
                 <div className="modal-header">
                   <span>
                     <h3 className="modal-title" id="exampleModalLongTitle">
-                      Add new Pay slip
+                      Thêm nhân viên
                     </h3>
                   </span>
                   <span>
@@ -163,7 +163,7 @@ class PaySlipModal extends Component {
                   </span>
                 </div>
                 <div className="modal-body">
-                  {msg != "" ? (
+                  {msg !== "" ? (
                     <div className="alert alert-danger alert-dismissible">
                       {msg}
                     </div>
@@ -251,7 +251,7 @@ const mapStateToProps = (state) => ({
   member: state.member,
 });
 export default connect(mapStateToProps, {
-  addPaySlip,
+  addProduct,
   showNoti,
   getSearchMembers,
 })(PaySlipModal);
