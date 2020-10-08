@@ -60,7 +60,9 @@ class Product extends Component {
     else newQuery = query;
 
     axios
-      .get(`/api/payslip/count/${newQuery}`)
+      .get(
+        `${process.env.REACT_APP_BACKEND_HOST}/api/payslip/count/${newQuery}`
+      )
       .then((response) => {
         this.setState({ totalDocuments: response.data });
       })
@@ -76,7 +78,9 @@ class Product extends Component {
     else newQuery = query;
 
     axios
-      .get(`/api/payslip/count/${newQuery}`)
+      .get(
+        `${process.env.REACT_APP_BACKEND_HOST}/api/payslip/count/${newQuery}`
+      )
       .then((response) => {
         let pages = Math.floor(response.data / select);
         let remainder = response.data % select;

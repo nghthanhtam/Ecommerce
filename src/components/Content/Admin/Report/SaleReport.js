@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { getAllInvoices } from "../../../../actions/invoiceActions";
 import Select from "react-select";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
@@ -15,18 +14,65 @@ import {
   Legend,
 } from "recharts";
 
+import { getAllInvoices } from "../../../../actions/invoiceActions";
+import ReportRow from "./ReportRow";
+
 class SaleReport extends Component {
   state = {
     // data: [{ name: 'Page A', pv: 200, amt: 2400 },
     // { name: 'Page B', pv: 6000, amt: 2400 },
-    yearData: [
+    reportData: [
       {
-        label: "2018",
-        value: "2018",
+        label: "Doanh số mỗi tháng",
+        value: "SALE_SUMMARY",
       },
       {
-        label: "2019",
-        value: "2019",
+        label: "Ngày trong tuần",
+        value: "WEEKDAY",
+      },
+      {
+        label: "Thành phố",
+        value: "CITY",
+      },
+      {
+        label: "Giờ",
+        value: "HOUR",
+      },
+    ],
+    sortData: [
+      {
+        label: "Khách hàng",
+        value: "CUSTOMER",
+      },
+      {
+        label: "Đơn hàng",
+        value: "ORDER",
+      },
+      {
+        label: "Phí ship",
+        value: "SHIPPING",
+      },
+      {
+        label: "Mã giảm giá",
+        value: "PROMOTINON",
+      },
+      {
+        label: "Sản phẩm",
+        value: "PRODUCT",
+      },
+    ],
+    statusData: [
+      {
+        label: "Đang xử lý",
+        value: "P",
+      },
+      {
+        label: "Giao thành công",
+        value: "S",
+      },
+      {
+        label: "Đã hủy",
+        value: "C",
       },
     ],
     monthData: [
@@ -44,6 +90,9 @@ class SaleReport extends Component {
     idMaterial: "",
     selectedYear: "",
     selectedMonth: "",
+    selectedReport: "",
+    selectedSort: "",
+    selectedStatus: "",
     selectionRange: {
       startDate: new Date(),
       endDate: new Date(),
@@ -55,6 +104,36 @@ class SaleReport extends Component {
     pages: [],
     totalDocuments: 0,
     query: "",
+    defaultHeaderList: [
+      "Đơn hàng",
+      "Khách hàng",
+      "Sản phẩm",
+      "Phí ship",
+      "Giảm giá",
+      "Tổng tiền",
+      "Hoàn tiền",
+    ],
+    headerList: [
+      "Loại báo cáo",
+      "Đơn hàng",
+      "Khách hàng",
+      "Sản phẩm",
+      "Phí ship",
+      "Giảm giá",
+      "Tổng tiền",
+      "Hoàn tiền",
+    ],
+    reports: [],
+    totalList: {
+      orderTotal: 0,
+      customerTotal: 0,
+      productTotal: 0,
+      shippingTotal: 0,
+      promotionTotal: 0,
+      total: 0,
+      refundTotal: 0,
+    },
+    //totalList["orderTotal"]
   };
 
   componentDidMount() {
@@ -182,7 +261,26 @@ class SaleReport extends Component {
       });
     }
   }
-
+  handleOnChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      const { select, currentPage, query } = this.state;
+      this.props.getProducts({ select, currentPage, query });
+      this.getPages();
+      this.getTotalDocuments();
+    });
+  };
+  selectedStatus = (selectedItem) => {
+    this.setState({ selectedStatus: selectedItem.value });
+  };
+  onSelectedReport = (selectedItem) => {
+    this.setState({ selectedReport: selectedItem.value });
+  };
+  onSelectedSort = (selectedItem) => {
+    this.setState({ selectedSort: selectedItem.value });
+  };
+  onSelectedStatus = (selectedItem) => {
+    this.setState({ selectedSort: selectedItem.value });
+  };
   onChangeSelectedYear = (selectedItem) => {
     this.setState({ selectedYear: selectedItem.value });
   };
@@ -200,8 +298,34 @@ class SaleReport extends Component {
         key: "selection",
       },
     });
+  };
+  renderReports = () => {
+    const { reports, reportData } = this.state;
+    // const { reports } = this.props;
+    return reports.map((eachrp) => (
+      <ReportRow
+        history={this.props.history}
+        key={eachrp._id}
+        record={eachrp}
+        reportData={reportData}
+      />
+    ));
+  };
 
-    console.log(ranges.selection);
+  filter = () => {
+    //gọi api lấy ds record gồm count tổng các thuộc tính có sẵn trên table report
+    let { selectedReport, defaultheaderList } = this.state,
+      addingColName = "";
+    if (selectedReport === "SALE_SUMMARY") addingColName = "Tháng, năm";
+    else if (selectedReport === "WEEKDAY") addingColName = "Thứ";
+    else if (selectedReport === "CITY") addingColName = "Tỉnh/Thành phố";
+
+    //set lại các cột mặc định -> thêm các cột tùy theo loại report dc chọn
+    this.setState({ headerList: defaultheaderList }, () => {
+      this.setState((prepState) => ({
+        headerList: [addingColName, ...prepState.headerList],
+      }));
+    });
   };
 
   render() {
@@ -210,7 +334,12 @@ class SaleReport extends Component {
       options,
       yearData,
       monthData,
+      reportData,
+      sortData,
+      statusData,
       selectionRange,
+      headerList,
+      defaultHeaderList,
       select,
       sort,
       totalDocuments,
@@ -243,10 +372,10 @@ class SaleReport extends Component {
                       required
                     ></Select>
                     {/* <input
-                                        style={{ opacity: 0, height: 0 }}
-                                         required
-                                        value={invisibleInpMemVal}
-                                        /> */}
+                          style={{ opacity: 0, height: 0 }}
+                            required
+                          value={invisibleInpMemVal}
+                          /> */}
                     <br />
 
                     <div style={container}>
@@ -328,6 +457,7 @@ class SaleReport extends Component {
                           Clear
                         </button>
                         <button
+                          onClick={this.filter}
                           type="button"
                           style={{ width: "100px", float: "right" }}
                           className="btn btn-block btn-info"
@@ -365,9 +495,9 @@ class SaleReport extends Component {
                             <div style={menuStyle}>
                               <h4> Tạo báo cáo theo</h4>
                               <Select
-                                onChange={this.onChangeSelectedYear}
+                                onChange={this.onSelectedReport}
                                 isSearchable={true}
-                                options={yearData}
+                                options={reportData}
                                 placeholder="Chọn..."
                               ></Select>
                             </div>
@@ -376,36 +506,38 @@ class SaleReport extends Component {
                               <Select
                                 onChange={this.onChangeSelectedYear}
                                 isSearchable={true}
-                                options={yearData}
+                                options={sortData}
                                 placeholder="Chọn..."
                               ></Select>
                             </div>
                           </div>
 
                           <div style={menuStyle}>
-                            <h4> Tình trạng đơn</h4>
+                            <h4> Tình trạng đơn hàng</h4>
                             <Select
-                              onChange={this.onChangeSelectedYear}
+                              onChange={this.onSelectedStatus}
                               isSearchable={true}
-                              options={yearData}
+                              options={statusData}
                               placeholder="Chọn..."
                             ></Select>
                           </div>
                           <div style={menuStyle}>
                             <h4> Giá trị đơn hàng</h4>
-                            <div class="row">
-                              <div class="col-xs-3">
+                            <div className="row">
+                              <div className="col-xs-3">
                                 <input
-                                  type="text"
-                                  class="form-control"
+                                  type="number"
+                                  min={0}
+                                  className="form-control"
                                   placeholder="Từ..."
                                 />
                               </div>
 
-                              <div class="col-xs-3">
+                              <div className="col-xs-3">
                                 <input
-                                  type="text"
-                                  class="form-control"
+                                  min={0}
+                                  type="number"
+                                  className="form-control"
                                   placeholder="Đến..."
                                 />
                               </div>
@@ -501,41 +633,41 @@ class SaleReport extends Component {
                         >
                           <thead>
                             <tr>
-                              <th
-                                style={{
-                                  width: "5%",
-                                  fontFamily: "Saira, sans-serif",
-                                }}
-                              >
-                                Đơn hàng
-                              </th>
-                              <th
-                                style={{
-                                  width: "5%",
-                                  fontFamily: "Saira, sans-serif",
-                                }}
-                              >
-                                Khách hàng
-                              </th>
-                              <th
-                                style={{
-                                  width: "5%",
-                                  fontFamily: "Saira, sans-serif",
-                                }}
-                              >
-                                Sản phẩm
-                              </th>
-                              <th
-                                style={{
-                                  width: "5%",
-                                  fontFamily: "Saira, sans-serif",
-                                }}
-                              >
-                                Số lượng tồn
-                              </th>
+                              {headerList.map((item, index) => (
+                                <th
+                                  key={index}
+                                  style={{
+                                    width: "5%",
+                                    fontFamily: "Saira, sans-serif",
+                                  }}
+                                >
+                                  {item}
+                                </th>
+                              ))}
                             </tr>
                           </thead>
-                          {/* <tbody>{this.renderProducts()}</tbody> */}
+                          {/* <tbody>{this.renderReports()}</tbody> */}
+                          <tbody>
+                            <tr>
+                              <td
+                                style={{ fontWeight: "600", color: "#003A88" }}
+                              >
+                                Tổng cộng
+                              </td>
+                              {defaultHeaderList.map((item, index) => (
+                                <td
+                                  key={index}
+                                  style={{
+                                    fontWeight: "600",
+                                    color: "#003A88",
+                                  }}
+                                >
+                                  10626000
+                                </td>
+                              ))}
+                            </tr>
+                          </tbody>
+
                           <tfoot></tfoot>
                         </table>
                       </div>

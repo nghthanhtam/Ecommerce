@@ -96,7 +96,6 @@ class Home extends Component {
         `${process.env.REACT_APP_BACKEND_HOST}/api/category/count/${newQuery}`
       )
       .then((response) => {
-        console.log("aaaaaaaaa");
         let pages = Math.floor(response.data / select);
         let remainder = response.data % select;
         let newArray = [];

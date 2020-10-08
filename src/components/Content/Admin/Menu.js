@@ -108,7 +108,7 @@ export default class Menu extends Component {
                 </ul>
               </li>
               <li>
-                <Link to="/supplier">
+                <Link to="/supplierinfor">
                   <i className="fa fa-building" />{" "}
                   <span>Thông tin nhà bán</span>
                 </Link>

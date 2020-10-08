@@ -18,6 +18,7 @@ import DailyCheck from "./components/Content/Admin/Report/DailyCheck";
 import InvoiceEdit from "./components/Content/Admin/OrderAndInvoices/InvoiceEdit";
 import OrderScreen from "./components/Content/Admin/OrderAndInvoices/OrderScreen";
 import Supplier from "./components/Content/Admin/Supplier/Supplier1";
+import SupplierInfor from "./components/Content/Admin/SupplierInfor/SupplierInfor";
 import SupplierEdit from "./components/Content/Admin/Supplier/SupplierEdit";
 import ErrorPage from "./components/Content/Admin/ErrorPage/ErrorPage";
 import Login from "./components/Content/Admin/Auth/Login";
@@ -173,8 +174,8 @@ class CoffeShop extends Component {
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
-                      path="/supplier"
-                      component={Supplier}
+                      path="/supplierinfor"
+                      component={SupplierInfor}
                       role={roles.supplier}
                       token={token}
                     ></PrivateRoute>

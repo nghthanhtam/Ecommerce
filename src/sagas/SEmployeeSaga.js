@@ -39,20 +39,16 @@ function* fetchEmployees(params) {
   }
 }
 
-function* addEmployees(params) {
+function* addEmployee(params) {
   const state = yield select();
-  console.log(params);
+
   try {
-    const response = yield call(
-      () =>
-        axios.post(
-          `${process.env.REACT_APP_BACKEND_HOST}/api/category/`,
-          params.newCategory,
-          tokenConfig(state)
-        )
-      // .then((res) => {
-      //   console.log(res);
-      // })
+    const response = yield call(() =>
+      axios.post(
+        `${process.env.REACT_APP_BACKEND_HOST}/api/category/`,
+        params.newCategory,
+        tokenConfig(state)
+      )
     );
     if (response.data._id instanceof mongoose.Types.ObjectId) {
       response.data._id = response.data._id.toString();
@@ -98,7 +94,7 @@ function* deleteEmployees(params) {
 
 export default function* sEmployeeSaga() {
   yield takeEvery(GET_EMPLOYEES, fetchEmployees);
-  yield takeEvery(ADD_EMPLOYEE, addEmployees);
+  yield takeEvery(ADD_EMPLOYEE, addEmployee);
   yield takeEvery(UPDATE_EMPLOYEE, updateEmployee);
   yield takeEvery(DELETE_EMPLOYEE, deleteEmployees);
 }

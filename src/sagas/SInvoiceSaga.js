@@ -17,7 +17,6 @@ import mongoose from "mongoose";
 
 function* fetchInvoices(params) {
   try {
-    console.log(params);
     if (params.pages.query === "") params.pages.query = "undefined";
     const state = yield select();
 

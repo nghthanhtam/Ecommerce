@@ -24,34 +24,25 @@ class ReportRow extends Component {
   };
 
   render() {
-    const { product, index } = this.props;
+    const { record, reportData } = this.props;
 
     return (
       <tr>
-        <td>{index + 1}</td>
-        <td>{product.idMember}</td>
-        <td>{product.idSupplier}</td>
-        <td>{this.convertDate(product.createddate)}</td>
-        <td>{product.totalAmt}</td>
-        <td>
-          <div className="btn-group">
-            <button
-              onClick={() => this.handleEdit(product._id)}
-              type="button"
-              className="btn btn-success"
-            >
-              Sửa
-            </button>
-
-            <button
-              onClick={() => this.handleDelete(product._id)}
-              type="button"
-              className="btn btn-danger"
-            >
-              Xóa
-            </button>
-          </div>
-        </td>
+        {reportData === "SALE_SUMMARY" ? (
+          <td>
+            {record.month}/{record.year}
+          </td>
+        ) : null}
+        {reportData === "WEEKDAY" ? <td> {record.day}</td> : null}
+        {reportData === "CITY" ? <td> {record.city}</td> : null}
+        {reportData === "HOUR" ? <td> {record.hour}</td> : null}
+        <td>{record.orderTotal}</td>
+        <td>{record.customerTotal}</td>
+        <td>{record.productTotal}</td>
+        <td>{record.shippingTotal}</td>
+        <td>{record.promotionTotal}</td>
+        <td>{record.total}</td>
+        <td>{record.totalRefund}</td>
       </tr>
     );
   }
