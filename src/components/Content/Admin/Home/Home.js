@@ -1,11 +1,11 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import Loader from "react-loader";
-import axios from "axios";
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import Loader from 'react-loader';
+import axios from 'axios';
 
-import { getProducts } from "../../../../actions/productActions";
-import ProductRow from "../Product/ProductRow";
+import { getProducts } from '../../../../actions/productActions';
+import ProductRow from '../Product/ProductRow';
 
 const mapStateToProps = (state) => ({
   products: state.product.products,
@@ -14,12 +14,12 @@ const mapStateToProps = (state) => ({
 
 class Home extends Component {
   state = {
-    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
-    select: "5",
+    sort: [{ value: '5' }, { value: '10' }, { value: '20' }],
+    select: '5',
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: "",
+    query: '',
   };
 
   componentDidMount = () => {
@@ -40,8 +40,8 @@ class Home extends Component {
   getTotalDocuments = () => {
     const { query } = this.state;
     console.log(query);
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -69,8 +69,8 @@ class Home extends Component {
         key={eachButton.pageNumber}
         className={
           currentPage === eachButton.pageNumber
-            ? "paginae_button active"
-            : "paginate_button "
+            ? 'paginae_button active'
+            : 'paginate_button '
         }
       >
         <a
@@ -87,8 +87,8 @@ class Home extends Component {
 
   getPages = () => {
     const { select, query } = this.state;
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -226,10 +226,10 @@ class Home extends Component {
                       <div className="box">
                         <div
                           className="box-header"
-                          style={{ marginTop: "5px" }}
+                          style={{ marginTop: '5px' }}
                         >
                           <div
-                            style={{ paddingLeft: "0px" }}
+                            style={{ paddingLeft: '0px' }}
                             className="col-md-8"
                           >
                             <h3 className="box-title">
@@ -255,7 +255,7 @@ class Home extends Component {
                                   >
                                     <label
                                       style={{
-                                        fontFamily: "Montserrat, sans-serif",
+                                        fontFamily: 'Montserrat, sans-serif',
                                       }}
                                     >
                                       Hiển thị
@@ -263,7 +263,7 @@ class Home extends Component {
                                         onChange={this.handleOnChange}
                                         name="select"
                                         aria-controls="example1"
-                                        style={{ margin: "0px 5px" }}
+                                        style={{ margin: '0px 5px' }}
                                         className="form-control input-sm"
                                         value={this.state.select}
                                       >
@@ -287,15 +287,15 @@ class Home extends Component {
                                   >
                                     <label
                                       style={{
-                                        float: "right",
-                                        fontFamily: "Saira, sans-serif",
+                                        float: 'right',
+                                        fontFamily: 'Saira, sans-serif',
                                       }}
                                     >
                                       Tìm kiếm
                                       <input
                                         type="search"
                                         name="query"
-                                        style={{ margin: "0px 5px" }}
+                                        style={{ margin: '0px 5px' }}
                                         className="form-control input-sm"
                                         placeholder="Nhập từ khóa...  "
                                         aria-controls="example1"
@@ -312,39 +312,39 @@ class Home extends Component {
                               <div className="col-sm-12">
                                 <table
                                   id="example1"
-                                  className="table table-bordered table-striped"
+                                  className="table table-bordered"
                                 >
                                   <thead>
                                     <tr>
-                                      <th style={{ width: "5%" }}>#</th>
+                                      <th style={{ width: '5%' }}>#</th>
                                       <th
                                         style={{
-                                          width: "20%",
-                                          fontFamily: "Saira, sans-serif",
+                                          width: '20%',
+                                          fontFamily: 'Saira, sans-serif',
                                         }}
                                       >
                                         Tên sản phẩm
                                       </th>
                                       <th
                                         style={{
-                                          width: "20%",
-                                          fontFamily: "Saira, sans-serif",
+                                          width: '20%',
+                                          fontFamily: 'Saira, sans-serif',
                                         }}
                                       >
                                         SKU
                                       </th>
                                       <th
                                         style={{
-                                          width: "20%",
-                                          fontFamily: "Saira, sans-serif",
+                                          width: '20%',
+                                          fontFamily: 'Saira, sans-serif',
                                         }}
                                       >
                                         Đơn giá
                                       </th>
                                       <th
                                         style={{
-                                          width: "15%",
-                                          fontFamily: "Saira, sans-serif",
+                                          width: '15%',
+                                          fontFamily: 'Saira, sans-serif',
                                         }}
                                       >
                                         Số lượng tồn
@@ -364,7 +364,7 @@ class Home extends Component {
                                   role="status"
                                   aria-live="polite"
                                 >
-                                  Hiển thị 1 đến {select} trong {totalDocuments}{" "}
+                                  Hiển thị 1 đến {select} trong {totalDocuments}{' '}
                                   mục
                                 </div>
                               </div>
@@ -375,7 +375,7 @@ class Home extends Component {
                                 >
                                   <ul
                                     className="pagination"
-                                    style={{ float: "right" }}
+                                    style={{ float: 'right' }}
                                   >
                                     {this.renderPageButtons()}
                                   </ul>
@@ -393,7 +393,7 @@ class Home extends Component {
                   {/* right col (We are only adding the ID to make the widgets sortable)*/}
                   <div
                     className="col-md-4"
-                    style={{ margin: "12px -15px 0 0px", flex: 1 }}
+                    style={{ margin: '12px -15px 0 0px', flex: 1 }}
                   >
                     <div className="progress-group">
                       <span className="progress-text">Đơn hàng hủy</span>
@@ -404,7 +404,7 @@ class Home extends Component {
                       <div className="progress sm">
                         <div
                           className="progress-bar progress-bar-aqua"
-                          style={{ width: "100%" }}
+                          style={{ width: '100%' }}
                         ></div>
                       </div>
                     </div>
@@ -418,7 +418,7 @@ class Home extends Component {
                       <div className="progress sm">
                         <div
                           className="progress-bar progress-bar-red"
-                          style={{ width: "100%" }}
+                          style={{ width: '100%' }}
                         ></div>
                       </div>
                     </div>
@@ -434,7 +434,7 @@ class Home extends Component {
                       <div className="progress sm">
                         <div
                           className="progress-bar progress-bar-green"
-                          style={{ width: "100%" }}
+                          style={{ width: '100%' }}
                         ></div>
                       </div>
                     </div>
@@ -450,7 +450,7 @@ class Home extends Component {
                       <div className="progress sm">
                         <div
                           className="progress-bar progress-bar-yellow"
-                          style={{ width: "100%" }}
+                          style={{ width: '100%' }}
                         ></div>
                       </div>
                     </div>
@@ -465,7 +465,7 @@ class Home extends Component {
                       <div className="progress sm">
                         <div
                           className="progress-bar progress-bar-aqua"
-                          style={{ width: "100%" }}
+                          style={{ width: '100%' }}
                         ></div>
                       </div>
                     </div>
@@ -480,7 +480,7 @@ class Home extends Component {
                       <div className="progress sm">
                         <div
                           className="progress-bar progress-bar-red"
-                          style={{ width: "100%" }}
+                          style={{ width: '100%' }}
                         ></div>
                       </div>
                     </div>

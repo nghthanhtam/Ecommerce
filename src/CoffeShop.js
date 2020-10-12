@@ -1,59 +1,60 @@
 ////ADMIN PAGE
-import React, { Component, Fragment } from "react";
-import Header from "./components/Content/Admin/Header";
-import Footer from "./components/Content/Admin/Footer";
-import Menu from "./components/Content/Admin/Menu";
-import Employee from "./components/Content/Admin/Employee/Employee";
-import ProductAdd from "./components/Content/Admin/Product/ProductAdd";
-import Product from "./components/Content/Admin/Product/Product";
-import EmployeeEdit from "./components/Content/Admin/Employee/EmployeeEdit";
-import Member from "./components/Content/Admin/Member/Member";
-import MemberEdit from "./components/Content/Admin/Member/MemberEdit";
-import PaySlip from "./components/Content/Admin/PaySlip/PaySlip";
-import PaySlipEdit from "./components/Content/Admin/PaySlip/PaySlipEdit";
-import Invoice from "./components/Content/Admin/OrderAndInvoices/Invoice";
-import StorageReport from "./components/Content/Admin/Report/StorageReport";
-import SaleReport from "./components/Content/Admin/Report/SaleReport";
-import DailyCheck from "./components/Content/Admin/Report/DailyCheck";
-import InvoiceEdit from "./components/Content/Admin/OrderAndInvoices/InvoiceEdit";
-import OrderScreen from "./components/Content/Admin/OrderAndInvoices/OrderScreen";
-import Supplier from "./components/Content/Admin/Supplier/Supplier1";
-import SupplierInfor from "./components/Content/Admin/SupplierInfor/SupplierInfor";
-import SupplierEdit from "./components/Content/Admin/Supplier/SupplierEdit";
-import ErrorPage from "./components/Content/Admin/ErrorPage/ErrorPage";
-import Login from "./components/Content/Admin/Auth/Login";
-import Home from "./components/Content/Admin/Home/Home";
+import React, { Component, Fragment } from 'react';
+import Header from './components/Content/Admin/Header';
+import Footer from './components/Content/Admin/Footer';
+import Menu from './components/Content/Admin/Menu';
+import Employee from './components/Content/Admin/Employee/Employee';
+import ProductAdd from './components/Content/Admin/Product/ProductAdd';
+import Product from './components/Content/Admin/Product/Product';
+import EmployeeEdit from './components/Content/Admin/Employee/EmployeeEdit';
+import Member from './components/Content/Admin/Member/Member';
+import MemberEdit from './components/Content/Admin/Member/MemberEdit';
+import PaySlip from './components/Content/Admin/PaySlip/PaySlip';
+import PaySlipEdit from './components/Content/Admin/PaySlip/PaySlipEdit';
+import Invoice from './components/Content/Admin/OrderAndInvoices/Invoice';
+import StorageReport from './components/Content/Admin/Report/StorageReport';
+import SaleReport from './components/Content/Admin/Report/SaleReport';
+import DailyCheck from './components/Content/Admin/Report/DailyCheck';
+import InvoiceEdit from './components/Content/Admin/OrderAndInvoices/InvoiceEdit';
+import OrderScreen from './components/Content/Admin/OrderAndInvoices/OrderScreen';
+import Supplier from './components/Content/Admin/Supplier/Supplier1';
+import SupplierInfor from './components/Content/Admin/SupplierInfor/SupplierInfor';
+import SupplierEdit from './components/Content/Admin/Supplier/SupplierEdit';
+import ErrorPage from './components/Content/Admin/ErrorPage/ErrorPage';
+import Login from './components/Content/Admin/Auth/Login';
+import Home from './components/Content/Admin/Home/Home';
 
-import { loadUser } from "./actions/authActions";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import Loader from "react-loader";
-import { Route, Switch, Redirect } from "react-router-dom";
-import Role from "./components/Content/Admin/Role/Role";
-import RoleEdit from "./components/Content/Admin/Role/RoleEdit";
-import Material from "./components/Content/Admin/Material/Material";
-import MaterialEdit from "./components/Content/Admin/Material/MaterialEdit";
-import User from "./components/Content/Admin/User/User";
-import UserEdit from "./components/Content/Admin/User/UserEdit";
-import { PrivateRoute } from "./components/Content/Admin/PrivateRoute";
-import NoPermissionPage from "./components/Content/Admin/ErrorPage/NoPermissionPage";
+import { loadUser } from './actions/authActions';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import Loader from 'react-loader';
+import { Route, Switch, Redirect } from 'react-router-dom';
+import Role from './components/Content/Admin/Role/Role';
+import RoleEdit from './components/Content/Admin/Role/RoleEdit';
+import Material from './components/Content/Admin/Material/Material';
+import MaterialEdit from './components/Content/Admin/Material/MaterialEdit';
+import User from './components/Content/Admin/User/User';
+import UserEdit from './components/Content/Admin/User/UserEdit';
+import { PrivateRoute } from './components/Content/Admin/PrivateRoute';
+import NoPermissionPage from './components/Content/Admin/ErrorPage/NoPermissionPage';
 
 //SHOPNOW
-import HomePage from "./components/Content/ShopNow/HomePage";
-import ProductList from "./components/Content/ShopNow/Product/ProductList";
-import ProductDetail from "./components/Content/ShopNow/Product/ProductDetail";
-import Cart from "./components/Content/ShopNow/Checkout/Cart";
-import CartDetail from "./components/Content/ShopNow/Checkout/CartDetail";
-import Payment from "./components/Content/ShopNow/Checkout/Payment";
-import OrderReceipt from "./components/Content/ShopNow/Checkout/OrderReceipt";
-import Account from "./components/Content/ShopNow/User/Account";
-import LaterList from "./components/Content/ShopNow/User/LaterList";
-import LaterListDetail from "./components/Content/ShopNow/User/LaterListDetail";
-import OrderHistory from "./components/Content/ShopNow/User/OrderHistory";
-import AddressBook from "./components/Content/ShopNow/User/AddressBook";
-import Review from "./components/Content/ShopNow/User/Review";
-import Watchlist from "./components/Content/ShopNow/User/Watchlist";
-import Wishlist from "./components/Content/ShopNow/User/Wishlist";
+import HomePage from './components/Content/ShopNow/HomePage';
+import ProductList from './components/Content/ShopNow/Product/ProductList';
+import ProductDetail from './components/Content/ShopNow/Product/ProductDetail';
+import Cart from './components/Content/ShopNow/Checkout/Cart';
+import CartDetail from './components/Content/ShopNow/Checkout/CartDetail';
+import Payment from './components/Content/ShopNow/Checkout/Payment';
+import OrderReceipt from './components/Content/ShopNow/Checkout/OrderReceipt';
+import Account from './components/Content/ShopNow/User/Account';
+import LaterList from './components/Content/ShopNow/User/LaterList';
+import LaterListDetail from './components/Content/ShopNow/User/LaterListDetail';
+import OrderHistory from './components/Content/ShopNow/User/OrderHistory';
+import AddressBook from './components/Content/ShopNow/User/AddressBook';
+import Review from './components/Content/ShopNow/User/Review';
+import Watchlist from './components/Content/ShopNow/User/Watchlist';
+import Wishlist from './components/Content/ShopNow/User/Wishlist';
+import ProductAddNextPage from './components/Content/Admin/Product/ProductAddNextPage';
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -64,20 +65,20 @@ const mapStateToProps = (state) => ({
   token: state.auth.token,
 });
 const roles = {
-  employee: "employeeManagement",
-  role: "roleManagement",
-  member: "memberManagement",
-  product: "productManagement",
-  user: "userManagement",
-  invoice: "invoiceManagement",
-  supplier: "supplierManagement",
-  payslip: "payslipManagement",
-  material: "materialManagement",
-  materialReceiptNote: "materialReceiptNoteManagement",
+  employee: 'employeeManagement',
+  role: 'roleManagement',
+  member: 'memberManagement',
+  product: 'productManagement',
+  user: 'userManagement',
+  invoice: 'invoiceManagement',
+  supplier: 'supplierManagement',
+  payslip: 'payslipManagement',
+  material: 'materialManagement',
+  materialReceiptNote: 'materialReceiptNoteManagement',
 };
 class CoffeShop extends Component {
   state = {
-    firstPathname: "/",
+    firstPathname: '/',
   };
   componentDidMount() {
     this.setState({
@@ -155,6 +156,13 @@ class CoffeShop extends Component {
                       exact
                       path="/add-product"
                       component={ProductAdd}
+                      role={roles.product}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/add-product/photos"
+                      component={ProductAddNextPage}
                       role={roles.product}
                       token={token}
                     ></PrivateRoute>

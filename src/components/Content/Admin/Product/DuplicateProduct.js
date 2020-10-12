@@ -1,7 +1,6 @@
 import React from 'react';
-import '../../../../assets/css/product.css';
 
-class Product extends React.Component {
+class DuplicateProduct extends React.Component {
   constructor(props) {
     super();
     this.state = {};
@@ -12,14 +11,13 @@ class Product extends React.Component {
   render() {
     let { name, description, filePath, price } = this.props;
     return (
-      <div className="product-card">
+      <div className="duplicate-card">
         <h1>Captain Mouse</h1>
-        <p>Saved: $4</p>
+        <p>SKU: 0988464DF65</p>
         <img className="product-pic" src="../img/blue.png" alt="product" />
-        <div className="product-info">
-          <div className="product-price">90$</div>
-          <div onClick={() => this.addToCart()} className="product-btn">
-            <i className="las la-cart-plus"></i>Cart
+        <div className="duplicate-info">
+          <div onClick={() => this.addToCart()} className="duplicate-btn">
+            Bán sản phẩm này
           </div>
         </div>
       </div>
@@ -27,4 +25,4 @@ class Product extends React.Component {
   }
 }
 
-export default Product;
+export default DuplicateProduct;

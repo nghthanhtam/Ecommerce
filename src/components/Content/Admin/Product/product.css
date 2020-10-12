@@ -1,0 +1,82 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Geneva, Tahoma,
+    sans-serif;
+}
+.skuproduct-card {
+  width: 240px;
+  height: 300px;
+  background: #f5f5f5;
+  padding: 15px;
+  position: relative;
+  text-transform: uppercase;
+  transition: 0.5s;
+  border-radius: 8px;
+}
+.duplicate-wrapper {
+  width: 100%;
+  height: 340px;
+  margin: -30px 0 0 -30px;
+}
+.duplicate-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.duplicate-card {
+  width: 230px;
+  /* background: #ecedef; */
+  height: 280px;
+  background: #f5f5f5;
+  padding: 20px;
+  position: relative;
+  transition: 0.5s;
+  border-radius: 8px;
+}
+
+.duplicate-card:hover {
+  width: 227px;
+  background: #dae3f3;
+  padding: 20px;
+  position: relative;
+  transition: 0.5s;
+  box-shadow: 0px 10px 12px rgba(0, 0, 0, 0.5);
+  transform: scale(0.95);
+  cursor: pointer;
+}
+
+.duplicate-card h1 {
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: #0d1136;
+  text-transform: uppercase;
+}
+.duplicate-card .p {
+  font-size: 4px;
+  color: #bbb;
+}
+.duplicate-btn {
+  color: #3571a7;
+  text-decoration: none;
+  border: 1px solid;
+  padding: 5px 15px;
+  border-radius: 18px;
+  transition: 0.4s linear;
+  cursor: pointer;
+  font-size: 15px;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+.duplicate-btn i {
+  font-size: 22px;
+}
+.duplicate-btn:hover {
+  /* transform: scale(1.1); */
+  background-color: #3571a7;
+  color: white;
+}

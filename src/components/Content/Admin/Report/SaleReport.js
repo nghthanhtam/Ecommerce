@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import Select from "react-select";
-import "react-date-range/dist/styles.css"; // main style file
-import "react-date-range/dist/theme/default.css"; // theme css file
-import { DateRangePicker } from "react-date-range";
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import Select from 'react-select';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import { DateRangePicker } from 'react-date-range';
 import {
   BarChart,
   Bar,
@@ -12,10 +12,10 @@ import {
   YAxis,
   Tooltip,
   Legend,
-} from "recharts";
+} from 'recharts';
 
-import { getAllInvoices } from "../../../../actions/invoiceActions";
-import ReportRow from "./ReportRow";
+import { getAllInvoices } from '../../../../actions/invoiceActions';
+import ReportRow from './ReportRow';
 
 class SaleReport extends Component {
   state = {
@@ -23,105 +23,105 @@ class SaleReport extends Component {
     // { name: 'Page B', pv: 6000, amt: 2400 },
     reportData: [
       {
-        label: "Doanh số mỗi tháng",
-        value: "SALE_SUMMARY",
+        label: 'Doanh số mỗi tháng',
+        value: 'SALE_SUMMARY',
       },
       {
-        label: "Ngày trong tuần",
-        value: "WEEKDAY",
+        label: 'Ngày trong tuần',
+        value: 'WEEKDAY',
       },
       {
-        label: "Thành phố",
-        value: "CITY",
+        label: 'Thành phố',
+        value: 'CITY',
       },
       {
-        label: "Giờ",
-        value: "HOUR",
+        label: 'Giờ',
+        value: 'HOUR',
       },
     ],
     sortData: [
       {
-        label: "Khách hàng",
-        value: "CUSTOMER",
+        label: 'Khách hàng',
+        value: 'CUSTOMER',
       },
       {
-        label: "Đơn hàng",
-        value: "ORDER",
+        label: 'Đơn hàng',
+        value: 'ORDER',
       },
       {
-        label: "Phí ship",
-        value: "SHIPPING",
+        label: 'Phí ship',
+        value: 'SHIPPING',
       },
       {
-        label: "Mã giảm giá",
-        value: "PROMOTINON",
+        label: 'Mã giảm giá',
+        value: 'PROMOTINON',
       },
       {
-        label: "Sản phẩm",
-        value: "PRODUCT",
+        label: 'Sản phẩm',
+        value: 'PRODUCT',
       },
     ],
     statusData: [
       {
-        label: "Đang xử lý",
-        value: "P",
+        label: 'Đang xử lý',
+        value: 'P',
       },
       {
-        label: "Giao thành công",
-        value: "S",
+        label: 'Giao thành công',
+        value: 'S',
       },
       {
-        label: "Đã hủy",
-        value: "C",
+        label: 'Đã hủy',
+        value: 'C',
       },
     ],
     monthData: [
       {
-        label: "11",
-        value: "11",
+        label: '11',
+        value: '11',
       },
       {
-        label: "12",
-        value: "12",
+        label: '12',
+        value: '12',
       },
     ],
     data: [],
     options: [],
-    idMaterial: "",
-    selectedYear: "",
-    selectedMonth: "",
-    selectedReport: "",
-    selectedSort: "",
-    selectedStatus: "",
+    idMaterial: '',
+    selectedYear: '',
+    selectedMonth: '',
+    selectedReport: '',
+    selectedSort: '',
+    selectedStatus: '',
     selectionRange: {
       startDate: new Date(),
       endDate: new Date(),
-      key: "selection",
+      key: 'selection',
     },
-    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
-    select: "5",
+    sort: [{ value: '5' }, { value: '10' }, { value: '20' }],
+    select: '5',
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: "",
+    query: '',
     defaultHeaderList: [
-      "Đơn hàng",
-      "Khách hàng",
-      "Sản phẩm",
-      "Phí ship",
-      "Giảm giá",
-      "Tổng tiền",
-      "Hoàn tiền",
+      'Đơn hàng',
+      'Khách hàng',
+      'Sản phẩm',
+      'Phí ship',
+      'Giảm giá',
+      'Tổng tiền',
+      'Hoàn tiền',
     ],
     headerList: [
-      "Loại báo cáo",
-      "Đơn hàng",
-      "Khách hàng",
-      "Sản phẩm",
-      "Phí ship",
-      "Giảm giá",
-      "Tổng tiền",
-      "Hoàn tiền",
+      'Loại báo cáo',
+      'Đơn hàng',
+      'Khách hàng',
+      'Sản phẩm',
+      'Phí ship',
+      'Giảm giá',
+      'Tổng tiền',
+      'Hoàn tiền',
     ],
     reports: [],
     totalList: {
@@ -137,19 +137,19 @@ class SaleReport extends Component {
   };
 
   componentDidMount() {
-    this.props.getAllInvoices("");
+    this.props.getAllInvoices('');
     //this.setState({ selectedYear: (new Date()).getFullYear() });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { selectedYear, selectedMonth } = this.state;
-    if (selectedYear === "") return;
+    if (selectedYear === '') return;
 
     //ng dung chon thang thi hien thi 4 tuan trong thang
     //ng dung ko chon thang ma chi chon nam thi hien thi 12 thang trong nam do
 
     if (prevState.selectedYear !== selectedYear) {
-      if (selectedMonth === "") {
+      if (selectedMonth === '') {
         this.setState((state) => {
           let data = [...state.data];
           for (let i = 0; i < 12; i++) {
@@ -160,40 +160,40 @@ class SaleReport extends Component {
               let month = new Date(el.createddate).getMonth() + 1;
               switch (month) {
                 case 1:
-                  data[0]["total"] += el.totalAmt;
+                  data[0]['total'] += el.totalAmt;
                   return true;
                 case 2:
-                  data[1]["total"] += el.totalAmt;
+                  data[1]['total'] += el.totalAmt;
                   return true;
                 case 3:
-                  data[2]["total"] += el.totalAmt;
+                  data[2]['total'] += el.totalAmt;
                   return true;
                 case 4:
-                  data[3]["total"] += el.totalAmt;
+                  data[3]['total'] += el.totalAmt;
                   return true;
                 case 5:
-                  data[4]["total"] += el.totalAmt;
+                  data[4]['total'] += el.totalAmt;
                   return true;
                 case 6:
-                  data[5]["total"] += el.totalAmt;
+                  data[5]['total'] += el.totalAmt;
                   return true;
                 case 7:
-                  data[6]["total"] += el.totalAmt;
+                  data[6]['total'] += el.totalAmt;
                   return true;
                 case 8:
-                  data[7]["total"] += el.totalAmt;
+                  data[7]['total'] += el.totalAmt;
                   return true;
                 case 9:
-                  data[8]["total"] += el.totalAmt;
+                  data[8]['total'] += el.totalAmt;
                   return true;
                 case 10:
-                  data[9]["total"] += el.totalAmt;
+                  data[9]['total'] += el.totalAmt;
                   return true;
                 case 11:
-                  data[10]["total"] += el.totalAmt;
+                  data[10]['total'] += el.totalAmt;
                   return true;
                 case 12:
-                  data[11]["total"] += el.totalAmt;
+                  data[11]['total'] += el.totalAmt;
                   return true;
                 default:
                   return false;
@@ -228,7 +228,7 @@ class SaleReport extends Component {
                 case 5:
                 case 6:
                 case 7:
-                  data[0]["total"] += el.totalAmt;
+                  data[0]['total'] += el.totalAmt;
                   return true;
                 case 8:
                 case 9:
@@ -237,7 +237,7 @@ class SaleReport extends Component {
                 case 12:
                 case 13:
                 case 14:
-                  data[1]["total"] += el.totalAmt;
+                  data[1]['total'] += el.totalAmt;
                   return true;
                 case 15:
                 case 16:
@@ -246,10 +246,10 @@ class SaleReport extends Component {
                 case 19:
                 case 20:
                 case 21:
-                  data[2]["total"] += el.totalAmt;
+                  data[2]['total'] += el.totalAmt;
                   return true;
                 default:
-                  data[3]["total"] += el.totalAmt;
+                  data[3]['total'] += el.totalAmt;
                   return true;
               }
             }
@@ -295,7 +295,7 @@ class SaleReport extends Component {
       selectionRange: {
         startDate: ranges.selection.startDate,
         endDate: ranges.selection.endDate,
-        key: "selection",
+        key: 'selection',
       },
     });
   };
@@ -315,10 +315,10 @@ class SaleReport extends Component {
   filter = () => {
     //gọi api lấy ds record gồm count tổng các thuộc tính có sẵn trên table report
     let { selectedReport, defaultheaderList } = this.state,
-      addingColName = "";
-    if (selectedReport === "SALE_SUMMARY") addingColName = "Tháng, năm";
-    else if (selectedReport === "WEEKDAY") addingColName = "Thứ";
-    else if (selectedReport === "CITY") addingColName = "Tỉnh/Thành phố";
+      addingColName = '';
+    if (selectedReport === 'SALE_SUMMARY') addingColName = 'Tháng, năm';
+    else if (selectedReport === 'WEEKDAY') addingColName = 'Thứ';
+    else if (selectedReport === 'CITY') addingColName = 'Tỉnh/Thành phố';
 
     //set lại các cột mặc định -> thêm các cột tùy theo loại report dc chọn
     this.setState({ headerList: defaultheaderList }, () => {
@@ -350,7 +350,6 @@ class SaleReport extends Component {
         {/* {!isLoaded ? (
                     <Loader></Loader>
                 ) : ( */}
-        {/* Content Header (Page header) */}
 
         <section className="content">
           <div className="row">
@@ -430,16 +429,16 @@ class SaleReport extends Component {
                   <div className="box-body">
                     <div
                       style={{
-                        display: "flex",
-                        flexDirection: "column",
+                        display: 'flex',
+                        flexDirection: 'column',
                       }}
                     >
                       <div>
                         <button
                           style={{
-                            width: "100px",
-                            float: "right",
-                            marginTop: "5px",
+                            width: '100px',
+                            float: 'right',
+                            marginTop: '5px',
                           }}
                           type="button"
                           className="btn btn-block btn-success"
@@ -449,8 +448,8 @@ class SaleReport extends Component {
                         <button
                           type="button"
                           style={{
-                            width: "100px",
-                            float: "right",
+                            width: '100px',
+                            float: 'right',
                           }}
                           className="btn btn-block btn-primary"
                         >
@@ -459,7 +458,7 @@ class SaleReport extends Component {
                         <button
                           onClick={this.filter}
                           type="button"
-                          style={{ width: "100px", float: "right" }}
+                          style={{ width: '100px', float: 'right' }}
                           className="btn btn-block btn-info"
                         >
                           Filter
@@ -468,9 +467,9 @@ class SaleReport extends Component {
                       <div className="row-flex">
                         <div
                           style={{
-                            background: "#f5f5f5",
-                            padding: "10px",
-                            margin: "10px",
+                            background: '#f5f5f5',
+                            padding: '10px',
+                            margin: '10px',
                           }}
                         >
                           <h4>Ngày tạo đơn hàng</h4>
@@ -485,9 +484,9 @@ class SaleReport extends Component {
                         <div
                           className="column-flex"
                           style={{
-                            background: "#f5f5f5",
-                            padding: "10px 20px 0 0",
-                            margin: "10px",
+                            background: '#f5f5f5',
+                            padding: '10px 20px 0 0',
+                            margin: '10px',
                             flex: 1,
                           }}
                         >
@@ -572,7 +571,7 @@ class SaleReport extends Component {
                           >
                             <label
                               style={{
-                                fontFamily: "Montserrat, sans-serif",
+                                fontFamily: 'Montserrat, sans-serif',
                               }}
                             >
                               Hiển thị
@@ -580,7 +579,7 @@ class SaleReport extends Component {
                                 onChange={this.handleOnChange}
                                 name="select"
                                 aria-controls="example1"
-                                style={{ margin: "0px 5px" }}
+                                style={{ margin: '0px 5px' }}
                                 className="form-control input-sm"
                                 value={this.state.select}
                               >
@@ -604,15 +603,15 @@ class SaleReport extends Component {
                           >
                             <label
                               style={{
-                                float: "right",
-                                fontFamily: "Saira, sans-serif",
+                                float: 'right',
+                                fontFamily: 'Saira, sans-serif',
                               }}
                             >
                               Tìm kiếm
                               <input
                                 type="search"
                                 name="query"
-                                style={{ margin: "0px 5px" }}
+                                style={{ margin: '0px 5px' }}
                                 className="form-control input-sm"
                                 placeholder="Nhập từ khóa...  "
                                 aria-controls="example1"
@@ -637,8 +636,8 @@ class SaleReport extends Component {
                                 <th
                                   key={index}
                                   style={{
-                                    width: "5%",
-                                    fontFamily: "Saira, sans-serif",
+                                    width: '5%',
+                                    fontFamily: 'Saira, sans-serif',
                                   }}
                                 >
                                   {item}
@@ -650,7 +649,7 @@ class SaleReport extends Component {
                           <tbody>
                             <tr>
                               <td
-                                style={{ fontWeight: "600", color: "#003A88" }}
+                                style={{ fontWeight: '600', color: '#003A88' }}
                               >
                                 Tổng cộng
                               </td>
@@ -658,8 +657,8 @@ class SaleReport extends Component {
                                 <td
                                   key={index}
                                   style={{
-                                    fontWeight: "600",
-                                    color: "#003A88",
+                                    fontWeight: '600',
+                                    color: '#003A88',
                                   }}
                                 >
                                   10626000
@@ -688,7 +687,7 @@ class SaleReport extends Component {
                           className="dataTables_paginate paging_simple_numbers"
                           id="example1_paginate"
                         >
-                          <ul className="pagination" style={{ float: "right" }}>
+                          <ul className="pagination" style={{ float: 'right' }}>
                             {/* {this.renderPageButtons()} */}
                           </ul>
                         </div>
@@ -717,12 +716,12 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, { getAllInvoices })(SaleReport);
 
 const menuStyle = {
-  display: "inline-block",
-  width: "94%",
-  margin: "0 0 20px 30px",
+  display: 'inline-block',
+  width: '94%',
+  margin: '0 0 20px 30px',
 };
 
 const container = {
-  flexDirection: "row",
-  display: "flex",
+  flexDirection: 'row',
+  display: 'flex',
 };

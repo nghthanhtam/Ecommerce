@@ -1560,6 +1560,11 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
   integrity sha512-ce5d3q03Ex0sy4R14722Rmt6MT07Ua+k4FwDfdcToYJcMKNtRVQvJ6JCAPdAmAnbRb6CsX6aYb9m96NGod9uTw==
 
+"@types/react-calendar@^3.0.0":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@types/react-calendar/-/react-calendar-3.1.2.tgz#a8afe394aadd639cfee7f0441bc3ced4fa0092f3"
+  integrity sha512-QZ8EMG2P3230GQNEMXtSJq8v8zJkJqs8xpbohMbBefYG7i1MX2YzOsDoBWF2dpq36mrkXpoNgmmeVnXIT0DYtw==
+
 "@types/react-text-mask@^5.4.3":
   version "5.4.6"
   resolved "https://registry.yarnpkg.com/@types/react-text-mask/-/react-text-mask-5.4.6.tgz#3a81e9de472beb939038e78cb16d737ae94ba14a"
@@ -1792,6 +1797,11 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@wojtekmaj/date-utils/-/date-utils-1.0.0.tgz#97aebf5ab317cf40d56492642f921480d4f89342"
   integrity sha512-tHzSlWCmb1GjxjiPRTju7i2bQigYriFDmCpaf1dC4SebFRjhBiuRpIxy5oI3b3ZMg9OzqGnApdZJrlYSwEUJAg==
+
+"@wojtekmaj/date-utils@^1.0.2", "@wojtekmaj/date-utils@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@wojtekmaj/date-utils/-/date-utils-1.0.3.tgz#2dcfd92881425c5923e429c2aec86fb3609032a1"
+  integrity sha512-1VPkkTBk07gMR1fjpBtse4G+oJqpmE+0gUFB0dg3VIL7qJmUVaBoD/vlzMm/jNeOPfvlmerl1lpnsZyBUFIRuw==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -9298,15 +9308,15 @@ react-app-polyfill@^1.0.3:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
-react-calendar@^2.19.1:
-  version "2.19.2"
-  resolved "https://registry.yarnpkg.com/react-calendar/-/react-calendar-2.19.2.tgz#496e78eb11a00aee1ae6b5d02d221ed1ca2db952"
-  integrity sha512-zKbWxwmYEg84grFsCJz9EYpnGqsZy0iV67dHzkVE0EhBdXMg2eISBQYvw4+t8zdy5ySxQkDhUW8X8ERbSyZPVw==
+react-calendar@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/react-calendar/-/react-calendar-3.1.0.tgz#7a384a70f98e02177d176c45f6918fb6a15ce41f"
+  integrity sha512-xoKdRe6FrnZ30LD9pyr20fhet1uwSbc6srLGm1ib7G4b7tAXniZrwzrJ4YV/Hbmmwf/zAFGyXtBzLAIV1KNvuA==
   dependencies:
+    "@wojtekmaj/date-utils" "^1.0.2"
     get-user-locale "^1.2.0"
     merge-class-names "^1.1.1"
     prop-types "^15.6.0"
-    react-lifecycles-compat "^3.0.4"
 
 react-chartjs-2@2.9.0:
   version "2.9.0"
@@ -9332,19 +9342,19 @@ react-component-managers@^3.1.0:
     prop-types "^15.6.1"
     spy-on-component "^1.1.0"
 
-react-date-picker@^7.9.0:
-  version "7.9.0"
-  resolved "https://registry.yarnpkg.com/react-date-picker/-/react-date-picker-7.9.0.tgz#728cf4a7d47c5fa9c669f648bc7e7bdc55a1c79e"
-  integrity sha512-uBbFtCLnpjySLmWNfJv3eGMYhODyScVku2y4/+9XM47LKsz24ZoEb2zX1GcpUb7547LWxfMPZpnLBVY2nfedDA==
+react-date-picker@^8.0.0:
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/react-date-picker/-/react-date-picker-8.0.3.tgz#6814e3b5f8ce0ffa9e12bbc932ab852389c56b11"
+  integrity sha512-X6uy0VSgW9uqYk2IaB8Y+a7IRD8JBY0Pl9kwxWepp838+ykcy/roXKZUEuW7VYQ+QUy3Vo5zUEKmeUxo56sw/A==
   dependencies:
-    "@wojtekmaj/date-utils" "^1.0.0"
+    "@types/react-calendar" "^3.0.0"
+    "@wojtekmaj/date-utils" "^1.0.3"
     get-user-locale "^1.2.0"
     make-event-props "^1.1.0"
     merge-class-names "^1.1.1"
     prop-types "^15.6.0"
-    react-calendar "^2.19.1"
+    react-calendar "^3.0.0"
     react-fit "^1.0.3"
-    react-lifecycles-compat "^3.0.4"
     update-input-width "^1.1.1"
 
 react-date-range@^1.0.3:
@@ -9368,22 +9378,21 @@ react-datepicker@^2.10.1:
     react-onclickoutside "^6.9.0"
     react-popper "^1.3.4"
 
-react-datetime-picker@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/react-datetime-picker/-/react-datetime-picker-2.8.0.tgz#dbe6604510aba75ccf8edc7a630bf9d21a4c25aa"
-  integrity sha512-DGiYNM41jt9NoFm8pYjkn9fXHKof/cCcvyfw7HkfugqbGOI8pleFBO+vP09bUuxJAHFcGwag1MF09wVzeI3Ebw==
+react-datetime-picker@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-datetime-picker/-/react-datetime-picker-3.0.4.tgz#10e899d4c1fd9663065213b1edc70aea46376175"
+  integrity sha512-GbGUQkl5VTugHENK5LHIh3Gece1NllppaxBq0GJLbPi/UwFXR4OjKOz9AL1bBaaa85mWUVA2Ft1k/MROqzM8JQ==
   dependencies:
-    "@wojtekmaj/date-utils" "^1.0.0"
+    "@wojtekmaj/date-utils" "^1.0.3"
     get-user-locale "^1.2.0"
     make-event-props "^1.1.0"
     merge-class-names "^1.1.1"
     prop-types "^15.6.0"
-    react-calendar "^2.19.1"
+    react-calendar "^3.0.0"
     react-clock "^2.3.0"
-    react-date-picker "^7.9.0"
+    react-date-picker "^8.0.0"
     react-fit "^1.0.3"
-    react-lifecycles-compat "^3.0.4"
-    react-time-picker "^3.8.0"
+    react-time-picker "^4.0.0"
 
 react-dev-utils@^9.0.4:
   version "9.1.0"
@@ -9748,10 +9757,10 @@ react-text-mask@^5.4.3:
   dependencies:
     prop-types "^15.5.6"
 
-react-time-picker@^3.8.0:
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/react-time-picker/-/react-time-picker-3.8.0.tgz#77c6ee6b76711b707ccc99996662d22dfc49869d"
-  integrity sha512-NL0+kCZWL1vmh+1Hybn8LcAOpa5S+QavQu2+rQpVM8llksqfQQXlc/E8AICZcNeoBoG9ZikAvoTUIeIUhbgMgQ==
+react-time-picker@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/react-time-picker/-/react-time-picker-4.0.1.tgz#ec3ee385377c8c6c8271a2dd1178452f6b11ad84"
+  integrity sha512-qnZDlXXF6AItplelYXMUsHar05VevaYY+SuKIacTZ5YJwyj74ZpScHkolNvcJgo6YYzdX1QC6iNprzcuPHYt7Q==
   dependencies:
     "@wojtekmaj/date-utils" "^1.0.0"
     get-user-locale "^1.2.0"
@@ -9760,7 +9769,6 @@ react-time-picker@^3.8.0:
     prop-types "^15.6.0"
     react-clock "^2.3.0"
     react-fit "^1.0.3"
-    react-lifecycles-compat "^3.0.4"
     update-input-width "^1.1.1"
 
 react-toastify@5.5.0:

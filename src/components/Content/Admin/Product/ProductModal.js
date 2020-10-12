@@ -1,18 +1,23 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { connect } from "react-redux";
-import { addSupplier } from "../../../../actions/supplierActions";
+import { connect } from 'react-redux';
+import { addSupplier } from '../../../../actions/supplierActions';
 // import { addMaterialReceiptNote } from "../../actions/materialReceiptNoteActions"
 
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 class ProductModal extends Component {
   state = {
-    name: "",
-    phone: "",
-    address: "",
-    msg: "",
-    propValuesList: [1, 2, 3, 4],
+    name: '',
+    phone: '',
+    address: '',
+    msg: '',
+    propValuesList: [
+      { label: 'Hồng' },
+      { label: 'Xanh' },
+      { label: 'Trắng' },
+      { label: 'Đen' },
+    ],
   };
 
   // validate
@@ -36,49 +41,53 @@ class ProductModal extends Component {
 
   handleChange = (e) => {
     const { name, value } = e.target;
-    let msg = "";
+    let msg = '';
 
     //validation
     let isPassed;
-    if (name === "name") isPassed = this.validateName(value);
-    if (name === "phone") isPassed = this.validatePhone(value);
-    if (name === "address") isPassed = this.validateAddress(value);
+    if (name === 'name') isPassed = this.validateName(value);
+    if (name === 'phone') isPassed = this.validatePhone(value);
+    if (name === 'address') isPassed = this.validateAddress(value);
 
-    if (name === "name" && !isPassed) msg = "Name can contain only letters !";
-    if (name === "phone" && !isPassed)
-      msg = "Phone can contain only numbers with correct format !";
-    if (name === "address" && !isPassed)
-      msg = "Username can contain only letters and numbers !";
+    if (name === 'name' && !isPassed) msg = 'Name can contain only letters !';
+    if (name === 'phone' && !isPassed)
+      msg = 'Phone can contain only numbers with correct format !';
+    if (name === 'address' && !isPassed)
+      msg = 'Username can contain only letters and numbers !';
 
-    if (value === "") msg = "";
+    if (value === '') msg = '';
     this.setState({ [name]: value, msg });
-
     //this.setState({ [e.target.name]: e.target.value });
   };
 
   onSubmit = (e) => {
     e.preventDefault();
-    let pvalues = document.getElementsByName("pvalue"),
-      obj = { name: "", list: [] };
-    console.log(pvalues.length);
+    let pvalues = document.getElementsByName('pvalue'),
+      obj = { name: '', list: [] };
 
     for (let i = 0; i < pvalues.length; i++) {
-      if (pvalues[i].value !== "") obj.list.push({ label: pvalues[i].value });
+      if (pvalues[i].value !== '') obj.list.push({ label: pvalues[i].value });
     }
-    obj.name = "Màu";
+    obj.name = 'Màu';
     this.props.onsaveProp(obj);
 
     // Close modal
-    document.getElementById("triggerButton").click();
+    document.getElementById('triggerButton').click();
   };
 
   onCancel = (e) => {
-    this.setState({ name: "", phone: "", address: "" });
+    this.setState({ name: '', phone: '', address: '' });
   };
 
   addPropValue = () => {
     this.setState((prepState) => ({
-      propValuesList: [...prepState.propValuesList, 1, 1, 1, 1],
+      propValuesList: [
+        ...prepState.propValuesList,
+        { label: '' },
+        { label: '' },
+        { label: '' },
+        { label: '' },
+      ],
     }));
   };
 
@@ -90,7 +99,7 @@ class ProductModal extends Component {
         <button
           type="button"
           id="triggerButton"
-          style={{ margin: "5px" }}
+          style={{ margin: '5px' }}
           className="btn btn-primary"
           data-toggle="modal"
           data-target="#exampleModalCenter"
@@ -120,9 +129,9 @@ class ProductModal extends Component {
                     type="button"
                     className="close"
                     style={{
-                      fontSize: "14px",
-                      color: "#204d74",
-                      opacity: "0.6",
+                      fontSize: '14px',
+                      color: '#204d74',
+                      opacity: '0.6',
                     }}
                     onClick={this.addPropValue}
                   >
@@ -132,13 +141,13 @@ class ProductModal extends Component {
               </div>
               <div className="modal-body">
                 <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
                   <div
                     style={{
-                      backgroundColor: "#f5f5f5",
-                      padding: "8px",
-                      margin: "0 10px 10px 0",
+                      backgroundColor: '#f5f5f5',
+                      padding: '8px',
+                      margin: '0 10px 10px 0',
                     }}
                   >
                     Tên thuộc tính lựa chọn
@@ -146,22 +155,22 @@ class ProductModal extends Component {
                   <div
                     style={{
                       flex: 1,
-                      backgroundColor: "#f5f5f5",
-                      padding: "8px",
+                      backgroundColor: '#f5f5f5',
+                      padding: '8px',
 
-                      marginBottom: "10px",
+                      marginBottom: '10px',
                     }}
                   >
                     Các giá trị lựa chọn
                   </div>
                 </div>
                 <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
                   <div
                     style={{
-                      marginRight: "11px",
-                      width: "160px",
+                      marginRight: '11px',
+                      width: '178px',
                     }}
                   >
                     <input
@@ -174,11 +183,11 @@ class ProductModal extends Component {
                   <div
                     style={{
                       flex: 1,
-                      display: "inline-grid",
-                      flexDirection: "row",
-                      gridTemplateColumns: "1fr 1fr 1fr 1fr",
-                      gridColumnGap: "12px",
-                      gridRowGap: "12px",
+                      display: 'inline-grid',
+                      flexDirection: 'row',
+                      gridTemplateColumns: '1fr 1fr 1fr 1fr',
+                      gridColumnGap: '12px',
+                      gridRowGap: '12px',
                     }}
                   >
                     {propValuesList.map((item, index) => {
@@ -188,7 +197,7 @@ class ProductModal extends Component {
                           onKeyDown={this.propValueChange}
                           type="text"
                           className="form-control"
-                          placeholder="VD: Hồng"
+                          placeholder={item.label}
                           name="pvalue"
                         />
                       );
@@ -203,14 +212,14 @@ class ProductModal extends Component {
                   data-dismiss="modal"
                   onClick={this.onCancel}
                 >
-                  Close
+                  Hủy
                 </button>
                 <button
                   type="button"
                   onClick={this.onSubmit}
                   className="btn btn-primary"
                 >
-                  Add supplier
+                  Lưu
                 </button>
               </div>
             </div>
