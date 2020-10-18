@@ -10,6 +10,7 @@
     "formik": "^2.1.7",
     "global": "^4.4.0",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.0.0",
     "mdbreact": "^4.27.0",
     "moment": "^2.24.0",
     "mongoose": "^5.7.14",

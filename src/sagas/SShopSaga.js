@@ -2,19 +2,19 @@ import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { tokenConfig } from '../actions/authActions';
 import {
-  GET_EMPLOYEES,
-  ADD_EMPLOYEE,
-  EMPLOYEES_RECEIVED,
-  EMPLOYEES_ADDED,
-  DELETE_EMPLOYEE,
-  EMPLOYEE_DELETED,
-  UPDATE_EMPLOYEE,
-  EMPLOYEE_UPDATED,
+  GET_SHOPS,
+  ADD_SHOP,
+  SHOPS_RECEIVED,
+  SHOP_ADDED,
+  DELETE_SHOP,
+  SHOP_DELETED,
+  UPDATE_SHOP,
+  SHOP_UPDATED,
 } from '../actions/types';
 
 import mongoose from 'mongoose';
 
-function* fetchEmployees(params) {
+function* fetchShops(params) {
   try {
     console.log(params);
     if (params.pages.query === '') params.pages.query = 'undefined';
@@ -34,24 +34,24 @@ function* fetchEmployees(params) {
         .catch((er) => console.log(er.response))
     );
 
-    // const response = yield call(getEmployeesAPI, {
+    // const response = yield call(getShopsAPI, {
     //   params: params.pages,
     //   state: state,
     // });
-    yield put({ type: EMPLOYEES_RECEIVED, payload: response });
+    yield put({ type: SHOPS_RECEIVED, payload: response });
   } catch (error) {
     console.log(error);
   }
 }
 
-function* addEmployee(params) {
+function* addShop(params) {
   const state = yield select();
-
+  console.log('aaaaaaaaaaa');
   try {
     const response = yield call(() =>
       axios.post(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/`,
-        params.newCategory,
+        `${process.env.REACT_APP_BACKEND_HOST}/api/shop/`,
+        params.newShop,
         tokenConfig(state)
       )
     );
@@ -59,13 +59,13 @@ function* addEmployee(params) {
       response.data._id = response.data._id.toString();
     }
 
-    yield put({ type: EMPLOYEES_ADDED, payload: response.data });
+    yield put({ type: SHOP_ADDED, payload: response.data });
   } catch (error) {
     console.log(error.response);
   }
 }
 
-function* updateEmployee(params) {
+function* updateShop(params) {
   const state = yield select();
   try {
     const response = yield call(() =>
@@ -76,12 +76,12 @@ function* updateEmployee(params) {
       )
     );
 
-    yield put({ type: EMPLOYEE_UPDATED, payload: response.data });
+    yield put({ type: SHOP_UPDATED, payload: response.data });
   } catch (error) {
     console.log(error.response);
   }
 }
-function* deleteEmployees(params) {
+function* deleteShops(params) {
   const state = yield select();
   try {
     const response = yield call(() =>
@@ -91,15 +91,15 @@ function* deleteEmployees(params) {
       )
     );
 
-    yield put({ type: EMPLOYEE_DELETED, payload: response.data });
+    yield put({ type: SHOP_DELETED, payload: response.data });
   } catch (error) {
     console.log(error.response);
   }
 }
 
-export default function* sEmployeeSaga() {
-  yield takeEvery(GET_EMPLOYEES, fetchEmployees);
-  yield takeEvery(ADD_EMPLOYEE, addEmployee);
-  yield takeEvery(UPDATE_EMPLOYEE, updateEmployee);
-  yield takeEvery(DELETE_EMPLOYEE, deleteEmployees);
+export default function* sShopSaga() {
+  yield takeEvery(GET_SHOPS, fetchShops);
+  yield takeEvery(ADD_SHOP, addShop);
+  yield takeEvery(UPDATE_SHOP, updateShop);
+  yield takeEvery(DELETE_SHOP, deleteShops);
 }

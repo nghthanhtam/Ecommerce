@@ -1,54 +1,54 @@
-import React from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import "../../../../assets/css/product.css";
+import React from 'react';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import '../../../../assets/css/product.css';
 
-import Product from "./Product";
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
+import Product from './Product';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 
 class ProductList extends React.Component {
   constructor(props) {
     super();
     this.state = {
       productList: [1, 2, 3, 4, 5, 6, 7, 8],
-      header: "header",
-      picLink: "./img/blue.png",
-      section: "section-blue",
+      header: 'header',
+      picLink: './img/blue.png',
+      section: 'section-blue',
       left: 0,
     };
     this.handleScroll = this.handleScroll.bind(this);
     this.changePic = this.changePic.bind(this);
   }
   componentDidMount() {
-    window.addEventListener("scroll", this.handleScroll);
+    window.addEventListener('scroll', this.handleScroll);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener('scroll', this.handleScroll);
   }
   handleScroll = () => {
     if (window.scrollY > 10) {
-      this.setState({ header: "header1" });
+      this.setState({ header: 'header1' });
     } else {
-      this.setState({ header: "header" });
+      this.setState({ header: 'header' });
     }
     this.setState({
-      left: (-window.scrollY * 0.5).toString() + "px",
+      left: (-window.scrollY * 0.5).toString() + 'px',
     });
   };
 
   changePic = (e) => {
-    if (e.target.alt === "blue") {
-      this.setState({ picLink: "./img/blue.png" });
-      this.setState({ section: "section-blue" });
-    } else if (e.target.alt === "red") {
-      this.setState({ picLink: "./img/red.png" });
-      this.setState({ section: "section-red" });
+    if (e.target.alt === 'blue') {
+      this.setState({ picLink: './img/blue.png' });
+      this.setState({ section: 'section-blue' });
+    } else if (e.target.alt === 'red') {
+      this.setState({ picLink: './img/red.png' });
+      this.setState({ section: 'section-red' });
     } else {
-      this.setState({ picLink: "./img/black.png" });
-      this.setState({ section: "section-black" });
+      this.setState({ picLink: './img/black.png' });
+      this.setState({ section: 'section-black' });
     }
   };
 
@@ -59,7 +59,7 @@ class ProductList extends React.Component {
       speed: 800,
       slidesToShow: 5,
       slidesToScroll: 4,
-      className: "slider",
+      className: 'slider',
     };
     return (
       <div>
@@ -68,18 +68,18 @@ class ProductList extends React.Component {
         <div
           style={{
             zIndex: 10,
-            marginBottom: "300px",
-            position: "relative",
-            backgroundColor: "#f7f7f7",
+            marginBottom: '300px',
+            position: 'relative',
+            backgroundColor: '#f7f7f7',
           }}
         >
           <div className="nohome-section"></div>
 
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              padding: "20px",
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '20px',
             }}
           >
             <div className="filter-list">
@@ -96,11 +96,11 @@ class ProductList extends React.Component {
                 <input type="checkbox" className="example" />
                 <label>Make my profile visible</label>
               </div>
-              <div style={{ marginBottom: "5px" }} className="ui checkbox">
+              <div style={{ marginBottom: '5px' }} className="ui checkbox">
                 <input type="checkbox" className="example" />
                 <label>Make my profile visible</label>
               </div>
-              <div style={{ marginBottom: "5px" }} className="ui checkbox">
+              <div style={{ marginBottom: '5px' }} className="ui checkbox">
                 <input type="checkbox" className="example" />
                 <label>Make my profile visible</label>
               </div>
@@ -131,19 +131,19 @@ class ProductList extends React.Component {
                 />
                 <div
                   style={{
-                    width: "5px",
-                    borderTop: "2px solid #c8c8c8",
-                    margin: "5px",
+                    width: '5px',
+                    borderTop: '2px solid #c8c8c8',
+                    margin: '5px',
                   }}
                 ></div>
                 <input
                   style={{
-                    borderRadius: "5px",
-                    border: "1px solid #ccc",
-                    padding: "12px",
-                    width: "90px",
-                    height: "10px",
-                    boxSizing: "border-box",
+                    borderRadius: '5px',
+                    border: '1px solid #ccc',
+                    padding: '12px',
+                    width: '90px',
+                    height: '10px',
+                    boxSizing: 'border-box',
                   }}
                   type="text"
                   id="fname"
@@ -155,15 +155,15 @@ class ProductList extends React.Component {
               <div
                 className="btn-go"
                 style={{
-                  width: "60px",
-                  height: "30px",
-                  border: "1px solid #ccc",
-                  textDecoration: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  width: '60px',
+                  height: '30px',
+                  border: '1px solid #ccc',
+                  textDecoration: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 Go
@@ -195,7 +195,7 @@ class ProductList extends React.Component {
               <div className="filter-pane">
                 <div>Showing 1-12 of 40 results</div>
                 <div className="row-flex-center">
-                  <div style={{ marginRight: "10px" }}>Sort By</div>
+                  <div style={{ marginRight: '10px' }}>Sort By</div>
                   <div>
                     <select className="ui dropdown">
                       <option value="">Price</option>
@@ -216,14 +216,14 @@ class ProductList extends React.Component {
               </div>
             </div>
           </div>
-          <div style={{ marginTop: "50px" }}>
-            <h3 style={{ margin: "0 0 -20px 155px", color: "#0d1136" }}>
+          <div style={{ marginTop: '50px' }}>
+            <h3 style={{ margin: '0 0 -20px 155px', color: '#0d1136' }}>
               PRODUCTS RELATED TO THIS MOVIE
             </h3>
             <div className="sliderwrapper">
               <Slider
                 style={{
-                  width: "85%",
+                  width: '85%',
                 }}
                 {...settings}
               >
@@ -232,14 +232,14 @@ class ProductList extends React.Component {
                 })}
               </Slider>
             </div>
-            <div style={{ marginTop: "15px" }}>
-              <h3 style={{ margin: "0 0 -20px 155px", color: "#0d1136" }}>
+            <div style={{ marginTop: '15px' }}>
+              <h3 style={{ margin: '0 0 -20px 155px', color: '#0d1136' }}>
                 SIMILAR PRODUCTS INSPIRED BY THIS ITEM
               </h3>
               <div className="sliderwrapper">
                 <Slider
                   style={{
-                    width: "85%",
+                    width: '85%',
                   }}
                   {...settings}
                 >

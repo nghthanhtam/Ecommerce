@@ -1,4 +1,4 @@
-import { USER_LOADING, USER_LOGIN, USER_LOGOUT } from "./types";
+import { USER_LOADING, USER_LOGIN, USER_LOGOUT, UPDATE_AUTH } from './types';
 //Check token and load user
 // export const loadUser = () => (dispatch, getState) => {
 //   //User loading
@@ -65,6 +65,11 @@ export const login = (user) => ({
   type: USER_LOGIN,
   user: user,
 });
+
+export const updateAuth = (token) => ({
+  type: UPDATE_AUTH,
+  token: token,
+});
 // export const login = (user)  => {
 //   // Headers
 //   const config = {
@@ -100,13 +105,14 @@ export const tokenConfig = (getState) => {
 
   const config = {
     headers: {
-      "Content-type": "application/json",
+      'Content-type': 'application/json',
     },
   };
 
   //Header
   if (token) {
-    config.headers["x-auth-token"] = token;
+    //config.headers["x-auth-token"] = token;
+    config.headers['Authorization'] = `Bearer ${token}`;
   }
 
   return config;

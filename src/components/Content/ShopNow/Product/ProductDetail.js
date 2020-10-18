@@ -1,15 +1,15 @@
-import React from "react";
-import Button from "@material-ui/core/Button";
-import "font-awesome/css/font-awesome.min.css";
-import "../../../../assets/css/product.css";
-import { Link } from "react-router-dom";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import React from 'react';
+import Button from '@material-ui/core/Button';
+import 'font-awesome/css/font-awesome.min.css';
+import '../../../../assets/css/product.css';
+import { Link } from 'react-router-dom';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
-import Product from "./Product";
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
+import Product from './Product';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -31,7 +31,7 @@ class ProductDetail extends React.Component {
       speed: 800,
       slidesToShow: 5,
       slidesToScroll: 4,
-      className: "slider",
+      className: 'slider',
     };
     return (
       <div>
@@ -39,9 +39,9 @@ class ProductDetail extends React.Component {
         <div
           style={{
             zIndex: 10,
-            marginBottom: "300px",
-            position: "relative",
-            backgroundColor: "#f7f7f7",
+            marginBottom: '300px',
+            position: 'relative',
+            backgroundColor: '#f7f7f7',
           }}
         >
           <div className="nohome-section"></div>
@@ -117,42 +117,42 @@ class ProductDetail extends React.Component {
                 <div className="button">
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}
                   >
                     <div
                       style={{
-                        backgroundColor: "white",
-                        height: "37px",
-                        width: "37px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        border: "1px solid #ccc",
+                        backgroundColor: 'white',
+                        height: '37px',
+                        width: '37px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        border: '1px solid #ccc',
                       }}
                     >
                       <i className="fa fa-plus"></i>
                     </div>
                     <input
                       style={{
-                        width: "50px",
-                        height: "36px",
-                        textAlign: "center",
-                        border: "1px solid #ccc",
+                        width: '50px',
+                        height: '36px',
+                        textAlign: 'center',
+                        border: '1px solid #ccc',
                       }}
                     />
 
                     <div
                       style={{
-                        backgroundColor: "white",
-                        height: "37px",
-                        width: "37px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        border: "1px solid #ccc",
+                        backgroundColor: 'white',
+                        height: '37px',
+                        width: '37px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        border: '1px solid #ccc',
                       }}
                     >
                       <i className="fa fa-minus"></i>
@@ -163,7 +163,7 @@ class ProductDetail extends React.Component {
                   </div>
                 </div>
 
-                <div style={{ display: "flex" }}>
+                <div style={{ display: 'flex' }}>
                   <div className="label">SHOP:</div>
                   <div> Toy Store</div>
                   <div className="link">
@@ -172,7 +172,7 @@ class ProductDetail extends React.Component {
 
                   <div className="link">Change</div>
                 </div>
-                <div style={{ display: "flex" }}>
+                <div style={{ display: 'flex' }}>
                   <div className="label">DELIVERY ADDRESS:</div>
                   <div> 545 Le Duc Tho, p115, Go Vap, TPHCM</div>
                   <div className="link">Change</div>
@@ -199,7 +199,7 @@ class ProductDetail extends React.Component {
               <div className="sliderwrapper">
                 <Slider
                   style={{
-                    width: "85%",
+                    width: '85%',
                   }}
                   {...settings}
                 >
@@ -216,7 +216,7 @@ class ProductDetail extends React.Component {
               <div className="sliderwrapper">
                 <Slider
                   style={{
-                    width: "85%",
+                    width: '85%',
                   }}
                   {...settings}
                 >
@@ -260,11 +260,11 @@ class ProductDetail extends React.Component {
                   <div className="row-flex">
                     <Button
                       style={{
-                        background: "#3571a7",
-                        color: "white",
-                        width: "115px",
-                        height: "38px",
-                        margin: "5px 5px 5px 0",
+                        background: '#3571a7',
+                        color: 'white',
+                        width: '115px',
+                        height: '38px',
+                        margin: '5px 5px 5px 0',
                       }}
                     >
                       Gửi
@@ -296,23 +296,23 @@ class ProductDetail extends React.Component {
                       <div className="row-flex">
                         <Button
                           style={{
-                            background: "#3571a7",
-                            color: "white",
-                            width: "115px",
-                            height: "38px",
-                            margin: "5px 5px 5px 0",
+                            background: '#3571a7',
+                            color: 'white',
+                            width: '115px',
+                            height: '38px',
+                            margin: '5px 5px 5px 0',
                           }}
                         >
                           Gửi
                         </Button>
                         <Button
                           style={{
-                            background: "#fff",
-                            color: "#000",
-                            width: "115px",
-                            height: "38px",
-                            margin: "5px 5px 5px 0",
-                            border: "1px solid #ccc",
+                            background: '#fff',
+                            color: '#000',
+                            width: '115px',
+                            height: '38px',
+                            margin: '5px 5px 5px 0',
+                            border: '1px solid #ccc',
                           }}
                           onClick={() => this.replyClick()}
                         >

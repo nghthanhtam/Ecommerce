@@ -1,12 +1,17 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { logout } from "../../../actions/authActions";
-import { pushHistory } from "../../../actions/historyActions";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { logout } from '../../../actions/authActions';
+import { pushHistory } from '../../../actions/historyActions';
+import PropTypes from 'prop-types';
 
-import PropTypes from "prop-types";
+const mapStateToProps = (state) => ({
+  history: state.history,
+  user: state.auth.user,
+});
+
 class Header extends Component {
   componentDidMount() {
-    document.body.className = "hold-transition skin-blue fixed sidebar-mini";
+    document.body.className = 'hold-transition skin-blue fixed sidebar-mini';
   }
 
   static propTypes = {
@@ -17,7 +22,7 @@ class Header extends Component {
   handleLogout = (e) => {
     e.preventDefault();
     this.props.logout();
-    this.props.pushHistory("/");
+    this.props.pushHistory('/');
   };
   render() {
     const { username } = this.props.user;
@@ -124,8 +129,4 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  history: state.history,
-  user: state.auth.user,
-});
 export default connect(mapStateToProps, { logout, pushHistory })(Header);

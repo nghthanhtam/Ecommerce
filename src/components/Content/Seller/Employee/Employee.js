@@ -1,11 +1,11 @@
-import React, { Component, Fragment } from "react";
-import EmployeeModal from "./EmployeeModal";
-import EmployeeRow from "./EmployeeRow";
-import { connect } from "react-redux";
-import { getEmployees } from "../../../../actions/employeeActions";
-import PropTypes from "prop-types";
-import axios from "axios";
-import Loader from "react-loader";
+import React, { Component, Fragment } from 'react';
+import EmployeeModal from './EmployeeModal';
+import EmployeeRow from './EmployeeRow';
+import { connect } from 'react-redux';
+import { getEmployees } from '../../../../actions/employeeActions';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import Loader from 'react-loader';
 
 const mapStateToProps = (state) => ({
   employees: state.employee.employees,
@@ -14,29 +14,31 @@ const mapStateToProps = (state) => ({
 
 class Employee extends Component {
   state = {
-    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
-    select: "5",
-    currentPage: 1,
+    sort: [{ value: '5' }, { value: '10' }, { value: '20' }],
+    // select: "5",
+    // page: 1,
+    limit: '5',
+    page: 1,
     pages: [],
     totalDocuments: 0,
-    query: "",
+    query: '',
   };
 
   resetState = () => {
-    this.setState({ select: "5", currentPage: 1, query: "" });
+    this.setState({ limit: '5', page: 1, query: '' });
   };
   componentDidMount() {
-    const { select, currentPage, query } = this.state;
+    const { limit, page, query } = this.state;
     this.getTotalDocuments();
     this.getPages();
-    this.props.getEmployees({ select, currentPage, query });
+    this.props.getEmployees({ limit, page, query });
   }
 
   getTotalDocuments = () => {
     const { query } = this.state;
 
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -52,9 +54,9 @@ class Employee extends Component {
   };
 
   getPages = () => {
-    const { select, query } = this.state;
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    const { limit, query } = this.state;
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -62,8 +64,8 @@ class Employee extends Component {
         `${process.env.REACT_APP_BACKEND_HOST}/api/category/count/${newQuery}`
       )
       .then((response) => {
-        let pages = Math.floor(response.data / select);
-        let remainder = response.data % select;
+        let pages = Math.floor(response.data / limit);
+        let remainder = response.data % limit;
         let newArray = [];
         if (remainder !== 0) pages += 1;
 
@@ -79,11 +81,11 @@ class Employee extends Component {
   };
 
   handleOnChange = (e) => {
-    console.log(typeof e.target.name + " " + e.target.name);
+    console.log(typeof e.target.name + ' ' + e.target.name);
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === "query") {
-        this.setState({ currentPage: 1 }, () => {
+      if (e.target.name === 'query') {
+        this.setState({ page: 1 }, () => {
           this.rerenderPage();
         });
       } else {
@@ -93,8 +95,8 @@ class Employee extends Component {
   };
 
   rerenderPage = () => {
-    const { select, currentPage, query } = this.state;
-    this.props.getEmployees({ select, currentPage, query });
+    const { limit, page, query } = this.state;
+    this.props.getEmployees({ limit, page, query });
     this.getPages();
     this.getTotalDocuments();
   };
@@ -111,22 +113,22 @@ class Employee extends Component {
     ));
   };
   handleChoosePage = (e) => {
-    this.setState({ currentPage: e }, () => {
-      const { select, currentPage, query } = this.state;
-      this.props.getEmployees({ select, currentPage, query });
+    this.setState({ page: e }, () => {
+      const { limit, page, query } = this.state;
+      this.props.getEmployees({ limit, page, query });
     });
   };
 
   renderSelect = () => {
-    const { sort, select } = this.state;
+    const { sort, limit } = this.state;
     return (
       <select
         onChange={this.handleOnChange}
         name="select"
         aria-controls="example1"
-        style={{ margin: "0px 5px" }}
+        style={{ margin: '0px 5px' }}
         className="form-control input-sm"
-        value={select}
+        value={limit}
       >
         {sort.map((option) => (
           <option key={option.value} value={option.value}>
@@ -138,15 +140,15 @@ class Employee extends Component {
   };
 
   renderPageButtons = () => {
-    const { pages, currentPage } = this.state;
+    const { pages, page } = this.state;
 
     return pages.map((eachButton) => (
       <li
         key={eachButton.pageNumber}
         className={
-          currentPage === eachButton.pageNumber
-            ? "paginae_button active"
-            : "paginate_button "
+          page === eachButton.pageNumber
+            ? 'paginae_button active'
+            : 'paginate_button '
         }
       >
         <a
@@ -162,7 +164,7 @@ class Employee extends Component {
   };
 
   render() {
-    const { select, totalDocuments } = this.state;
+    const { limit, totalDocuments } = this.state;
     const { isLoaded } = this.props;
     return (
       <Fragment>
@@ -193,8 +195,8 @@ class Employee extends Component {
                 {/* left column */}
                 <div className="col-md-12">
                   <div className="box">
-                    <div className="box-header" style={{ marginTop: "5px" }}>
-                      <div style={{ paddingLeft: "5px" }} className="col-md-8">
+                    <div className="box-header" style={{ marginTop: '5px' }}>
+                      <div style={{ paddingLeft: '5px' }} className="col-md-8">
                         <h3 className="box-title">Quản lý nhân viên</h3>
                       </div>
 
@@ -227,12 +229,12 @@ class Employee extends Component {
                                 id="example1_filter"
                                 className="dataTables_filter"
                               >
-                                <label style={{ float: "right" }}>
+                                <label style={{ float: 'right' }}>
                                   Tìm kiếm:
                                   <input
                                     type="search"
                                     name="query"
-                                    style={{ margin: "0px 5px" }}
+                                    style={{ margin: '0px 5px' }}
                                     className="form-control input-sm"
                                     placeholder="Nhập từ khóa... "
                                     aria-controls="example1"
@@ -253,13 +255,13 @@ class Employee extends Component {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: "10%" }}>#</th>
-                                  <th style={{ width: "20%" }}>
+                                  <th style={{ width: '10%' }}>#</th>
+                                  <th style={{ width: '20%' }}>
                                     Tên tài khoản
                                   </th>
-                                  <th style={{ width: "20%" }}>Vai trò</th>
-                                  <th style={{ width: "20%" }}>Trạng thái</th>
-                                  <th style={{ width: "30%" }}>Hành động</th>
+                                  <th style={{ width: '20%' }}>Vai trò</th>
+                                  <th style={{ width: '20%' }}>Trạng thái</th>
+                                  <th style={{ width: '30%' }}>Hành động</th>
                                 </tr>
                               </thead>
                               <tbody>{this.renderEmployees()}</tbody>
@@ -283,7 +285,7 @@ class Employee extends Component {
                               role="status"
                               aria-live="polite"
                             >
-                              Hiển thị 1 đến {select} trong {totalDocuments} kết
+                              Hiển thị 1 đến {limit} trong {totalDocuments} kết
                               quả
                             </div>
                           </div>
@@ -294,7 +296,7 @@ class Employee extends Component {
                             >
                               <ul
                                 className="pagination"
-                                style={{ float: "right" }}
+                                style={{ float: 'right' }}
                               >
                                 {this.renderPageButtons()}
                               </ul>

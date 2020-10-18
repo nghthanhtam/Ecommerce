@@ -5,8 +5,9 @@ import axios from 'axios';
 import Loader from 'react-loader';
 import { useFormik } from 'formik';
 import DateTimePicker from 'react-datetime-picker';
+import * as Yup from 'yup';
 
-import EmployeeModal from '../Employee/EmployeeModal';
+import './SupplierInfor.css';
 import EmployeeRow from '../Employee/EmployeeRow';
 import { getEmployees } from '../../../../actions/employeeActions';
 
@@ -146,45 +147,42 @@ class SupplierInfor extends Component {
     const { select, totalDocuments } = this.state;
     const { isLoaded } = this.props;
 
-    // A custom validation function. This must return an object
-    // which keys are symmetrical to our values/initialValues
-    const validate = (values) => {
-      const errors = {};
-      if (!values.name) {
-        errors.name = 'Required';
-      } else if (values.name.length > 50) {
-        errors.name = 'Must be 50 characters or less';
-      }
-      if (!values.code) {
-        errors.code = 'Required';
-      } else if (values.code.length > 15) {
-        errors.code = 'Must be 15 characters or less';
-      }
-      if (!values.buscode) {
-        errors.buscode = 'Required';
-      } else if (values.buscode.length > 20) {
-        errors.buscode = 'Must be 20 characters or less';
-      }
-      if (!values.city) {
-        errors.city = 'Required';
-      } else if (values.city.length > 50) {
-        errors.city = 'Must be 50 characters or less';
-      }
-      if (!values.admin) {
-        errors.admin = 'Required';
-      } else if (values.admin.length > 50) {
-        errors.admin = 'Must be 50 characters or less';
-      }
-      if (!values.email) {
-        errors.email = 'Required';
-      } else if (
-        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-      ) {
-        errors.email = 'Invalid email address';
-      }
-
-      return errors;
-    };
+    // const validate1 = (values) => {
+    //   const errors = {};
+    //   if (!values.name) {
+    //     errors.name = 'Required';
+    //   } else if (values.name.length > 50) {
+    //     errors.name = 'Must be 50 characters or less';
+    //   }
+    //   if (!values.code) {
+    //     errors.code = 'Required';
+    //   } else if (values.code.length > 15) {
+    //     errors.code = 'Must be 15 characters or less';
+    //   }
+    //   if (!values.buscode) {
+    //     errors.buscode = 'Required';
+    //   } else if (values.buscode.length > 20) {
+    //     errors.buscode = 'Must be 20 characters or less';
+    //   }
+    //   if (!values.city) {
+    //     errors.city = 'Required';
+    //   } else if (values.city.length > 50) {
+    //     errors.city = 'Must be 50 characters or less';
+    //   }
+    //   if (!values.admin) {
+    //     errors.admin = 'Required';
+    //   } else if (values.admin.length > 50) {
+    //     errors.admin = 'Must be 50 characters or less';
+    //   }
+    //   if (!values.email) {
+    //     errors.email = 'Required';
+    //   } else if (
+    //     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    //   ) {
+    //     errors.email = 'Invalid email address';
+    //   }
+    //   return errors;
+    // };
 
     const SignupForm = () => {
       const formik = useFormik({
@@ -195,7 +193,29 @@ class SupplierInfor extends Component {
           buscode: '',
           city: '',
         },
-        validate,
+        validationSchema: Yup.object({
+          name: Yup.string()
+            .max(50, 'Chỉ được phép nhập ít hơn 50 kí tự')
+            .required('Bắt buộc nhập!'),
+          code: Yup.string()
+            .max(15, 'Chỉ được phép nhập ít hơn 15 kí tự')
+            .required('Bắt buộc nhập!'),
+          busLicenId: Yup.string()
+            .max(20, 'Chỉ được phép nhập ít hơn 20 kí tự')
+            .required('Bắt buộc nhập!'),
+          city: Yup.string()
+            .max(50, 'Chỉ được phép nhập ít hơn 50 kí tự')
+            .required('Bắt buộc nhập!'),
+          admin: Yup.string()
+            .max(50, 'Chỉ được phép nhập ít hơn 50 kí tự')
+            .required('Bắt buộc nhập!'),
+          email: Yup.string()
+            .email('Địa chỉ email không hợp lệ')
+            .required('Bắt buộc nhập!'),
+          buscode: Yup.string()
+            .max(20, 'Chỉ được phép nhập ít hơn 20 kí tự')
+            .required('Bắt buộc nhập!'),
+        }),
         onSubmit: (values) => {
           alert(JSON.stringify(values, null, 2));
         },
@@ -211,10 +231,11 @@ class SupplierInfor extends Component {
                 name="name"
                 type="text"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.name}
               />
-              {formik.errors.name ? (
-                <div style={{ color: 'red' }}>{formik.errors.name}</div>
+              {formik.errors.name && formik.touched.name ? (
+                <div className="errors">{formik.errors.name}</div>
               ) : null}
 
               <label style={{ marginTop: '15px' }} htmlFor="code">
@@ -226,10 +247,11 @@ class SupplierInfor extends Component {
                 name="code"
                 type="text"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.code}
               />
-              {formik.errors.code ? (
-                <div style={{ color: 'red' }}>{formik.errors.code}</div>
+              {formik.errors.code && formik.touched.code ? (
+                <div className="errors">{formik.errors.code}</div>
               ) : null}
 
               <label style={{ marginTop: '15px' }} htmlFor="email">
@@ -241,10 +263,11 @@ class SupplierInfor extends Component {
                 name="email"
                 type="email"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.email}
               />
-              {formik.errors.email ? (
-                <div style={{ color: 'red' }}>{formik.errors.email}</div>
+              {formik.errors.email && formik.touched.email ? (
+                <div className="errors">{formik.errors.email}</div>
               ) : null}
             </div>
             <div style={{ width: '100%', padding: '5px' }}>
@@ -255,10 +278,11 @@ class SupplierInfor extends Component {
                 name="buscode"
                 type="text"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.buscode}
               />
-              {formik.errors.buscode ? (
-                <div style={{ color: 'red' }}>{formik.errors.buscode}</div>
+              {formik.errors.buscode && formik.touched.buscode ? (
+                <div className="errors">{formik.errors.buscode}</div>
               ) : null}
 
               <label style={{ marginTop: '15px' }} htmlFor="city">
@@ -270,10 +294,11 @@ class SupplierInfor extends Component {
                 name="city"
                 type="text"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.city}
               />
-              {formik.errors.city ? (
-                <div style={{ color: 'red' }}>{formik.errors.city}</div>
+              {formik.errors.city && formik.touched.city ? (
+                <div className="errors">{formik.errors.city}</div>
               ) : null}
 
               <label style={{ marginTop: '15px' }} htmlFor="admin">
@@ -285,14 +310,19 @@ class SupplierInfor extends Component {
                 name="admin"
                 type="admin"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.admin}
               />
-              {formik.errors.admin ? (
-                <div style={{ color: 'red' }}>{formik.errors.admin}</div>
+              {formik.errors.admin && formik.touched.admin ? (
+                <div className="errors">{formik.errors.admin}</div>
               ) : null}
             </div>
           </div>
-          <button className="btn btn-primary" type="submit">
+          <button
+            style={{ margin: '20px 0 10px 5px' }}
+            className="btn btn-primary"
+            type="submit"
+          >
             Cập nhật
           </button>
         </form>

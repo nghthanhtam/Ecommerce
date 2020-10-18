@@ -1,27 +1,25 @@
-import React, { Component } from "react";
-
-import { connect } from "react-redux";
-import { addEmployee } from "../../../../actions/employeeActions";
-
-import mongoose from "mongoose";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import mongoose from 'mongoose';
+import { addEmployee } from '../../../../actions/employeeActions';
 
 class EmployeeModal extends Component {
   state = {
-    name: "",
+    name: '',
     _id: 0,
     inputErrors: false,
-    msg: "",
+    msg: '',
   };
   onChange = (e) => {
     const { name, value } = e.target;
-    let msg = "";
+    let msg = '';
 
     //Validation
     const isPassed = this.validateName(value);
     const inputErrors = isPassed ? false : true;
     if (!isPassed)
       msg =
-        "Name of category can only contain only letters, numbers, underscores and spaces";
+        'Name of category can only contain only letters, numbers, underscores and spaces';
 
     this.setState({ [name]: value, msg, inputErrors });
   };
@@ -39,12 +37,12 @@ class EmployeeModal extends Component {
     };
 
     this.props.addEmployee(newItem);
-    this.setState({ name: "" });
+    this.setState({ name: '' });
     // Close modal
-    document.getElementById("triggerButton").click();
+    document.getElementById('triggerButton').click();
   };
   onCancel = (e) => {
-    this.setState({ name: "" });
+    this.setState({ name: '' });
   };
 
   render() {
@@ -54,7 +52,7 @@ class EmployeeModal extends Component {
         <button
           type="button"
           id="triggerButton"
-          style={{ float: "right" }}
+          style={{ float: 'right' }}
           className="btn btn-primary"
           data-toggle="modal"
           data-target="#exampleModalCenter"
@@ -134,7 +132,7 @@ class EmployeeModal extends Component {
                   onClick={this.onSubmit}
                   className="btn btn-primary"
                   disabled={
-                    !this.state.inputErrors && this.state.name !== ""
+                    !this.state.inputErrors && this.state.name !== ''
                       ? false
                       : true
                   }
