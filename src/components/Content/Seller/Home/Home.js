@@ -2,68 +2,118 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Loader from 'react-loader';
-import axios from 'axios';
+import './home.css';
 
-import { getProducts } from '../../../../actions/productActions';
-import ProductRow from '../Product/ProductRow';
+import { getEmployees } from '../../../../state/actions/employeeActions';
+import OrderRow from '../Order/OrderRow';
 
 const mapStateToProps = (state) => ({
-  products: state.product.products,
-  isLoaded: state.product.isLoaded,
+  employees: state.employee.employees,
+  isLoaded: state.employee.isLoaded,
+  totalDocuments: state.employee.totalDocuments,
 });
 
 class Home extends Component {
   state = {
     sort: [{ value: '5' }, { value: '10' }, { value: '20' }],
-    select: '5',
-    currentPage: 1,
+    limit: '5',
+    page: 1,
     pages: [],
     totalDocuments: 0,
     query: '',
+    start: 1,
+    end: 5,
+    employees: [
+      {
+        id: 1,
+        username: 'tamcute',
+        idRole: 1,
+        fullname: 'Thanh Tam Ng',
+        status: 'U',
+      },
+      {
+        id: 2,
+        username: 'trungng',
+        idRole: 1,
+        fullname: 'Tay Trung Ng',
+        status: 'P',
+      },
+      {
+        id: 3,
+        username: 'trungmuoi',
+        idRole: 1,
+        fullname: 'Trung Muoi Ngo',
+        status: 'U',
+      },
+      {
+        id: 4,
+        username: 'donaltrump',
+        idRole: 1,
+        fullname: 'Trump ngo',
+        status: 'A',
+      },
+      {
+        id: 5,
+        username: 'badliar',
+        idRole: 1,
+        fullname: 'Bad Liar',
+        status: 'C',
+      },
+    ],
   };
 
   componentDidMount = () => {
-    const { select, currentPage, query } = this.state;
-    this.getTotalDocuments();
-    this.getPages();
-    this.props.getProducts({ select, currentPage, query });
+    const { limit, page, query } = this.state;
+    this.props.getEmployees({ limit, page, query, idShop: 1 });
   };
   handleOnChange = (e) => {
+    e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      const { select, currentPage, query } = this.state;
-      this.props.getProducts({ select, currentPage, query });
+      if (e.target.name === 'query') {
+        this.setState({ page: 1 }, () => {
+          this.rerenderPage();
+        });
+      } else {
+        this.rerenderPage();
+      }
+    });
+  };
+  rerenderPage = () => {
+    const { limit, page, query } = this.state;
+    let idShop = 1;
+    this.props.getEmployees({ limit, page, query, idShop });
+    this.getPages();
+    this.getStartEndDocuments();
+  };
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.isLoaded == true && this.state.pages == prevState.pages) {
       this.getPages();
-      this.getTotalDocuments();
+    }
+  }
+
+  getStartEndDocuments() {
+    const { limit, page } = this.state;
+    const { totalDocuments } = this.props;
+    this.setState({ start: (page - 1) * limit + 1 }, () => {
+      let end;
+      console.log(Math.floor(totalDocuments / limit));
+      if (Math.floor(totalDocuments / limit) + 1 == page)
+        end = (page - 1) * limit + (totalDocuments % limit);
+      else end = page * limit;
+      this.setState({ end: end });
     });
-  };
+  }
 
-  getTotalDocuments = () => {
-    const { query } = this.state;
-    console.log(query);
-    let newQuery = '';
-    if (query === '') newQuery = 'undefined';
-    else newQuery = query;
-
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/count/${newQuery}`
-      )
-      .then((response) => {
-        this.setState({ totalDocuments: response.data });
-      })
-      .catch((er) => {
-        console.log(er.response);
-      });
-  };
   handleChoosePage = (e) => {
-    this.setState({ currentPage: e }, () => {
-      const { select, currentPage, query } = this.state;
-      this.props.getProducts({ select, currentPage, query });
+    this.setState({ page: e }, () => {
+      const { limit, page, query } = this.state;
+      this.props.getEmployees({ limit, page, query, idShop: 1 });
+      this.getStartEndDocuments();
     });
   };
+
   renderPageButtons = () => {
     const { pages, currentPage } = this.state;
-
     return pages.map((eachButton) => (
       <li
         key={eachButton.pageNumber}
@@ -86,45 +136,62 @@ class Home extends Component {
   };
 
   getPages = () => {
-    const { select, query } = this.state;
+    const { limit, query } = this.state;
+    const { totalDocuments } = this.props;
+    if (totalDocuments == 0) return;
+
     let newQuery = '';
     if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/count/${newQuery}`
-      )
-      .then((response) => {
-        let pages = Math.floor(response.data / select);
-        let remainder = response.data % select;
-        let newArray = [];
-        if (remainder !== 0) pages += 1;
+    let pages = Math.floor(totalDocuments / limit);
+    let remainder = totalDocuments % limit;
+    let newArray = [];
+    if (remainder !== 0) pages += 1;
 
-        for (let i = 0; i < pages; i++) {
-          newArray.push({ pageNumber: i + 1 });
-        }
+    for (let i = 0; i < pages; i++) {
+      newArray.push({ pageNumber: i + 1 });
+    }
 
-        this.setState({ pages: newArray });
-      })
-      .catch((er) => {
-        console.log(er.response);
-      });
+    this.setState({ pages: newArray });
   };
-  renderProducts = () => {
-    const { products } = this.props;
-    return products.map((eachPro, index) => (
-      <ProductRow
+
+  renderEmployees = () => {
+    const //{ employees } = this.props,
+      { start, employees } = this.state;
+    return employees.map((each, index) => (
+      <OrderRow
         history={this.props.history}
-        key={eachPro._id}
-        product={eachPro}
-        index={index}
+        key={each.id}
+        employee={each}
+        index={index + start - 1}
       />
     ));
   };
+
+  renderSelect = () => {
+    const { sort, limit } = this.state;
+    return (
+      <select
+        onChange={this.handleOnChange}
+        name="limit"
+        aria-controls="example1"
+        style={{ margin: '0px 5px' }}
+        className="form-control input-sm"
+        value={limit}
+      >
+        {sort.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.value}
+          </option>
+        ))}
+      </select>
+    );
+  };
+
   render() {
-    const { isLoaded } = this.props;
-    const { select, totalDocuments } = this.state;
+    const { isLoaded, totalDocuments } = this.props;
+    const { limit, page, start, end, query } = this.state;
     return (
       <Fragment>
         {!isLoaded ? (
@@ -219,7 +286,7 @@ class Home extends Component {
                 {/* Main row */}
                 <div className="row-flex">
                   {/* Left col */}
-                  <section className="content" style={{ flex: 3 }}>
+                  <section className="content" style={{ flex: 1 }}>
                     <div className="row">
                       {/* left column */}
 
@@ -233,11 +300,11 @@ class Home extends Component {
                             className="col-md-8"
                           >
                             <h3 className="box-title">
-                              Hoạt động của nhân viên
+                              Danh sách đơn hàng cần xử lý
                             </h3>
                           </div>
                           {/* <div className="col-md-4">
-                        <ProductModal />
+                        <EmployeeModal />
                       </div> */}
                         </div>
                         {/* /.box-header */}
@@ -259,23 +326,7 @@ class Home extends Component {
                                       }}
                                     >
                                       Hiển thị
-                                      <select
-                                        onChange={this.handleOnChange}
-                                        name="select"
-                                        aria-controls="example1"
-                                        style={{ margin: '0px 5px' }}
-                                        className="form-control input-sm"
-                                        value={this.state.select}
-                                      >
-                                        {this.state.sort.map((option) => (
-                                          <option
-                                            key={option.value}
-                                            value={option.value}
-                                          >
-                                            {option.value}
-                                          </option>
-                                        ))}
-                                      </select>
+                                      {this.renderSelect()}
                                       kết quả
                                     </label>
                                   </div>
@@ -314,7 +365,7 @@ class Home extends Component {
                                   id="example1"
                                   className="table table-bordered"
                                 >
-                                  <thead>
+                                  <thead className="order-header">
                                     <tr>
                                       <th style={{ width: '5%' }}>#</th>
                                       <th
@@ -323,23 +374,7 @@ class Home extends Component {
                                           fontFamily: 'Saira, sans-serif',
                                         }}
                                       >
-                                        Tên sản phẩm
-                                      </th>
-                                      <th
-                                        style={{
-                                          width: '20%',
-                                          fontFamily: 'Saira, sans-serif',
-                                        }}
-                                      >
-                                        SKU
-                                      </th>
-                                      <th
-                                        style={{
-                                          width: '20%',
-                                          fontFamily: 'Saira, sans-serif',
-                                        }}
-                                      >
-                                        Đơn giá
+                                        Khách hàng
                                       </th>
                                       <th
                                         style={{
@@ -347,11 +382,36 @@ class Home extends Component {
                                           fontFamily: 'Saira, sans-serif',
                                         }}
                                       >
-                                        Số lượng tồn
+                                        Tổng giá trị
+                                      </th>
+
+                                      <th
+                                        style={{
+                                          width: '15%',
+                                          fontFamily: 'Saira, sans-serif',
+                                        }}
+                                      >
+                                        Ngày đặt hàng
+                                      </th>
+                                      <th
+                                        style={{
+                                          width: '15%',
+                                          fontFamily: 'Saira, sans-serif',
+                                        }}
+                                      >
+                                        Tình trạng
+                                      </th>
+                                      <th
+                                        style={{
+                                          width: '15%',
+                                          fontFamily: 'Saira, sans-serif',
+                                        }}
+                                      >
+                                        Hành động
                                       </th>
                                     </tr>
                                   </thead>
-                                  <tbody>{this.renderProducts()}</tbody>
+                                  <tbody>{this.renderEmployees()}</tbody>
                                   <tfoot></tfoot>
                                 </table>
                               </div>
@@ -364,8 +424,11 @@ class Home extends Component {
                                   role="status"
                                   aria-live="polite"
                                 >
-                                  Hiển thị 1 đến {select} trong {totalDocuments}{' '}
-                                  mục
+                                  Hiển thị{' '}
+                                  {query == ''
+                                    ? start + ' đến ' + end + ' trong '
+                                    : ''}{' '}
+                                  {totalDocuments} kết quả
                                 </div>
                               </div>
                               <div className="col-sm-7">
@@ -393,95 +456,80 @@ class Home extends Component {
                   {/* right col (We are only adding the ID to make the widgets sortable)*/}
                   <div
                     className="col-md-4"
-                    style={{ margin: '12px -15px 0 0px', flex: 1 }}
+                    style={{
+                      margin: '15px -25px 0 0',
+                      fontSize: '12px',
+                      overflow: 'auto',
+                      flex: 0.3,
+                    }}
                   >
-                    <div className="progress-group">
-                      <span className="progress-text">Đơn hàng hủy</span>
-                      <span className="progress-number">
-                        <b>160</b>/200
-                      </span>
-
-                      <div className="progress sm">
-                        <div
-                          className="progress-bar progress-bar-aqua"
-                          style={{ width: '100%' }}
-                        ></div>
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004
                       </div>
                     </div>
-
-                    <div className="progress-group">
-                      <span className="progress-text">Đơn hàng thành công</span>
-                      <span className="progress-number">
-                        <b>310</b>/400
-                      </span>
-
-                      <div className="progress sm">
-                        <div
-                          className="progress-bar progress-bar-red"
-                          style={{ width: '100%' }}
-                        ></div>
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
+                        ffffffffff fffffffff fffffffffs sfdf
                       </div>
                     </div>
-
-                    <div className="progress-group">
-                      <span className="progress-text">
-                        Sản phẩm đang kinh doanh
-                      </span>
-                      <span className="progress-number">
-                        <b>480</b>/800
-                      </span>
-
-                      <div className="progress sm">
-                        <div
-                          className="progress-bar progress-bar-green"
-                          style={{ width: '100%' }}
-                        ></div>
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
+                        ffffffffff fffffffff fffffffffs sfdf
                       </div>
                     </div>
-
-                    <div className="progress-group">
-                      <span className="progress-text">
-                        Sản phẩm ngừng kinh doanh
-                      </span>
-                      <span className="progress-number">
-                        <b>250</b>/500
-                      </span>
-
-                      <div className="progress sm">
-                        <div
-                          className="progress-bar progress-bar-yellow"
-                          style={{ width: '100%' }}
-                        ></div>
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
+                        ffffffffff fffffffff fffffffffs sfdf
                       </div>
                     </div>
-                    <div className="progress-group">
-                      <span className="progress-text">
-                        Số lượng đánh giá, góp ý
-                      </span>
-                      <span className="progress-number">
-                        <b>310</b>/400
-                      </span>
-
-                      <div className="progress sm">
-                        <div
-                          className="progress-bar progress-bar-aqua"
-                          style={{ width: '100%' }}
-                        ></div>
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004
                       </div>
                     </div>
-                    <div className="progress-group">
-                      <span className="progress-text">
-                        Số lượng đánh giá, góp ý
-                      </span>
-                      <span className="progress-number">
-                        <b>310</b>/400
-                      </span>
-
-                      <div className="progress sm">
-                        <div
-                          className="progress-bar progress-bar-red"
-                          style={{ width: '100%' }}
-                        ></div>
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004
                       </div>
                     </div>
                   </div>
@@ -499,9 +547,9 @@ class Home extends Component {
   }
 }
 Home.propTypes = {
-  getProducts: PropTypes.func.isRequired,
-  products: PropTypes.array.isRequired,
+  getEmployees: PropTypes.func.isRequired,
+  employees: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getProducts })(Home);
+export default connect(mapStateToProps, { getEmployees })(Home);

@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { deleteRole } from "../../../../actions/roleActions";
-import { pushHistory } from "../../../../actions/historyActions";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { deleteRole } from '../../../../state/actions/roleActions';
+import { pushHistory } from '../../../../state/actions/historyActions';
 class RoleRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
@@ -9,13 +9,13 @@ class RoleRow extends Component {
     let month = newDate.getMonth() + 1;
     let dt = newDate.getDate();
     if (dt < 10) {
-      dt = "0" + dt;
+      dt = '0' + dt;
     }
     if (month < 10) {
-      month = "0" + month;
+      month = '0' + month;
     }
 
-    return year + "-" + month + "-" + dt;
+    return year + '-' + month + '-' + dt;
   };
   handleEdit = (id) => {
     this.props.pushHistory(`/role/edit/${id}`);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { logout } from '../../../actions/authActions';
-import { pushHistory } from '../../../actions/historyActions';
+import { logout } from '../../../state/actions/authActions';
+import { pushHistory } from '../../../state/actions/historyActions';
 import PropTypes from 'prop-types';
 
 const mapStateToProps = (state) => ({

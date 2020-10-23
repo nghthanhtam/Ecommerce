@@ -1,13 +1,13 @@
-import React, { Fragment, Component } from "react";
-import axios from "axios";
-import { connect } from "react-redux";
-import { pushHistory } from "../../../../actions/historyActions";
-import { updateRole } from "../../../../actions/roleActions";
+import React, { Fragment, Component } from 'react';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { pushHistory } from '../../../../state/actions/historyActions';
+import { updateRole } from '../../../../state/actions/roleActions';
 
 class RoleEdit extends Component {
   state = {
-    name: "",
-    _id: "",
+    name: '',
+    _id: '',
     memberManagement: false,
     productManagement: false,
     employeeManagement: false,
@@ -27,7 +27,7 @@ class RoleEdit extends Component {
         this.tokenConfig(this.props.auth.token)
       )
       .then((response) => {
-        if (response.data === null) this.props.pushHistory("/404");
+        if (response.data === null) this.props.pushHistory('/404');
         else
           this.setState({
             name: response.data.name,
@@ -53,20 +53,20 @@ class RoleEdit extends Component {
   tokenConfig = (token) => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        'Content-type': 'application/json',
       },
     };
 
     //Header
     if (token) {
-      config.headers["x-auth-token"] = token;
+      config.headers['x-auth-token'] = token;
     }
 
     return config;
   };
   handleChange = (e) => {
     const target = e.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
 
     this.setState({
@@ -107,11 +107,11 @@ class RoleEdit extends Component {
     };
     this.props.updateRole(newRole);
     //Quay về trang chính
-    this.props.history.push("/role");
+    this.props.history.push('/role');
   };
 
   handleCancel = (e) => {
-    this.props.history.push("/role");
+    this.props.history.push('/role');
   };
 
   renderCheckboxes = () => {
@@ -128,8 +128,8 @@ class RoleEdit extends Component {
       roleManagement,
     } = this.state;
     return (
-      <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-        <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div>
             <label>
               <input
@@ -189,7 +189,7 @@ class RoleEdit extends Component {
             </label>
           </div>
         </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div>
             <label>
               <input

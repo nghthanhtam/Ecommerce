@@ -1,51 +1,129 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import mongoose from 'mongoose';
-import { addEmployee } from '../../../../actions/employeeActions';
+import { addEmployee } from '../../../../state/actions/employeeActions';
 
 class EmployeeModal extends Component {
   state = {
-    name: '',
-    _id: 0,
+    fullname: '',
+    password: '',
+    phone: '',
+    identityCard: '',
+    idRole: 1,
+    username: '',
     inputErrors: false,
     msg: '',
+    roles: [{ value: 1 }, { value: 2 }, { value: 3 }],
   };
+
   onChange = (e) => {
     const { name, value } = e.target;
     let msg = '';
-
     //Validation
-    const isPassed = this.validateName(value);
-    const inputErrors = isPassed ? false : true;
-    if (!isPassed)
-      msg =
-        'Name of category can only contain only letters, numbers, underscores and spaces';
-
+    let isPassed = true;
+    if (name == 'fullname') isPassed = this.validateName(value);
+    else if (name == 'phone') isPassed = this.validatePhone(value);
+    let inputErrors = isPassed ? false : true;
+    if (!isPassed && name == 'fullname')
+      msg = 'Tên chỉ bao gồm chữ cái, số, gạch dưới và khoảng trắng';
+    else if (!isPassed && name == 'phone') {
+      msg = 'Số điện thoại chưa hợp lệ';
+    }
     this.setState({ [name]: value, msg, inputErrors });
   };
-  validateName = (name) => {
-    return new RegExp(/^[a-zA-Z0-9_-_ ]*$/).test(name);
+
+  validatePhone = (phone) => {
+    return new RegExp(/(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/).test(phone);
   };
+  validateName = (fullname) => {
+    return !new RegExp(
+      /[^a-z0-9A-Z_-_ ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽếềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]/u
+    ).test(fullname);
+  };
+
+  resetField() {
+    this.setState({
+      password: '',
+      fullname: '',
+      idRole: '',
+      phone: '',
+      identityCard: '',
+      username: '',
+    });
+  }
+
+  createUsername = (fullname) => {
+    function convertToNonAccentVNese(str) {
+      str = str.toLowerCase();
+      str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
+      str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
+      str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
+      str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
+      str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
+      str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
+      str = str.replace(/đ/g, 'd');
+      // Some system encode vietnamese combining accent as individual utf-8 characters
+      str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ''); // Huyền sắc hỏi ngã nặng
+      str = str.replace(/\u02C6|\u0306|\u031B/g, ''); // Â, Ê, Ă, Ơ, Ư
+      return str;
+    }
+    let res = fullname.split(' ');
+    let firstName = res.pop(),
+      surName = ''; //remove last element
+    firstName = convertToNonAccentVNese(firstName);
+    if (fullname) {
+      fullname = res.join(' '); //join back together
+      let matches = convertToNonAccentVNese(fullname).match(/\b(\w)/g); //take first letter each word
+      surName = matches.join('').toUpperCase();
+    }
+
+    return firstName + surName;
+  };
+
   onSubmit = (e) => {
     e.preventDefault();
-
-    const { name } = this.state;
-    const newItem = {
-      name,
-      createAt: Date.now(),
-      _id: mongoose.Types.ObjectId(),
+    const { limit, page } = this.props,
+      {
+        password,
+        fullname,
+        username,
+        idRole,
+        phone,
+        identityCard,
+      } = this.state;
+    let newItem = {};
+    newItem = {
+      password,
+      fullname,
+      //username: this.createUsername(fullname),
+      username,
+      idRole,
+      phone,
+      identityCard,
+      pages: { limit, page, query: '', idShop: 1 },
     };
 
     this.props.addEmployee(newItem);
-    this.setState({ name: '' });
+    this.resetField();
+
     // Close modal
     document.getElementById('triggerButton').click();
   };
   onCancel = (e) => {
-    this.setState({ name: '' });
+    this.resetField();
   };
 
   render() {
+    const {
+      password,
+      fullname,
+      username,
+      idRole,
+      roles,
+      phone,
+      identityCard,
+    } = this.state;
+
     return (
       <React.Fragment>
         {/* Button trigger modal */}
@@ -91,29 +169,94 @@ class EmployeeModal extends Component {
               <div className="modal-body">
                 {this.state.msg ? (
                   <div className="alert alert-danger alert-dismissible">
-                    {/* <button
-                  type="button"
-                  className="close"
-                  data-dismiss="alert"
-                  aria-hidden="true"
-                >
-                  ×
-                </button> */}
-
                     {this.state.msg}
                   </div>
                 ) : null}
                 <div className="form-group">
-                  <label htmlFor="recipient-name" className="col-form-label">
-                    Name:
+                  <label htmlFor="fullname" className="col-form-label">
+                    Họ và tên:
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    id="name"
-                    placeholder="Category name"
-                    name="name"
-                    value={this.state.name}
+                    id="fullname"
+                    placeholder="Nhập họ và tên..."
+                    name="fullname"
+                    value={fullname}
+                    onChange={this.onChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="username" className="col-form-label">
+                    Tên đăng nhập:
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="username"
+                    placeholder="Nhập tên đăng nhập..."
+                    name="username"
+                    value={username}
+                    onChange={this.onChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="password" className="col-form-label">
+                    Mật khẩu:
+                  </label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    id="password"
+                    placeholder="Nhập mật khẩu..."
+                    name="password"
+                    value={password}
+                    onChange={this.onChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="idRole" className="col-form-label">
+                    Vai trò:
+                  </label>
+                  <select
+                    onChange={this.onChange}
+                    name="idRole"
+                    aria-controls="example1"
+                    className="form-control input-sm"
+                    value={idRole}
+                  >
+                    {roles.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.value}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="phone" className="col-form-label">
+                    Số điện thoại:
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="phone"
+                    placeholder="Nhập số điện thoại..."
+                    name="phone"
+                    value={phone}
+                    onChange={this.onChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="identityCard" className="col-form-label">
+                    Số CMND:
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="identityCard"
+                    placeholder="Nhập số CMND..."
+                    name="identityCard"
+                    value={identityCard}
                     onChange={this.onChange}
                   />
                 </div>

@@ -1,11 +1,11 @@
-import React, { Component, Fragment } from "react";
-import RoleModal from "./RoleModal";
-import RoleRow from "./RoleRow";
-import { connect } from "react-redux";
-import { getRoles } from "../../../../actions/roleActions";
-import PropTypes from "prop-types";
-import axios from "axios";
-import Loader from "react-loader";
+import React, { Component, Fragment } from 'react';
+import RoleModal from './RoleModal';
+import RoleRow from './RoleRow';
+import { connect } from 'react-redux';
+import { getRoles } from '../../../../state/actions/roleActions';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import Loader from 'react-loader';
 
 const mapStateToProps = (state) => ({
   roles: state.role.roles,
@@ -14,12 +14,12 @@ const mapStateToProps = (state) => ({
 
 class Role extends Component {
   state = {
-    sort: [{ value: "5" }, { value: "10" }, { value: "15" }],
-    select: "5",
+    sort: [{ value: '5' }, { value: '10' }, { value: '15' }],
+    select: '5',
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: "",
+    query: '',
   };
 
   componentDidMount() {
@@ -34,8 +34,8 @@ class Role extends Component {
   getTotalDocuments = () => {
     const { query } = this.state;
 
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -49,8 +49,8 @@ class Role extends Component {
   };
   getPages = () => {
     const { select, query } = this.state;
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -73,10 +73,10 @@ class Role extends Component {
   };
 
   handleOnChange = (e) => {
-    console.log(typeof e.target.name + " " + e.target.name);
+    console.log(typeof e.target.name + ' ' + e.target.name);
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === "query") {
+      if (e.target.name === 'query') {
         this.setState({ currentPage: 1 }, () => {
           this.rerenderPage();
         });
@@ -118,7 +118,7 @@ class Role extends Component {
         onChange={this.handleOnChange}
         name="select"
         aria-controls="example1"
-        style={{ margin: "0px 5px" }}
+        style={{ margin: '0px 5px' }}
         className="form-control input-sm"
         value={select}
       >
@@ -139,8 +139,8 @@ class Role extends Component {
         key={eachButton.pageNumber}
         className={
           currentPage === eachButton.pageNumber
-            ? "paginae_button active"
-            : "paginate_button "
+            ? 'paginae_button active'
+            : 'paginate_button '
         }
       >
         <a
@@ -188,8 +188,8 @@ class Role extends Component {
                 {/* left column */}
                 <div className="col-md-12">
                   <div className="box">
-                    <div className="box-header" style={{ marginTop: "5px" }}>
-                      <div style={{ paddingLeft: "5px" }} className="col-md-8">
+                    <div className="box-header" style={{ marginTop: '5px' }}>
+                      <div style={{ paddingLeft: '5px' }} className="col-md-8">
                         <h3 className="box-title">
                           Data Table With Full Features
                         </h3>
@@ -224,12 +224,12 @@ class Role extends Component {
                                 id="example1_filter"
                                 className="dataTables_filter"
                               >
-                                <label style={{ float: "right" }}>
+                                <label style={{ float: 'right' }}>
                                   Tìm kiếm
                                   <input
                                     type="search"
                                     name="query"
-                                    style={{ margin: "0px 5px" }}
+                                    style={{ margin: '0px 5px' }}
                                     className="form-control input-sm"
                                     placeholder="Nhập từ khóa...  "
                                     aria-controls="example1"
@@ -250,11 +250,11 @@ class Role extends Component {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: "10%" }}>#</th>
-                                  <th style={{ width: "20%" }}>Role</th>
-                                  <th style={{ width: "20%" }}>Created date</th>
-                                  <th style={{ width: "20%" }}>Creator</th>
-                                  <th style={{ width: "30%" }}>Action</th>
+                                  <th style={{ width: '10%' }}>#</th>
+                                  <th style={{ width: '20%' }}>Role</th>
+                                  <th style={{ width: '20%' }}>Created date</th>
+                                  <th style={{ width: '20%' }}>Creator</th>
+                                  <th style={{ width: '30%' }}>Action</th>
                                 </tr>
                               </thead>
                               <tbody>{this.renderRoles()}</tbody>
@@ -288,7 +288,7 @@ class Role extends Component {
                             >
                               <ul
                                 className="pagination"
-                                style={{ float: "right" }}
+                                style={{ float: 'right' }}
                               >
                                 {this.renderPageButtons()}
                               </ul>

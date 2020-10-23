@@ -39,6 +39,16 @@
   align-items: center;
   padding: 50px;
 }
+.reg-card li {
+  font-weight: bold;
+  margin: -10px 0 0 10px;
+}
+.reg-acc-infor {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  margin: 5px 0 -15px 0;
+}
 
 .reg-title {
   font-size: 28px;

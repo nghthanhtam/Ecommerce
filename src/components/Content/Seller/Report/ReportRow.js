@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { deleteProduct } from "../../../../actions/productActions";
-import { pushHistory } from "../../../../actions/historyActions";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { deleteProduct } from '../../../../state/actions/productActions';
+import { pushHistory } from '../../../../state/actions/historyActions';
 
 class ReportRow extends Component {
   convertDate = (date) => {
@@ -14,7 +14,7 @@ class ReportRow extends Component {
 
     month = month < 10 ? `0${month}` : month;
 
-    return year + "-" + month + "-" + dt;
+    return year + '-' + month + '-' + dt;
   };
   handleEdit = (id) => {
     this.props.pushHistory(`/payslip/edit/${id}`);
@@ -28,14 +28,14 @@ class ReportRow extends Component {
 
     return (
       <tr>
-        {reportData === "SALE_SUMMARY" ? (
+        {reportData === 'SALE_SUMMARY' ? (
           <td>
             {record.month}/{record.year}
           </td>
         ) : null}
-        {reportData === "WEEKDAY" ? <td> {record.day}</td> : null}
-        {reportData === "CITY" ? <td> {record.city}</td> : null}
-        {reportData === "HOUR" ? <td> {record.hour}</td> : null}
+        {reportData === 'WEEKDAY' ? <td> {record.day}</td> : null}
+        {reportData === 'CITY' ? <td> {record.city}</td> : null}
+        {reportData === 'HOUR' ? <td> {record.hour}</td> : null}
         <td>{record.orderTotal}</td>
         <td>{record.customerTotal}</td>
         <td>{record.productTotal}</td>

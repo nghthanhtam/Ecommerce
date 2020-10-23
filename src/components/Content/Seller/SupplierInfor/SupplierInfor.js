@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 
 import './SupplierInfor.css';
 import EmployeeRow from '../Employee/EmployeeRow';
-import { getEmployees } from '../../../../actions/employeeActions';
+import { getEmployees } from '../../../../state/actions/employeeActions';
 
 const mapStateToProps = (state) => ({
   employees: state.employee.employees,
@@ -334,7 +334,6 @@ class SupplierInfor extends Component {
       //     <Loader></Loader>
       //   ) : (
       <Fragment>
-        {/* Content Header (Page header) */}
         <section className="content-header">
           <h1>Thông tin nhà bán</h1>
           <ol className="breadcrumb">
@@ -360,169 +359,151 @@ class SupplierInfor extends Component {
         </section>
 
         <section className="content" style={{ marginTop: '-30px' }}>
-          <section className="content">
-            <div className="row">
-              {/* left column */}
-
-              <div className="box">
-                <div className="box-header" style={{ marginTop: '5px' }}>
-                  <div style={{ paddingLeft: '0px' }} className="col-md-8">
-                    <h3 className="box-title">Danh sách mã giảm giá</h3>
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active">
+                <a href="#activity" data-toggle="tab">
+                  Activity
+                </a>
+              </li>
+              <li>
+                <a href="#timeline" data-toggle="tab">
+                  Timeline
+                </a>
+              </li>
+              <li>
+                <a href="#settings" data-toggle="tab">
+                  Settings
+                </a>
+              </li>
+            </ul>
+            <div class="tab-content">
+              <div class="active tab-pane" id="activity">
+                <div class="post">
+                  <div class="user-block">
+                    <img
+                      class="img-circle img-bordered-sm"
+                      src="../../dist/img/user1-128x128.jpg"
+                      alt="user image"
+                    />
+                    <span class="username">
+                      <a href="#">Jonathan Burke Jr.</a>
+                      <a href="#" class="pull-right btn-box-tool">
+                        <i class="fa fa-times"></i>
+                      </a>
+                    </span>
+                    <span class="description">
+                      Shared publicly - 7:30 PM today
+                    </span>
                   </div>
-                  {/* <div className="col-md-4">
-                        <ProductModal />
-                      </div> */}
+                  <p>
+                    Lorem ipsum represents a long-held tradition for designers,
+                    typographers and the like. Some people hate it and argue for
+                    its demise, but others ignore the hate as they create
+                    awesome tools to help create filler text for everyone from
+                    bacon lovers to Charlie Sheen fans.
+                  </p>
+                  <ul class="list-inline">
+                    <li>
+                      <a href="#" class="link-black text-sm">
+                        <i class="fa fa-share margin-r-5"></i> Share
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="link-black text-sm">
+                        <i class="fa fa-thumbs-o-up margin-r-5"></i> Like
+                      </a>
+                    </li>
+                    <li class="pull-right">
+                      <a href="#" class="link-black text-sm">
+                        <i class="fa fa-comments-o margin-r-5"></i> Comments (5)
+                      </a>
+                    </li>
+                  </ul>
+
+                  <input
+                    class="form-control input-sm"
+                    type="text"
+                    placeholder="Type a comment"
+                  />
                 </div>
-                {/* /.box-header */}
-                <div className="box-body">
-                  <div
-                    id="example1_wrapper"
-                    className="dataTables_wrapper form-inline dt-bootstrap"
-                  >
-                    <div className="row">
-                      <div>
-                        <div className="col-sm-6">
-                          <div
-                            className="dataTables_length"
-                            id="example1_length"
-                          >
-                            <label
-                              style={{
-                                fontFamily: 'Montserrat, sans-serif',
-                              }}
-                            >
-                              Hiển thị
-                              <select
-                                onChange={this.handleOnChange}
-                                name="select"
-                                aria-controls="example1"
-                                style={{ margin: '0px 5px' }}
-                                className="form-control input-sm"
-                                value={this.state.select}
-                              >
-                                {this.state.sort.map((option) => (
-                                  <option
-                                    key={option.value}
-                                    value={option.value}
-                                  >
-                                    {option.value}
-                                  </option>
-                                ))}
-                              </select>
-                              kết quả
-                            </label>
-                          </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <div
-                            id="example1_filter"
-                            className="dataTables_filter"
-                          >
-                            <label
-                              style={{
-                                float: 'right',
-                                fontFamily: 'Saira, sans-serif',
-                              }}
-                            >
-                              Tìm kiếm
-                              <input
-                                type="search"
-                                name="query"
-                                style={{ margin: '0px 5px' }}
-                                className="form-control input-sm"
-                                placeholder="Nhập từ khóa...  "
-                                aria-controls="example1"
-                                onChange={this.handleOnChange}
-                                value={this.state.query}
-                              />
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
 
-                    <div className="row">
-                      <div className="col-sm-12">
-                        <table
-                          id="example1"
-                          className="table table-bordered table-striped"
-                        >
-                          <thead>
-                            <tr>
-                              <th style={{ width: '5%' }}>#</th>
-                              <th
-                                style={{
-                                  width: '20%',
-                                  fontFamily: 'Saira, sans-serif',
-                                }}
-                              >
-                                Mã giảm giá
-                              </th>
-                              <th
-                                style={{
-                                  width: '10%',
-                                  fontFamily: 'Saira, sans-serif',
-                                }}
-                              >
-                                % giảm giá
-                              </th>
-                              <th
-                                style={{
-                                  width: '10%',
-                                  fontFamily: 'Saira, sans-serif',
-                                }}
-                              >
-                                Thời gian giảm giá
-                              </th>
-
-                              <th
-                                style={{
-                                  width: '10%',
-                                  fontFamily: 'Saira, sans-serif',
-                                }}
-                              >
-                                Hành động
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>{this.renderEmployees()}</tbody>
-                          <tfoot></tfoot>
-                        </table>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-sm-5">
-                        <div
-                          className="dataTables_info"
-                          id="example1_info"
-                          role="status"
-                          aria-live="polite"
-                        >
-                          Hiển thị 1 đến {select} trong {totalDocuments} mục
-                        </div>
-                      </div>
-                      <div className="col-sm-7">
-                        <div
-                          className="dataTables_paginate paging_simple_numbers"
-                          id="example1_paginate"
-                        >
-                          <ul className="pagination" style={{ float: 'right' }}>
-                            {this.renderPageButtons()}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
+                <div class="post clearfix">
+                  <div class="user-block">
+                    <img
+                      class="img-circle img-bordered-sm"
+                      src="../../dist/img/user7-128x128.jpg"
+                      alt="User Image"
+                    />
+                    <span class="username">
+                      <a href="#">Sarah Ross</a>
+                      <a href="#" class="pull-right btn-box-tool">
+                        <i class="fa fa-times"></i>
+                      </a>
+                    </span>
+                    <span class="description">
+                      Sent you a message - 3 days ago
+                    </span>
                   </div>
-                  {/*/.col (left) */}
+                  <p>
+                    Lorem ipsum represents a long-held tradition for designers,
+                    typographers and the like. Some people hate it and argue for
+                    its demise, but others ignore the hate as they create
+                    awesome tools to help create filler text for everyone from
+                    bacon lovers to Charlie Sheen fans.
+                  </p>
+
+                  <form class="form-horizontal">
+                    <div class="form-group margin-bottom-none">
+                      <div class="col-sm-9">
+                        <input
+                          class="form-control input-sm"
+                          placeholder="Response"
+                        />
+                      </div>
+                      <div class="col-sm-3">
+                        <button
+                          type="submit"
+                          class="btn btn-danger pull-right btn-block btn-sm"
+                        >
+                          Send
+                        </button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
-                {/* /.row */}
+
+                <div class="post">
+                  <div class="user-block">
+                    <img
+                      class="img-circle img-bordered-sm"
+                      src="../../dist/img/user6-128x128.jpg"
+                      alt="User Image"
+                    />
+                    <span class="username">
+                      <a href="#">Adam Jones</a>
+                      <a href="#" class="pull-right btn-box-tool">
+                        <i class="fa fa-times"></i>
+                      </a>
+                    </span>
+                    <span class="description">
+                      Posted 5 photos - 5 days ago
+                    </span>
+                  </div>
+
+                  <input
+                    class="form-control input-sm"
+                    type="text"
+                    placeholder="Type a comment"
+                  />
+                </div>
               </div>
             </div>
-          </section>
+          </div>
         </section>
       </Fragment>
-      //   )}
-      // </Fragment>
+      /* )}
+       </Fragment> */
     );
   }
 }

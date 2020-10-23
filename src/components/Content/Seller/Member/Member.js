@@ -1,11 +1,14 @@
-import React, { Component, Fragment } from "react";
-import MemberModal from "./MemberModal";
-import MemberRow from "./MemberRow";
-import { connect } from "react-redux";
-import { getMembers, deleteMember } from "../../../../actions/memberActions";
-import PropTypes from "prop-types";
-import axios from "axios";
-import Loader from "react-loader";
+import React, { Component, Fragment } from 'react';
+import MemberModal from './MemberModal';
+import MemberRow from './MemberRow';
+import { connect } from 'react-redux';
+import {
+  getMembers,
+  deleteMember,
+} from '../../../../state/actions/memberActions';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import Loader from 'react-loader';
 
 const mapStateToProps = (state) => ({
   member: state.member,
@@ -14,12 +17,12 @@ const mapStateToProps = (state) => ({
 
 class Member extends Component {
   state = {
-    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
-    select: "5",
+    sort: [{ value: '5' }, { value: '10' }, { value: '20' }],
+    select: '5',
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: "",
+    query: '',
   };
 
   componentDidMount() {
@@ -31,8 +34,8 @@ class Member extends Component {
 
   getTotalDocuments = () => {
     const { query } = this.state;
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -48,8 +51,8 @@ class Member extends Component {
 
   getPages = () => {
     const { select, query } = this.state;
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -95,8 +98,8 @@ class Member extends Component {
         key={eachButton.pageNumber}
         className={
           currentPage === eachButton.pageNumber
-            ? "paginae_button active"
-            : "paginate_button "
+            ? 'paginae_button active'
+            : 'paginate_button '
         }
       >
         <a
@@ -147,8 +150,8 @@ class Member extends Component {
                 {/* left column */}
                 <div className="col-md-12">
                   <div className="box">
-                    <div className="box-header" style={{ marginTop: "5px" }}>
-                      <div style={{ paddingLeft: "5px" }} className="col-md-8">
+                    <div className="box-header" style={{ marginTop: '5px' }}>
+                      <div style={{ paddingLeft: '5px' }} className="col-md-8">
                         <h3 className="box-title">
                           Data Table With Full Features
                         </h3>
@@ -177,7 +180,7 @@ class Member extends Component {
                                     onChange={this.handleOnChange}
                                     name="select"
                                     aria-controls="example1"
-                                    style={{ margin: "0px 5px" }}
+                                    style={{ margin: '0px 5px' }}
                                     className="form-control input-sm"
                                     value={this.state.select}
                                   >
@@ -199,12 +202,12 @@ class Member extends Component {
                                 id="example1_filter"
                                 className="dataTables_filter"
                               >
-                                <label style={{ float: "right" }}>
+                                <label style={{ float: 'right' }}>
                                   Tìm kiếm
                                   <input
                                     type="search"
                                     name="query"
-                                    style={{ margin: "0px 5px" }}
+                                    style={{ margin: '0px 5px' }}
                                     className="form-control input-sm"
                                     placeholder="Nhập từ khóa...  "
                                     aria-controls="example1"
@@ -225,12 +228,12 @@ class Member extends Component {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: "5%" }}>#</th>
-                                  <th style={{ width: "20%" }}>Member</th>
-                                  <th style={{ width: "15%" }}>Phone</th>
-                                  <th style={{ width: "15%" }}>Point</th>
-                                  <th style={{ width: "15%" }}>Created date</th>
-                                  <th style={{ width: "40%" }}>Action</th>
+                                  <th style={{ width: '5%' }}>#</th>
+                                  <th style={{ width: '20%' }}>Member</th>
+                                  <th style={{ width: '15%' }}>Phone</th>
+                                  <th style={{ width: '15%' }}>Point</th>
+                                  <th style={{ width: '15%' }}>Created date</th>
+                                  <th style={{ width: '40%' }}>Action</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -277,7 +280,7 @@ class Member extends Component {
                             >
                               <ul
                                 className="pagination"
-                                style={{ float: "right" }}
+                                style={{ float: 'right' }}
                               >
                                 {this.renderPageButtons()}
                               </ul>

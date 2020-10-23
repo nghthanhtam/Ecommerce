@@ -1,14 +1,14 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import ProductRow from "./ProductRow";
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import ProductRow from './ProductRow';
 //import ProductModal from ".ProductModal";
-import { getProducts } from "../../../../actions/productActions";
-import { showNoti } from "../../../../actions/notificationActions";
-import "react-notifications/lib/notifications.css";
-import { NotificationContainer } from "react-notifications";
-import Loader from "react-loader";
-import PropTypes from "prop-types";
-import axios from "axios";
+import { getProducts } from '../../../../state/actions/productActions';
+import { showNoti } from '../../../../state/actions/notificationActions';
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer } from 'react-notifications';
+import Loader from 'react-loader';
+import PropTypes from 'prop-types';
+import axios from 'axios';
 
 const mapStateToProps = (state) => ({
   products: state.product.products,
@@ -17,16 +17,16 @@ const mapStateToProps = (state) => ({
 
 class Product extends Component {
   state = {
-    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
-    select: "5",
+    sort: [{ value: '5' }, { value: '10' }, { value: '20' }],
+    select: '5',
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: "",
+    query: '',
   };
 
   resetState = () => {
-    this.setState({ select: "5", currentPage: 1, query: "" });
+    this.setState({ select: '5', currentPage: 1, query: '' });
   };
   componentDidMount() {
     const { select, currentPage, query } = this.state;
@@ -37,7 +37,7 @@ class Product extends Component {
     if (!this.props.location.state) {
       return;
     }
-    if (this.props.location.state !== "") {
+    if (this.props.location.state !== '') {
       this.setState({ notiType: this.props.location.state.notiType });
     }
   }
@@ -55,8 +55,8 @@ class Product extends Component {
   getTotalDocuments = () => {
     const { query } = this.state;
     console.log(query);
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -73,8 +73,8 @@ class Product extends Component {
 
   getPages = () => {
     const { select, query } = this.state;
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -122,8 +122,8 @@ class Product extends Component {
         key={eachButton.pageNumber}
         className={
           currentPage === eachButton.pageNumber
-            ? "paginae_button active"
-            : "paginate_button "
+            ? 'paginae_button active'
+            : 'paginate_button '
         }
       >
         <a
@@ -140,7 +140,7 @@ class Product extends Component {
 
   createNotification = () => {
     this.props.showNoti(this.state.notiType);
-    this.setState({ notiType: "" });
+    this.setState({ notiType: '' });
   };
 
   render() {
@@ -152,7 +152,7 @@ class Product extends Component {
           <Loader></Loader>
         ) : (
           <React.Fragment>
-            {notiType !== "" ? this.createNotification() : null}
+            {notiType !== '' ? this.createNotification() : null}
             <NotificationContainer />
 
             {/* Content Header (Page header) */}
@@ -178,8 +178,8 @@ class Product extends Component {
                 {/* left column */}
                 <div className="col-md-12">
                   <div className="box">
-                    <div className="box-header" style={{ marginTop: "5px" }}>
-                      <div style={{ paddingLeft: "5px" }} className="col-md-8">
+                    <div className="box-header" style={{ marginTop: '5px' }}>
+                      <div style={{ paddingLeft: '5px' }} className="col-md-8">
                         <h3 className="box-title">Quản lý sản phẩm</h3>
                       </div>
                       {/* <div className="col-md-4">
@@ -205,7 +205,7 @@ class Product extends Component {
                                     onChange={this.handleOnChange}
                                     name="select"
                                     aria-controls="example1"
-                                    style={{ margin: "0px 5px" }}
+                                    style={{ margin: '0px 5px' }}
                                     className="form-control input-sm"
                                     value={this.state.select}
                                   >
@@ -227,12 +227,12 @@ class Product extends Component {
                                 id="example1_filter"
                                 className="dataTables_filter"
                               >
-                                <label style={{ float: "right" }}>
+                                <label style={{ float: 'right' }}>
                                   Tìm kiếm
                                   <input
                                     type="search"
                                     name="query"
-                                    style={{ margin: "0px 5px" }}
+                                    style={{ margin: '0px 5px' }}
                                     className="form-control input-sm"
                                     placeholder="Nhập từ khóa...  "
                                     aria-controls="example1"
@@ -253,11 +253,11 @@ class Product extends Component {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: "5%" }}>#</th>
-                                  <th style={{ width: "20%" }}>Tên sản phẩm</th>
-                                  <th style={{ width: "20%" }}>SKU</th>
-                                  <th style={{ width: "20%" }}>Đơn giá</th>
-                                  <th style={{ width: "15%" }}>Số lượng tồn</th>
+                                  <th style={{ width: '5%' }}>#</th>
+                                  <th style={{ width: '20%' }}>Tên sản phẩm</th>
+                                  <th style={{ width: '20%' }}>SKU</th>
+                                  <th style={{ width: '20%' }}>Đơn giá</th>
+                                  <th style={{ width: '15%' }}>Số lượng tồn</th>
                                 </tr>
                               </thead>
                               <tbody>{this.renderProducts()}</tbody>
@@ -291,7 +291,7 @@ class Product extends Component {
                             >
                               <ul
                                 className="pagination"
-                                style={{ float: "right" }}
+                                style={{ float: 'right' }}
                               >
                                 {this.renderPageButtons()}
                               </ul>

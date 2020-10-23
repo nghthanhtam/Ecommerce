@@ -1,20 +1,20 @@
-import React, { Fragment, Component } from "react";
-import axios from "axios";
-import { connect } from "react-redux";
-import { deleteUser } from "../../../../actions/userActions";
-import { pushHistory } from "../../../../actions/historyActions";
+import React, { Fragment, Component } from 'react';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { deleteUser } from '../../../../state/actions/userActions';
+import { pushHistory } from '../../../../state/actions/historyActions';
 
 class UserEdit extends Component {
   state = {
-    idRole: "",
-    username: "",
-    fullName: "",
-    phoneNumber: "",
-    address: "",
-    _id: "",
-    curPassword: "",
-    newPassword: "",
-    reNewPassword: "",
+    idRole: '',
+    username: '',
+    fullName: '',
+    phoneNumber: '',
+    address: '',
+    _id: '',
+    curPassword: '',
+    newPassword: '',
+    reNewPassword: '',
     changingPassword: false,
     inputErrors: false,
     curPassError: false,
@@ -26,7 +26,7 @@ class UserEdit extends Component {
     axios
       .get(`/api/user/${id}`)
       .then((response) => {
-        if (response.data === null) this.props.pushHistory("/404");
+        if (response.data === null) this.props.pushHistory('/404');
         else {
           const {
             idRole,
@@ -92,7 +92,7 @@ class UserEdit extends Component {
         password,
         _id,
       };
-      console.log("Changed pass");
+      console.log('Changed pass');
     } else {
       newUser = {
         idRole,
@@ -102,7 +102,7 @@ class UserEdit extends Component {
         address,
         _id,
       };
-      console.log("Not changed pass");
+      console.log('Not changed pass');
     }
     axios
       .put(`/api/user/${_id}`, newUser)
@@ -114,11 +114,11 @@ class UserEdit extends Component {
         console.log(error.response);
       });
     //Quay về trang chính
-    this.props.history.push("/user");
+    this.props.history.push('/user');
   };
 
   handleCancel = (e) => {
-    this.props.history.push("/user");
+    this.props.history.push('/user');
   };
 
   handleChangePass = (e) => {
@@ -129,7 +129,7 @@ class UserEdit extends Component {
       curPassword,
       _id,
     };
-    console.log("TCL: UserEdit -> userCurPass", userChangePass);
+    console.log('TCL: UserEdit -> userCurPass', userChangePass);
 
     axios
       .post(`/api/user/cp/${_id}`, userChangePass)
@@ -157,7 +157,7 @@ class UserEdit extends Component {
       newPassword,
     } = this.state;
 
-    console.log("changingPass " + this.state.changingPassword);
+    console.log('changingPass ' + this.state.changingPassword);
 
     return (
       <Fragment>
@@ -302,7 +302,7 @@ class UserEdit extends Component {
                     <button
                       type="button"
                       id="triggerChangePassButton"
-                      style={{ float: "right" }}
+                      style={{ float: 'right' }}
                       className="btn btn-info"
                       data-toggle="modal"
                       data-target="#exampleModalCenter"

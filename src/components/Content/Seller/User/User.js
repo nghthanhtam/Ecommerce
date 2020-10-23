@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import UserModal from "./UserModal";
-import UserRow from "./UserRow";
-import { connect } from "react-redux";
-import { getUsers } from "../../../../actions/userActions";
-import PropTypes from "prop-types";
-import axios from "axios";
+import React, { Component } from 'react';
+import UserModal from './UserModal';
+import UserRow from './UserRow';
+import { connect } from 'react-redux';
+import { getUsers } from '../../../../state/actions/userActions';
+import PropTypes from 'prop-types';
+import axios from 'axios';
 
 const mapStateToProps = (state) => ({
   user: state.user,
@@ -12,12 +12,12 @@ const mapStateToProps = (state) => ({
 
 class User extends Component {
   state = {
-    sort: [{ value: "10" }, { value: "20" }, { value: "30" }],
-    select: "10",
+    sort: [{ value: '10' }, { value: '20' }, { value: '30' }],
+    select: '10',
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: "",
+    query: '',
   };
 
   componentDidMount() {
@@ -32,8 +32,8 @@ class User extends Component {
   getTotalDocuments = () => {
     const { query } = this.state;
 
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -47,8 +47,8 @@ class User extends Component {
   };
   getPages = () => {
     const { select, query } = this.state;
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -71,10 +71,10 @@ class User extends Component {
   };
 
   handleOnChange = (e) => {
-    console.log(typeof e.target.name + " " + e.target.name);
+    console.log(typeof e.target.name + ' ' + e.target.name);
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === "query") {
+      if (e.target.name === 'query') {
         this.setState({ currentPage: 1 }, () => {
           this.rerenderPage();
         });
@@ -117,7 +117,7 @@ class User extends Component {
         onChange={this.handleOnChange}
         name="select"
         aria-controls="example1"
-        style={{ margin: "0px 5px" }}
+        style={{ margin: '0px 5px' }}
         className="form-control input-sm"
         value={select}
       >
@@ -138,8 +138,8 @@ class User extends Component {
         key={eachButton.pageNumber}
         className={
           currentPage === eachButton.pageNumber
-            ? "paginae_button active"
-            : "paginate_button "
+            ? 'paginae_button active'
+            : 'paginate_button '
         }
       >
         <a
@@ -182,8 +182,8 @@ class User extends Component {
             {/* left column */}
             <div className="col-md-12">
               <div className="box">
-                <div className="box-header" style={{ marginTop: "5px" }}>
-                  <div style={{ paddingLeft: "5px" }} className="col-md-8">
+                <div className="box-header" style={{ marginTop: '5px' }}>
+                  <div style={{ paddingLeft: '5px' }} className="col-md-8">
                     <h3 className="box-title">Data Table With Full Features</h3>
                   </div>
 
@@ -216,12 +216,12 @@ class User extends Component {
                             id="example1_filter"
                             className="dataTables_filter"
                           >
-                            <label style={{ float: "right" }}>
+                            <label style={{ float: 'right' }}>
                               Tìm kiếm
                               <input
                                 type="search"
                                 name="query"
-                                style={{ margin: "0px 5px" }}
+                                style={{ margin: '0px 5px' }}
                                 className="form-control input-sm"
                                 placeholder="Nhập từ khóa...  "
                                 aria-controls="example1"
@@ -242,13 +242,13 @@ class User extends Component {
                         >
                           <thead>
                             <tr>
-                              <th style={{ width: "5%" }}>#</th>
-                              <th style={{ width: "5%" }}>ID Role</th>
-                              <th style={{ width: "10%" }}>Username</th>
-                              <th style={{ width: "20%" }}>Full name</th>
-                              <th style={{ width: "10%" }}>Phone number</th>
-                              <th style={{ width: "20%" }}>Address</th>
-                              <th style={{ width: "30%" }}>Action</th>
+                              <th style={{ width: '5%' }}>#</th>
+                              <th style={{ width: '5%' }}>ID Role</th>
+                              <th style={{ width: '10%' }}>Username</th>
+                              <th style={{ width: '20%' }}>Full name</th>
+                              <th style={{ width: '10%' }}>Phone number</th>
+                              <th style={{ width: '20%' }}>Address</th>
+                              <th style={{ width: '30%' }}>Action</th>
                             </tr>
                           </thead>
                           <tbody>{this.renderUsers()}</tbody>
@@ -274,8 +274,8 @@ class User extends Component {
                           role="status"
                           aria-live="polite"
                         >
-                          Hiển thị 1 đến {select} trong {totalDocuments} trang{" "}
-                          {totalDocuments < select ? totalDocuments : select} of{" "}
+                          Hiển thị 1 đến {select} trong {totalDocuments} trang{' '}
+                          {totalDocuments < select ? totalDocuments : select} of{' '}
                           {totalDocuments} entries
                         </div>
                       </div>
@@ -284,7 +284,7 @@ class User extends Component {
                           className="dataTables_paginate paging_simple_numbers"
                           id="example1_paginate"
                         >
-                          <ul className="pagination" style={{ float: "right" }}>
+                          <ul className="pagination" style={{ float: 'right' }}>
                             {this.renderPageButtons()}
                           </ul>
                         </div>

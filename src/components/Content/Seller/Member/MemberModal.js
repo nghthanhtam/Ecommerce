@@ -1,25 +1,25 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import { addMember, getMembers } from "../../../../actions/memberActions";
-import { addInvoice } from "../../../../actions/invoiceActions";
-import { showNoti } from "../../../../actions/notificationActions";
-import "react-notifications/lib/notifications.css";
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { addMember, getMembers } from '../../../../state/actions/memberActions';
+import { addInvoice } from '../../../../state/actions/invoiceActions';
+import { showNoti } from '../../../../state/actions/notificationActions';
+import 'react-notifications/lib/notifications.css';
 import {
   NotificationContainer,
   NotificationManager,
-} from "react-notifications";
-import PropTypes from "prop-types";
+} from 'react-notifications';
+import PropTypes from 'prop-types';
 
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 class MemberModal extends Component {
   state = {
-    name: "",
-    phone: "",
+    name: '',
+    phone: '',
     point: 0,
-    _id: "",
-    msg: "",
-    notiType: "",
+    _id: '',
+    msg: '',
+    notiType: '',
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -29,31 +29,31 @@ class MemberModal extends Component {
       }
 
       if (
-        this.props.member.type === "DELETE_MEMBER" ||
-        this.props.member.type === "GET_MEMBERS" ||
-        this.props.member.type === "GET_SEARCH_MEMBERS"
+        this.props.member.type === 'DELETE_MEMBER' ||
+        this.props.member.type === 'GET_MEMBERS' ||
+        this.props.member.type === 'GET_SEARCH_MEMBERS'
       ) {
         return;
       }
 
       if (this.props.member.response === 200) {
-        this.setState({ notiType: "success" });
+        this.setState({ notiType: 'success' });
       } else {
-        this.setState({ notiType: "failure" });
+        this.setState({ notiType: 'failure' });
       }
     }
   }
   onChange = (e) => {
     //this.setState({ [e.target.name]: e.target.value });
     const { name, value } = e.target;
-    let msg = "";
+    let msg = '';
 
     //Validation
     const isPassed = this.validatePhone(value);
     //const inputErrors = isPassed ? false : true;
 
-    if (!isPassed && name === "phone") {
-      msg = "Phone can only contain numbers and spaces";
+    if (!isPassed && name === 'phone') {
+      msg = 'Phone can only contain numbers and spaces';
     }
     this.setState({ [name]: value, msg: msg });
   };
@@ -73,32 +73,32 @@ class MemberModal extends Component {
     };
 
     this.props.addMember(newItem);
-    this.setState({ name: "", phone: "" });
+    this.setState({ name: '', phone: '' });
 
     // Close modal
-    document.getElementById("triggerButton").click();
+    document.getElementById('triggerButton').click();
   };
   onCancel = (e) => {
-    this.setState({ name: "", phone: "" });
+    this.setState({ name: '', phone: '' });
   };
   createNotification = () => {
     const { notiType } = this.state;
     this.props.showNoti(notiType);
-    this.setState({ notiType: "" });
+    this.setState({ notiType: '' });
   };
 
   render() {
     const { notiType, name, phone, point } = this.state;
     return (
       <Fragment>
-        {notiType !== "" ? this.createNotification() : null}
+        {notiType !== '' ? this.createNotification() : null}
         <NotificationContainer />
 
         {/* Button trigger modal */}
         <button
           type="button"
           id="triggerButton"
-          style={{ float: "right" }}
+          style={{ float: 'right' }}
           className="btn btn-primary"
           data-toggle="modal"
           data-target="#exampleModalCenter"
@@ -136,7 +136,7 @@ class MemberModal extends Component {
                   </span>
                 </div>
                 <div className="modal-body">
-                  {this.state.msg != "" ? (
+                  {this.state.msg != '' ? (
                     <div className="alert alert-danger alert-dismissible">
                       {this.state.msg}
                     </div>

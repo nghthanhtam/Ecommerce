@@ -2,86 +2,62 @@ import React, { Component, Fragment } from 'react';
 import EmployeeModal from './EmployeeModal';
 import EmployeeRow from './EmployeeRow';
 import { connect } from 'react-redux';
-import { getEmployees } from '../../../../actions/employeeActions';
+import { getEmployees } from '../../../../state/actions/employeeActions';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import Loader from 'react-loader';
 
 const mapStateToProps = (state) => ({
   employees: state.employee.employees,
   isLoaded: state.employee.isLoaded,
+  totalDocuments: state.employee.totalDocuments,
 });
 
 class Employee extends Component {
   state = {
-    sort: [{ value: '5' }, { value: '10' }, { value: '20' }],
+    sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
     // select: "5",
-    // page: 1,
-    limit: '5',
+    limit: 5,
     page: 1,
     pages: [],
     totalDocuments: 0,
     query: '',
+    start: 1,
+    end: 5,
   };
 
-  resetState = () => {
-    this.setState({ limit: '5', page: 1, query: '' });
-  };
   componentDidMount() {
     const { limit, page, query } = this.state;
-    this.getTotalDocuments();
-    this.getPages();
-    this.props.getEmployees({ limit, page, query });
+    let idShop = 1;
+    this.props.getEmployees({ limit, page, query, idShop });
   }
-
-  getTotalDocuments = () => {
-    const { query } = this.state;
-
-    let newQuery = '';
-    if (query === '') newQuery = 'undefined';
-    else newQuery = query;
-
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/count/${newQuery}`
-      )
-      .then((response) => {
-        this.setState({ totalDocuments: response.data });
-      })
-      .catch((er) => {
-        console.log(er.response);
-      });
-  };
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.isLoaded == true && this.state.pages == prevState.pages) {
+      this.getPages();
+    }
+  }
 
   getPages = () => {
     const { limit, query } = this.state;
+    const { totalDocuments } = this.props;
+    if (totalDocuments == 0) return;
+
     let newQuery = '';
     if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/count/${newQuery}`
-      )
-      .then((response) => {
-        let pages = Math.floor(response.data / limit);
-        let remainder = response.data % limit;
-        let newArray = [];
-        if (remainder !== 0) pages += 1;
+    let pages = Math.floor(totalDocuments / limit);
+    let remainder = totalDocuments % limit;
+    let newArray = [];
+    if (remainder !== 0) pages += 1;
 
-        for (let i = 0; i < pages; i++) {
-          newArray.push({ pageNumber: i + 1 });
-        }
+    for (let i = 0; i < pages; i++) {
+      newArray.push({ pageNumber: i + 1 });
+    }
 
-        this.setState({ pages: newArray });
-      })
-      .catch((er) => {
-        console.log(er.response);
-      });
+    this.setState({ pages: newArray });
   };
 
   handleOnChange = (e) => {
-    console.log(typeof e.target.name + ' ' + e.target.name);
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
       if (e.target.name === 'query') {
@@ -94,28 +70,46 @@ class Employee extends Component {
     });
   };
 
+  getStartEndDocuments() {
+    const { limit, page } = this.state;
+    const { totalDocuments } = this.props;
+    this.setState({ start: (page - 1) * limit + 1 }, () => {
+      let end;
+      console.log(Math.floor(totalDocuments / limit));
+      if (Math.floor(totalDocuments / limit) + 1 == page)
+        end = (page - 1) * limit + (totalDocuments % limit);
+      else end = page * limit;
+      this.setState({ end: end });
+    });
+  }
+
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    this.props.getEmployees({ limit, page, query });
+    let idShop = 1;
+    this.props.getEmployees({ limit, page, query, idShop });
     this.getPages();
-    this.getTotalDocuments();
+    this.getStartEndDocuments();
   };
 
   renderEmployees = () => {
+    const { start, limit, page } = this.state;
     const { employees } = this.props;
     return employees.map((eachEmployee, index) => (
       <EmployeeRow
         history={this.props.history}
-        key={eachEmployee._id}
+        key={eachEmployee.id}
         employee={eachEmployee}
-        index={index}
+        index={index + start - 1}
       />
     ));
   };
+
   handleChoosePage = (e) => {
     this.setState({ page: e }, () => {
       const { limit, page, query } = this.state;
-      this.props.getEmployees({ limit, page, query });
+      let idShop = 1;
+      this.props.getEmployees({ limit, page, query, idShop });
+      this.getStartEndDocuments();
     });
   };
 
@@ -124,7 +118,7 @@ class Employee extends Component {
     return (
       <select
         onChange={this.handleOnChange}
-        name="select"
+        name="limit"
         aria-controls="example1"
         style={{ margin: '0px 5px' }}
         className="form-control input-sm"
@@ -141,31 +135,32 @@ class Employee extends Component {
 
   renderPageButtons = () => {
     const { pages, page } = this.state;
-
-    return pages.map((eachButton) => (
-      <li
-        key={eachButton.pageNumber}
-        className={
-          page === eachButton.pageNumber
-            ? 'paginae_button active'
-            : 'paginate_button '
-        }
-      >
-        <a
-          className="paga-link"
-          name="currentPage"
-          href="#"
-          onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+    if (pages.length > 1) {
+      return pages.map((eachButton) => (
+        <li
+          key={eachButton.pageNumber}
+          className={
+            page === eachButton.pageNumber
+              ? 'paginae_button active'
+              : 'paginate_button '
+          }
         >
-          {eachButton.pageNumber}
-        </a>
-      </li>
-    ));
+          <a
+            className="paga-link"
+            name="currentPage"
+            href="#"
+            onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+          >
+            {eachButton.pageNumber}
+          </a>
+        </li>
+      ));
+    }
   };
 
   render() {
-    const { limit, totalDocuments } = this.state;
-    const { isLoaded } = this.props;
+    const { limit, page, start, end, query } = this.state;
+    const { isLoaded, totalDocuments } = this.props;
     return (
       <Fragment>
         {!isLoaded ? (
@@ -201,7 +196,7 @@ class Employee extends Component {
                       </div>
 
                       <div className="col-md-4">
-                        <EmployeeModal />
+                        <EmployeeModal limit={limit} page={page} />
                       </div>
                     </div>
                     {/* /.box-header */}
@@ -239,7 +234,7 @@ class Employee extends Component {
                                     placeholder="Nhập từ khóa... "
                                     aria-controls="example1"
                                     onChange={this.handleOnChange}
-                                    value={this.state.query}
+                                    value={query}
                                   />
                                 </label>
                               </div>
@@ -255,13 +250,16 @@ class Employee extends Component {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: '10%' }}>#</th>
-                                  <th style={{ width: '20%' }}>
+                                  <th style={{ width: '5%' }}>#</th>
+                                  <th style={{ width: '15%' }}>
                                     Tên tài khoản
                                   </th>
-                                  <th style={{ width: '20%' }}>Vai trò</th>
-                                  <th style={{ width: '20%' }}>Trạng thái</th>
-                                  <th style={{ width: '30%' }}>Hành động</th>
+                                  <th style={{ width: '10%' }}>Vai trò</th>
+                                  <th style={{ width: '20%' }}>Họ tên</th>
+                                  <th style={{ width: '15%' }}>
+                                    Số điện thoại
+                                  </th>
+                                  <th style={{ width: '20%' }}>Hành động</th>
                                 </tr>
                               </thead>
                               <tbody>{this.renderEmployees()}</tbody>
@@ -270,7 +268,8 @@ class Employee extends Component {
                                   <th>#</th>
                                   <th>Tên tài khoản</th>
                                   <th>Vai trò</th>
-                                  <th>Trạng thái</th>
+                                  <th>Họ tên</th>
+                                  <th>Số điện thoại</th>
                                   <th>Hành động</th>
                                 </tr>
                               </tfoot>
@@ -285,8 +284,11 @@ class Employee extends Component {
                               role="status"
                               aria-live="polite"
                             >
-                              Hiển thị 1 đến {limit} trong {totalDocuments} kết
-                              quả
+                              Hiển thị{' '}
+                              {query == ''
+                                ? start + ' đến ' + end + ' trong '
+                                : ''}{' '}
+                              {totalDocuments} kết quả
                             </div>
                           </div>
                           <div className="col-sm-7">
@@ -323,6 +325,7 @@ Employee.propTypes = {
   getEmployees: PropTypes.func.isRequired,
   employees: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
+  totalDocuments: PropTypes.number.isRequired,
 };
 
 export default connect(mapStateToProps, { getEmployees })(Employee);

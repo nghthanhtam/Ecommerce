@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import MaterialModal from "./MaterialModal";
-import MaterialRow from "./MaterialRow";
-import { connect } from "react-redux";
-import { getMaterials } from "../../../../actions/materialActions";
-import PropTypes from "prop-types";
-import axios from "axios";
+import React, { Component } from 'react';
+import MaterialModal from './MaterialModal';
+import MaterialRow from './MaterialRow';
+import { connect } from 'react-redux';
+import { getMaterials } from '../../../../state/actions/materialActions';
+import PropTypes from 'prop-types';
+import axios from 'axios';
 
 const mapStateToProps = (state) => ({
   material: state.material,
@@ -12,12 +12,12 @@ const mapStateToProps = (state) => ({
 
 class Material extends Component {
   state = {
-    sort: [{ value: "10" }, { value: "20" }, { value: "30" }],
-    select: "10",
+    sort: [{ value: '10' }, { value: '20' }, { value: '30' }],
+    select: '10',
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: "",
+    query: '',
   };
 
   componentDidMount() {
@@ -32,8 +32,8 @@ class Material extends Component {
   getTotalDocuments = () => {
     const { query } = this.state;
 
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -47,8 +47,8 @@ class Material extends Component {
   };
   getPages = () => {
     const { select, query } = this.state;
-    let newQuery = "";
-    if (query === "") newQuery = "undefined";
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
     else newQuery = query;
 
     axios
@@ -71,10 +71,10 @@ class Material extends Component {
   };
 
   handleOnChange = (e) => {
-    console.log(typeof e.target.name + " " + e.target.name);
+    console.log(typeof e.target.name + ' ' + e.target.name);
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === "query") {
+      if (e.target.name === 'query') {
         this.setState({ currentPage: 1 }, () => {
           this.rerenderPage();
         });
@@ -116,7 +116,7 @@ class Material extends Component {
         onChange={this.handleOnChange}
         name="select"
         aria-controls="example1"
-        style={{ margin: "0px 5px" }}
+        style={{ margin: '0px 5px' }}
         className="form-control input-sm"
         value={select}
       >
@@ -137,8 +137,8 @@ class Material extends Component {
         key={eachButton.pageNumber}
         className={
           currentPage === eachButton.pageNumber
-            ? "paginae_button active"
-            : "paginate_button "
+            ? 'paginae_button active'
+            : 'paginate_button '
         }
       >
         <a
@@ -181,8 +181,8 @@ class Material extends Component {
             {/* left column */}
             <div className="col-md-12">
               <div className="box">
-                <div className="box-header" style={{ marginTop: "5px" }}>
-                  <div style={{ paddingLeft: "5px" }} className="col-md-8">
+                <div className="box-header" style={{ marginTop: '5px' }}>
+                  <div style={{ paddingLeft: '5px' }} className="col-md-8">
                     <h3 className="box-title">Data Table With Full Features</h3>
                   </div>
 
@@ -215,12 +215,12 @@ class Material extends Component {
                             id="example1_filter"
                             className="dataTables_filter"
                           >
-                            <label style={{ float: "right" }}>
+                            <label style={{ float: 'right' }}>
                               Tìm kiếm
                               <input
                                 type="search"
                                 name="query"
-                                style={{ margin: "0px 5px" }}
+                                style={{ margin: '0px 5px' }}
                                 className="form-control input-sm"
                                 placeholder="Nhập từ khóa...  "
                                 aria-controls="example1"
@@ -241,11 +241,11 @@ class Material extends Component {
                         >
                           <thead>
                             <tr>
-                              <th style={{ width: "10%" }}>#</th>
-                              <th style={{ width: "20%" }}>Material</th>
-                              <th style={{ width: "20%" }}>Created date</th>
-                              <th style={{ width: "20%" }}>Quantity</th>
-                              <th style={{ width: "30%" }}>Action</th>
+                              <th style={{ width: '10%' }}>#</th>
+                              <th style={{ width: '20%' }}>Material</th>
+                              <th style={{ width: '20%' }}>Created date</th>
+                              <th style={{ width: '20%' }}>Quantity</th>
+                              <th style={{ width: '30%' }}>Action</th>
                             </tr>
                           </thead>
                           <tbody>{this.renderMaterials()}</tbody>
@@ -269,8 +269,8 @@ class Material extends Component {
                           role="status"
                           aria-live="polite"
                         >
-                          Hiển thị 1 đến {select} trong {totalDocuments} trang{" "}
-                          {totalDocuments < select ? totalDocuments : select} of{" "}
+                          Hiển thị 1 đến {select} trong {totalDocuments} trang{' '}
+                          {totalDocuments < select ? totalDocuments : select} of{' '}
                           {totalDocuments} entries
                         </div>
                       </div>
@@ -279,7 +279,7 @@ class Material extends Component {
                           className="dataTables_paginate paging_simple_numbers"
                           id="example1_paginate"
                         >
-                          <ul className="pagination" style={{ float: "right" }}>
+                          <ul className="pagination" style={{ float: 'right' }}>
                             {this.renderPageButtons()}
                           </ul>
                         </div>

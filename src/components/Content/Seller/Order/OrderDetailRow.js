@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { deleteEmployee } from '../../../../state/actions/employeeActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
-class EmployeeRow extends Component {
+class OrderRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
@@ -19,7 +18,7 @@ class EmployeeRow extends Component {
     return year + '-' + month + '-' + dt;
   };
   handleEdit = (id) => {
-    this.props.pushHistory(`/employee/edit/${id}`);
+    this.props.pushHistory(`/order/edit/${id}`);
   };
   handleDelete = (id) => {
     this.props.deleteEmployee(id);
@@ -29,7 +28,12 @@ class EmployeeRow extends Component {
     const { employee, index } = this.props;
 
     return (
-      <tr>
+      <tr
+        style={{
+          fontWeight: employee.status == 'U' ? '700' : '0',
+          color: '#0d1136',
+        }}
+      >
         <td>{index + 1}</td>
         <td>{employee.username}</td>
         {/* <td>{this.convertDate(employee.createAt)}</td> */}
@@ -41,17 +45,9 @@ class EmployeeRow extends Component {
             <button
               onClick={() => this.handleEdit(employee.id)}
               type="button"
-              className="btn btn-success"
+              className="btn btn-default"
             >
-              Sửa
-            </button>
-
-            <button
-              onClick={() => this.handleDelete(employee.id)}
-              type="button"
-              className="btn btn-danger"
-            >
-              Xóa
+              Xem chi tiết
             </button>
           </div>
         </td>
@@ -60,4 +56,4 @@ class EmployeeRow extends Component {
   }
 }
 
-export default connect(null, { deleteEmployee, pushHistory })(EmployeeRow);
+export default connect(null, { pushHistory })(OrderRow);

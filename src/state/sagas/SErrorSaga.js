@@ -1,10 +1,10 @@
-import { takeEvery, put } from "redux-saga/effects";
+import { takeEvery, put } from 'redux-saga/effects';
 import {
   GET_ERRORS,
   CLEAR_ERRORS,
   ERRORS_RETURNED,
   ERRORS_CLEARED,
-} from "../actions/types";
+} from '../../state/actions/types';
 
 function* getErrors(params) {
   console.log(params);

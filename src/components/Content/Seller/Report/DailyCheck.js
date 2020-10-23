@@ -1,31 +1,31 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import { deleteMember } from "../../../../actions/memberActions";
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { deleteMember } from '../../../../state/actions/memberActions';
 import {
   updateQtyMaterial,
   getAllMaterials,
-} from "../../../../actions/materialActions";
-import { addStorageReport } from "../../../../actions/storageReportActions";
-import { showNoti } from "../../../../actions/notificationActions";
-import { NotificationContainer } from "react-notifications";
-import PropTypes from "prop-types";
-import Loader from "react-loader";
-import Select from "react-select";
+} from '../../../../state/actions/materialActions';
+import { addStorageReport } from '../../../../state/actions/storageReportActions';
+import { showNoti } from '../../../../state/actions/notificationActions';
+import { NotificationContainer } from 'react-notifications';
+import PropTypes from 'prop-types';
+import Loader from 'react-loader';
+import Select from 'react-select';
 
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 class DailyCheck extends Component {
   state = {
-    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
-    select: "5",
+    sort: [{ value: '5' }, { value: '10' }, { value: '20' }],
+    select: '5',
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: "",
+    query: '',
     rows: [],
     options: [],
     index: 0,
-    notiType: "",
+    notiType: '',
   };
 
   removeItem(index) {
@@ -49,7 +49,7 @@ class DailyCheck extends Component {
 
   createNotification = () => {
     this.props.showNoti(this.state.notiType);
-    this.setState({ notiType: "" });
+    this.setState({ notiType: '' });
   };
 
   convertDate = (date) => {
@@ -61,7 +61,7 @@ class DailyCheck extends Component {
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
 
-    return year + "-" + month + "-" + dt;
+    return year + '-' + month + '-' + dt;
   };
 
   addRow = () => {
@@ -94,8 +94,8 @@ class DailyCheck extends Component {
         ...rows,
         {
           _id: this.state.index + 1,
-          materialId: "",
-          name: "Select...",
+          materialId: '',
+          name: 'Select...',
           quantity: 0,
           quantitydb: 0,
           usedqty: 0,
@@ -123,7 +123,7 @@ class DailyCheck extends Component {
 
       const newItem = {
         _id: mongoose.Types.ObjectId(),
-        idMember: "tam test",
+        idMember: 'tam test',
         idMaterial: el.materialId,
         createddate: new Date(),
         quantity: el.quantity,
@@ -133,7 +133,7 @@ class DailyCheck extends Component {
   };
 
   componentDidMount() {
-    this.props.getAllMaterials("");
+    this.props.getAllMaterials('');
   }
 
   componentDidUpdate(prevProps) {
@@ -148,10 +148,10 @@ class DailyCheck extends Component {
         this.state.rows[0].materialId
       ) {
         if (this.props.storagereport.response === 200) {
-          console.log("200");
-          this.setState({ notiType: "success" });
+          console.log('200');
+          this.setState({ notiType: 'success' });
         } else {
-          this.setState({ notiType: "failure" });
+          this.setState({ notiType: 'failure' });
         }
       }
     }
@@ -220,10 +220,10 @@ class DailyCheck extends Component {
           //const newItem = { _id: index, materialId: selectedMaterial.value, quantity: 0, quantitydb: selectedMaterial.quantityIndb, usedqty: 0, options: this.state.options, createAt: new Date() };
           //const newItem = { _id: el._id, materialId:el.materialId, quantity: el.quantityIndb - val, quantitydb: el.quantitydb, usedqty: val, options: this.state.options, createAt: new Date() };
           const newItem = Object.assign(el);
-          newItem["quantity"] = el.quantitydb - val;
-          newItem["usedqty"] = val;
-          newItem["options"] = this.state.options;
-          newItem["createAt"] = new Date();
+          newItem['quantity'] = el.quantitydb - val;
+          newItem['usedqty'] = val;
+          newItem['options'] = this.state.options;
+          newItem['createAt'] = new Date();
 
           rows.splice(index, 1); //xoa 1 phan tu o vi tri index
           rows.splice(index, 0, newItem); //chen newItem vao vi tri thu index
@@ -246,7 +246,7 @@ class DailyCheck extends Component {
           <Loader></Loader>
         ) : (
           <React.Fragment>
-            {this.state.notiType !== "" ? this.createNotification() : null}
+            {this.state.notiType !== '' ? this.createNotification() : null}
             <NotificationContainer />
             {/* Content Header (Page header) */}
             <section className="content-header">
@@ -287,7 +287,7 @@ class DailyCheck extends Component {
                                 <button
                                   type="button"
                                   id="btnAdd"
-                                  style={{ float: "left" }}
+                                  style={{ float: 'left' }}
                                   className="btn btn-primary"
                                   data-toggle="modal"
                                   onClick={this.addRow}
@@ -313,14 +313,14 @@ class DailyCheck extends Component {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: "5%" }}>#</th>
-                                  <th style={{ width: "15%" }}>Material</th>
-                                  <th style={{ width: "15%" }}>Quantity</th>
-                                  <th style={{ width: "15%" }}>
+                                  <th style={{ width: '5%' }}>#</th>
+                                  <th style={{ width: '15%' }}>Material</th>
+                                  <th style={{ width: '15%' }}>Quantity</th>
+                                  <th style={{ width: '15%' }}>
                                     Used Quantity
                                   </th>
-                                  <th style={{ width: "15%" }}>Created date</th>
-                                  <th style={{ width: "5%" }}></th>
+                                  <th style={{ width: '15%' }}>Created date</th>
+                                  <th style={{ width: '5%' }}></th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -335,7 +335,7 @@ class DailyCheck extends Component {
                                       styles={{
                                         control: (base, state) => ({
                                           ...base,
-                                          borderColor: "transparent",
+                                          borderColor: 'transparent',
                                         }),
                                       }}
                                       value={{
@@ -358,7 +358,7 @@ class DailyCheck extends Component {
                                     <td>{this.convertDate(el.createAt)}</td>
                                     <td>
                                       <div
-                                        style={{ cursor: "pointer" }}
+                                        style={{ cursor: 'pointer' }}
                                         onClick={() => this.removeItem(index)}
                                         className="fa fa-trash-o"
                                       ></div>
@@ -397,7 +397,7 @@ class DailyCheck extends Component {
                               <button
                                 type="button"
                                 id="btnSubmit"
-                                style={{ float: "right" }}
+                                style={{ float: 'right' }}
                                 className="btn btn-primary"
                                 onClick={this.onSubmit}
                               >
@@ -442,7 +442,7 @@ export default connect(mapStateToProps, {
 })(DailyCheck);
 
 const inputField = {
-  "&:focus": {
-    outline: "none",
+  '&:focus': {
+    outline: 'none',
   },
 };

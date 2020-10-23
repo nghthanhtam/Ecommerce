@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { connect } from "react-redux";
-import { deleteMember } from "../../../../actions/memberActions";
+import { connect } from 'react-redux';
+import { deleteMember } from '../../../../state/actions/memberActions';
 
 class MemberRow extends Component {
   convertDate = (date) => {
@@ -17,7 +17,7 @@ class MemberRow extends Component {
     //   month = "0" + month;
     // }
 
-    return year + "-" + month + "-" + dt;
+    return year + '-' + month + '-' + dt;
   };
   handleEdit = (id) => {
     this.props.history.push(`/member/edit/${id}`);

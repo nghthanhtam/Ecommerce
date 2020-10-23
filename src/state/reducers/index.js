@@ -14,6 +14,7 @@ import supplierReducer from './supplierReducer';
 import storageReportReducer from './storageReportReducer';
 import invoicedetReducer from './invoicedetReducer';
 import shopReducer from './shopReducer';
+import productaddReducer from './productaddReducer';
 
 export default combineReducers({
   employee: employeeReducer,
@@ -31,4 +32,5 @@ export default combineReducers({
   supplier: supplierReducer,
   storagereport: storageReportReducer,
   shop: shopReducer,
+  productadd: productaddReducer,
 });

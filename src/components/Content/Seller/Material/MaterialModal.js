@@ -1,12 +1,12 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { connect } from "react-redux";
-import { addMaterial } from "../../../../actions/materialActions";
+import { connect } from 'react-redux';
+import { addMaterial } from '../../../../state/actions/materialActions';
 
 class MaterialModal extends Component {
   state = {
-    _id: "",
-    name: "",
+    _id: '',
+    name: '',
     quantity: 0,
   };
 
@@ -21,7 +21,7 @@ class MaterialModal extends Component {
       name: this.state.name,
       createAt: Date.now(),
       quantity: Number(
-        Math.round(parseFloat(this.state.quantity + "e" + 2)) + "e-" + 2
+        Math.round(parseFloat(this.state.quantity + 'e' + 2)) + 'e-' + 2
       ),
     };
 
@@ -29,7 +29,7 @@ class MaterialModal extends Component {
     console.log(newItem._id);
     this.setState({ _id: newItem._id });
     // Close modal
-    document.getElementById("triggerButton").click();
+    document.getElementById('triggerButton').click();
 
     //Reload page
     window.location.reload();
@@ -48,7 +48,7 @@ class MaterialModal extends Component {
         <button
           type="button"
           id="triggerButton"
-          style={{ float: "right" }}
+          style={{ float: 'right' }}
           className="btn btn-primary"
           data-toggle="modal"
           data-target="#exampleModalCenter"

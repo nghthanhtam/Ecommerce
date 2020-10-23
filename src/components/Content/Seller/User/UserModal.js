@@ -1,16 +1,16 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { connect } from "react-redux";
-import { addUser } from "../../../../actions/userActions";
+import { connect } from 'react-redux';
+import { addUser } from '../../../../state/actions/userActions';
 
 class UserModal extends Component {
   state = {
-    idRole: "",
-    username: "",
-    password: "",
-    fullName: "",
-    phoneNumber: "",
-    address: "",
+    idRole: '',
+    username: '',
+    password: '',
+    fullName: '',
+    phoneNumber: '',
+    address: '',
   };
 
   onChange = (e) => {
@@ -33,7 +33,7 @@ class UserModal extends Component {
     this.props.addUser(newItem);
 
     // Close modal
-    document.getElementById("triggerButton").click();
+    document.getElementById('triggerButton').click();
 
     //Toggle
 
@@ -50,7 +50,7 @@ class UserModal extends Component {
         <button
           type="button"
           id="triggerButton"
-          style={{ float: "right" }}
+          style={{ float: 'right' }}
           className="btn btn-primary"
           data-toggle="modal"
           data-target="#exampleModalCenter"

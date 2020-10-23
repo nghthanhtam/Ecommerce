@@ -1,22 +1,45 @@
 import React, { Component, Fragment } from 'react';
-import { useHistory } from 'react-router-dom';
 import Loader from 'react-loader';
 import Select from 'react-select';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './product.css';
+import { connect } from 'react-redux';
 import ProductModal from './ProductModal';
 import DuplicateProduct from './DuplicateProduct';
+import { updateProduct } from '../../../../state/actions/productaddActions';
 
+const mapStateToProps = (state) => ({
+  productadds: state.productadd.productadds,
+});
 class ProductAdd extends Component {
   state = {
     selectedFiles: [],
     errorMessage: '',
     propValueList: [],
     isPriceBoardHidden: true,
-    skuproduct: { productId: '', sku: '', price: 0, qty: 0 },
-    skuProductList: [{ _id: 0, productId: '', sku: '', price: 0, qty: 0 }],
+    skuproduct: {
+      productId: '',
+      name: '',
+      sku: '',
+      marketPrice: 0,
+      price: 0,
+      qty: 0,
+      variantList: [],
+    },
+    skuProductList: [
+      {
+        _id: 0,
+        productId: '',
+        name: '',
+        sku: '',
+        marketPrice: 0,
+        price: 0,
+        qty: 0,
+        variantList: [],
+      },
+    ],
     productList: [1, 2, 3, 4, 5, 6, 7, 8],
     categoryList: [
       { _id: 1, value: 'BOOK', label: 'Sách' },
@@ -40,37 +63,38 @@ class ProductAdd extends Component {
   addRow = () => {
     let { skuproduct } = this.state,
       obj = {};
-
     obj = Object.assign(skuproduct);
-
     this.setState((prepState) => ({
       //add obj to list sku product
       skuProductList: [...prepState.skuProductList, obj],
     }));
   };
 
-  onCellNameEdit = (e, index) => {
-    let val = e.target.textContent;
-    this.setState((state) => {
-      let skuProductList = [...state.skuProductList];
+  onChange = (e, index) => {
+    let val = e.target.textContent,
+      changeProp = e.target.getAttribute('name');
+    this.setState(
+      (state) => {
+        let skuProductList = [...state.skuProductList];
 
-      for (var product of skuProductList) {
-        if (product._id == index) {
-          const newItem = Object.assign(product);
-          newItem['quantity'] = product.quantitydb - val;
-          newItem['usedqty'] = val;
-          newItem['options'] = this.state.options;
-          newItem['createAt'] = new Date();
+        for (var product of skuProductList) {
+          if (product._id == index) {
+            const newItem = Object.assign(product);
+            newItem[changeProp] = val;
 
-          skuProductList.splice(index, 1); //xoa 1 phan tu o vi tri index
-          skuProductList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
+            skuProductList.splice(index, 1); //xoa 1 phan tu o vi tri index
+            skuProductList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
+          }
         }
-      }
 
-      return {
-        skuProductList,
-      };
-    });
+        return {
+          skuProductList,
+        };
+      },
+      () => {
+        console.log(this.state.skuProductList[0]);
+      }
+    );
   };
 
   removeItem = (index) => {
@@ -91,11 +115,9 @@ class ProductAdd extends Component {
     const {
         propValueList,
         skuProductList,
-        selectedFiles,
         categoryList,
         category,
         variantList,
-        errorMessage,
         productList,
       } = this.state,
       settings = {
@@ -105,52 +127,7 @@ class ProductAdd extends Component {
         slidesToScroll: 4,
         className: 'slider',
       };
-    const dragOver = (e) => {
-      e.preventDefault();
-    };
-
-    const dragEnter = (e) => {
-      e.preventDefault();
-    };
-
-    const dragLeave = (e) => {
-      e.preventDefault();
-    };
-    const validateFile = (file) => {
-      const validTypes = [
-        'image/jpeg',
-        'image/jpg',
-        'image/png',
-        'image/x-icon',
-      ];
-      if (validTypes.indexOf(file.type) === -1) {
-        return false;
-      }
-      return true;
-    };
-    const handleFiles = (files) => {
-      for (let i = 0; i < files.length; i++) {
-        if (validateFile(files[i])) {
-          files[i].filePath = URL.createObjectURL(files[i]);
-
-          this.setState((prepState) => ({
-            selectedFiles: [...prepState.selectedFiles, files[i]],
-          }));
-        } else {
-          files[i]['invalid'] = true;
-          this.setState({ errorMessage: 'File type not permitted' });
-        }
-      }
-    };
-    const fileDrop = (e) => {
-      e.preventDefault();
-      const files = e.dataTransfer.files;
-
-      if (files.length) {
-        handleFiles(files);
-      }
-    };
-
+    const { updateProduct } = this.props;
     return (
       <Fragment>
         <Fragment>
@@ -216,22 +193,56 @@ class ProductAdd extends Component {
                         required
                       ></Select>
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="exampleInputEmail1">Thương hiệu</label>
-                      <input
-                        className="form-control"
-                        id="exampleInputEmail1"
-                        placeholder="Nhập tên thương hiệu ..."
-                      />
-                    </div>
-                    {category !== 'BOOK' ? (
-                      <div className="form-group">
-                        <label htmlFor="exampleInputEmail1">Chất liệu</label>
-                        <input
-                          className="form-control"
-                          id="exampleInputEmail1"
-                          placeholder="Nhập chất liệu ..."
-                        />
+                    {category == 'TOY' || category == 'CLOTHES' ? (
+                      <div className="row-flex">
+                        <div
+                          className="form-group"
+                          style={{ width: '50%', paddingRight: '20px' }}
+                        >
+                          <label htmlFor="exampleInputEmail1">
+                            Thương hiệu
+                          </label>
+                          <input
+                            className="form-control"
+                            id="exampleInputEmail1"
+                            placeholder="Nhập tên thương hiệu ..."
+                          />
+                        </div>
+                        <div className="form-group" style={{ width: '50%' }}>
+                          <label htmlFor="exampleInputEmail1">Chất liệu</label>
+                          <input
+                            className="form-control"
+                            id="exampleInputEmail1"
+                            placeholder="Nhập tên chất liệu ..."
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+                    {category == 'BOOK' ? (
+                      <div className="row-flex">
+                        <div
+                          className="form-group"
+                          style={{ width: '50%', paddingRight: '20px' }}
+                        >
+                          <label htmlFor="exampleInputEmail1">
+                            Tên tác giả
+                          </label>
+                          <input
+                            className="form-control"
+                            id="exampleInputEmail1"
+                            placeholder="Nhập tên tác giả ..."
+                          />
+                        </div>
+                        <div className="form-group" style={{ width: '50%' }}>
+                          <label htmlFor="exampleInputEmail1">
+                            Nhà xuất bản
+                          </label>
+                          <input
+                            className="form-control"
+                            id="exampleInputEmail1"
+                            placeholder="Nhập nhà xuất bản ..."
+                          />
+                        </div>
                       </div>
                     ) : null}
                     <div className="form-group">
@@ -338,14 +349,16 @@ class ProductAdd extends Component {
                                             }),
                                           }}
                                           options={item.list}
+                                          name="select"
+                                          onBlur={(e) =>
+                                            this.onChange(e, index)
+                                          }
                                         />
                                       </td>
                                     ))}
 
                                     <td
-                                      onBlur={(e) =>
-                                        this.onCellNameEdit(e, index)
-                                      }
+                                      onBlur={(e) => this.onChange(e, index)}
                                       name="name"
                                       bgcolor="#FFFFFF"
                                       style={inputField}
@@ -356,19 +369,22 @@ class ProductAdd extends Component {
                                       bgcolor="#FFFFFF"
                                       style={inputField}
                                       contentEditable="true"
+                                      onBlur={(e) => this.onChange(e, index)}
                                     ></td>
 
                                     <td
-                                      name="fakeprice"
+                                      name="marketPrice"
                                       bgcolor="#FFFFFF"
                                       style={inputField}
                                       contentEditable="true"
+                                      onBlur={(e) => this.onChange(e, index)}
                                     ></td>
                                     <td
                                       name="price"
                                       bgcolor="#FFFFFF"
                                       style={inputField}
                                       contentEditable="true"
+                                      onBlur={(e) => this.onChange(e, index)}
                                     ></td>
                                     <td bgcolor="#FFFFFF">
                                       <div
@@ -391,13 +407,16 @@ class ProductAdd extends Component {
 
                     <button
                       type="button"
-                      id="btnUpload"
                       style={{ float: 'right' }}
                       className="btn btn-primary"
                       data-toggle="modal"
-                      onClick={() =>
-                        this.props.history.push('/add-product/photos')
-                      }
+                      onClick={() => {
+                        updateProduct(skuProductList);
+                        this.props.history.push({
+                          pathname: '/add-product/photos',
+                          detail: skuProductList,
+                        });
+                      }}
                     >
                       Tiếp theo
                     </button>
@@ -419,8 +438,8 @@ class ProductAdd extends Component {
 //   isLoaded: PropTypes.bool.isRequired,
 // };
 
-// export default connect(mapStateToProps, { getCategories })(Product);
-export default ProductAdd;
+export default connect(mapStateToProps, { updateProduct })(ProductAdd);
+//export default ProductAdd;
 const inputField = {
   '&:focus': {
     outline: 'none',

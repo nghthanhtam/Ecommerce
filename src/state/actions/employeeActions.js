@@ -3,7 +3,7 @@ import {
   ADD_EMPLOYEE,
   DELETE_EMPLOYEE,
   UPDATE_EMPLOYEE,
-} from "./types";
+} from './types';
 
 // export const getCategories = (show = 5, page = 1, query) => (
 //   dispatch,
@@ -47,41 +47,41 @@ export const deleteEmployee = (id) => ({
 //     .catch((er) => console.log(er.response));
 // };
 
-// export const addCategory = (newCategory) => (dispatch, getState) => {
+// export const addCategory = (newEmp) => (dispatch, getState) => {
 //   axios
 //     .post(
 //       `${process.env.REACT_APP_BACKEND_HOST}/api/category/`,
-//       newCategory,
+//       newEmp,
 //       tokenConfig(getState)
 //     )
 //     .then((response) => {
-//       if (newCategory._id instanceof mongoose.Types.ObjectId) {
-//         newCategory._id = newCategory._id.toString();
+//       if (newEmp._id instanceof mongoose.Types.ObjectId) {
+//         newEmp._id = newEmp._id.toString();
 //       }
 
 //       dispatch({
 //         type: ADD_EMPLOYEE,
-//         payload: newCategory,
+//         payload: newEmp,
 //       });
 //     })
 //     .catch((er) => console.log(er.response));
 // };
 
-export const addEmployee = (newCategory) => ({
+export const addEmployee = (newEmp) => ({
   type: ADD_EMPLOYEE,
-  newCategory: newCategory,
+  newEmp: newEmp,
 });
 
-export const updateEmployee = (newCategory) => ({
+export const updateEmployee = (newEmp) => ({
   type: UPDATE_EMPLOYEE,
-  newCategory: newCategory,
+  newEmp: newEmp,
 });
 
-// export const updateCategory = (newCategory) => (dispatch, getState) => {
+// export const updateCategory = (newEmp) => (dispatch, getState) => {
 //   axios
 //     .put(
-//       `${process.env.REACT_APP_BACKEND_HOST}/api/category/${newCategory._id}`,
-//       newCategory,
+//       `${process.env.REACT_APP_BACKEND_HOST}/api/category/${newEmp._id}`,
+//       newEmp,
 //       tokenConfig(getState)
 //     )
 

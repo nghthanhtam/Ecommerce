@@ -1,29 +1,29 @@
-import React, { Fragment, Component } from "react";
-import axios from "axios";
-import { connect } from "react-redux";
-import { showNoti } from "../../../../actions/notificationActions";
-import "react-notifications/lib/notifications.css";
-import { NotificationContainer } from "react-notifications";
-import { updateSupplier } from "../../../../actions/supplierActions";
+import React, { Fragment, Component } from 'react';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { showNoti } from '../../../../state/actions/notificationActions';
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer } from 'react-notifications';
+import { updateSupplier } from '../../../../state/actions/supplierActions';
 class SupplierEdit extends Component {
   state = {
-    name: "",
-    phone: "",
-    address: "",
-    _id: "",
-    msg: "",
+    name: '',
+    phone: '',
+    address: '',
+    _id: '',
+    msg: '',
   };
 
   tokenConfig = (token) => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        'Content-type': 'application/json',
       },
     };
 
     //Header
     if (token) {
-      config.headers["x-auth-token"] = token;
+      config.headers['x-auth-token'] = token;
     }
 
     return config;
@@ -38,7 +38,7 @@ class SupplierEdit extends Component {
         this.tokenConfig(this.props.auth.token)
       )
       .then((response) => {
-        if (response.data === null) this.props.history.push("/404");
+        if (response.data === null) this.props.history.push('/404');
         const { name, phone, address, _id } = response.data;
 
         this.setState({
@@ -72,23 +72,23 @@ class SupplierEdit extends Component {
 
   handleChange = (e) => {
     const { name, value } = e.target;
-    let msg = "";
+    let msg = '';
 
     //validation
     let isPassed;
-    if (name === "name") isPassed = this.validateName(value);
-    if (name === "phone") isPassed = this.validatePhone(value);
-    if (name === "address") isPassed = this.validateAddress(value);
+    if (name === 'name') isPassed = this.validateName(value);
+    if (name === 'phone') isPassed = this.validatePhone(value);
+    if (name === 'address') isPassed = this.validateAddress(value);
 
     console.log(isPassed);
 
-    if (name === "name" && !isPassed) msg = "Name can contain only letters !";
-    if (name === "phone" && !isPassed)
-      msg = "Phone can contain only numbers with correct format !";
-    if (name === "address" && !isPassed)
-      msg = "Username can contain only letters and numbers !";
+    if (name === 'name' && !isPassed) msg = 'Name can contain only letters !';
+    if (name === 'phone' && !isPassed)
+      msg = 'Phone can contain only numbers with correct format !';
+    if (name === 'address' && !isPassed)
+      msg = 'Username can contain only letters and numbers !';
 
-    if (value === "") msg = "";
+    if (value === '') msg = '';
     this.setState({ [name]: value, msg });
 
     //this.setState({ [e.target.name]: e.target.value });
@@ -107,11 +107,11 @@ class SupplierEdit extends Component {
 
     this.props.updateSupplier(newSupplier);
     //Quay về trang chính
-    this.props.history.push("/supplier");
+    this.props.history.push('/supplier');
   };
 
   handleCancel = (e) => {
-    this.props.history.push("/supplier");
+    this.props.history.push('/supplier');
   };
   render() {
     const { name, phone, address, _id } = this.state;

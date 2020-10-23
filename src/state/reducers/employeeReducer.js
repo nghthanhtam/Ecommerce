@@ -4,12 +4,13 @@ import {
   DELETE_EMPLOYEE,
   EMPLOYEE_DELETED,
   EMPLOYEES_RECEIVED,
-  EMPLOYEES_ADDED,
+  EMPLOYEE_ADDED,
   EMPLOYEE_UPDATED,
-} from "../actions/types";
+} from '../actions/types';
 
 const initialState = {
   employees: [],
+  totalDocuments: 0,
   isLoaded: false,
 };
 
@@ -21,17 +22,22 @@ export default function (state = initialState, action) {
         isLoaded: true,
       };
     case EMPLOYEES_RECEIVED:
-      return { ...state, employees: action.payload.data, isLoaded: true };
+      return {
+        ...state,
+        employees: action.payload.data.items,
+        totalDocuments: action.payload.data.total,
+        isLoaded: true,
+      };
     case ADD_EMPLOYEE:
       return {
         ...state,
         //employees: [action.payload, ...state.employees],
         isLoaded: false,
       };
-    case EMPLOYEES_ADDED:
+    case EMPLOYEE_ADDED:
       return {
         ...state,
-        employees: [action.payload, ...state.employees],
+        //employees: [action.payload, ...state.employees],
         isLoaded: true,
       };
     // case DELETE_EMPLOYEE:
@@ -42,7 +48,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         employees: state.employees.filter(
-          (emp) => emp._id !== action.payload._id
+          (emp) => emp.id !== action.payload.id
         ),
       };
 

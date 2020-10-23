@@ -14,7 +14,7 @@ import {
   Legend,
 } from 'recharts';
 
-import { getAllInvoices } from '../../../../actions/invoiceActions';
+import { getAllInvoices } from '../../../../state/actions/invoiceActions';
 import ReportRow from './ReportRow';
 
 class SaleReport extends Component {

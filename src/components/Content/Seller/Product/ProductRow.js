@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { deleteProduct } from "../../../../actions/productActions";
-import { pushHistory } from "../../../../actions/historyActions";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { deleteProduct } from '../../../../state/actions/productActions';
+import { pushHistory } from '../../../../state/actions/historyActions';
 
 class ProductRow extends Component {
   convertDate = (date) => {
@@ -14,7 +14,7 @@ class ProductRow extends Component {
 
     month = month < 10 ? `0${month}` : month;
 
-    return year + "-" + month + "-" + dt;
+    return year + '-' + month + '-' + dt;
   };
   handleEdit = (id) => {
     this.props.pushHistory(`/payslip/edit/${id}`);

@@ -1,8 +1,12 @@
 import React, { Component, Fragment } from 'react';
-
+import { connect } from 'react-redux';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './product.css';
+
+const mapStateToProps = (state) => ({
+  productadds: state.productadd.productadds,
+});
 
 class ProductAddNextPage extends Component {
   state = {
@@ -82,13 +86,10 @@ class ProductAddNextPage extends Component {
     this.setState({ category: selectedItem.value });
   };
   upload = () => {};
+
   render() {
-    const {
-      selectedFiles,
-
-      errorMessage,
-    } = this.state;
-
+    const { selectedFiles, errorMessage } = this.state;
+    const { productadds } = this.props;
     const dragOver = (e) => {
       e.preventDefault();
     };
@@ -180,107 +181,61 @@ class ProductAddNextPage extends Component {
                       </span>
                     </div>
 
-                    <div>
-                      <p
-                        style={{
-                          background: '#f5f5f5',
-                          padding: '10px',
-                          fontSize: '16px',
-                          fontWeight: '700',
-                        }}
-                      >
-                        Áo choàng Harry Potter - Đen - L
-                      </p>
-                      <div
-                        className="sku-grid"
-                        onDragOver={dragOver}
-                        onDragEnter={dragEnter}
-                        onDragLeave={dragLeave}
-                        onDrop={fileDrop}
-                      >
-                        {selectedFiles.map((item, index) => {
-                          return (
-                            <label
-                              key={index}
-                              htmlFor={item}
-                              className="skuproduct-card"
-                            >
-                              <img
-                                style={{ width: '100%', height: '90%' }}
-                                className="product-pic"
-                                src={item.filePath}
-                                alt="product"
-                              />
-                              <div className="product-info">
-                                <input
-                                  className="color-checked"
-                                  type="checkbox"
-                                  id={item}
-                                />
-                              </div>
-                            </label>
-                          );
-                        })}
-                        <div className="upload-area">
-                          <i className="fa fa-upload fa-3x" />
-                          <p className="upload-text">
-                            Kéo và thả ảnh vào để tải ảnh lên
+                    {productadds.map((product) => {
+                      return (
+                        <div key={product._id}>
+                          <p
+                            style={{
+                              background: '#f5f5f5',
+                              padding: '10px',
+                              fontSize: '16px',
+                              fontWeight: '700',
+                            }}
+                          >
+                            {product.name}
                           </p>
-                          {errorMessage}
+                          <div
+                            className="sku-grid"
+                            onDragOver={dragOver}
+                            onDragEnter={dragEnter}
+                            onDragLeave={dragLeave}
+                            onDrop={fileDrop}
+                          >
+                            {product.variantList.length > 0 &&
+                              product.variantList.map((item, index) => {
+                                return (
+                                  <label
+                                    key={index}
+                                    htmlFor={item}
+                                    className="skuproduct-card"
+                                  >
+                                    <img
+                                      style={{ width: '100%', height: '90%' }}
+                                      className="product-pic"
+                                      src={item.filePath}
+                                      alt="product"
+                                    />
+                                    <div className="product-info">
+                                      <input
+                                        className="color-checked"
+                                        type="checkbox"
+                                        id={item}
+                                      />
+                                    </div>
+                                  </label>
+                                );
+                              })}
+                            <div className="upload-area">
+                              <i className="fa fa-upload fa-3x" />
+                              <p className="upload-text">
+                                Kéo và thả ảnh vào để tải ảnh lên
+                              </p>
+                              {errorMessage}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <p
-                        style={{
-                          background: '#f5f5f5',
-                          padding: '10px',
-                          fontSize: '16px',
-                          fontWeight: '700',
-                        }}
-                      >
-                        Áo choàng Harry Potter - Đen - S
-                      </p>
-                      <div
-                        className="sku-grid"
-                        onDragOver={dragOver}
-                        onDragEnter={dragEnter}
-                        onDragLeave={dragLeave}
-                        onDrop={fileDrop}
-                      >
-                        {selectedFiles.map((item, index) => {
-                          return (
-                            <label
-                              key={index}
-                              htmlFor={item}
-                              className="skuproduct-card"
-                            >
-                              <img
-                                style={{ width: '100%', height: '90%' }}
-                                className="product-pic"
-                                src={item.filePath}
-                                alt="product"
-                              />
-                              <div className="product-info">
-                                <input
-                                  className="color-checked"
-                                  type="checkbox"
-                                  id={item}
-                                />
-                              </div>
-                            </label>
-                          );
-                        })}
-                        <div className="upload-area">
-                          <i className="fa fa-upload fa-3x" />
-                          <p className="upload-text">
-                            Kéo và thả ảnh vào để tải ảnh lên
-                          </p>
-                          {errorMessage}
-                        </div>
-                      </div>
-                    </div>
+                      );
+                    })}
 
                     <div
                       style={{ display: 'flex', justifyContent: 'flex-end' }}
@@ -313,11 +268,11 @@ class ProductAddNextPage extends Component {
   }
 }
 
-// Category.propTypes = {
+// ProductAddNextPage.propTypes = {
 //   getCategories: PropTypes.func.isRequired,
 //   categories: PropTypes.array.isRequired,
 //   isLoaded: PropTypes.bool.isRequired,
 // };
 
-// export default connect(mapStateToProps, { getCategories })(Product);
-export default ProductAddNextPage;
+export default connect(mapStateToProps)(ProductAddNextPage);
+//export default ProductAddNextPage;

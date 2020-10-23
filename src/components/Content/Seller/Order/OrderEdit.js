@@ -53,30 +53,9 @@ class EmployeeEdit extends Component {
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
-  handleSubmit = (e) => {
-    const { id, fullname } = this.state;
-    e.preventDefault();
-
-    const newEmployee = {
-      fullname,
-      id,
-    };
-    this.props.updateEmployee(newEmployee);
-    // axios
-    //   .put(`/api/category/${id}`, newCategory)
-
-    //   .then(response => {
-    //     console.log(response.data);
-    //   })
-    //   .catch(error => {
-    //     console.log(error.response);
-    //   });
-    //Quay về trang chính
-    this.props.history.push('/employee');
-  };
 
   handleCancel = (e) => {
-    this.props.history.push('/employee');
+    this.props.history.push('/home');
   };
   render() {
     const { fullname, id, idRole, username, phone } = this.state;
@@ -90,7 +69,7 @@ class EmployeeEdit extends Component {
             {/* Content Header (Page header) */}
             <section className="content-header">
               <h1>
-                Nhân viên
+                Đơn hàng
                 {/* <small>Preview</small> */}
               </h1>
               <ol className="breadcrumb">
@@ -156,6 +135,7 @@ class EmployeeEdit extends Component {
                               placeholder="Loading..."
                               value={fullname}
                               onChange={this.handleChange}
+                              disabled
                             />
                           </div>
                         </div>
@@ -174,6 +154,7 @@ class EmployeeEdit extends Component {
                               placeholder="Loading..."
                               value={username}
                               onChange={this.handleChange}
+                              disabled
                             />
                           </div>
                         </div>
@@ -192,6 +173,7 @@ class EmployeeEdit extends Component {
                               placeholder="Loading..."
                               value={idRole}
                               onChange={this.handleChange}
+                              disabled
                             />
                           </div>
                         </div>
@@ -210,7 +192,57 @@ class EmployeeEdit extends Component {
                               placeholder="Loading..."
                               value={phone}
                               onChange={this.handleChange}
+                              disabled
                             />
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-sm-12">
+                            <table
+                              id="example1"
+                              className="table table-bordered"
+                            >
+                              <thead>
+                                <tr>
+                                  <th style={{ width: '5%' }}>#</th>
+                                  <th
+                                    style={{
+                                      width: '25%',
+                                      fontFamily: 'Saira, sans-serif',
+                                    }}
+                                  >
+                                    Tên sản phẩm
+                                  </th>
+                                  <th
+                                    style={{
+                                      width: '15%',
+                                      fontFamily: 'Saira, sans-serif',
+                                    }}
+                                  >
+                                    Số lượng bán
+                                  </th>
+
+                                  <th
+                                    style={{
+                                      width: '15%',
+                                      fontFamily: 'Saira, sans-serif',
+                                    }}
+                                  >
+                                    Đơn giá
+                                  </th>
+                                  <th
+                                    style={{
+                                      width: '10%',
+                                      fontFamily: 'Saira, sans-serif',
+                                    }}
+                                  >
+                                    Giảm giá
+                                  </th>
+                                </tr>
+                              </thead>
+                              {/* <tbody>{this.renderEmployees()}</tbody> */}
+                              <tfoot></tfoot>
+                            </table>
                           </div>
                         </div>
                       </div>
@@ -221,13 +253,25 @@ class EmployeeEdit extends Component {
                           onClick={this.handleCancel}
                           className="btn btn-default"
                         >
-                          Cancel
+                          Đóng
                         </button>
                         <button
-                          type="submit"
+                          type="button"
+                          className="btn btn-danger pull-right"
+                        >
+                          Hủy đơn
+                        </button>
+                        <button
+                          type="button"
                           className="btn btn-info pull-right"
                         >
-                          Save
+                          Vận chuyển
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-primary pull-right"
+                        >
+                          Duyệt đơn
                         </button>
                       </div>
                       {/* /.box-footer */}

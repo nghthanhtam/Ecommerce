@@ -1,11 +1,11 @@
 import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
-import { tokenConfig } from '../actions/authActions';
+import { tokenConfig } from '../../state/actions/authActions';
 import {
   GET_EMPLOYEES,
   ADD_EMPLOYEE,
   EMPLOYEES_RECEIVED,
-  EMPLOYEES_ADDED,
+  EMPLOYEE_ADDED,
   DELETE_EMPLOYEE,
   EMPLOYEE_DELETED,
   UPDATE_EMPLOYEE,
@@ -16,19 +16,13 @@ import mongoose from 'mongoose';
 
 function* fetchEmployees(params) {
   try {
-    console.log(params);
-    if (params.pages.query === '') params.pages.query = 'undefined';
-    const state = yield select();
+    const state = yield select(),
+      { limit, page, query, idShop } = params.pages;
 
     const response = yield call(() =>
       axios
-        // .get(
-        //   `${process.env.REACT_APP_BACKEND_HOST}/api/category/${params.pages.select}/${params.pages.currentPage}/${params.pages.query}`,
-        //   tokenConfig(state)
-        // )
         .get(
-          `${process.env.REACT_APP_BACKEND_HOST}/shop/${''}`,
-          params.pages,
+          `${process.env.REACT_APP_BACKEND_HOST}/api/employee/shop/${idShop}?limit=${limit}&page=${page}&query=${query}`,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -50,8 +44,8 @@ function* addEmployee(params) {
   try {
     const response = yield call(() =>
       axios.post(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/`,
-        params.newCategory,
+        `${process.env.REACT_APP_BACKEND_HOST}/api/employee/`,
+        params.newEmp,
         tokenConfig(state)
       )
     );
@@ -59,7 +53,11 @@ function* addEmployee(params) {
       response.data._id = response.data._id.toString();
     }
 
-    yield put({ type: EMPLOYEES_ADDED, payload: response.data });
+    yield put({ type: EMPLOYEE_ADDED, payload: response.data });
+    yield put({
+      type: GET_EMPLOYEES,
+      pages: params.newEmp.pages,
+    });
   } catch (error) {
     console.log(error.response);
   }
@@ -70,8 +68,8 @@ function* updateEmployee(params) {
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/${params.newCategory._id}`,
-        params.newCategory,
+        `${process.env.REACT_APP_BACKEND_HOST}/api/employee/${params.newEmp.id}`,
+        params.newEmp,
         tokenConfig(state)
       )
     );
@@ -84,14 +82,14 @@ function* updateEmployee(params) {
 function* deleteEmployees(params) {
   const state = yield select();
   try {
-    const response = yield call(() =>
+    yield call(() =>
       axios.delete(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/${params.id}`,
+        `${process.env.REACT_APP_BACKEND_HOST}/api/employee/${params.id}`,
         tokenConfig(state)
       )
     );
 
-    yield put({ type: EMPLOYEE_DELETED, payload: response.data });
+    yield put({ type: EMPLOYEE_DELETED, payload: { id: params.id } });
   } catch (error) {
     console.log(error.response);
   }

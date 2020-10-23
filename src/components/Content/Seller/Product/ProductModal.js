@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-
 import { connect } from 'react-redux';
-import { addSupplier } from '../../../../actions/supplierActions';
+import { addSupplier } from '../../../../state/actions/supplierActions';
 // import { addMaterialReceiptNote } from "../../actions/materialReceiptNoteActions"
 
 import mongoose from 'mongoose';
@@ -62,13 +61,23 @@ class ProductModal extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
+    this.setState({ msg: '' });
     let pvalues = document.getElementsByName('pvalue'),
+      pname = document.getElementsByName('pname')[0].value,
       obj = { name: '', list: [] };
+    if (pname == '') {
+      this.setState({ msg: 'Bạn chưa nhập tên thuộc tính' });
+      return;
+    }
 
     for (let i = 0; i < pvalues.length; i++) {
       if (pvalues[i].value !== '') obj.list.push({ label: pvalues[i].value });
     }
-    obj.name = 'Màu';
+    if (obj.list.length <= 0) {
+      this.setState({ msg: 'Bạn chưa nhập giá trị thuộc tính' });
+      return;
+    }
+    obj.name = pname;
     this.props.onsaveProp(obj);
 
     // Close modal
@@ -76,7 +85,14 @@ class ProductModal extends Component {
   };
 
   onCancel = (e) => {
-    this.setState({ name: '', phone: '', address: '' });
+    this.setState((prepState) => ({
+      propValuesList: [[]],
+    }));
+  };
+
+  onChange = (e) => {
+    this.setState({ msg: '' });
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   addPropValue = () => {
@@ -92,7 +108,7 @@ class ProductModal extends Component {
   };
 
   render() {
-    const { name, phone, address, propValuesList } = this.state;
+    const { msg, propValuesList } = this.state;
     return (
       <React.Fragment>
         {/* Button trigger modal */}
@@ -115,7 +131,7 @@ class ProductModal extends Component {
           aria-labelledby="exampleModalCenterTitle"
           aria-hidden="true"
         >
-          <div className="modal-dialog modal-dialog-centered" role="document">
+          <form className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <span>
@@ -176,7 +192,9 @@ class ProductModal extends Component {
                     <input
                       type="text"
                       className="form-control"
+                      name="pname"
                       placeholder="VD: Màu"
+                      onChange={this.onChange}
                     />
                   </div>
 
@@ -194,11 +212,11 @@ class ProductModal extends Component {
                       return (
                         <input
                           key={index}
-                          onKeyDown={this.propValueChange}
                           type="text"
                           className="form-control"
                           placeholder={item.label}
                           name="pvalue"
+                          onChange={this.onChange}
                         />
                       );
                     })}
@@ -206,6 +224,9 @@ class ProductModal extends Component {
                 </div>
               </div>
               <div className="modal-footer">
+                <p className="pull-left" style={{ color: 'red' }}>
+                  {msg}
+                </p>
                 <button
                   type="button"
                   className="btn btn-secondary"
@@ -215,7 +236,7 @@ class ProductModal extends Component {
                   Hủy
                 </button>
                 <button
-                  type="button"
+                  type="submit"
                   onClick={this.onSubmit}
                   className="btn btn-primary"
                 >
@@ -223,7 +244,7 @@ class ProductModal extends Component {
                 </button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </React.Fragment>
     );

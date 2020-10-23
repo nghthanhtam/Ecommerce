@@ -22,13 +22,8 @@ function* fetchShops(params) {
 
     const response = yield call(() =>
       axios
-        // .get(
-        //   `${process.env.REACT_APP_BACKEND_HOST}/api/category/${params.pages.select}/${params.pages.currentPage}/${params.pages.query}`,
-        //   tokenConfig(state)
-        // )
         .get(
-          `${process.env.REACT_APP_BACKEND_HOST}/shop/${''}`,
-          params.pages,
+          `${process.env.REACT_APP_BACKEND_HOST}/api/shop/${params.pages.select}/${params.pages.currentPage}/${params.pages.query}`,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -46,7 +41,6 @@ function* fetchShops(params) {
 
 function* addShop(params) {
   const state = yield select();
-  console.log('aaaaaaaaaaa');
   try {
     const response = yield call(() =>
       axios.post(

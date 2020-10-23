@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import { getAllMaterials } from "../../../../actions/materialActions";
-import { getSearchStorageReports } from "../../../../actions/storageReportActions";
-import Select from "react-select";
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { getAllMaterials } from '../../../../state/actions/materialActions';
+import { getSearchStorageReports } from '../../../../state/actions/storageReportActions';
+import Select from 'react-select';
 import {
   BarChart,
   Bar,
@@ -11,8 +11,8 @@ import {
   YAxis,
   Tooltip,
   Legend,
-} from "recharts";
-import DateTimePicker from "react-datetime-picker";
+} from 'recharts';
+import DateTimePicker from 'react-datetime-picker';
 
 class StorageReport extends Component {
   state = {
@@ -21,14 +21,14 @@ class StorageReport extends Component {
 
     data: [],
     options: [],
-    idMaterial: "",
+    idMaterial: '',
     startdate: null,
     enddate: null,
   };
 
   componentDidMount() {
-    this.props.getSearchStorageReports("");
-    this.props.getAllMaterials("");
+    this.props.getSearchStorageReports('');
+    this.props.getAllMaterials('');
   }
 
   convertDate = (date) => {
@@ -39,7 +39,7 @@ class StorageReport extends Component {
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return dt + "/" + month;
+    return dt + '/' + month;
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -50,19 +50,19 @@ class StorageReport extends Component {
       prevState.startdate !== startdate ||
       prevState.enddate !== enddate
     ) {
-      if (idMaterial === "" || startdate === null || enddate === null) {
+      if (idMaterial === '' || startdate === null || enddate === null) {
         return;
       }
 
       this.setState((state) => {
         let data = [];
         for (let i = 0; i < 7; i++) {
-          data.push({ idMaterial: "", quantity: 0, name: "", amt: 2400 });
+          data.push({ idMaterial: '', quantity: 0, name: '', amt: 2400 });
         }
         this.props.storagereport.storagereports.map((el, index) => {
           let createddate = new Date(el.createddate);
-          console.log("crearedate:" + createddate);
-          console.log("enddate: " + enddate);
+          console.log('crearedate:' + createddate);
+          console.log('enddate: ' + enddate);
 
           if (el.idMaterial === idMaterial) {
             if (
@@ -76,8 +76,8 @@ class StorageReport extends Component {
               //     data[data.indexOf(obj)]["quantity"] = el.quantity
               // }
               // else {
-              data[index]["quantity"] = el.quantity;
-              data[index]["name"] = this.convertDate(createddate);
+              data[index]['quantity'] = el.quantity;
+              data[index]['name'] = this.convertDate(createddate);
               //}
               //data.push({ 'name': el.createddate, 'quantity': el.quantity, 'amt': 2400 })
             }
@@ -221,5 +221,5 @@ export default connect(mapStateToProps, {
 })(StorageReport);
 
 const menuStyle = {
-  display: "inline-block",
+  display: 'inline-block',
 };

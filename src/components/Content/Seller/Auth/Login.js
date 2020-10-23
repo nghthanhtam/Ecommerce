@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { login } from '../../../../actions/authActions';
-import { pushHistory } from '../../../../actions/historyActions';
+import { login } from '../../../../state/actions/authActions';
+import { pushHistory } from '../../../../state/actions/historyActions';
 
 import PropTypes from 'prop-types';
 

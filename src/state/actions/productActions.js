@@ -3,7 +3,7 @@ import {
   ADD_PRODUCT,
   DELETE_PRODUCT,
   UPDATE_PRODUCT,
-} from "./types";
+} from './types';
 
 export const getProducts = (params) => ({
   type: GET_PRODUCTS,

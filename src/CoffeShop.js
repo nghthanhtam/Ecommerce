@@ -8,6 +8,7 @@ import Employee from './components/Content/Seller/Employee/Employee';
 import ProductAdd from './components/Content/Seller/Product/ProductAdd';
 import ProductAddNextPage from './components/Content/Seller/Product/ProductAddNextPage';
 import Product from './components/Content/Seller/Product/Product';
+import OrderEdit from './components/Content/Seller/Order/OrderEdit';
 import EmployeeEdit from './components/Content/Seller/Employee/EmployeeEdit';
 import StorageReport from './components/Content/Seller/Report/StorageReport';
 import SaleReport from './components/Content/Seller/Report/SaleReport';
@@ -18,17 +19,13 @@ import ErrorPage from './components/Content/Seller/ErrorPage/ErrorPage';
 import Login from './components/Content/Seller/Auth/Login';
 import Home from './components/Content/Seller/Home/Home';
 
-import { loadUser, updateAuth } from './actions/authActions';
+import { loadUser, updateAuth } from './state/actions/authActions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Loader from 'react-loader';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Role from './components/Content/Seller/Role/Role';
 import RoleEdit from './components/Content/Seller/Role/RoleEdit';
-import Material from './components/Content/Seller/Material/Material';
-import MaterialEdit from './components/Content/Seller/Material/MaterialEdit';
-import User from './components/Content/Seller/User/User';
-import UserEdit from './components/Content/Seller/User/UserEdit';
 import { PrivateRoute } from './components/Content/Seller/PrivateRoute';
 import NoPermissionPage from './components/Content/Seller/ErrorPage/NoPermissionPage';
 
@@ -69,6 +66,7 @@ const roles = {
   invoice: 'invoiceManagement',
   supplier: 'supplierManagement',
   payslip: 'payslipManagement',
+  order: 'orderManagement',
   material: 'materialManagement',
   materialReceiptNote: 'materialReceiptNoteManagement',
 };
@@ -187,7 +185,7 @@ class CoffeShop extends Component {
                     exact
                     path="/supplierinfor"
                     component={SupplierInfor}
-                    role={roles.supplier}
+                    // role={roles.supplier}
                     token={token}
                   ></PrivateRoute>
                   <PrivateRoute
@@ -202,6 +200,13 @@ class CoffeShop extends Component {
                     path="/employee/edit/:id"
                     component={EmployeeEdit}
                     role={roles.employee}
+                    token={token}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/order/edit/:id"
+                    component={OrderEdit}
+                    role={roles.order}
                     token={token}
                   ></PrivateRoute>
                   <PrivateRoute

@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { deleteUser } from "../../../../actions/userActions";
-import { pushHistory } from "../../../../actions/historyActions";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { deleteUser } from '../../../../state/actions/userActions';
+import { pushHistory } from '../../../../state/actions/historyActions';
 class UserRow extends Component {
   handleEdit = (id) => {
     this.props.pushHistory(`/user/edit/${id}`);
