@@ -23,6 +23,7 @@ class Employee extends Component {
     query: '',
     start: 1,
     end: 5,
+    isNextBtnShow: true,
   };
 
   componentDidMount() {
@@ -53,7 +54,7 @@ class Employee extends Component {
     for (let i = 0; i < pages; i++) {
       newArray.push({ pageNumber: i + 1 });
     }
-
+    //if(newArray.length > 2) newArray.push({ pageNumber: '>' });
     this.setState({ pages: newArray });
   };
 
@@ -73,9 +74,17 @@ class Employee extends Component {
   getStartEndDocuments() {
     const { limit, page } = this.state;
     const { totalDocuments } = this.props;
+
+    let pages = Math.floor(totalDocuments / limit),
+      remainder = totalDocuments % limit;
+    if (remainder !== 0) pages += 1;
+
+    if (page === pages || totalDocuments < 2) {
+      this.setState({ isNextBtnShow: false });
+    }
+
     this.setState({ start: (page - 1) * limit + 1 }, () => {
       let end;
-      console.log(Math.floor(totalDocuments / limit));
       if (Math.floor(totalDocuments / limit) + 1 == page)
         end = (page - 1) * limit + (totalDocuments % limit);
       else end = page * limit;
@@ -105,6 +114,21 @@ class Employee extends Component {
   };
 
   handleChoosePage = (e) => {
+    const { totalDocuments } = this.props;
+    const { limit, page } = this.state;
+    let pages = Math.floor(totalDocuments / limit),
+      remainder = totalDocuments % limit;
+    if (remainder !== 0) pages += 1;
+
+    console.log(page + ' and ' + pages);
+
+    if (e === -1) {
+      e = page + 1;
+      if (page === pages) {
+        this.setState({ isNextBtnShow: false });
+      }
+    } else this.setState({ isNextBtnShow: true });
+
     this.setState({ page: e }, () => {
       const { limit, page, query } = this.state;
       let idShop = 1;
@@ -159,7 +183,7 @@ class Employee extends Component {
   };
 
   render() {
-    const { limit, page, start, end, query } = this.state;
+    const { limit, page, start, end, query, isNextBtnShow } = this.state;
     const { isLoaded, totalDocuments } = this.props;
     return (
       <Fragment>
@@ -301,6 +325,20 @@ class Employee extends Component {
                                 style={{ float: 'right' }}
                               >
                                 {this.renderPageButtons()}
+                                <li className="paginate_button">
+                                  <a
+                                    className={
+                                      isNextBtnShow === true
+                                        ? 'paga-link'
+                                        : 'paga-link_hidden'
+                                    }
+                                    name="currentPage"
+                                    href="#"
+                                    onClick={() => this.handleChoosePage(-1)}
+                                  >
+                                    {'>>'}
+                                  </a>
+                                </li>
                               </ul>
                             </div>
                           </div>

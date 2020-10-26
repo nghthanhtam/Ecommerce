@@ -12,7 +12,6 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import DateTimePicker from 'react-datetime-picker';
 
 class StorageReport extends Component {
   state = {
@@ -156,7 +155,7 @@ class StorageReport extends Component {
                     <br />
                     <strong> Report Date</strong>
                     <br />
-                    <div style={menuStyle}>
+                    {/* <div style={menuStyle}>
                       <DateTimePicker
                         name="startdate"
                         onChange={this.onStartDateChange}
@@ -167,7 +166,7 @@ class StorageReport extends Component {
                         onChange={this.onEndDateChange}
                         value={this.state.enddate}
                       />
-                    </div>
+                    </div> */}
                   </div>
                   <br />
                   {/* /.box-body */}

@@ -6,6 +6,13 @@
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Geneva, Tahoma,
     sans-serif;
 }
+.paga-link_hidden {
+  color: currentColor;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+  pointer-events: none;
+}
 .skuproduct-card {
   width: 240px;
   height: 300px;
