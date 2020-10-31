@@ -2,6 +2,7 @@ import React from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import mongoose from 'mongoose';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -163,10 +164,25 @@ class Register extends React.Component {
       const handleChange = (event) => {
         const { name, value } = event.target;
         formik.setFieldValue(name, value);
+        //if shop name changes
         if (name === 'name') {
           let url = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
           url = url.replace(/\s+/g, '-');
           formik.setFieldValue('url', url);
+
+          if (value !== '') {
+            axios
+              .get(
+                `${process.env.REACT_APP_BACKEND_HOST}/api/shop/urlcheck/`,
+                value
+              )
+              .then((response) => {
+                console.log(response);
+              })
+              .catch((er) => {
+                console.log(er.response);
+              });
+          }
         }
       };
       return (

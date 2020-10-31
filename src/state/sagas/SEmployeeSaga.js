@@ -17,12 +17,12 @@ import mongoose from 'mongoose';
 function* fetchEmployees(params) {
   try {
     const state = yield select(),
-      { limit, page, query, idShop } = params.pages;
+      { limit, page, query, idShop, deletedEmp, activeEmp } = params.pages;
 
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_HOST}/api/employee/shop/${idShop}?limit=${limit}&page=${page}&query=${query}`,
+          `${process.env.REACT_APP_BACKEND_HOST}/api/employee/shop/${idShop}?limit=${limit}&page=${page}&query=${query}&deletedEmp=${deletedEmp}&activeEmp=${activeEmp}`,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))

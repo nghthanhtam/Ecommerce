@@ -15,9 +15,11 @@ import storageReportReducer from './storageReportReducer';
 import invoicedetReducer from './invoicedetReducer';
 import shopReducer from './shopReducer';
 import productaddReducer from './productaddReducer';
+import employeeRoleReducer from './employeeRoleReducer';
 
 export default combineReducers({
   employee: employeeReducer,
+  emprole: employeeRoleReducer,
   error: errorReducer,
   auth: authReducer,
   history: historyReducer,

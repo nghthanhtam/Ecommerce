@@ -1,7 +1,11 @@
 version: '3'
 services:
   frontend:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_BACKEND_HOST= http://localhost:5001
     container_name: frontend
     ports:
       - '80:80'

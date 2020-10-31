@@ -22,18 +22,37 @@ class Employee extends Component {
     totalDocuments: 0,
     query: '',
     start: 1,
+    activeEmp: true,
+    deletedEmp: false,
     end: 5,
-    isNextBtnShow: true,
+    isNextBtnShow: false,
   };
 
   componentDidMount() {
-    const { limit, page, query } = this.state;
+    const { limit, page, query, deletedEmp, activeEmp } = this.state;
     let idShop = 1;
-    this.props.getEmployees({ limit, page, query, idShop });
+    this.props.getEmployees({
+      limit,
+      page,
+      query,
+      idShop,
+      deletedEmp,
+      activeEmp,
+    });
   }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.isLoaded == true && this.state.pages == prevState.pages) {
+    const { totalDocuments, isLoaded } = this.props;
+    if (isLoaded == true && this.state.pages == prevState.pages) {
       this.getPages();
+    }
+
+    if (
+      totalDocuments !== prevProps.totalDocuments &&
+      totalDocuments &&
+      totalDocuments > 0
+    ) {
+      this.setState({ isNextBtnShow: true });
     }
   }
 
@@ -54,7 +73,17 @@ class Employee extends Component {
     for (let i = 0; i < pages; i++) {
       newArray.push({ pageNumber: i + 1 });
     }
-    //if(newArray.length > 2) newArray.push({ pageNumber: '>' });
+
+    //Nếu totalDocuments > 6 thì pageButtons được chia ra làm 3 nút số đầu - dấu 3 chấm - nút số cuối
+    if (newArray && newArray.length > 6) {
+      newArray = [
+        { pageNumber: 1 },
+        { pageNumber: 2 },
+        { pageNumber: 3 },
+        { pageNumber: '...' },
+        { pageNumber: newArray.length },
+      ];
+    }
     this.setState({ pages: newArray });
   };
 
@@ -78,7 +107,6 @@ class Employee extends Component {
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
-
     if (page === pages || totalDocuments < 2) {
       this.setState({ isNextBtnShow: false });
     }
@@ -93,24 +121,40 @@ class Employee extends Component {
   }
 
   rerenderPage = () => {
-    const { limit, page, query } = this.state;
+    const { limit, page, query, deletedEmp, activeEmp } = this.state;
     let idShop = 1;
-    this.props.getEmployees({ limit, page, query, idShop });
+    this.props.getEmployees({
+      limit,
+      page,
+      query,
+      idShop,
+      deletedEmp,
+      activeEmp,
+    });
     this.getPages();
     this.getStartEndDocuments();
   };
 
   renderEmployees = () => {
     const { start, limit, page } = this.state;
-    const { employees } = this.props;
-    return employees.map((eachEmployee, index) => (
-      <EmployeeRow
-        history={this.props.history}
-        key={eachEmployee.id}
-        employee={eachEmployee}
-        index={index + start - 1}
-      />
-    ));
+    const { employees, isLoaded } = this.props;
+
+    return !isLoaded ? (
+      <tr>
+        <td>
+          <Loader></Loader>
+        </td>
+      </tr>
+    ) : (
+      employees.map((eachEmployee, index) => (
+        <EmployeeRow
+          history={this.props.history}
+          key={eachEmployee.id}
+          employee={eachEmployee}
+          index={index + start - 1}
+        />
+      ))
+    );
   };
 
   handleChoosePage = (e) => {
@@ -130,9 +174,16 @@ class Employee extends Component {
     } else this.setState({ isNextBtnShow: true });
 
     this.setState({ page: e }, () => {
-      const { limit, page, query } = this.state;
+      const { limit, page, query, deletedEmp, activeEmp } = this.state;
       let idShop = 1;
-      this.props.getEmployees({ limit, page, query, idShop });
+      this.props.getEmployees({
+        limit,
+        page,
+        query,
+        idShop,
+        deletedEmp,
+        activeEmp,
+      });
       this.getStartEndDocuments();
     });
   };
@@ -158,202 +209,234 @@ class Employee extends Component {
   };
 
   renderPageButtons = () => {
-    const { pages, page } = this.state;
+    const { pages, page, isNextBtnShow } = this.state;
     if (pages.length > 1) {
-      return pages.map((eachButton) => (
-        <li
-          key={eachButton.pageNumber}
-          className={
-            page === eachButton.pageNumber
-              ? 'paginae_button active'
-              : 'paginate_button '
-          }
-        >
-          <a
-            className="paga-link"
-            name="currentPage"
-            href="#"
-            onClick={() => this.handleChoosePage(eachButton.pageNumber)}
-          >
-            {eachButton.pageNumber}
-          </a>
-        </li>
-      ));
+      return (
+        <>
+          {pages.map((eachButton) => (
+            <li
+              key={eachButton.pageNumber}
+              className={
+                page === eachButton.pageNumber
+                  ? 'paginae_button active'
+                  : 'paginate_button '
+              }
+            >
+              <a
+                className="paga-link"
+                name="currentPage"
+                href="#"
+                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+              >
+                {eachButton.pageNumber}
+              </a>
+            </li>
+          ))}
+          <li className="paginate_button">
+            <a
+              className={
+                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
+              }
+              name="currentPage"
+              href="#"
+              onClick={() => this.handleChoosePage(-1)}
+            >
+              {'>>'}
+            </a>
+          </li>
+        </>
+      );
     }
+  };
+  onCheckActiveEmp = () => {
+    const { activeEmp, limit, page, query, deletedEmp } = this.state;
+    this.setState({ activeEmp: !activeEmp }, () => {
+      console.log(activeEmp);
+      this.props.getEmployees({
+        limit,
+        page,
+        query,
+        idShop: 1,
+        deletedEmp,
+        activeEmp: this.state.activeEmp,
+      });
+    });
   };
 
   render() {
-    const { limit, page, start, end, query, isNextBtnShow } = this.state;
+    const { limit, page, start, end, query, activeEmp } = this.state;
     const { isLoaded, totalDocuments } = this.props;
     return (
       <Fragment>
-        {!isLoaded ? (
+        {/* {!isLoaded ? (
           <Loader></Loader>
-        ) : (
-          <Fragment>
-            {/* Content Header (Page header) */}
-            <section className="content-header">
-              <h1>
-                Nhân viên
-                {/* <small>Preview</small> */}
-              </h1>
-              <ol className="breadcrumb">
-                <li>
-                  <a href="fake_url">
-                    <i className="fa fa-dashboard" /> Trang chủ
-                  </a>
-                </li>
-                <li>
-                  <a href="fake_url">Nhân viên</a>
-                </li>
-              </ol>
-            </section>
-            {/* Main content */}
-            <section className="content">
-              <div className="row">
-                {/* left column */}
-                <div className="col-md-12">
-                  <div className="box">
-                    <div className="box-header" style={{ marginTop: '5px' }}>
-                      <div style={{ paddingLeft: '5px' }} className="col-md-8">
-                        <h3 className="box-title">Quản lý nhân viên</h3>
-                      </div>
-
-                      <div className="col-md-4">
-                        <EmployeeModal limit={limit} page={page} />
-                      </div>
+        ) : ( */}
+        <Fragment>
+          {/* Content Header (Page header) */}
+          <section className="content-header">
+            <h1>
+              Nhân viên
+              {/* <small>Preview</small> */}
+            </h1>
+            <ol className="breadcrumb">
+              <li>
+                <a href="fake_url">
+                  <i className="fa fa-dashboard" /> Trang chủ
+                </a>
+              </li>
+              <li>
+                <a href="fake_url">Nhân viên</a>
+              </li>
+            </ol>
+          </section>
+          {/* Main content */}
+          <section className="content">
+            <div className="row">
+              {/* left column */}
+              <div className="col-md-12">
+                <div className="box">
+                  <div className="box-header" style={{ marginTop: '5px' }}>
+                    <div style={{ paddingLeft: '5px' }} className="col-md-8">
+                      <h3 className="box-title">Quản lý nhân viên</h3>
                     </div>
-                    {/* /.box-header */}
-                    <div className="box-body">
-                      <div
-                        id="example1_wrapper"
-                        className="dataTables_wrapper form-inline dt-bootstrap"
-                      >
-                        <div className="row">
-                          <div>
-                            <div className="col-sm-6">
-                              <div
-                                className="dataTables_length"
-                                id="example1_length"
-                              >
-                                <label>
-                                  Hiển thị
-                                  {this.renderSelect()}
-                                  kết quả
-                                </label>
-                              </div>
-                            </div>
-                            <div className="col-sm-6">
-                              <div
-                                id="example1_filter"
-                                className="dataTables_filter"
-                              >
-                                <label style={{ float: 'right' }}>
-                                  Tìm kiếm:
-                                  <input
-                                    type="search"
-                                    name="query"
-                                    style={{ margin: '0px 5px' }}
-                                    className="form-control input-sm"
-                                    placeholder="Nhập từ khóa... "
-                                    aria-controls="example1"
-                                    onChange={this.handleOnChange}
-                                    value={query}
-                                  />
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
 
-                        <div className="row">
-                          <div className="col-sm-12">
-                            <table
-                              id="example1"
-                              className="table table-bordered table-striped"
-                            >
-                              <thead>
-                                <tr>
-                                  <th style={{ width: '5%' }}>#</th>
-                                  <th style={{ width: '15%' }}>
-                                    Tên tài khoản
-                                  </th>
-                                  <th style={{ width: '10%' }}>Vai trò</th>
-                                  <th style={{ width: '20%' }}>Họ tên</th>
-                                  <th style={{ width: '15%' }}>
-                                    Số điện thoại
-                                  </th>
-                                  <th style={{ width: '20%' }}>Hành động</th>
-                                </tr>
-                              </thead>
-                              <tbody>{this.renderEmployees()}</tbody>
-                              <tfoot>
-                                <tr>
-                                  <th>#</th>
-                                  <th>Tên tài khoản</th>
-                                  <th>Vai trò</th>
-                                  <th>Họ tên</th>
-                                  <th>Số điện thoại</th>
-                                  <th>Hành động</th>
-                                </tr>
-                              </tfoot>
-                            </table>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col-sm-5">
-                            <div
-                              className="dataTables_info"
-                              id="example1_info"
-                              role="status"
-                              aria-live="polite"
-                            >
-                              Hiển thị{' '}
-                              {query == ''
-                                ? start + ' đến ' + end + ' trong '
-                                : ''}{' '}
-                              {totalDocuments} kết quả
-                            </div>
-                          </div>
-                          <div className="col-sm-7">
-                            <div
-                              className="dataTables_paginate paging_simple_numbers"
-                              id="example1_paginate"
-                            >
-                              <ul
-                                className="pagination"
-                                style={{ float: 'right' }}
-                              >
-                                {this.renderPageButtons()}
-                                <li className="paginate_button">
-                                  <a
-                                    className={
-                                      isNextBtnShow === true
-                                        ? 'paga-link'
-                                        : 'paga-link_hidden'
-                                    }
-                                    name="currentPage"
-                                    href="#"
-                                    onClick={() => this.handleChoosePage(-1)}
-                                  >
-                                    {'>>'}
-                                  </a>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      {/*/.col (left) */}
+                    <div className="col-md-4">
+                      <EmployeeModal limit={limit} page={page} />
                     </div>
-                    {/* /.row */}
                   </div>
+                  {/* /.box-header */}
+                  <div className="box-body">
+                    <div
+                      id="example1_wrapper"
+                      className="dataTables_wrapper form-inline dt-bootstrap"
+                    >
+                      <div className="row">
+                        <div>
+                          <div className="col-sm-6">
+                            <div
+                              className="dataTables_length"
+                              id="example1_length"
+                            >
+                              <label>
+                                Hiển thị
+                                {this.renderSelect()}
+                                kết quả
+                              </label>
+                            </div>
+                          </div>
+                          <div className="col-sm-6">
+                            <div
+                              id="example1_filter"
+                              className="dataTables_filter"
+                              style={{ float: 'right' }}
+                            >
+                              <label
+                                style={{
+                                  fontWeight: 400,
+                                  marginRight: '30px',
+                                }}
+                              >
+                                <input
+                                  style={{
+                                    marginRight: '3px',
+                                  }}
+                                  type="checkbox"
+                                  className="minimal"
+                                  checked={activeEmp}
+                                  onChange={() => this.onCheckActiveEmp()}
+                                />
+                                Đang hoạt động
+                              </label>
+                              <label>
+                                Tìm kiếm:
+                                <input
+                                  type="search"
+                                  name="query"
+                                  style={{ margin: '0px 5px' }}
+                                  className="form-control input-sm"
+                                  placeholder="Nhập từ khóa... "
+                                  aria-controls="example1"
+                                  onChange={this.handleOnChange}
+                                  value={query}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-sm-12">
+                          <table
+                            id="example1"
+                            className="table table-bordered table-striped"
+                          >
+                            <thead>
+                              <tr>
+                                <th style={{ width: '5%' }}>#</th>
+                                <th style={{ width: '15%' }}>Tên tài khoản</th>
+                                <th style={{ width: '10%' }}>Vai trò</th>
+                                <th style={{ width: '20%' }}>Họ tên</th>
+                                <th style={{ width: '15%' }}>Số điện thoại</th>
+                                <th style={{ width: '20%' }}>Hành động</th>
+                              </tr>
+                            </thead>
+
+                            <tbody>{this.renderEmployees()}</tbody>
+
+                            <tfoot>
+                              <tr>
+                                <th>#</th>
+                                <th>Tên tài khoản</th>
+                                <th>Vai trò</th>
+                                <th>Họ tên</th>
+                                <th>Số điện thoại</th>
+                                <th>Hành động</th>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-sm-5">
+                          <div
+                            className="dataTables_info"
+                            id="example1_info"
+                            role="status"
+                            aria-live="polite"
+                          >
+                            Hiển thị{' '}
+                            {query == ''
+                              ? start + ' đến ' + end + ' trong '
+                              : ''}{' '}
+                            {totalDocuments} kết quả
+                          </div>
+                        </div>
+                        <div className="col-sm-7">
+                          <div
+                            className="dataTables_paginate paging_simple_numbers"
+                            id="example1_paginate"
+                          >
+                            <ul
+                              className="pagination"
+                              style={{ float: 'right' }}
+                            >
+                              {this.renderPageButtons()}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/*/.col (left) */}
+                  </div>
+                  {/* /.row */}
                 </div>
               </div>
-            </section>
-            {/* /.content */}
-          </Fragment>
-        )}
+            </div>
+          </section>
+          {/* /.content */}
+        </Fragment>
+        {/* )} */}
       </Fragment>
     );
   }

@@ -13,6 +13,7 @@ import {
   LOGOUT_SUCCESS,
   UPDATE_AUTH,
   ERRORS_RETURNED,
+  UPDATE_AUTH_SUCCESS,
 } from '../actions/types';
 
 function* loadUser() {
@@ -81,7 +82,7 @@ function* updateAuth(params) {
     const decodedData = jwt.decode(params.token);
     if (!decodedData) throw new Error('Invalid token!');
     let res = { ...decodedData, token: params.token };
-    yield put({ type: LOGIN_SUCCESS, payload: res });
+    yield put({ type: UPDATE_AUTH_SUCCESS, payload: res });
   } catch (error) {
     yield put({ type: LOGIN_FAIL, error });
   }

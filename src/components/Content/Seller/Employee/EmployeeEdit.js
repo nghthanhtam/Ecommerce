@@ -5,6 +5,7 @@ import { pushHistory } from '../../../../state/actions/historyActions';
 import Loader from 'react-loader';
 import axios from 'axios';
 import { updateEmployee } from '../../../../state/actions/employeeActions';
+import { tokenConfig } from '../../../../state/actions/authActions';
 
 class EmployeeEdit extends Component {
   state = {
@@ -16,10 +17,14 @@ class EmployeeEdit extends Component {
     id: '',
   };
   componentDidMount() {
+    console.log(this.props.auth);
     const { id } = this.props.match.params;
+    const { token } = this.props.auth;
+
     axios
       .get(
         `${process.env.REACT_APP_BACKEND_HOST}/api/employee/${id}`,
+        // tokenConfig(token)
         this.tokenConfig(this.props.auth.token)
       )
       .then((response) => {
@@ -35,6 +40,7 @@ class EmployeeEdit extends Component {
       })
       .catch((er) => console.log(er.response));
   }
+
   tokenConfig = (token) => {
     const config = {
       headers: {
@@ -44,8 +50,11 @@ class EmployeeEdit extends Component {
 
     //Header
     if (token) {
-      config.headers['x-auth-token'] = token;
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
+    // if (token) {
+    //   config.headers['x-auth-token'] = token;
+    // }
 
     return config;
   };
@@ -54,12 +63,17 @@ class EmployeeEdit extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
   handleSubmit = (e) => {
-    const { id, fullname } = this.state;
+    const { id, fullname, username, idRole, phone, identityCard } = this.state;
     e.preventDefault();
 
     const newEmployee = {
-      fullname,
       id,
+      fullname,
+      username,
+      idRole,
+      phone,
+      identityCard,
+      idShop: 1,
     };
     this.props.updateEmployee(newEmployee);
     // axios

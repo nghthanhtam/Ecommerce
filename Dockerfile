@@ -9,6 +9,9 @@ COPY ./package.json /frontend
 # install npm dependencies
 RUN yarn install
 
+ARG REACT_APP_BACKEND_HOST
+ENV REACT_APP_BACKEND_HOST=$REACT_APP_BACKEND_HOST
+
 # copy other project files
 COPY . .
 

@@ -95,12 +95,11 @@ class EmployeeModal extends Component {
     newItem = {
       password,
       fullname,
-      //username: this.createUsername(fullname),
       username,
       idRole,
       phone,
       identityCard,
-      pages: { limit, page, query: '', idShop: 1 },
+      idShop: 1,
     };
 
     this.props.addEmployee(newItem);
