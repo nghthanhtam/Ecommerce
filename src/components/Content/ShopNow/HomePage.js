@@ -79,7 +79,7 @@ class HomePage extends React.Component {
 
     this.changePic = this.changePic.bind(this);
   }
-  componentDidMount() {}
+  componentDidMount() { }
 
   changePic = (e) => {
     console.log(e.target.alt);
@@ -128,7 +128,6 @@ class HomePage extends React.Component {
             zIndex: 10,
             marginBottom: "300px",
             position: "relative",
-            // backgroundColor: "#fff",
             backgroundColor: "#f7f7f7",
           }}
         >
@@ -300,7 +299,7 @@ class HomePage extends React.Component {
             <div className="sliderwrapper">
               <Slider
                 style={{
-                  width: "84%",
+                  width: "94%",
                 }}
                 {...settingsKW}
               >
@@ -327,7 +326,7 @@ class HomePage extends React.Component {
             <div className="sliderwrapper">
               <Slider
                 style={{
-                  width: "83.5%",
+                  width: "94%",
                 }}
                 {...settingsHis}
               >
@@ -340,7 +339,7 @@ class HomePage extends React.Component {
 
           <div className="banner-wrapper">
             <img
-              style={{ width: "900px", marginRight: "-60px", zIndex: 13 }}
+              style={{ width: "900px", zIndex: 13 }}
               alt="banner"
               src="./img/banner.png"
             />
@@ -348,7 +347,7 @@ class HomePage extends React.Component {
             <div className="banner-form">
               <div className="text-wrapper">
                 <div className="text-stay">STAY</div>
-                <div className="text-wus">WITH US</div>
+                <div className="text-wus">WITHUS</div>
               </div>
               <div className="cart-btn">
                 <i className="fa fa-shopping-cart"></i> SIGN IN

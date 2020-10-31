@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 .slides .slick-prev {
   left: 3% !important;
@@ -68,7 +68,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  padding: 10px 60px;
+  padding: 10px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -96,7 +96,7 @@
   display: flex;
   color: #fff;
   font-weight: 400;
-  margin-left: 40px;
+  margin-left: 25px;
   text-decoration: none;
   align-items: center;
   font-weight: 600;
@@ -107,7 +107,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  padding: 15px 60px;
+  padding: 15px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -120,7 +120,7 @@
 
 .header1 .logo {
   position: relative;
-  max-width: 80px;
+  max-width: 100px;
   color: #0d1136;
   font-weight: 400;
   font-size: 30px;
@@ -138,7 +138,7 @@
   display: flex;
   color: #0d1136;
   font-weight: 400;
-  margin-left: 40px;
+  margin-left: 25px;
   text-decoration: none;
   align-items: center;
   font-weight: 600;
@@ -304,7 +304,6 @@
 }
 .row-flex-center {
   display: flex;
-  align-items: center;
   align-items: center;
 }
 .searchbar-inp {

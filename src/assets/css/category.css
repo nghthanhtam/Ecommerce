@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
 * {
   box-sizing: border-box;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
 }
 .slider .slick-prev {
   left: 3% !important;
@@ -40,7 +40,7 @@
 } */
 .card:before {
   border-radius: 8px;
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -125,15 +125,10 @@
 .title-kw {
   font-weight: 700;
   font-size: 18px;
-  margin-left: 164px;
   margin-bottom: -25px;
   color: #0d1136;
+  margin-left: 6%;
 }
-/* .box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
 
 .kw-blue {
   display: flex;
@@ -191,7 +186,7 @@
 .title-for-you {
   font-weight: 700;
   font-size: 18px;
-  margin-left: 162px;
+  margin-left: 6%;
   margin-bottom: 15px;
   color: #0d1136;
 }
@@ -202,7 +197,7 @@
 .title-his {
   font-weight: 700;
   font-size: 18px;
-  margin-left: 162px;
+  margin-left: 6%;
   margin-bottom: -20px;
 }
 
@@ -222,6 +217,8 @@
 }
 .banner-form .cart-btn {
   margin: 18px 0 18px 0;
+  padding: 15px;
+  width: 70%;
 }
 .banner-form .cart-btn:hover {
   background-color: #3571a7;
@@ -239,16 +236,17 @@
   font-size: 20px;
 }
 .text-stay {
-  font-size: 80px;
+  font-size: 60px;
   font-weight: 800;
   color: #3571a7;
 }
 .text-wus {
-  font-size: 80px;
+  font-size: 60px;
   font-weight: 800;
   color: #fff;
 }
 .text-wrapper {
+  margin-left: 0px;
   display: flex;
   justify-content: flex-start;
   margin-bottom: 80px;
