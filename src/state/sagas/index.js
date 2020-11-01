@@ -1,5 +1,6 @@
 import { all, call } from 'redux-saga/effects';
 import sEmployeeSaga from './SEmployeeSaga';
+import sEmpRoleSaga from './SEmployeeRoleSaga';
 import sAuthSaga from './SAuthSaga';
 import sHistorySaga from './HistorySaga';
 import sErrorSaga from './SErrorSaga';
@@ -18,6 +19,7 @@ export default function* rootSaga() {
     sRoleSaga(),
     sInvoiceSaga(),
     sShopSaga(),
+    sEmpRoleSaga()
   ]);
 }
 

@@ -22,7 +22,7 @@ function* fetchEmployees(params) {
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_HOST}/api/employee/shop/${idShop}?limit=${limit}&page=${page}&query=${query}&deletedEmp=${deletedEmp}&activeEmp=${activeEmp}`,
+          `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/employee/shop/${idShop}?limit=${limit}&page=${page}&query=${query}&deletedEmp=${deletedEmp}&activeEmp=${activeEmp}`,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -44,7 +44,7 @@ function* addEmployee(params) {
   try {
     const response = yield call(() =>
       axios.post(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/employee/`,
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/employee/`,
         params.newEmp,
         tokenConfig(state)
       )
@@ -68,7 +68,7 @@ function* updateEmployee(params) {
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/employee/${params.newEmp.id}`,
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/employee/${params.newEmp.id}`,
         params.newEmp,
         tokenConfig(state)
       )
@@ -84,7 +84,7 @@ function* deleteEmployees(params) {
   try {
     yield call(() =>
       axios.delete(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/employee/${params.id}`,
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/employee/${params.id}`,
         tokenConfig(state)
       )
     );

@@ -17,26 +17,28 @@ class ProductRow extends Component {
     return year + '-' + month + '-' + dt;
   };
   handleEdit = (id) => {
-    this.props.pushHistory(`/payslip/edit/${id}`);
+    this.props.pushHistory(`/product/edit/${id}`);
   };
   handleDelete = (id) => {
-    this.props.deletePaySlip(id);
+    this.props.deleteProduct(id);
   };
 
   render() {
-    const { product, index } = this.props;
+    const { name, SKU, price, id, status } = this.props.product;
+    const { index, isPending } = this.props
 
     return (
       <tr>
         <td>{index + 1}</td>
-        <td>{product.idMember}</td>
-        <td>{product.idSupplier}</td>
-        <td>{this.convertDate(product.createddate)}</td>
-        <td>{product.totalAmt}</td>
-        <td>
+        <td><img src="./img/banner.png" alt="" border='3' height='100' width='200' /> {SKU}</td>
+        <td>{name}</td>
+        <td>{SKU}</td>
+        <td >{price}</td>
+        <td>22</td>
+        {!isPending ? <td>
           <div className="btn-group">
             <button
-              onClick={() => this.handleEdit(product._id)}
+              onClick={() => this.handleEdit(id)}
               type="button"
               className="btn btn-success"
             >
@@ -44,14 +46,20 @@ class ProductRow extends Component {
             </button>
 
             <button
-              onClick={() => this.handleDelete(product._id)}
+              onClick={() => this.handleDelete(id)}
               type="button"
               className="btn btn-danger"
             >
               Xóa
             </button>
           </div>
-        </td>
+        </td> : status === 1 ?
+            <td style={{ color: 'green' }}>
+              <i style={{ color: '#52c41a' }} class="fa fa-check-circle" aria-hidden="true"></i> Đã duyệt
+            </td > :
+            <td style={{ color: 'grey' }}>
+              <i style={{ color: '#52c41a' }} class="fa fa-spinner" aria-hidden="true"></i> Chờ duyệt
+            </td>}
       </tr>
     );
   }

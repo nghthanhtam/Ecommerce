@@ -113,13 +113,13 @@ class ProductAdd extends Component {
 
   render() {
     const {
-        propValueList,
-        skuProductList,
-        categoryList,
-        category,
-        variantList,
-        productList,
-      } = this.state,
+      propValueList,
+      skuProductList,
+      categoryList,
+      category,
+      variantList,
+      productList,
+    } = this.state,
       settings = {
         infinite: true,
         speed: 800,
@@ -313,7 +313,7 @@ class ProductAdd extends Component {
                           </div>
                         </div>
 
-                        <div className="row" style={{ width: '1258px' }}>
+                        <div className="row" style={{ width: '105%' }}>
                           <div className="col-sm-12">
                             <table
                               id="example1"
@@ -439,7 +439,7 @@ class ProductAdd extends Component {
 // };
 
 export default connect(mapStateToProps, { updateProduct })(ProductAdd);
-//export default ProductAdd;
+
 const inputField = {
   '&:focus': {
     outline: 'none',

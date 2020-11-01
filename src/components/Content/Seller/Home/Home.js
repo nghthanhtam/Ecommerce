@@ -15,8 +15,8 @@ const mapStateToProps = (state) => ({
 
 class Home extends Component {
   state = {
-    sort: [{ value: '5' }, { value: '10' }, { value: '20' }],
-    limit: '5',
+    sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
+    limit: 5,
     page: 1,
     pages: [],
     totalDocuments: 0,
@@ -197,351 +197,351 @@ class Home extends Component {
         {!isLoaded ? (
           <Loader></Loader>
         ) : (
-          <React.Fragment>
-            <div>
-              {/* Content Header (Page header) */}
-              <section className="content-header">
-                <h1>Dashboard</h1>
-                <ol className="breadcrumb">
-                  <li>
-                    <a href="xd">
-                      <i className="fa fa-dashboard" /> Home
+            <React.Fragment>
+              <div>
+                {/* Content Header (Page header) */}
+                <section className="content-header">
+                  <h1>Dashboard</h1>
+                  <ol className="breadcrumb">
+                    <li>
+                      <a href="xd">
+                        <i className="fa fa-dashboard" /> Home
                     </a>
-                  </li>
-                  <li className="active">Dashboard</li>
-                </ol>
-              </section>
-              {/* Main content */}
-              <section className="content">
-                {/* Small boxes (Stat box) */}
-                <div className="row">
-                  <div className="col-lg-3 col-xs-6">
-                    {/* small box */}
-                    <div className="small-box bg-aqua">
-                      <div className="inner">
-                        <h3>20</h3>
-                        <p>Sản phẩm đang bán</p>
+                    </li>
+                    <li className="active">Dashboard</li>
+                  </ol>
+                </section>
+                {/* Main content */}
+                <section className="content">
+                  {/* Small boxes (Stat box) */}
+                  <div className="row">
+                    <div className="col-lg-3 col-xs-6">
+                      {/* small box */}
+                      <div className="small-box bg-aqua">
+                        <div className="inner">
+                          <h3>20</h3>
+                          <p>Sản phẩm đang bán</p>
+                        </div>
+                        <div className="icon">
+                          <i className="ion ion-bag" />
+                        </div>
+                        <a href="./order" className="small-box-footer">
+                          Xem chi tiết <i className="fa fa-arrow-circle-right" />
+                        </a>
                       </div>
-                      <div className="icon">
-                        <i className="ion ion-bag" />
+                    </div>
+                    {/* ./col */}
+                    {/* ./col */}
+                    <div className="col-lg-3 col-xs-6">
+                      {/* small box */}
+                      <div className="small-box bg-red">
+                        <div className="inner">
+                          <h3>65</h3>
+                          <p>Đơn hàng đang xử lý</p>
+                        </div>
+                        <div className="icon">
+                          <i className="ion ion-pie-graph" />
+                        </div>
+                        <a href="xd" className="small-box-footer">
+                          Xem chi tiết <i className="fa fa-arrow-circle-right" />
+                        </a>
                       </div>
-                      <a href="./order" className="small-box-footer">
-                        Xem chi tiết <i className="fa fa-arrow-circle-right" />
-                      </a>
+                    </div>
+                    {/* ./col */}
+                    <div className="col-lg-3 col-xs-6">
+                      {/* small box */}
+                      <div className="small-box bg-green">
+                        <div className="inner">
+                          <h3>
+                            250000<sup style={{ fontSize: 20 }}>VND</sup>
+                          </h3>
+                          <p>Doanh thu hôm nay</p>
+                        </div>
+                        <div className="icon">
+                          <i className="ion ion-stats-bars" />
+                        </div>
+                        <a href="xd" className="small-box-footer">
+                          Xem chi tiết <i className="fa fa-arrow-circle-right" />
+                        </a>
+                      </div>
+                    </div>
+                    {/* ./col */}
+                    <div className="col-lg-3 col-xs-6">
+                      {/* small box */}
+                      <div className="small-box bg-yellow">
+                        <div className="inner">
+                          <h3>20</h3>
+                          <p>Nhân viên</p>
+                        </div>
+                        <div className="icon">
+                          <i className="ion ion-person-add" />
+                        </div>
+                        <a href="./employee" className="small-box-footer">
+                          Xem chi tiết <i className="fa fa-arrow-circle-right" />
+                        </a>
+                      </div>
                     </div>
                   </div>
-                  {/* ./col */}
-                  {/* ./col */}
-                  <div className="col-lg-3 col-xs-6">
-                    {/* small box */}
-                    <div className="small-box bg-red">
-                      <div className="inner">
-                        <h3>65</h3>
-                        <p>Đơn hàng đang xử lý</p>
-                      </div>
-                      <div className="icon">
-                        <i className="ion ion-pie-graph" />
-                      </div>
-                      <a href="xd" className="small-box-footer">
-                        Xem chi tiết <i className="fa fa-arrow-circle-right" />
-                      </a>
-                    </div>
-                  </div>
-                  {/* ./col */}
-                  <div className="col-lg-3 col-xs-6">
-                    {/* small box */}
-                    <div className="small-box bg-green">
-                      <div className="inner">
-                        <h3>
-                          250000<sup style={{ fontSize: 20 }}>VND</sup>
-                        </h3>
-                        <p>Doanh thu hôm nay</p>
-                      </div>
-                      <div className="icon">
-                        <i className="ion ion-stats-bars" />
-                      </div>
-                      <a href="xd" className="small-box-footer">
-                        Xem chi tiết <i className="fa fa-arrow-circle-right" />
-                      </a>
-                    </div>
-                  </div>
-                  {/* ./col */}
-                  <div className="col-lg-3 col-xs-6">
-                    {/* small box */}
-                    <div className="small-box bg-yellow">
-                      <div className="inner">
-                        <h3>20</h3>
-                        <p>Nhân viên</p>
-                      </div>
-                      <div className="icon">
-                        <i className="ion ion-person-add" />
-                      </div>
-                      <a href="./employee" className="small-box-footer">
-                        Xem chi tiết <i className="fa fa-arrow-circle-right" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                {/* /.row */}
-                {/* Main row */}
-                <div className="row-flex">
-                  {/* Left col */}
-                  <section className="content" style={{ flex: 1 }}>
-                    <div className="row">
-                      {/* left column */}
+                  {/* /.row */}
+                  {/* Main row */}
+                  <div className="row-flex">
+                    {/* Left col */}
+                    <section className="content" style={{ flex: 1 }}>
+                      <div className="row">
+                        {/* left column */}
 
-                      <div className="box">
-                        <div
-                          className="box-header"
-                          style={{ marginTop: '5px' }}
-                        >
+                        <div className="box">
                           <div
-                            style={{ paddingLeft: '0px' }}
-                            className="col-md-8"
+                            className="box-header"
+                            style={{ marginTop: '5px' }}
                           >
-                            <h3 className="box-title">
-                              Danh sách đơn hàng cần xử lý
+                            <div
+                              style={{ paddingLeft: '0px' }}
+                              className="col-md-8"
+                            >
+                              <h3 className="box-title">
+                                Danh sách đơn hàng cần xử lý
                             </h3>
-                          </div>
-                          {/* <div className="col-md-4">
+                            </div>
+                            {/* <div className="col-md-4">
                         <EmployeeModal />
                       </div> */}
-                        </div>
-                        {/* /.box-header */}
-                        <div className="box-body">
-                          <div
-                            id="example1_wrapper"
-                            className="dataTables_wrapper form-inline dt-bootstrap"
-                          >
-                            <div className="row">
-                              <div>
-                                <div className="col-sm-6">
-                                  <div
-                                    className="dataTables_length"
-                                    id="example1_length"
-                                  >
-                                    <label
-                                      style={{
-                                        fontFamily: 'Montserrat, sans-serif',
-                                      }}
+                          </div>
+                          {/* /.box-header */}
+                          <div className="box-body">
+                            <div
+                              id="example1_wrapper"
+                              className="dataTables_wrapper form-inline dt-bootstrap"
+                            >
+                              <div className="row">
+                                <div>
+                                  <div className="col-sm-6">
+                                    <div
+                                      className="dataTables_length"
+                                      id="example1_length"
                                     >
-                                      Hiển thị
+                                      <label
+                                        style={{
+                                          fontFamily: 'Montserrat, sans-serif',
+                                        }}
+                                      >
+                                        Hiển thị
                                       {this.renderSelect()}
                                       kết quả
                                     </label>
+                                    </div>
                                   </div>
-                                </div>
-                                <div className="col-sm-6">
-                                  <div
-                                    id="example1_filter"
-                                    className="dataTables_filter"
-                                  >
-                                    <label
-                                      style={{
-                                        float: 'right',
-                                        fontFamily: 'Saira, sans-serif',
-                                      }}
+                                  <div className="col-sm-6">
+                                    <div
+                                      id="example1_filter"
+                                      className="dataTables_filter"
                                     >
-                                      Tìm kiếm
+                                      <label
+                                        style={{
+                                          float: 'right',
+                                          fontFamily: 'Saira, sans-serif',
+                                        }}
+                                      >
+                                        Tìm kiếm
                                       <input
-                                        type="search"
-                                        name="query"
-                                        style={{ margin: '0px 5px' }}
-                                        className="form-control input-sm"
-                                        placeholder="Nhập từ khóa...  "
-                                        aria-controls="example1"
-                                        onChange={this.handleOnChange}
-                                        value={this.state.query}
-                                      />
-                                    </label>
+                                          type="search"
+                                          name="query"
+                                          style={{ margin: '0px 5px' }}
+                                          className="form-control input-sm"
+                                          placeholder="Nhập từ khóa...  "
+                                          aria-controls="example1"
+                                          onChange={this.handleOnChange}
+                                          value={this.state.query}
+                                        />
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="row">
+                                <div className="col-sm-12">
+                                  <table
+                                    id="example1"
+                                    className="table table-bordered"
+                                  >
+                                    <thead className="order-header">
+                                      <tr>
+                                        <th style={{ width: '5%' }}>#</th>
+                                        <th
+                                          style={{
+                                            width: '20%',
+                                            fontFamily: 'Saira, sans-serif',
+                                          }}
+                                        >
+                                          Khách hàng
+                                      </th>
+                                        <th
+                                          style={{
+                                            width: '15%',
+                                            fontFamily: 'Saira, sans-serif',
+                                          }}
+                                        >
+                                          Tổng giá trị
+                                      </th>
+
+                                        <th
+                                          style={{
+                                            width: '15%',
+                                            fontFamily: 'Saira, sans-serif',
+                                          }}
+                                        >
+                                          Ngày đặt hàng
+                                      </th>
+                                        <th
+                                          style={{
+                                            width: '20%',
+                                            fontFamily: 'Saira, sans-serif',
+                                          }}
+                                        >
+                                          Tình trạng
+                                      </th>
+                                        <th
+                                          style={{
+                                            width: '15%',
+                                            fontFamily: 'Saira, sans-serif',
+                                          }}
+                                        >
+                                          Hành động
+                                      </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>{this.renderEmployees()}</tbody>
+                                    <tfoot></tfoot>
+                                  </table>
+                                </div>
+                              </div>
+                              <div className="row">
+                                <div className="col-sm-5">
+                                  <div
+                                    className="dataTables_info"
+                                    id="example1_info"
+                                    role="status"
+                                    aria-live="polite"
+                                  >
+                                    Hiển thị{' '}
+                                    {query == ''
+                                      ? start + ' đến ' + end + ' trong '
+                                      : ''}{' '}
+                                    {totalDocuments} kết quả
+                                </div>
+                                </div>
+                                <div className="col-sm-7">
+                                  <div
+                                    className="dataTables_paginate paging_simple_numbers"
+                                    id="example1_paginate"
+                                  >
+                                    <ul
+                                      className="pagination"
+                                      style={{ float: 'right' }}
+                                    >
+                                      {this.renderPageButtons()}
+                                    </ul>
                                   </div>
                                 </div>
                               </div>
                             </div>
-
-                            <div className="row">
-                              <div className="col-sm-12">
-                                <table
-                                  id="example1"
-                                  className="table table-bordered"
-                                >
-                                  <thead className="order-header">
-                                    <tr>
-                                      <th style={{ width: '5%' }}>#</th>
-                                      <th
-                                        style={{
-                                          width: '20%',
-                                          fontFamily: 'Saira, sans-serif',
-                                        }}
-                                      >
-                                        Khách hàng
-                                      </th>
-                                      <th
-                                        style={{
-                                          width: '15%',
-                                          fontFamily: 'Saira, sans-serif',
-                                        }}
-                                      >
-                                        Tổng giá trị
-                                      </th>
-
-                                      <th
-                                        style={{
-                                          width: '15%',
-                                          fontFamily: 'Saira, sans-serif',
-                                        }}
-                                      >
-                                        Ngày đặt hàng
-                                      </th>
-                                      <th
-                                        style={{
-                                          width: '15%',
-                                          fontFamily: 'Saira, sans-serif',
-                                        }}
-                                      >
-                                        Tình trạng
-                                      </th>
-                                      <th
-                                        style={{
-                                          width: '15%',
-                                          fontFamily: 'Saira, sans-serif',
-                                        }}
-                                      >
-                                        Hành động
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>{this.renderEmployees()}</tbody>
-                                  <tfoot></tfoot>
-                                </table>
-                              </div>
-                            </div>
-                            <div className="row">
-                              <div className="col-sm-5">
-                                <div
-                                  className="dataTables_info"
-                                  id="example1_info"
-                                  role="status"
-                                  aria-live="polite"
-                                >
-                                  Hiển thị{' '}
-                                  {query == ''
-                                    ? start + ' đến ' + end + ' trong '
-                                    : ''}{' '}
-                                  {totalDocuments} kết quả
-                                </div>
-                              </div>
-                              <div className="col-sm-7">
-                                <div
-                                  className="dataTables_paginate paging_simple_numbers"
-                                  id="example1_paginate"
-                                >
-                                  <ul
-                                    className="pagination"
-                                    style={{ float: 'right' }}
-                                  >
-                                    {this.renderPageButtons()}
-                                  </ul>
-                                </div>
-                              </div>
-                            </div>
+                            {/*/.col (left) */}
                           </div>
-                          {/*/.col (left) */}
+                          {/* /.row */}
                         </div>
-                        {/* /.row */}
+                      </div>
+                    </section>
+                    {/* /.Left col */}
+                    {/* right col (We are only adding the ID to make the widgets sortable)*/}
+                    <div
+                      className="col-md-4"
+                      style={{
+                        margin: '15px -25px 0 0',
+                        fontSize: '12px',
+                        overflow: 'auto',
+                        flex: 0.3,
+                      }}
+                    >
+                      <div className="log-row">
+                        <div>08:58:51, 22/10/2020</div>
+                        <div className="log-timeline">
+                          <div className="log-line"></div>
+                          <div className="log-round"></div>
+                          <div className="log-line"></div>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          Nhân viên 001 chỉnh sửa sản phẩm 004
+                      </div>
+                      </div>
+                      <div className="log-row">
+                        <div>08:58:51, 22/10/2020</div>
+                        <div className="log-timeline">
+                          <div className="log-line"></div>
+                          <div className="log-round"></div>
+                          <div className="log-line"></div>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
+                          ffffffffff fffffffff fffffffffs sfdf
+                      </div>
+                      </div>
+                      <div className="log-row">
+                        <div>08:58:51, 22/10/2020</div>
+                        <div className="log-timeline">
+                          <div className="log-line"></div>
+                          <div className="log-round"></div>
+                          <div className="log-line"></div>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
+                          ffffffffff fffffffff fffffffffs sfdf
+                      </div>
+                      </div>
+                      <div className="log-row">
+                        <div>08:58:51, 22/10/2020</div>
+                        <div className="log-timeline">
+                          <div className="log-line"></div>
+                          <div className="log-round"></div>
+                          <div className="log-line"></div>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
+                          ffffffffff fffffffff fffffffffs sfdf
+                      </div>
+                      </div>
+                      <div className="log-row">
+                        <div>08:58:51, 22/10/2020</div>
+                        <div className="log-timeline">
+                          <div className="log-line"></div>
+                          <div className="log-round"></div>
+                          <div className="log-line"></div>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          Nhân viên 001 chỉnh sửa sản phẩm 004
+                      </div>
+                      </div>
+                      <div className="log-row">
+                        <div>08:58:51, 22/10/2020</div>
+                        <div className="log-timeline">
+                          <div className="log-line"></div>
+                          <div className="log-round"></div>
+                          <div className="log-line"></div>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          Nhân viên 001 chỉnh sửa sản phẩm 004
+                      </div>
                       </div>
                     </div>
-                  </section>
-                  {/* /.Left col */}
-                  {/* right col (We are only adding the ID to make the widgets sortable)*/}
-                  <div
-                    className="col-md-4"
-                    style={{
-                      margin: '15px -25px 0 0',
-                      fontSize: '12px',
-                      overflow: 'auto',
-                      flex: 0.3,
-                    }}
-                  >
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004
-                      </div>
-                    </div>
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
-                        ffffffffff fffffffff fffffffffs sfdf
-                      </div>
-                    </div>
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
-                        ffffffffff fffffffff fffffffffs sfdf
-                      </div>
-                    </div>
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
-                        ffffffffff fffffffff fffffffffs sfdf
-                      </div>
-                    </div>
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004
-                      </div>
-                    </div>
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* right col */}
-                </div>
-                {/* /.row (main row) */}
-              </section>
-              {/* /.content */}
-            </div>
-          </React.Fragment>
-        )}
+                    {/* right col */}
+                  </div>
+                  {/* /.row (main row) */}
+                </section>
+                {/* /.content */}
+              </div>
+            </React.Fragment>
+          )}
       </Fragment>
     );
   }

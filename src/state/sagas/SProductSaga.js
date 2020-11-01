@@ -16,13 +16,13 @@ import mongoose from "mongoose";
 
 function* fetchProducts(params) {
   try {
-    if (params.pages.query === "") params.pages.query = "undefined";
-    const state = yield select();
+    const state = yield select(),
+      { limit, page, query } = params.pages;
 
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_HOST}/api/category/${params.pages.select}/${params.pages.currentPage}/${params.pages.query}`,
+          `${process.env.REACT_APP_BACKEND_HOST}/api/productvar?limit=${limit}&page=${page}&query=${query}`,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -41,7 +41,7 @@ function* addProduct(params) {
     const response = yield call(
       () =>
         axios.post(
-          `${process.env.REACT_APP_BACKEND_HOST}/api/category/`,
+          `${process.env.REACT_APP_BACKEND_HOST}/api/productvar/`,
           params.newProduct,
           tokenConfig(state)
         )
@@ -64,7 +64,7 @@ function* updateProduct(params) {
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/${params.newCategory._id}`,
+        `${process.env.REACT_APP_BACKEND_HOST}/api/productvar/${params.newProduct._id}`,
         params.newCategory,
         tokenConfig(state)
       )
@@ -80,7 +80,7 @@ function* deleteProducts(params) {
   try {
     const response = yield call(() =>
       axios.delete(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/category/${params.id}`,
+        `${process.env.REACT_APP_BACKEND_HOST}/api/productvar/${params.id}`,
         tokenConfig(state)
       )
     );

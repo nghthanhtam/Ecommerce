@@ -23,7 +23,7 @@ class EmployeeEdit extends Component {
 
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/employee/${id}`,
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/employee/${id}`,
         // tokenConfig(token)
         this.tokenConfig(this.props.auth.token)
       )
@@ -100,158 +100,158 @@ class EmployeeEdit extends Component {
         {!id ? (
           <Loader></Loader>
         ) : (
-          <Fragment>
-            {/* Content Header (Page header) */}
-            <section className="content-header">
-              <h1>
-                Nhân viên
+            <Fragment>
+              {/* Content Header (Page header) */}
+              <section className="content-header">
+                <h1>
+                  Nhân viên
                 {/* <small>Preview</small> */}
-              </h1>
-              <ol className="breadcrumb">
-                <li>
-                  <a href="fake_url">
-                    <i className="fa fa-dashboard" /> Trang chủ
+                </h1>
+                <ol className="breadcrumb">
+                  <li>
+                    <a href="fake_url">
+                      <i className="fa fa-dashboard" /> Trang chủ
                   </a>
-                </li>
-                <li>
-                  <a href="fake_url">Nhân viên</a>
-                </li>
-                <li>
-                  <a href="fake_url">Sửa</a>
-                </li>
-              </ol>
-            </section>
-            {/* Main content */}
-            <section className="content">
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="box box-info">
-                    <div className="box-header with-border">
-                      <h3 className="box-title">Horizontal Form</h3>
+                  </li>
+                  <li>
+                    <a href="fake_url">Nhân viên</a>
+                  </li>
+                  <li>
+                    <a href="fake_url">Sửa</a>
+                  </li>
+                </ol>
+              </section>
+              {/* Main content */}
+              <section className="content">
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="box box-info">
+                      <div className="box-header with-border">
+                        <h3 className="box-title">Horizontal Form</h3>
+                      </div>
+                      {/* /.box-header */}
+                      {/* form start */}
+                      <form
+                        className="form-horizontal"
+                        onSubmit={this.handleSubmit}
+                      >
+                        <div className="box-body">
+                          <div className="form-group">
+                            <label
+                              htmlFor="inputEmail3"
+                              className="col-sm-2 control-label"
+                            >
+                              ID
+                          </label>
+                            <div className="col-sm-10">
+                              <input
+                                name="id"
+                                type="text"
+                                placeholder="Loading..."
+                                className="form-control"
+                                value={id}
+                                disabled
+                                onChange={this.handleChange}
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <label
+                              htmlFor="inputPassword3"
+                              className="col-sm-2 control-label"
+                            >
+                              Họ và tên
+                          </label>
+                            <div className="col-sm-10">
+                              <input
+                                name="fullname"
+                                type="text"
+                                className="form-control"
+                                placeholder="Loading..."
+                                value={fullname}
+                                onChange={this.handleChange}
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <label
+                              htmlFor="username"
+                              className="col-sm-2 control-label"
+                            >
+                              Tên đăng nhập
+                          </label>
+                            <div className="col-sm-10">
+                              <input
+                                name="username"
+                                type="text"
+                                className="form-control"
+                                placeholder="Loading..."
+                                value={username}
+                                onChange={this.handleChange}
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <label
+                              htmlFor="idRole"
+                              className="col-sm-2 control-label"
+                            >
+                              Vai trò
+                          </label>
+                            <div className="col-sm-10">
+                              <input
+                                name="idRole"
+                                type="text"
+                                className="form-control"
+                                placeholder="Loading..."
+                                value={idRole}
+                                onChange={this.handleChange}
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <label
+                              htmlFor="phone"
+                              className="col-sm-2 control-label"
+                            >
+                              Số điện thoại
+                          </label>
+                            <div className="col-sm-10">
+                              <input
+                                name="phone"
+                                type="text"
+                                className="form-control"
+                                placeholder="Loading..."
+                                value={phone}
+                                onChange={this.handleChange}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        {/* /.box-body */}
+                        <div className="box-footer">
+                          <button
+                            type="button"
+                            onClick={this.handleCancel}
+                            className="btn btn-default"
+                          >
+                            Cancel
+                        </button>
+                          <button
+                            type="submit"
+                            className="btn btn-info pull-right"
+                          >
+                            Save
+                        </button>
+                        </div>
+                        {/* /.box-footer */}
+                      </form>
                     </div>
-                    {/* /.box-header */}
-                    {/* form start */}
-                    <form
-                      className="form-horizontal"
-                      onSubmit={this.handleSubmit}
-                    >
-                      <div className="box-body">
-                        <div className="form-group">
-                          <label
-                            htmlFor="inputEmail3"
-                            className="col-sm-2 control-label"
-                          >
-                            ID
-                          </label>
-                          <div className="col-sm-10">
-                            <input
-                              name="id"
-                              type="text"
-                              placeholder="Loading..."
-                              className="form-control"
-                              value={id}
-                              disabled
-                              onChange={this.handleChange}
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <label
-                            htmlFor="inputPassword3"
-                            className="col-sm-2 control-label"
-                          >
-                            Họ và tên
-                          </label>
-                          <div className="col-sm-10">
-                            <input
-                              name="fullname"
-                              type="text"
-                              className="form-control"
-                              placeholder="Loading..."
-                              value={fullname}
-                              onChange={this.handleChange}
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <label
-                            htmlFor="username"
-                            className="col-sm-2 control-label"
-                          >
-                            Tên đăng nhập
-                          </label>
-                          <div className="col-sm-10">
-                            <input
-                              name="username"
-                              type="text"
-                              className="form-control"
-                              placeholder="Loading..."
-                              value={username}
-                              onChange={this.handleChange}
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <label
-                            htmlFor="idRole"
-                            className="col-sm-2 control-label"
-                          >
-                            Vai trò
-                          </label>
-                          <div className="col-sm-10">
-                            <input
-                              name="idRole"
-                              type="text"
-                              className="form-control"
-                              placeholder="Loading..."
-                              value={idRole}
-                              onChange={this.handleChange}
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <label
-                            htmlFor="phone"
-                            className="col-sm-2 control-label"
-                          >
-                            Số điện thoại
-                          </label>
-                          <div className="col-sm-10">
-                            <input
-                              name="phone"
-                              type="text"
-                              className="form-control"
-                              placeholder="Loading..."
-                              value={phone}
-                              onChange={this.handleChange}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      {/* /.box-body */}
-                      <div className="box-footer">
-                        <button
-                          type="button"
-                          onClick={this.handleCancel}
-                          className="btn btn-default"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          className="btn btn-info pull-right"
-                        >
-                          Save
-                        </button>
-                      </div>
-                      {/* /.box-footer */}
-                    </form>
                   </div>
                 </div>
-              </div>
-            </section>
-          </Fragment>
-        )}
+              </section>
+            </Fragment>
+          )}
       </Fragment>
     );
   }

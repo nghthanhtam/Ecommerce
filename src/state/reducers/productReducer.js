@@ -21,7 +21,7 @@ export default function (state = initialState, action) {
         isLoaded: true,
       };
     case PRODUCTS_RECEIVED:
-      return { ...state, products: action.payload.data, isLoaded: true };
+      return { ...state, products: action.payload.data.items, isLoaded: true };
     case PRODUCT_ADDED:
       return {
         ...state,

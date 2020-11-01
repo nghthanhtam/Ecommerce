@@ -15,17 +15,16 @@ const mapStateToProps = (state) => ({
 class Employee extends Component {
   state = {
     sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
-    // select: "5",
     limit: 5,
     page: 1,
     pages: [],
     totalDocuments: 0,
     query: '',
     start: 1,
+    end: 5,
+    isNextBtnShow: true,
     activeEmp: true,
     deletedEmp: false,
-    end: 5,
-    isNextBtnShow: false,
   };
 
   componentDidMount() {
@@ -47,13 +46,13 @@ class Employee extends Component {
       this.getPages();
     }
 
-    if (
-      totalDocuments !== prevProps.totalDocuments &&
-      totalDocuments &&
-      totalDocuments > 0
-    ) {
-      this.setState({ isNextBtnShow: true });
-    }
+    // if (
+    //   totalDocuments !== prevProps.totalDocuments &&
+    //   totalDocuments &&
+    //   totalDocuments > 0
+    // ) {
+    //   this.setState({ isNextBtnShow: true });
+    // }
   }
 
   getPages = () => {
@@ -107,9 +106,10 @@ class Employee extends Component {
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
-    if (page === pages || totalDocuments < 2) {
-      this.setState({ isNextBtnShow: false });
-    }
+    console.log(totalDocuments);
+    // if (page === pages || totalDocuments <= 2) {
+    //   this.setState({ isNextBtnShow: false });
+    // }
 
     this.setState({ start: (page - 1) * limit + 1 }, () => {
       let end;
@@ -146,15 +146,15 @@ class Employee extends Component {
         </td>
       </tr>
     ) : (
-      employees.map((eachEmployee, index) => (
-        <EmployeeRow
-          history={this.props.history}
-          key={eachEmployee.id}
-          employee={eachEmployee}
-          index={index + start - 1}
-        />
-      ))
-    );
+        employees.map((eachEmployee, index) => (
+          <EmployeeRow
+            history={this.props.history}
+            key={eachEmployee.id}
+            employee={eachEmployee}
+            index={index + start - 1}
+          />
+        ))
+      );
   };
 
   handleChoosePage = (e) => {
@@ -248,24 +248,40 @@ class Employee extends Component {
       );
     }
   };
-  onCheckActiveEmp = () => {
+
+  onCheckActiveEmp = (e) => {
     const { activeEmp, limit, page, query, deletedEmp } = this.state;
-    this.setState({ activeEmp: !activeEmp }, () => {
-      console.log(activeEmp);
-      this.props.getEmployees({
-        limit,
-        page,
-        query,
-        idShop: 1,
-        deletedEmp,
-        activeEmp: this.state.activeEmp,
+    if (e.target.name == 'active') {
+      this.setState({ activeEmp: !activeEmp }, () => {
+        console.log(activeEmp);
+        this.props.getEmployees({
+          limit,
+          page,
+          query,
+          idShop: 1,
+          deletedEmp: this.state.deletedEmp,
+          activeEmp: this.state.activeEmp,
+        });
       });
-    });
+    }
+    else if (e.target.name == 'deleted') {
+      this.setState({ deletedEmp: !deletedEmp }, () => {
+        console.log(activeEmp);
+        this.props.getEmployees({
+          limit,
+          page,
+          query,
+          idShop: 1,
+          deletedEmp: this.state.deletedEmp,
+          activeEmp: this.state.activeEmp,
+        });
+      });
+    }
   };
 
   render() {
-    const { limit, page, start, end, query, activeEmp } = this.state;
-    const { isLoaded, totalDocuments } = this.props;
+    const { limit, page, start, end, query, activeEmp, deletedEmp } = this.state;
+    const { totalDocuments } = this.props;
     return (
       <Fragment>
         {/* {!isLoaded ? (
@@ -328,12 +344,12 @@ class Employee extends Component {
                             <div
                               id="example1_filter"
                               className="dataTables_filter"
-                              style={{ float: 'right' }}
+                              style={{ display: 'flex' }}
                             >
                               <label
                                 style={{
                                   fontWeight: 400,
-                                  marginRight: '30px',
+                                  width: '180px'
                                 }}
                               >
                                 <input
@@ -342,17 +358,36 @@ class Employee extends Component {
                                   }}
                                   type="checkbox"
                                   className="minimal"
+                                  name='active'
                                   checked={activeEmp}
-                                  onChange={() => this.onCheckActiveEmp()}
+                                  onChange={this.onCheckActiveEmp}
                                 />
                                 Đang hoạt động
+                              </label>
+                              <label
+                                style={{
+                                  fontWeight: 400,
+                                  width: '180px'
+                                }}
+                              >
+                                <input
+                                  style={{
+                                    marginRight: '3px',
+                                  }}
+                                  type="checkbox"
+                                  className="minimal"
+                                  name='deleted'
+                                  checked={deletedEmp}
+                                  onChange={this.onCheckActiveEmp}
+                                />
+                                Không hoạt động
                               </label>
                               <label>
                                 Tìm kiếm:
                                 <input
                                   type="search"
                                   name="query"
-                                  style={{ margin: '0px 5px' }}
+                                  style={{ margin: '0px 0px' }}
                                   className="form-control input-sm"
                                   placeholder="Nhập từ khóa... "
                                   aria-controls="example1"

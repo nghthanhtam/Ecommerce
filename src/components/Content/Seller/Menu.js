@@ -50,9 +50,9 @@ export default class Menu extends Component {
 
                 <ul className="treeview-menu">
                   <li>
-                    <a href="product">
-                      <i className="fa fa-circle-o" /> Quản lý sản phẩm
-                    </a>
+                    <Link to="/product">
+                      <i className="fa fa-circle-o" /> Danh sách sản phẩm
+                    </Link>
                   </li>
                   <li>
                     <Link to="/add-product">
