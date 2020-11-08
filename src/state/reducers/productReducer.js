@@ -11,6 +11,7 @@ import {
 const initialState = {
   products: [],
   isLoaded: false,
+  totalDocuments: 0
 };
 
 export default function (state = initialState, action) {
@@ -21,7 +22,12 @@ export default function (state = initialState, action) {
         isLoaded: true,
       };
     case PRODUCTS_RECEIVED:
-      return { ...state, products: action.payload.data.items, isLoaded: true };
+      return {
+        ...state,
+        products: action.payload.data.items,
+        isLoaded: true,
+        totalDocuments: action.payload.data.total,
+      };
     case PRODUCT_ADDED:
       return {
         ...state,

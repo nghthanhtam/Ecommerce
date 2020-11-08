@@ -87,7 +87,7 @@ export default class Menu extends Component {
                 </Link>
               </li>
               <li className="treeview">
-                <a href="fake_url">
+                <a href="#">
                   <i className="fa fa-pie-chart" />
                   <span>Thống kê</span>
                   <span className="pull-right-container">

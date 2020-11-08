@@ -10,6 +10,8 @@ import {
   PRODUCT_DELETED,
   UPDATE_PRODUCT,
   PRODUCT_UPDATED,
+  UPDATE_PRODUCTADD,
+  PRODUCTADD_UPDATED
 } from "../actions/types";
 
 import mongoose from "mongoose";
@@ -91,9 +93,20 @@ function* deleteProducts(params) {
   }
 }
 
+function* updateProductAdd(params) {
+  try {
+    const { arrVariants } = params.params
+    console.log('sagaArrVariants: ', arrVariants);
+    yield put({ type: PRODUCTADD_UPDATED, payload: { arrVariants } });
+  } catch (error) {
+    console.log(error.response);
+  }
+}
+
 export default function* sProductSaga() {
   yield takeEvery(GET_PRODUCTS, fetchProducts);
   yield takeEvery(ADD_PRODUCT, addProduct);
   yield takeEvery(UPDATE_PRODUCT, updateProduct);
   yield takeEvery(DELETE_PRODUCT, deleteProducts);
+  yield takeEvery(UPDATE_PRODUCTADD, updateProductAdd);
 }

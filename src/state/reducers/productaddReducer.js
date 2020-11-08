@@ -1,7 +1,7 @@
 import { UPDATE_PRODUCTADD } from '../actions/types';
 
 const initialState = {
-  productadds: [],
+  arrVariants: [{ name: '', values: ['', '', '', '', ''] }],
   isLoaded: false,
 };
 
@@ -10,7 +10,7 @@ export default function (state = initialState, action) {
     case UPDATE_PRODUCTADD:
       return {
         ...state,
-        productadds: action.payload,
+        //arrVariants: action.payload,
       };
     default:
       return state;

@@ -21,7 +21,7 @@ function* loadUser() {
   try {
     const response = yield call(() =>
       axios.get(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/authentication/user`,
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/authentication/user`,
         tokenConfig(state)
       )
     );
@@ -50,7 +50,7 @@ function* login(params) {
   try {
     const response = yield call(() =>
       axios.post(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/authentication`,
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/authentication`,
         params.user,
         config
       )

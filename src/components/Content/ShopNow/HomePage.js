@@ -18,43 +18,43 @@ class HomePage extends React.Component {
     this.state = {
       categoryList: [
         {
-          name: "Electronics",
-          description: "Mouses, keyboards",
-          picLink: "./img/elec.png",
+          name: "ACTION",
+          description: "You want an Avenger?",
+          picLink: "./img/action-movie.png",
           color: "cate-pink",
         },
         {
-          name: "Books",
-          description: "Novels, Comics",
-          picLink: "./img/book.png",
+          name: "ROMANCE",
+          description: "Let's head on the 'Titanic'!",
+          picLink: "./img/romance-movie.png",
           color: "cate-orange",
         },
         {
-          name: "Clothes",
-          description: "Hats, Shoes, Jackets",
-          picLink: "./img/clothes.png",
+          name: "HORROR",
+          description: "Annabelle will scare you!",
+          picLink: "./img/horror-movie.png",
           color: "cate-pastel",
         },
         {
-          name: "Toys",
-          description: "Guns, Swords, Figures",
-          picLink: "./img/toy.png",
+          name: "SCI-FI",
+          description: "Get ready on Interception?",
+          picLink: "./img/scifi-movie.png",
           color: "cate-pink",
         },
         {
-          name: "Video Games",
-          description: "Games",
-          picLink: "./img/game.png",
+          name: "COMEDY",
+          description: "Laugh with High Kick?",
+          picLink: "./img/comedy-movie.png",
           color: "cate-orange",
         },
         {
-          name: "Stuff",
+          name: "FAMILY",
           description: "Others",
-          picLink: "./img/stuff.png",
+          picLink: "./img/family-movie.png",
           color: "cate-pastel",
         },
         {
-          name: "Stuff",
+          name: "KIDS",
           description: "Others",
           picLink: "./img/stuff.png",
           color: "cate-pink",
@@ -267,7 +267,7 @@ class HomePage extends React.Component {
             </div>
           </Slider>
 
-          <TitlePane title="BROWSE YOUR CATEGORY" isNotShop={true} />
+          <TitlePane title="MOVIE CATEGORIES" isNotShop={true} />
           <div className="list-wrapper">
             <div className="cate-grid">
               {categoryList.map((cate) => {

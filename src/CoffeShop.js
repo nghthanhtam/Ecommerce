@@ -111,6 +111,9 @@ class CoffeShop extends Component {
           <Route exact path="/product-detail">
             <ProductDetail />
           </Route>
+          <Route exact path="/checkout/cart">
+            <Cart />
+          </Route>
           <Route
             exact
             path="/"
@@ -118,8 +121,8 @@ class CoffeShop extends Component {
               return !token ? (
                 <Redirect to="/login" />
               ) : (
-                <Redirect to="/home" />
-              );
+                  <Redirect to="/home" />
+                );
             }}
           />
 

@@ -1,6 +1,6 @@
 import { UPDATE_PRODUCTADD } from './types';
 
-export const updateProduct = (params) => ({
+export const updateProductAdd = (params) => ({
   type: UPDATE_PRODUCTADD,
-  payload: params,
+  params,
 });

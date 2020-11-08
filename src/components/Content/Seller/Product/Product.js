@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 const mapStateToProps = (state) => ({
   products: state.product.products,
   isLoaded: state.product.isLoaded,
+  totalDocuments: state.product.totalDocuments,
 });
 
 class Product extends Component {
@@ -22,7 +23,6 @@ class Product extends Component {
     page: 1,
     query: '',
     pages: [],
-    totalDocuments: 0,
     query: '',
     start: 1,
     end: 5,
@@ -30,24 +30,30 @@ class Product extends Component {
     propValueList: [],
     isPriceBoardHidden: true,
     skuproduct: {
+      index: 0,
+      id: 0,
       productId: '',
       name: '',
       sku: '',
       marketPrice: 0,
       price: 0,
       qty: 0,
-      variantList: [],
+      qtyAdd: 0,
+      status: 1
     },
-    skuProductList: [
+    productList: [
       {
-        _id: 0,
-        productId: '',
-        name: '',
-        sku: '',
+        index: 0,
+        id: 0,
+        idProduct: '',
+        idShop: '',
+        SKU: '',
         marketPrice: 0,
+        name: '',
         price: 0,
         qty: 0,
-        variantList: [],
+        qtyAdd: 0,
+        status: 1
       },
     ],
   };
@@ -55,6 +61,7 @@ class Product extends Component {
   resetState = () => {
     this.setState({ limit: 5, page: 1, query: '' });
   };
+
   componentDidMount() {
     const { limit, page, query } = this.state;
     this.props.getProducts({
@@ -62,28 +69,21 @@ class Product extends Component {
       page,
       query,
     });
-
-    if (!this.props.location.state) {
-      return;
-    }
-    // if (this.props.location.state !== '') {
-    //   this.setState({ notiType: this.props.location.state.notiType });
-    // }
+    // if (!this.props.location.state) return;
+    // else this.setState({ notiType: this.props.location.state.notiType });
   }
 
-  addRow = () => {
-    let { skuproduct } = this.state,
-      obj = {};
-    obj = Object.assign(skuproduct);
-    this.setState((prepState) => ({
-      //add obj to list sku product
-      skuProductList: [...prepState.skuProductList, obj],
-    }));
-  };
+  //set lai end khi danh sach chi co 1 trang, va so luong sp khong du limit cua trang do
+  componentDidUpdate = (prevProps, prevState, snapshot) => {
+    const { totalDocuments } = this.props, { end } = this.state
+    if (totalDocuments < 5 && end !== totalDocuments) {
+      this.setState({ end: totalDocuments })
+    }
+  }
 
   renderProducts = (isPending) => {
     const { products, isLoaded } = this.props;
-    const { start, limit, page } = this.state;
+    const { start } = this.state;
     return !isLoaded ? (
       <tr>
         <td>
@@ -154,9 +154,7 @@ class Product extends Component {
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
-    if (page === pages || totalDocuments < 2) {
-      this.setState({ isNextBtnShow: false });
-    }
+    console.log(totalDocuments);
 
     this.setState({ start: (page - 1) * limit + 1 }, () => {
       let end;
@@ -204,6 +202,7 @@ class Product extends Component {
 
   renderPageButtons = () => {
     const { pages, page, isNextBtnShow } = this.state;
+
     if (pages.length > 1) {
       return (
         <>
@@ -243,19 +242,69 @@ class Product extends Component {
     }
   };
 
+  addRow = () => {
+    let { skuproduct, productList } = this.state, obj = {};
+    obj = Object.assign(skuproduct);
+    obj.index = Math.max.apply(Math, productList.map(function (element) { return element.index })) + 1
+    this.setState((prepState) => ({
+      //add obj to warehouse product list
+      productList: [...prepState.productList, obj],
+    }));
+  };
+
+  onChange = (e, index) => {
+    this.setState((prepState) => {
+      let productList = [...prepState.productList];
+      let { id, idProduct, idShop, SKU, marketPrice, name, price, qty, qtyAdd, status } = e
+
+      const newItem = {
+        id,
+        index,
+        idProduct,
+        idShop,
+        SKU,
+        marketPrice,
+        name,
+        price,
+        qty: 0,
+        qtyAdd: 0,
+        status
+      };
+      productList.map((pd) => {
+        if (pd.index === index) {
+          productList.splice(index, 1); //xoa 1 phan tu o vi tri index
+          productList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
+        }
+      });
+
+      return {
+        productList,
+      };
+    });
+  };
+
+  onAddingQty = (e, index) => {
+    const { productList } = this.state
+    productList.map((pd) => {
+      if (pd.index === index) {
+        pd.qtyAdd = Number(e.target.textContent);
+      }
+    });
+    console.log(this.state.productList);
+  }
+
+  onSubmit = () => {
+
+  }
+
   createNotification = () => {
     this.props.showNoti(this.state.notiType);
     this.setState({ notiType: '' });
   };
 
   render() {
-    const { isLoaded } = this.props;
-    const { limit, page, start, end, query, totalDocuments, notiType, propValueList,
-      skuProductList,
-      categoryList,
-      category,
-      variantList,
-      productList, } = this.state;
+    const { isLoaded, products, totalDocuments } = this.props;
+    const { start, end, query, notiType, propValueList, productList, } = this.state;
 
     return (
       <Fragment>
@@ -278,7 +327,8 @@ class Product extends Component {
                   </a>
                   </li>
                   <li>
-                    <a href="fake_url">Sản phẩm</a>
+                    <a href="fake_url">Danh sách s
+                    ản phẩm</a>
                   </li>
                 </ol>
               </section>
@@ -302,12 +352,12 @@ class Product extends Component {
                       </a>
                     </li>
                   </ul>
-                  <div class="tab-content">
-                    <div class="active tab-pane" id="list">
+                  <div className="tab-content">
+                    <div className="active tab-pane" id="list">
                       <div className="row">
                         {/* left column */}
                         <div className="col-md-12">
-                          <div className="box">
+                          <div className="box1">
                             {/* <div className="col-md-4">
                         <ProductModal />
                       </div> */}
@@ -355,7 +405,7 @@ class Product extends Component {
                                       >
                                         <label style={{ float: 'right' }}>
                                           Tìm kiếm
-                                  <input
+                                          <input
                                             type="search"
                                             name="query"
                                             style={{ margin: '0px 5px' }}
@@ -391,6 +441,7 @@ class Product extends Component {
                                       <tfoot>
                                         <tr>
                                           <th>#</th>
+                                          <th></th>
                                           <th>Tên sản phẩm</th>
                                           <th>SKU</th>
                                           <th>Đơn giá</th>
@@ -413,7 +464,7 @@ class Product extends Component {
                                         ? start + ' đến ' + end + ' trong '
                                         : ''}{' '}
                                       {totalDocuments} kết quả
-                            </div>
+                                    </div>
                                   </div>
                                   <div className="col-sm-7">
                                     <div
@@ -437,143 +488,134 @@ class Product extends Component {
                         </div>
                       </div>
                     </div>
-                    <div class="tab-pane" id="pendinglist">
+                    <div className="tab-pane" id="pendinglist">
                       <div className="row">
                         {/* left column */}
                         <div className="col-md-12">
-                          <div className="box">
-                            {/* <div className="box-header" style={{ marginTop: '5px' }}>
-                              <div className="col-md-4">
-                                <ProductModal />
-                              </div>
-                            </div> */}
-                            {/* /.box-header */}
-                            <div className="box-body">
-                              <div
-                                id="example1_wrapper"
-                                className="dataTables_wrapper form-inline dt-bootstrap"
-                              >
-                                <div className="row">
-                                  <div>
-                                    <div className="col-sm-6">
-                                      <div
-                                        className="dataTables_length"
-                                        id="example1_length"
-                                      >
-                                        <label>
-                                          Hiển thị
-                                  <select
-                                            onChange={this.handleOnChange}
-                                            name="limit"
-                                            aria-controls="example1"
-                                            style={{ margin: '0px 5px' }}
-                                            className="form-control input-sm"
-                                            value={this.state.limit}
-                                          >
-                                            {this.state.sort.map((option) => (
-                                              <option
-                                                key={option.value}
-                                                value={option.value}
-                                              >
-                                                {option.value}
-                                              </option>
-                                            ))}
-                                          </select>
-                                  kết quả
-                                </label>
-                                      </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                      <div
-                                        id="example1_filter"
-                                        className="dataTables_filter"
-                                      >
-                                        <label style={{ float: 'right' }}>
-                                          Tìm kiếm
-                                        <input
-                                            type="search"
-                                            name="query"
-                                            style={{ margin: '0px 5px' }}
-                                            className="form-control input-sm"
-                                            placeholder="Nhập từ khóa...  "
-                                            aria-controls="example1"
-                                            onChange={this.handleOnChange}
-                                            value={this.state.query}
-                                          />
-                                        </label>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
 
-                                <div className="row">
-                                  <div className="col-sm-12">
-                                    <table
-                                      id="example1"
-                                      className="table table-bordered table-striped"
-                                    >
-                                      <thead>
-                                        <tr>
-                                          <th style={{ width: '5%' }}>#</th>
-                                          <th></th>
-                                          <th style={{ width: '20%' }}>Tên sản phẩm</th>
-                                          <th style={{ width: '20%' }}>SKU</th>
-                                          <th style={{ width: '20%' }}>Đơn giá</th>
-                                          <th style={{ width: '15%' }}>Số lượng tồn</th>
-                                          <th style={{ width: '15%' }}>Trạng thái</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>{this.renderProducts(true)}</tbody>
-                                      <tfoot>
-                                        <tr>
-                                          <th>#</th>
-                                          <th>Tên sản phẩm</th>
-                                          <th>SKU</th>
-                                          <th>Đơn giá</th>
-                                          <th>Số lượng tồn</th>
-                                        </tr>
-                                      </tfoot>
-                                    </table>
-                                  </div>
-                                </div>
-                                <div className="row">
-                                  <div className="col-sm-5">
+                          <div className="box-body">
+                            <div
+                              id="example1_wrapper"
+                              className="dataTables_wrapper form-inline dt-bootstrap"
+                            >
+                              <div className="row">
+                                <div>
+                                  <div className="col-sm-6">
                                     <div
-                                      className="dataTables_info"
-                                      id="example1_info"
-                                      role="status"
-                                      aria-live="polite"
+                                      className="dataTables_length"
+                                      id="example1_length"
                                     >
-                                      Hiển thị{' '}
-                                      {query == ''
-                                        ? start + ' đến ' + end + ' trong '
-                                        : ''}{' '}
-                                      {totalDocuments} kết quả
-                            </div>
+                                      <label>
+                                        Hiển thị
+                                        <select
+                                          onChange={this.handleOnChange}
+                                          name="limit"
+                                          aria-controls="example1"
+                                          style={{ margin: '0px 5px' }}
+                                          className="form-control input-sm"
+                                          value={this.state.limit}
+                                        >
+                                          {this.state.sort.map((option) => (
+                                            <option
+                                              key={option.value}
+                                              value={option.value}
+                                            >
+                                              {option.value}
+                                            </option>
+                                          ))}
+                                        </select>
+                                            kết quả
+                                        </label>
+                                    </div>
                                   </div>
-                                  <div className="col-sm-7">
+                                  <div className="col-sm-6">
                                     <div
-                                      className="dataTables_paginate paging_simple_numbers"
-                                      id="example1_paginate"
+                                      id="example1_filter"
+                                      className="dataTables_filter"
                                     >
-                                      <ul
-                                        className="pagination"
-                                        style={{ float: 'right' }}
-                                      >
-                                        {this.renderPageButtons()}
-                                      </ul>
+                                      <label style={{ float: 'right' }}>
+                                        Tìm kiếm
+                                        <input
+                                          type="search"
+                                          name="query"
+                                          style={{ margin: '0px 5px' }}
+                                          className="form-control input-sm"
+                                          placeholder="Nhập từ khóa...  "
+                                          aria-controls="example1"
+                                          onChange={this.handleOnChange}
+                                          value={this.state.query}
+                                        />
+                                      </label>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                              {/*/.col (left) */}
+
+                              <div className="row">
+                                <div className="col-sm-12">
+                                  <table
+                                    id="example1"
+                                    className="table table-bordered table-striped"
+                                  >
+                                    <thead>
+                                      <tr>
+                                        <th style={{ width: '5%' }}>#</th>
+                                        <th></th>
+                                        <th style={{ width: '20%' }}>Tên sản phẩm</th>
+                                        <th style={{ width: '20%' }}>SKU</th>
+                                        <th style={{ width: '20%' }}>Đơn giá</th>
+                                        <th style={{ width: '15%' }}>Số lượng tồn</th>
+                                        <th style={{ width: '15%' }}>Trạng thái</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>{this.renderProducts(true)}</tbody>
+                                    <tfoot>
+                                      <tr>
+                                        <th>#</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>SKU</th>
+                                        <th>Đơn giá</th>
+                                        <th>Số lượng tồn</th>
+                                      </tr>
+                                    </tfoot>
+                                  </table>
+                                </div>
+                              </div>
+                              <div className="row">
+                                <div className="col-sm-5">
+                                  <div
+                                    className="dataTables_info"
+                                    id="example1_info"
+                                    role="status"
+                                    aria-live="polite"
+                                  >
+                                    Hiển thị{' '}
+                                    {query == ''
+                                      ? start + ' đến ' + end + ' trong '
+                                      : ''}{' '}
+                                    {totalDocuments} kết quả
                             </div>
-                            {/* /.row */}
+                                </div>
+                                <div className="col-sm-7">
+                                  <div
+                                    className="dataTables_paginate paging_simple_numbers"
+                                    id="example1_paginate"
+                                  >
+                                    <ul
+                                      className="pagination"
+                                      style={{ float: 'right' }}
+                                    >
+                                      {this.renderPageButtons()}
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="tab-pane" id="warehouse">
+                    <div className="tab-pane" id="warehouse">
                       <section
                         className="content"
                       >
@@ -621,70 +663,58 @@ class Product extends Component {
                                     </th>
                                   ))}
                                   <th style={{ width: '20%' }}>Tên sản phẩm</th>
-                                  <th style={{ width: '15%' }}>Mã sản phẩm</th>
                                   <th style={{ width: '15%' }}>Giá niêm yết</th>
                                   <th style={{ width: '15%' }}>Giá bán</th>
+                                  <th style={{ width: '10%' }}>Số lượng tồn</th>
+                                  <th style={{ width: '10%' }}>Số lượng nhập</th>
                                   <th style={{ width: '2%' }}></th>
                                 </tr>
                               </thead>
 
                               <tbody>
-                                {skuProductList.map((product, index) => (
+                                {productList.map((product, index) => (
                                   <tr key={index}>
                                     <td>{index + 1}</td>
-                                    {propValueList.map((item, index) => (
-                                      <td key={index} bgcolor="#FFFFFF">
-                                        <Select
-                                          styles={{
-                                            control: (base, state) => ({
-                                              ...base,
-                                              borderColor: 'transparent',
-                                            }),
-                                          }}
-                                          options={item.list}
-                                          name="select"
-                                          onBlur={(e) =>
-                                            this.onChange(e, index)
-                                          }
-                                        />
-                                      </td>
-                                    ))}
-
-                                    <td
-                                      onBlur={(e) => this.onChange(e, index)}
-                                      name="name"
-                                      bgcolor="#FFFFFF"
-                                      style={inputField}
-                                      contentEditable="true"
-                                    ></td>
-                                    <td
-                                      name="sku"
-                                      bgcolor="#FFFFFF"
-                                      style={inputField}
-                                      contentEditable="true"
-                                      onBlur={(e) => this.onChange(e, index)}
-                                    ></td>
-
+                                    <td key={index} bgcolor="#FFFFFF">
+                                      <Select
+                                        styles={{
+                                          control: (base, state) => ({
+                                            ...base,
+                                            borderColor: 'transparent',
+                                          }),
+                                        }}
+                                        options={products}
+                                        getOptionLabel={(option) => option.name + ' - ' + option.SKU}
+                                        getOptionValue={(option) => option.id}
+                                        name="name"
+                                        onChange={(e) => this.onChange(e, index)}
+                                      />
+                                    </td>
                                     <td
                                       name="marketPrice"
                                       bgcolor="#FFFFFF"
                                       style={inputField}
-                                      contentEditable="true"
-                                      onBlur={(e) => this.onChange(e, index)}
-                                    ></td>
+                                    >{product.marketPrice}</td>
                                     <td
                                       name="price"
                                       bgcolor="#FFFFFF"
                                       style={inputField}
+                                    >{product.price}</td>
+                                    <td
+                                      name="qty"
+                                      bgcolor="#FFFFFF"
+                                      style={inputField}
+                                    >{product.qty}</td>
+                                    <td
+                                      name="qtyAdd"
+                                      bgcolor="#FFFFFF"
+                                      style={inputField}
                                       contentEditable="true"
-                                      onBlur={(e) => this.onChange(e, index)}
+                                      onBlur={(e) => this.onAddingQty(e, index)}
                                     ></td>
                                     <td bgcolor="#FFFFFF">
                                       <div
-                                        style={{
-                                          cursor: 'pointer',
-                                          float: 'right',
-                                        }}
+                                        style={{ cursor: 'pointer' }}
                                         onClick={() => this.removeItem(index)}
                                         className="fa fa-trash"
                                       ></div>
@@ -694,8 +724,15 @@ class Product extends Component {
                               </tbody>
                             </table>
                           </div>
+                          <button
+                            type="button"
+                            style={{ marginRight: '18px', float: 'right' }}
+                            className="btn btn-primary"
+                            onClick={() => this.onSubmit()}
+                          >
+                            Tiến hành nhập kho
+                          </button>
                         </div>
-
                       </section>
                     </div>
                   </div>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { deleteProduct } from '../../../../state/actions/productActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
+import UpdateQtyModal from './UpdateQtyModal';
 
 class ProductRow extends Component {
   convertDate = (date) => {
@@ -18,9 +19,6 @@ class ProductRow extends Component {
   };
   handleEdit = (id) => {
     this.props.pushHistory(`/product/edit/${id}`);
-  };
-  handleDelete = (id) => {
-    this.props.deleteProduct(id);
   };
 
   render() {
@@ -44,21 +42,14 @@ class ProductRow extends Component {
             >
               Sửa
             </button>
-
-            <button
-              onClick={() => this.handleDelete(id)}
-              type="button"
-              className="btn btn-danger"
-            >
-              Xóa
-            </button>
+            <UpdateQtyModal name={name} />
           </div>
         </td> : status === 1 ?
             <td style={{ color: 'green' }}>
-              <i style={{ color: '#52c41a' }} class="fa fa-check-circle" aria-hidden="true"></i> Đã duyệt
+              <i style={{ color: '#52c41a' }} className="fa fa-check-circle" aria-hidden="true"></i> Đã duyệt
             </td > :
             <td style={{ color: 'grey' }}>
-              <i style={{ color: '#52c41a' }} class="fa fa-spinner" aria-hidden="true"></i> Chờ duyệt
+              <i style={{ color: '#52c41a' }} className="fa fa-spinner" aria-hidden="true"></i> Chờ duyệt
             </td>}
       </tr>
     );

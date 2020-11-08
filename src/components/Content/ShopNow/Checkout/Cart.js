@@ -15,45 +15,55 @@ class Cart extends React.Component {
       orderList: [1, 2, 3, 4, 5],
     };
   }
-  checkout = () => {};
+  checkout = () => { };
 
   render() {
     let { orderList } = this.state;
     return (
       <div>
         <Header />
-        <div className="nohome-section"></div>
-        <div className="cart-container">
-          <div className="cart-card">
-            <div className="order-list">
-              {orderList.map(() => {
-                return <CartDetail />;
-              })}
-            </div>
-            <div className="center-col-flex">
-              <p className="promo-title">Mã giảm giá</p>
-              <div class="ui action input">
-                <input type="text" placeholder="Nhập ở đây..." />
-                <button class="ui button">Áp dụng</button>
+        <div
+          style={{
+            zIndex: 10,
+            marginBottom: '300px',
+            position: 'relative',
+            backgroundColor: '#f7f7f7',
+          }}
+        >
+          <div className="nohome-section"></div>
+          <div className="cart-container">
+            <div className="cart-card">
+              <div className="order-list">
+                {orderList.map(() => {
+                  return <CartDetail />;
+                })}
               </div>
-              <div className="checkout">
-                <p> Thành tiền</p>
-                <p className="total"> 200000đ</p>
-              </div>
-              <Button
-                style={{
-                  color: "white",
-                  backgroundColor: "#3571a7",
-                  width: "108%",
-                  marginTop: "20px",
-                }}
-                onClick={() => this.checkout()}
-              >
-                Tiến hành đặt hàng
+              <div className="center-col-flex">
+                <p className="promo-title">Mã giảm giá</p>
+                <div class="ui action input">
+                  <input type="text" placeholder="Nhập ở đây..." />
+                  <button class="ui button">Áp dụng</button>
+                </div>
+                <div className="checkout">
+                  <p> Thành tiền</p>
+                  <p className="total"> 200000đ</p>
+                </div>
+                <Button
+                  style={{
+                    color: "white",
+                    backgroundColor: "#3571a7",
+                    width: "108%",
+                    marginTop: "20px",
+                  }}
+                  onClick={() => this.checkout()}
+                >
+                  Tiến hành đặt hàng
               </Button>
+              </div>
             </div>
           </div>
         </div>
+
 
         <Footer />
       </div>

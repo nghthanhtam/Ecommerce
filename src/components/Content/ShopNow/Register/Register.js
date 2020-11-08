@@ -393,18 +393,21 @@ class Register extends React.Component {
       <div>
         <div className="reg-container">
           <div className="reg-card">
-            <div className="reg-ava">
-              <img src="./img/spiderman.png" alt="ava" />
+            <div className="reg-title-wrapper">
+              <div className="reg-text">
+                <p className="reg-title">Đăng ký bán hàng cùng ShopNow</p>
+                <p>Cảm ơn đối tác đã tin tưởng và lựa chọn đồng hành cùng Tiki!</p>
+                <p>
+                  Vui lòng hoàn tất thông tin để tạo tài khoản đăng nhập Trung Tâm
+                  Bán Hàng.
+                </p>
+              </div>
+              <div className="reg-ava">
+                <img src="./img/spiderman.png" alt="ava" />
+              </div>
             </div>
 
-            <p className="reg-title">Đăng ký bán hàng cùng ShopNow</p>
-            <p>Cảm ơn đối tác đã tin tưởng và lựa chọn đồng hành cùng Tiki!</p>
-            <p>
-              Vui lòng hoàn tất thông tin để tạo tài khoản đăng nhập Trung Tâm
-              Bán Hàng.
-            </p>
             <SignupForm />
-
             <p className="reg-commit">
               Bằng cách gửi đơn đăng ký của bạn, bạn đồng ý với Thỏa thuận dịch
               vụ của chúng tôi và xác nhận rằng thông tin bạn cung cấp đã hoàn

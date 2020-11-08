@@ -18,7 +18,6 @@ class Employee extends Component {
     limit: 5,
     page: 1,
     pages: [],
-    totalDocuments: 0,
     query: '',
     start: 1,
     end: 5,
@@ -45,14 +44,6 @@ class Employee extends Component {
     if (isLoaded == true && this.state.pages == prevState.pages) {
       this.getPages();
     }
-
-    // if (
-    //   totalDocuments !== prevProps.totalDocuments &&
-    //   totalDocuments &&
-    //   totalDocuments > 0
-    // ) {
-    //   this.setState({ isNextBtnShow: true });
-    // }
   }
 
   getPages = () => {

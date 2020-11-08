@@ -1,11 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
+import { addProduct } from '../../../../state/actions/productaddActions'
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './product.css';
+import axios from "axios";
 
 const mapStateToProps = (state) => ({
   productadds: state.productadd.productadds,
+  isLoaded: state.product.isLoaded,
 });
 
 class ProductAddNextPage extends Component {
@@ -14,19 +17,15 @@ class ProductAddNextPage extends Component {
     errorMessage: '',
     propValueList: [],
     isPriceBoardHidden: true,
-    skuproduct: { productId: '', sku: '', price: 0, qty: 0 },
-    skuProductList: [{ _id: 0, productId: '', sku: '', price: 0, qty: 0 }],
-    productList: [1, 2, 3, 4, 5, 6, 7, 8],
-    categoryList: [
-      { _id: 1, value: 'BOOK', label: 'Sách' },
-      { _id: 2, value: 'TOY', label: 'Đồ chơi' },
-      { _id: 3, value: 'CLOTHES', label: 'Quần áo' },
-    ],
     variantList: [],
-    category: '',
   };
 
-  onsaveProp = (obj) => {
+  componentDidMount = () => {
+    const { selectedFiles } = this.props.location
+    if (selectedFiles) this.setState({ selectedFiles })
+  }
+
+  onSaveProp = (obj) => {
     this.setState((prepState) => ({
       variantList: [...prepState.variantList, obj.name],
     }));
@@ -36,56 +35,42 @@ class ProductAddNextPage extends Component {
     }));
   };
 
-  addRow = () => {
-    let { skuproduct } = this.state,
-      obj = {};
+  back = () => {
+    const { selectedFiles } = this.state
+    this.props.history.push({
+      pathname: '/add-product',
+      selectedFiles
+    })
+  }
 
-    obj = Object.assign(skuproduct);
+  upload = () => {
+    const { arrProductVar, arrVariants, product } = this.props.location
+    const { selectedFiles } = this.state
+    console.log('arrProductVar: ', arrProductVar);
+    console.log('arrVariants: ', arrVariants);
+    console.log('product: ', product);
+    console.log(selectedFiles);
 
-    this.setState((prepState) => ({
-      //add obj to list sku product
-      skuProductList: [...prepState.skuProductList, obj],
-    }));
-  };
+    const formData = new FormData();
+    selectedFiles.forEach(file => {
+      formData.append("photos", file);
+    });
+    formData.append('arrProductVar', JSON.stringify(arrProductVar))
+    formData.append('arrVariants', JSON.stringify(arrVariants))
+    formData.append('product', JSON.stringify(product))
 
-  onCellNameEdit = (e, index) => {
-    let val = e.target.textContent;
-    this.setState((state) => {
-      let skuProductList = [...state.skuProductList];
-
-      for (var product of skuProductList) {
-        if (product._id == index) {
-          const newItem = Object.assign(product);
-          newItem['quantity'] = product.quantitydb - val;
-          newItem['usedqty'] = val;
-          newItem['options'] = this.state.options;
-          newItem['createAt'] = new Date();
-
-          skuProductList.splice(index, 1); //xoa 1 phan tu o vi tri index
-          skuProductList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
-        }
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data; charset=utf-8; boundary="another cool boundary";'
       }
+    };
 
-      return {
-        skuProductList,
-      };
+    axios.post(`${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`, formData, config).then((resp) => {
+      console.log(resp);
+    }).catch(err => {
+      console.log(err);
     });
   };
-
-  removeItem = (index) => {
-    this.setState((prepState) => {
-      let skuProductList = [...prepState.skuProductList];
-      skuProductList.splice(index, 1);
-      return {
-        skuProductList,
-      };
-    });
-  };
-
-  onChangeCategoryList = (selectedItem) => {
-    this.setState({ category: selectedItem.value });
-  };
-  upload = () => {};
 
   render() {
     const { selectedFiles, errorMessage } = this.state;
@@ -117,9 +102,10 @@ class ProductAddNextPage extends Component {
       for (let i = 0; i < files.length; i++) {
         if (validateFile(files[i])) {
           files[i].filePath = URL.createObjectURL(files[i]);
-
+          //console.log(files[i]);
           this.setState((prepState) => ({
             selectedFiles: [...prepState.selectedFiles, files[i]],
+            //selectedFiles: files[i]
           }));
         } else {
           files[i]['invalid'] = true;
@@ -183,7 +169,7 @@ class ProductAddNextPage extends Component {
 
                     {productadds.map((product) => {
                       return (
-                        <div key={product._id}>
+                        <div key={product.SKU}>
                           <p
                             style={{
                               background: '#f5f5f5',
@@ -201,8 +187,8 @@ class ProductAddNextPage extends Component {
                             onDragLeave={dragLeave}
                             onDrop={fileDrop}
                           >
-                            {product.variantList.length > 0 &&
-                              product.variantList.map((item, index) => {
+                            {selectedFiles.length > 0 &&
+                              selectedFiles.map((item, index) => {
                                 return (
                                   <label
                                     key={index}
@@ -244,7 +230,7 @@ class ProductAddNextPage extends Component {
                         style={{ width: '100px', marginRight: '5px' }}
                         type="button"
                         className="btn btn-block btn-default"
-                        onClick={() => this.props.history.push('/add-product')}
+                        onClick={this.back}
                       >
                         Quay lại
                       </button>
