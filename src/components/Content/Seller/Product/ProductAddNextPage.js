@@ -7,7 +7,7 @@ import './product.css';
 import axios from "axios";
 
 const mapStateToProps = (state) => ({
-  productadds: state.productadd.productadds,
+  arrVariants: state.productadd.arrVariants,
   isLoaded: state.product.isLoaded,
 });
 
@@ -21,59 +21,82 @@ class ProductAddNextPage extends Component {
   };
 
   componentDidMount = () => {
-    const { selectedFiles } = this.props.location
+    const { selectedFiles, arrProductVar, arrVariants, product } = this.props.location
     if (selectedFiles) this.setState({ selectedFiles })
-  }
 
-  onSaveProp = (obj) => {
-    this.setState((prepState) => ({
-      variantList: [...prepState.variantList, obj.name],
-    }));
-    this.setState({ isPriceBoardHidden: false });
-    this.setState((prepState) => ({
-      propValueList: [...prepState.propValueList, obj],
-    }));
-  };
+  }
 
   back = () => {
     const { selectedFiles } = this.state
+    const { arrProductVar, arrVariants, product } = this.props.location
     this.props.history.push({
       pathname: '/add-product',
-      selectedFiles
+      details: {
+        selectedFiles,
+        arrProductVar,
+        arrVariants,
+        product
+      }
     })
   }
 
   upload = () => {
     const { arrProductVar, arrVariants, product } = this.props.location
     const { selectedFiles } = this.state
+    let validateArrVariants = []
+    arrVariants.map(variant => {
+      if (!variant.name.__isNew__) {
+        console.log('variant.name not new')
+        let tempArr = []
+        variant.values.map(v => {
+          if (v.__isNew__) {
+            tempArr.push(v.value)
+          }
+        })
+        if (tempArr.length > 0) {
+          validateArrVariants.push({ idVariant: variant.name.value, values: tempArr })
+        }
+      } else {
+        variant.values = variant.values.map(({ label }) => label)
+        validateArrVariants.push({ name: variant.name.label, values: variant.values })
+      }
+    })
+
+    // arrProductVar.map(pvar => {
+    //   pvar.variants(var => {
+
+    //   })
+    // })
+
+    console.log('--ending variantList--: ', validateArrVariants);
     console.log('arrProductVar: ', arrProductVar);
     console.log('arrVariants: ', arrVariants);
     console.log('product: ', product);
-    console.log(selectedFiles);
+    console.log('selectedFiles: ', selectedFiles);
+    // const formData = new FormData();
+    // selectedFiles.forEach(file => {
+    //   formData.append("photos", file);
+    // });
+    // formData.append('arrProductVar', JSON.stringify(arrProductVar))
+    // formData.append('arrVariants', JSON.stringify(validateArrVariants))
+    // formData.append('product', JSON.stringify(product))
 
-    const formData = new FormData();
-    selectedFiles.forEach(file => {
-      formData.append("photos", file);
-    });
-    formData.append('arrProductVar', JSON.stringify(arrProductVar))
-    formData.append('arrVariants', JSON.stringify(arrVariants))
-    formData.append('product', JSON.stringify(product))
+    // const config = {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data; charset=utf-8; boundary="another cool boundary";'
+    //   }
+    // };
 
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data; charset=utf-8; boundary="another cool boundary";'
-      }
-    };
-
-    axios.post(`${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`, formData, config).then((resp) => {
-      console.log(resp);
-    }).catch(err => {
-      console.log(err);
-    });
+    // axios.post(`${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`, formData, config).then((resp) => {
+    //   console.log(resp);
+    // }).catch(err => {
+    //   console.log(err);
+    // });
   };
 
   render() {
     const { selectedFiles, errorMessage } = this.state;
+    const { arrProductVar } = this.props.location
     const { productadds } = this.props;
     const dragOver = (e) => {
       e.preventDefault();
@@ -167,7 +190,7 @@ class ProductAddNextPage extends Component {
                       </span>
                     </div>
 
-                    {productadds.map((product) => {
+                    {arrProductVar.map((product) => {
                       return (
                         <div key={product.SKU}>
                           <p

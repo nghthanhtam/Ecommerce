@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
-const mapStateToProps = (state) => ({
-  arrVariants: state.productadd.arrVariants,
-});
+import PropTypes from 'prop-types';
+import Creatable from 'react-select/creatable';
 
 class ProductModal extends Component {
   state = {
@@ -11,69 +8,152 @@ class ProductModal extends Component {
     phone: '',
     address: '',
     msg: '',
-    propValuesList: [
-      { name: '', values: ['Hồng', 'Xanh', 'Trắng'] },
-    ],
+    propValuesList: [],
+    colors: [{ label: 'White', value: 1 }, { label: 'Yellow', value: 2 }],
+    sizes: [{ label: 'M', value: 12 }, { label: 'L', value: 13 }],
+    variants: [{ label: 'color', value: 1 }, { label: 'size', value: 2 }],
+    has2Vars: false
   };
 
   onSubmit = (e) => {
     e.preventDefault();
+    const { propValuesList } = this.state
     this.setState({ msg: '' });
-    let pvalues = document.getElementsByName('pvalue'),
-      pname = document.getElementsByName('pname')[0].value,
-      obj = { name: '', values: [] };
-    if (pname == '') {
-      this.setState({ msg: 'Bạn chưa nhập tên thuộc tính' });
-      return;
-    }
+    // let pvalues = document.getElementsByName('pvalue'),
+    //   pname = document.getElementsByName('pname')[0].value,
+    let obj = {}, objList = []
 
-    for (let i = 0; i < pvalues.length; i++) {
-      if (pvalues[i].value !== '') {
-        obj.values.push({
-          label: pvalues[i].value,
-          value: pvalues[i].value
-        });
+    for (let i = 0; i < propValuesList.length; i++) {
+      obj = { name: { label: '', value: '' }, values: [] }
+
+      if (propValuesList[i].name.value == '') {
+        this.setState({ msg: 'Bạn chưa nhập tên thuộc tính' });
+        return;
       }
-    }
-    if (obj.values.length <= 0) {
-      this.setState({ msg: 'Bạn chưa nhập giá trị thuộc tính' });
-      return;
-    }
-    obj.name = pname;
-    this.props.onsaveProp(obj);
+      obj.name = propValuesList[i].name;
 
+      for (let j = 0; j < propValuesList[i].values.length; j++) {
+        if (propValuesList[i].values.length <= 0) {
+          this.setState({ msg: 'Bạn chưa nhập giá trị thuộc tính' });
+          return;
+        }
+        if (propValuesList[i].values[j].value !== '') {
+          obj.values.push({
+            label: propValuesList[i].values[j].label,
+            value: propValuesList[i].values[j].value,
+            __isNew__: propValuesList[i].values[j].__isNew__
+          });
+        }
+      }
+      objList.push(obj)
+    }
+
+    this.props.onsaveProp(objList);
     // Close modal
     document.getElementById('triggerButton').click();
   };
 
-  onCancel = (e) => {
-    this.setState({ propValuesList: [{ name: '', values: ['Hồng', 'Xanh', 'Trắng'] }] }, () => console.log(this.state.propValuesList));
+  onSelectChange = (e, { name }) => {
+    //neu variant values thay doi
+    const { label, value, __isNew__ } = e
+
+    //them field nhap gia tri khi ng dung nhap den field cuoi cung
+    if (name[1] == this.state.propValuesList[Number(name[0])].values.length - 1) {
+      this.setState((prepState) => {
+        let propValuesList = [...prepState.propValuesList];
+        for (let i = 0; i < 4; i++) {
+          propValuesList[Number(name[0])].values.push({ label: '', value: '' })
+        }
+        return {
+          propValuesList,
+        };
+      });
+    }
+
+    this.setState((prepState) => {
+      let propValuesList = [...prepState.propValuesList];
+
+      propValuesList.map((p, index) => {
+        if (index == name[0]) {
+          p.values[Number(name[1])].label = label
+          p.values[Number(name[1])].value = value
+          p.values[Number(name[1])].__isNew__ = __isNew__
+        }
+      });
+      return {
+        propValuesList,
+      };
+    });
   };
 
-  onChange = (e) => {
-    this.setState({ msg: '' });
-    this.setState({ [e.target.name]: e.target.value });
-  };
+  onSelectVarChange = (e, { name }) => {
+    //neu variant thay doi
 
-  addPropValue = () => {
+    this.setState((prepState) => {
+      let propValuesList = [...prepState.propValuesList];
+      propValuesList.map((p, index) => {
+        if (index == name[0]) {
+          p.name = e
+        }
+      });
+      return {
+        propValuesList,
+      };
+    });
+  }
+
+  onOpenModal = () => {
+    //console.log('--propsVariantList--', this.props.variantList);
+    const { variantList } = this.props
+    if (variantList.length > 0) this.setState({ propValuesList: variantList })
+    else this.setState({
+      propValuesList: [{
+        name: { label: '', value: '' },
+        values: [{ index: 0, label: '', value: '' }, { index: 1, label: '', value: '' }, { index: 2, label: '', value: '' }, { index: 3, label: '', value: '' }]
+      }]
+    })
+  }
+
+  renderValues = (item, index) => {
+    return (
+      <div key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ marginRight: '11px', width: '178px' }}>
+          <Creatable
+            key={index}
+            placeholder="Thuộc tính..."
+            options={this.state.variants}
+            name={index + "pname"}
+            onChange={this.onSelectVarChange}
+          />
+        </div>
+
+        <div className="variant-values-wrapper">
+          {item.values && item.values.map((v, indexVal) => {
+            return (
+              <Creatable
+                key={indexVal}
+                placeholder="Chọn..."
+                options={index == 0 ? this.state.colors : this.state.sizes}
+                // /className="form-control"
+                name={index + String(indexVal) + "pvalue"}
+                onChange={this.onSelectChange}
+              />
+            );
+          })}
+        </div>
+      </div>
+    )
+  }
+
+  onCheckManyVars = () => {
+    this.setState({ has2Vars: !this.state.has2Vars })
     this.setState((prepState) => ({
-      propValuesList: [
-        ...prepState.propValuesList,
-        { label: '' },
-        { label: '' },
-        { label: '' },
-        { label: '' },
-      ],
+      propValuesList: [...prepState.propValuesList, { name: '', values: [{ label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }] }],
     }));
-  };
-
-  componentDidMount = () => {
-    this.setState({ propValuesList: this.props.arrVariants })
   }
 
   render() {
-    const { msg, propValuesList } = this.state;
-    const { arrVariants } = this.props
+    const { msg, propValuesList, has2Vars } = this.state;
     return (
       <React.Fragment>
         {/* Button trigger modal */}
@@ -84,6 +164,7 @@ class ProductModal extends Component {
           data-target="#exampleModalCenter"
           style={{ margin: '5px' }}
           className="btn btn-primary"
+          onClick={this.onOpenModal}
         >
           Thêm lựa chọn
         </button>
@@ -106,16 +187,29 @@ class ProductModal extends Component {
                 </span>
 
                 <span>
+                  <label
+                    style={{
+                      fontWeight: 400,
+                      width: '180px',
+                      float: 'left'
+                    }}
+                  >
+                    <input
+                      style={{
+                        marginRight: '3px',
+                      }}
+                      type="checkbox"
+                      className="minimal"
+                      name='has2Vars'
+                      checked={has2Vars}
+                      onChange={this.onCheckManyVars}
+                    />
+                     2 thuộc tính
+                  </label>
                   <button
                     type="button"
                     className="close"
-                    style={{
-                      fontSize: '14px',
-                      color: '#204d74',
-                      opacity: '0.6',
-                    }}
-                    onClick={this.addPropValue}
-                  >
+                    style={{ fontSize: '14px', color: '#204d74', opacity: '0.6' }}>
                     <span aria-hidden="true">+ Thêm giá trị</span>
                   </button>
                 </span>
@@ -146,43 +240,8 @@ class ProductModal extends Component {
                   </div>
                 </div>
 
-                {propValuesList.map(item => {
-                  return (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <div style={{ marginRight: '11px', width: '178px' }}>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="pname"
-                          placeholder="VD: Màu"
-                          onChange={this.onChange}
-                        />
-                      </div>
-
-                      <div
-                        style={{
-                          flex: 1,
-                          display: 'inline-grid',
-                          flexDirection: 'row',
-                          gridTemplateColumns: '1fr 1fr 1fr 1fr',
-                          gridColumnGap: '12px',
-                          gridRowGap: '12px',
-                        }}
-                      >
-                        {item.values.map((v, index) => {
-                          return (
-                            <input
-                              key={index}
-                              type="text"
-                              className="form-control"
-                              name="pvalue"
-                              value={v}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )
+                {propValuesList.map((item, index) => {
+                  return (this.renderValues(item, index))
                 })}
 
               </div>
@@ -214,4 +273,5 @@ class ProductModal extends Component {
   }
 }
 
-export default connect(mapStateToProps,)(ProductModal);
+//export default connect(mapStateToProps, { updateProductAdd })(ProductModal);
+export default (ProductModal);

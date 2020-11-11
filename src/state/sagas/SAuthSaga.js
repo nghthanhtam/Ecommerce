@@ -21,7 +21,7 @@ function* loadUser() {
   try {
     const response = yield call(() =>
       axios.get(
-        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/authentication/user`,
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/authentication/employee`,
         tokenConfig(state)
       )
     );

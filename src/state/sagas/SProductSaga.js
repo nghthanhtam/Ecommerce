@@ -97,7 +97,7 @@ function* updateProductAdd(params) {
   try {
     const { arrVariants } = params.params
     console.log('sagaArrVariants: ', arrVariants);
-    yield put({ type: PRODUCTADD_UPDATED, payload: { arrVariants } });
+    yield put({ type: PRODUCTADD_UPDATED, payload: arrVariants });
   } catch (error) {
     console.log(error.response);
   }

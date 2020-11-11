@@ -21,7 +21,7 @@ class ProductAdd extends Component {
   state = {
     selectedFiles: [],
     errorMessage: '',
-    propValueList: [],
+    variantList: [],
     isPriceBoardHidden: true,
     skuproduct: {
       index: 0,
@@ -32,7 +32,7 @@ class ProductAdd extends Component {
       marketPrice: 0,
       price: 0,
       stockAmount: 0,
-      variants: {}
+      variants: [[], [], []]
     },
     skuProductList: [
       {
@@ -44,7 +44,7 @@ class ProductAdd extends Component {
         marketPrice: 0,
         price: 0,
         stockAmount: 0,
-        variants: {}
+        variants: [[], [], []]
       },
     ],
     productList: [1, 2, 3, 4, 5, 6, 7, 8],
@@ -53,7 +53,6 @@ class ProductAdd extends Component {
       { id: 2, name: 'TOY', value: 2, label: 'Đồ chơi' },
       { id: 3, name: 'CLOTHES', value: 3, label: 'Quần áo' },
     ],
-    variantList: [],
     requiredName: '',
     requiredMovie: '',
     requiredCate: '',
@@ -68,14 +67,25 @@ class ProductAdd extends Component {
     idProductCat: 0,
   };
 
-  onsaveProp = (obj) => {
-    this.setState((prepState) => ({
-      variantList: [...prepState.variantList, { name: obj.name, values: obj.values }],
-    }));
+  componentDidMount() {
+    if (this.props.location.details) {
+      const { arrProductVar, arrVariants, product } = this.props.location.details
+      const { name, description, brand, idProduct, idShop, idMovie, idProductCat } = this.props.location.details.product
+      this.setState({
+        arrProductVar,
+        skuProductList: arrProductVar,
+        variantList: arrVariants,
+        name, description, brand, idProduct, idShop, idMovie, idProductCat,
+      })
+    }
+  }
+
+  onsaveProp = (objList) => {
+    this.setState({
+      variantList: objList,
+    }) //() => console.log(this.state.variantList));
+
     this.setState({ isPriceBoardHidden: false });
-    this.setState((prepState) => ({
-      propValueList: [...prepState.propValueList, obj],
-    }));
   };
 
   addRow = () => {
@@ -89,10 +99,53 @@ class ProductAdd extends Component {
     }));
   };
 
-  onChange = (e, index, name) => {
+  getVarValue = (variant, product) => {
+    // console.log(variant.name.label);
+    // if (variant.name.label == 'color') return this.state.variantList[0].values[0]
+    // else if (variant.name.label == 'size') return this.state.variantList[1].values[0]
+    const { variantList } = this.state
+    let tempArr = [], res
+    if (product.variants[0].length > 0 || product.variants[1].length > 0) {
+      if (product.variants[0].length > 0) tempArr = product.variants[0]
+      else tempArr = product.variants[1]
+
+      for (let k in tempArr) {
+        for (let i in variantList) {
+          if (variantList[i].name.label == variant.name.label) {
+            for (let j in variantList[i].values) {
+              if (variantList[i].values[j].value == tempArr[k][Object.keys(tempArr[k])[0]]) {
+                res = variantList[i].values[j]
+                return res
+              }
+            }
+          }
+        }
+      }
+      return res
+    }
+    else if (product.variants[2].length > 0) {
+
+      for (let k in product.variants[2]) {
+        for (let i in variantList) {
+          if (variantList[i].name.label == variant.name.label) {
+            console.log(variantList[i].name.label)
+            for (let j in variantList[i].values) {
+              if (variantList[i].values[j].value == product.variants[2][k]) {
+                res = variantList[i].values[j]
+                console.log(res);
+                return res
+              }
+            }
+          }
+        }
+      }
+      //return this.state.variantList[0].values[0]
+    }
+  }
+
+  onChange = (e, index, name, variant) => {
     let changeProp, val;
-    if (name) changeProp = name
-    else {
+    if (!name) { //thay đổi text
       val = e.target.textContent
       changeProp = e.target.getAttribute('name')
     }
@@ -102,13 +155,27 @@ class ProductAdd extends Component {
         let skuProductList = [...state.skuProductList];
         for (var product of skuProductList) {
           if (product.index == index) {
-            const newItem = Object.assign(product);
+            //const newItem = Object.assign(product);
 
-            if (name) newItem['variants'][name] = e.value
-            else newItem[changeProp] = val;
+            // if (name) { //thay đổi select
+            //   newItem['variants'] = [[], [], []]
+            //   if (!variant.__isNew__) {
+            //     if (!e.__isNew__) newItem['variants'][2].push(e.value)
+            //     else newItem['variants'][1].push({ [variant.value]: e.value })
+            //   } else newItem['variants'][0].push({ [variant.name]: e.value })
+            // }
+            // else newItem[changeProp] = val; //thay đổi text
 
-            skuProductList.splice(index, 1); //xoa 1 phan tu o vi tri index
-            skuProductList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
+            // skuProductList.splice(index, 1); //xoa 1 phan tu o vi tri index
+            // skuProductList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
+
+            if (name) { //thay đổi select
+              if (!variant.__isNew__) {
+                if (!e.__isNew__) product['variants'][2].push(e.value)
+                else product['variants'][1].push({ [variant.value]: e.value })
+              } else product['variants'][0].push({ [variant.name]: e.value })
+            }
+            else product[changeProp] = val; //thay đổi text
           }
         }
 
@@ -117,7 +184,7 @@ class ProductAdd extends Component {
         };
       },
       () => {
-        console.log(this.state.skuProductList[0]);
+        console.log('skuproductList: ', this.state.skuProductList);
       }
     );
   };
@@ -151,28 +218,17 @@ class ProductAdd extends Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  convertToArrVariant = () => {
-    const { variantList } = this.state
-    variantList.map(v => {
-      v.values = v.values.map(({ label }) => label)
-    })
-    return variantList
-  }
-
   onSubmit = () => {
-    const { skuProductList, idMovie, idProductCat, name, description, brand } = this.state
-    const { selectedFiles } = this.props.location
-    let arrVariants = this.convertToArrVariant()
-    console.log(arrVariants);
-    this.props.updateProductAdd({ arrVariants });
+    const { skuProductList, variantList, idMovie, idProductCat, name, description, brand } = this.state
+
     //check blank required-fields
     if (name && idProductCat && idMovie && skuProductList.length > 0) {
       this.props.history.push({
         pathname: '/add-product/photos',
         arrProductVar: skuProductList,
-        arrVariants: arrVariants,
+        arrVariants: variantList,
         product: { idMovie, idProductCat, name, description, brand },
-        selectedFiles
+        selectedFiles: this.props.location.details ? this.props.location.details.selectedFiles : null
       });
       return;
     }
@@ -184,10 +240,9 @@ class ProductAdd extends Component {
 
   render() {
     const {
-      propValueList,
+      variantList,
       skuProductList,
       categoryList,
-      variantList,
       productList,
       requiredName,
       requiredMovie,
@@ -273,7 +328,7 @@ class ProductAdd extends Component {
                           isSearchable={true}
                           options={categoryList}
                           placeholder="Chọn phim ..."
-                          required />
+                          value={categoryList.filter(option => option.value === idProductCat)} />
                       </div>
                       <p style={{ marginTop: '5px' }}>Không tìm thấy bộ phim phù hợp với sản phẩm? <span style={{ color: '#337ab7', cursor: 'pointer' }}>Yêu cầu thêm phim mới</span></p>
                     </div>
@@ -286,7 +341,7 @@ class ProductAdd extends Component {
                           isSearchable={true}
                           options={categoryList}
                           placeholder="Chọn thể loại ..."
-                          required
+                          value={categoryList.filter(option => option.value === idProductCat)}
                         />
                         {/* <div>Nếu sản phẩm của bạn không nằm trong danh sách danh mục của chúng tối, 
                         xin vùi lòng liên hệ với ShopNow thông qua kênh liên lạc dành riêng cho nhà bán hàng</div> */}
@@ -347,16 +402,26 @@ class ProductAdd extends Component {
                     ) : null}
 
                     <div className="form-group">
+                      <label>Mô tả sản phẩm </label>
+                      <SunEditor
+                        name="description"
+                        value={description}
+                        onChange={this.onChangeProductInfor}
+                        height="300"
+                        placeholder="Nhập mô tả chi tiết sản phẩm ở đây..." />
+                    </div>
+
+                    <div className="form-group">
                       <label htmlFor="exampleInputEmail1">
                         Sản phẩm có nhiều lựa chọn theo màu sắc, kích cỡ,...?
                       </label>
-                      <ProductModal onsaveProp={this.onsaveProp} />
+                      <ProductModal variantList={variantList} onsaveProp={this.onsaveProp} />
                     </div>
                     <div className="tag-box">
                       {variantList.map((variant, index) => {
                         return (
                           <div key={index} className="prop-tag">
-                            <div>{variant.name}</div>
+                            <div>{variant.name.label}</div>
                             <div
                               onClick={this.removeProp}
                               className="tag-close"
@@ -415,9 +480,9 @@ class ProductAdd extends Component {
                               <thead>
                                 <tr>
                                   <th style={{ width: '2%' }}>#</th>
-                                  {propValueList.map((item, index) => (
+                                  {variantList.map((item, index) => (
                                     <th key={index} style={{ width: '15%' }}>
-                                      {item.name}
+                                      {item.name.label}
                                     </th>
                                   ))}
                                   <th style={{ width: '20%' }}>Tên sản phẩm</th>
@@ -432,8 +497,8 @@ class ProductAdd extends Component {
                                 {skuProductList.map((product, index) => (
                                   <tr key={index}>
                                     <td>{index + 1}</td>
-                                    {propValueList.map((item, index) => (
-                                      <td key={index} bgcolor="#FFFFFF">
+                                    {variantList.map((item, varindex) => (
+                                      <td key={varindex} bgcolor="#FFFFFF">
                                         <Select
                                           styles={{
                                             control: (base, state) => ({
@@ -442,9 +507,10 @@ class ProductAdd extends Component {
                                             }),
                                           }}
                                           options={item.values}
+                                          value={this.getVarValue(item, product)}
                                           name="select"
                                           onChange={(e) =>
-                                            this.onChange(e, index, item.name)
+                                            this.onChange(e, index, item.name.label, item)
                                           }
                                         />
                                       </td>
@@ -498,16 +564,6 @@ class ProductAdd extends Component {
                         </div>
                       </div>
                     </section>
-
-                    <div className="form-group">
-                      <label>Mô tả sản phẩm </label>
-                      <SunEditor
-                        name="description"
-                        value={description}
-                        onChange={this.onChangeProductInfor}
-                        height="300"
-                        placeholder="Nhập mô tả chi tiết sản phẩm ở đây..." />
-                    </div>
 
                     <button
                       type="button"

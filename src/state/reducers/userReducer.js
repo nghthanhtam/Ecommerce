@@ -9,11 +9,10 @@ import {
 
 const initialState = {
   users: [],
-
   loading: false
 };
 
-export default function(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case GET_USERS:
       return {

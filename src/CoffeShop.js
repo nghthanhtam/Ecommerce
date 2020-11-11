@@ -89,7 +89,7 @@ class CoffeShop extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
   render() {
-    const { token } = this.props;
+    const { token, user } = this.props;
     return (
       <Fragment>
         {/* {!this.props.isLoaded ? (

@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { logout } from '../../../state/actions/authActions';
 import { pushHistory } from '../../../state/actions/historyActions';
 import PropTypes from 'prop-types';
@@ -25,7 +26,7 @@ class Header extends Component {
     this.props.pushHistory('/');
   };
   render() {
-    const { username } = this.props.user;
+    const { user } = this.props;
     return (
       <div>
         <header className="main-header">
@@ -34,11 +35,11 @@ class Header extends Component {
             {/* mini logo for sidebar mini 50x50 pixels */}
             <span className="logo-mini">
               <b>A</b>LT
-            </span>
+          </span>
             {/* logo for regular state and mobile devices */}
             <span className="logo-lg">
               <b>Admin</b>LTE
-            </span>
+          </span>
           </a>
           {/* Header Navbar: style can be found in header.less */}
           <nav className="navbar navbar-static-top">
@@ -66,7 +67,7 @@ class Header extends Component {
                       className="user-image"
                       alt="User"
                     />
-                    <span className="hidden-xs">{username}</span>
+                    <span className="hidden-xs">{user.username}</span>
                   </a>
                   <ul className="dropdown-menu">
                     {/* User image */}
@@ -78,7 +79,7 @@ class Header extends Component {
                       />
                       <p>
                         Alexander Pierce - Web Developer
-                        <small>Member since Nov. 2012</small>
+                      <small>Member since Nov. 2012</small>
                       </p>
                     </li>
                     {/* Menu Body */}
@@ -101,7 +102,7 @@ class Header extends Component {
                       <div className="pull-left">
                         <a href="fake_url" className="btn btn-default btn-flat">
                           Profile
-                        </a>
+                      </a>
                       </div>
                       <div className="pull-right">
                         <button
@@ -109,7 +110,7 @@ class Header extends Component {
                           className="btn btn-default btn-flat"
                         >
                           Sign out
-                        </button>
+                      </button>
                       </div>
                     </li>
                   </ul>

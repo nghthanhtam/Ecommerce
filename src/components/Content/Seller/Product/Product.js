@@ -711,7 +711,7 @@ class Product extends Component {
                                       style={inputField}
                                       contentEditable="true"
                                       onBlur={(e) => this.onAddingQty(e, index)}
-                                    ></td>
+                                    >{product.qtyAdd}</td>
                                     <td bgcolor="#FFFFFF">
                                       <div
                                         style={{ cursor: 'pointer' }}

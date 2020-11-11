@@ -43,6 +43,7 @@ export default function (state = initialState, action) {
         isAuthenticated: true,
         isLoading: false,
         isLoaded: true,
+        user: action.payload.employee
       };
     case UPDATE_AUTH_SUCCESS:
       return {
@@ -51,6 +52,7 @@ export default function (state = initialState, action) {
         isAuthenticated: true,
         isLoading: false,
         isLoaded: true,
+        user: action.payload.employee
       };
     case AUTH_ERROR:
     case LOGIN_FAIL:
