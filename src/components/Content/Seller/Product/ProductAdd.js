@@ -32,7 +32,8 @@ class ProductAdd extends Component {
       marketPrice: 0,
       price: 0,
       stockAmount: 0,
-      variants: [[], [], []]
+      variants: [[], [], []],
+      selectedFiles: []
     },
     skuProductList: [
       {
@@ -44,7 +45,8 @@ class ProductAdd extends Component {
         marketPrice: 0,
         price: 0,
         stockAmount: 0,
-        variants: [[], [], []]
+        variants: [[], [], []],
+        selectedFiles: []
       },
     ],
     productList: [1, 2, 3, 4, 5, 6, 7, 8],
@@ -69,7 +71,7 @@ class ProductAdd extends Component {
 
   componentDidMount() {
     if (this.props.location.details) {
-      const { arrProductVar, arrVariants, product } = this.props.location.details
+      const { arrProductVar, arrVariants } = this.props.location.details
       const { name, description, brand, idProduct, idShop, idMovie, idProductCat } = this.props.location.details.product
       this.setState({
         arrProductVar,
@@ -77,6 +79,7 @@ class ProductAdd extends Component {
         variantList: arrVariants,
         name, description, brand, idProduct, idShop, idMovie, idProductCat,
       })
+
     }
   }
 
@@ -124,7 +127,6 @@ class ProductAdd extends Component {
       return res
     }
     else if (product.variants[2].length > 0) {
-
       for (let k in product.variants[2]) {
         for (let i in variantList) {
           if (variantList[i].name.label == variant.name.label) {
@@ -139,7 +141,6 @@ class ProductAdd extends Component {
           }
         }
       }
-      //return this.state.variantList[0].values[0]
     }
   }
 
@@ -170,10 +171,11 @@ class ProductAdd extends Component {
             // skuProductList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
 
             if (name) { //thay đổi select
-              if (!variant.__isNew__) {
+              console.log();
+              if (!variant.name.__isNew__) {
                 if (!e.__isNew__) product['variants'][2].push(e.value)
-                else product['variants'][1].push({ [variant.value]: e.value })
-              } else product['variants'][0].push({ [variant.name]: e.value })
+                else { product['variants'][1].push({ [variant.name.value]: e.value }) }
+              } else product['variants'][0].push({ [variant.name.label]: e.label })
             }
             else product[changeProp] = val; //thay đổi text
           }
@@ -227,8 +229,9 @@ class ProductAdd extends Component {
         pathname: '/add-product/photos',
         arrProductVar: skuProductList,
         arrVariants: variantList,
-        product: { idMovie, idProductCat, name, description, brand },
-        selectedFiles: this.props.location.details ? this.props.location.details.selectedFiles : null
+        product: { idMovie, idProductCat, name, description, brand, details: { idProduct: 1, detail: 'AUTHOR', value: 'Nguyen Nhat Anh' } },
+        selectedFiles: this.props.location.details ? this.props.location.details.selectedFiles : null,
+
       });
       return;
     }
@@ -405,7 +408,7 @@ class ProductAdd extends Component {
                       <label>Mô tả sản phẩm </label>
                       <SunEditor
                         name="description"
-                        value={description}
+                        setContents={description}
                         onChange={this.onChangeProductInfor}
                         height="300"
                         placeholder="Nhập mô tả chi tiết sản phẩm ở đây..." />
@@ -522,15 +525,16 @@ class ProductAdd extends Component {
                                       bgcolor="#FFFFFF"
                                       style={inputField}
                                       contentEditable="true"
-                                      required
-                                    ></td>
+                                      suppressContentEditableWarning={true}
+                                    >{product.name}</td>
                                     <td
+                                      onBlur={(e) => this.onChange(e, index)}
                                       name="SKU"
                                       bgcolor="#FFFFFF"
                                       style={inputField}
                                       contentEditable="true"
-                                      onBlur={(e) => this.onChange(e, index)}
-                                    ></td>
+                                      suppressContentEditableWarning={true}
+                                    >{product.SKU}</td>
 
                                     <td
                                       name="marketPrice"
@@ -538,6 +542,7 @@ class ProductAdd extends Component {
                                       style={inputField}
                                       contentEditable="true"
                                       onBlur={(e) => this.onChange(e, index)}
+                                      suppressContentEditableWarning={true}
                                     ></td>
                                     <td
                                       name="price"
@@ -545,6 +550,7 @@ class ProductAdd extends Component {
                                       style={inputField}
                                       contentEditable="true"
                                       onBlur={(e) => this.onChange(e, index)}
+                                      suppressContentEditableWarning={true}
                                     ></td>
                                     <td bgcolor="#FFFFFF">
                                       <div

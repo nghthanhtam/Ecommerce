@@ -21,21 +21,24 @@ class ProductAddNextPage extends Component {
   };
 
   componentDidMount = () => {
-    const { selectedFiles, arrProductVar, arrVariants, product } = this.props.location
+    const { selectedFiles, arrProductVar } = this.props.location
     if (selectedFiles) this.setState({ selectedFiles })
 
+    //luu arrProductVar thanh 1 state vi phai thay doi selectedfiles cua no
+    this.setState({ arrProductVarState: arrProductVar })
   }
 
   back = () => {
     const { selectedFiles } = this.state
-    const { arrProductVar, arrVariants, product } = this.props.location
+    const { arrProductVar, arrVariants, product, details } = this.props.location
     this.props.history.push({
       pathname: '/add-product',
       details: {
         selectedFiles,
         arrProductVar,
         arrVariants,
-        product
+        product,
+        details
       }
     })
   }
@@ -46,7 +49,6 @@ class ProductAddNextPage extends Component {
     let validateArrVariants = []
     arrVariants.map(variant => {
       if (!variant.name.__isNew__) {
-        console.log('variant.name not new')
         let tempArr = []
         variant.values.map(v => {
           if (v.__isNew__) {
@@ -62,50 +64,40 @@ class ProductAddNextPage extends Component {
       }
     })
 
-    // arrProductVar.map(pvar => {
-    //   pvar.variants(var => {
-
-    //   })
-    // })
-
-    console.log('--ending variantList--: ', validateArrVariants);
     console.log('arrProductVar: ', arrProductVar);
-    console.log('arrVariants: ', arrVariants);
+    console.log('arrVariants: ', validateArrVariants);
     console.log('product: ', product);
     console.log('selectedFiles: ', selectedFiles);
-    // const formData = new FormData();
-    // selectedFiles.forEach(file => {
-    //   formData.append("photos", file);
-    // });
-    // formData.append('arrProductVar', JSON.stringify(arrProductVar))
-    // formData.append('arrVariants', JSON.stringify(validateArrVariants))
-    // formData.append('product', JSON.stringify(product))
+    const formData = new FormData();
+    selectedFiles.forEach(file => {
+      formData.append("photos", file);
+    });
+    formData.append('arrProductVar', JSON.stringify(arrProductVar))
+    formData.append('arrVariants', JSON.stringify(validateArrVariants))
+    formData.append('product', JSON.stringify(product))
 
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data; charset=utf-8; boundary="another cool boundary";'
-    //   }
-    // };
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data; charset=utf-8; boundary="another cool boundary";'
+      }
+    };
 
-    // axios.post(`${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`, formData, config).then((resp) => {
-    //   console.log(resp);
-    // }).catch(err => {
-    //   console.log(err);
-    // });
+    axios.post(`${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`, formData, config).then((resp) => {
+      console.log(resp);
+    }).catch(err => {
+      console.log(err);
+    });
   };
 
   render() {
-    const { selectedFiles, errorMessage } = this.state;
+    const { selectedFiles, errorMessage, arrProductVarState } = this.state;
     const { arrProductVar } = this.props.location
-    const { productadds } = this.props;
     const dragOver = (e) => {
       e.preventDefault();
     };
-
     const dragEnter = (e) => {
       e.preventDefault();
     };
-
     const dragLeave = (e) => {
       e.preventDefault();
     };
@@ -121,14 +113,29 @@ class ProductAddNextPage extends Component {
       }
       return true;
     };
-    const handleFiles = (files) => {
+    const handleFiles = (files, index) => {
       for (let i = 0; i < files.length; i++) {
         if (validateFile(files[i])) {
+          this.setState((preState) => {
+            let arrProductVarState = [...preState.arrProductVarState];
+            for (var product of arrProductVarState) {
+              if (product.index == index) {
+                product.selectedFiles.push(files[i])
+              }
+            }
+            return {
+              arrProductVarState,
+            };
+          },
+            () => {
+              console.log('arrProductVarState: ', this.state.arrProductVarState);
+            }
+          );
+
           files[i].filePath = URL.createObjectURL(files[i]);
           //console.log(files[i]);
           this.setState((prepState) => ({
-            selectedFiles: [...prepState.selectedFiles, files[i]],
-            //selectedFiles: files[i]
+            selectedFiles: [...prepState.selectedFiles, files[i]]
           }));
         } else {
           files[i]['invalid'] = true;
@@ -136,12 +143,13 @@ class ProductAddNextPage extends Component {
         }
       }
     };
-    const fileDrop = (e) => {
+    const fileDrop = (e, index) => {
+      console.log(index);
       e.preventDefault();
       const files = e.dataTransfer.files;
 
       if (files.length) {
-        handleFiles(files);
+        handleFiles(files, index);
       }
     };
 
@@ -176,7 +184,7 @@ class ProductAddNextPage extends Component {
                 <div className="box">
                   <div className="box-header" style={{ marginTop: '5px' }}>
                     <div style={{ marginBottom: '20px' }}>
-                      <label htmlFor="exampleInputEmail1">
+                      <label>
                         Chọn hình ảnh cho sản phẩm
                       </label>
                       <br />
@@ -190,9 +198,9 @@ class ProductAddNextPage extends Component {
                       </span>
                     </div>
 
-                    {arrProductVar.map((product) => {
+                    {arrProductVar.map((product, pindex) => {
                       return (
-                        <div key={product.SKU}>
+                        <div key={pindex}>
                           <p
                             style={{
                               background: '#f5f5f5',
@@ -208,10 +216,10 @@ class ProductAddNextPage extends Component {
                             onDragOver={dragOver}
                             onDragEnter={dragEnter}
                             onDragLeave={dragLeave}
-                            onDrop={fileDrop}
+                            onDrop={(e) => fileDrop(e, pindex)}
                           >
-                            {selectedFiles.length > 0 &&
-                              selectedFiles.map((item, index) => {
+                            {product.selectedFiles.length > 0 &&
+                              product.selectedFiles.map((item, index) => {
                                 return (
                                   <label
                                     key={index}
