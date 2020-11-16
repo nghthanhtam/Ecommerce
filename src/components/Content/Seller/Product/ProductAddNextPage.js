@@ -64,6 +64,7 @@ class ProductAddNextPage extends Component {
       }
     })
 
+
     console.log('arrProductVar: ', arrProductVar);
     console.log('arrVariants: ', validateArrVariants);
     console.log('product: ', product);

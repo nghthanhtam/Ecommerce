@@ -8,11 +8,14 @@ class DuplicateProduct extends React.Component {
   addToCart = () => {
     //goi api count so luong record trong CartDet
   };
+  componentDidMount() {
+    console.log(this.props.arr);
+  }
   render() {
-    let { name, description, filePath, price } = this.props;
+    let { name, description, filePath, price } = this.props.item;
     return (
       <div className="duplicate-card">
-        <h1>Captain Mouse</h1>
+        <h1>Ten San Pham</h1>
         <p>SKU: 0988464DF65</p>
         <img className="product-pic" src="../img/blue.png" alt="product" />
         <div className="duplicate-info">

@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Creatable from 'react-select/creatable';
+import { getVariantVals } from '../../../../state/actions/variantValActions';
+
+const mapStateToProps = (state) => ({
+  variantVals: state.variantVal.variantVals,
+  isLoaded: state.movie.isLoaded,
+});
 
 class ProductModal extends Component {
   state = {
@@ -14,6 +21,10 @@ class ProductModal extends Component {
     variants: [{ label: 'color', value: 1 }, { label: 'size', value: 2 }],
     has2Vars: false
   };
+
+  componentDidMount() {
+    this.props.getVariantVals({ limit: 1000, page: 1, query: '', idVariant: 1 })
+  }
 
   onSubmit = (e) => {
     e.preventDefault();
@@ -55,7 +66,7 @@ class ProductModal extends Component {
 
   onSelectChange = (e, { name }) => {
     //neu variant values thay doi
-    const { label, value, __isNew__ } = e
+    const { id, value, __isNew__ } = e
 
     //them field nhap gia tri khi ng dung nhap den field cuoi cung
     if (name[1] == this.state.propValuesList[Number(name[0])].values.length - 1) {
@@ -75,8 +86,8 @@ class ProductModal extends Component {
 
       propValuesList.map((p, index) => {
         if (index == name[0]) {
-          p.values[Number(name[1])].label = label
-          p.values[Number(name[1])].value = value
+          p.values[Number(name[1])].label = value
+          p.values[Number(name[1])].value = id
           p.values[Number(name[1])].__isNew__ = __isNew__
         }
       });
@@ -87,13 +98,13 @@ class ProductModal extends Component {
   };
 
   onSelectVarChange = (e, { name }) => {
+    console.log(this.state.propValuesList);
     //neu variant thay doi
-
     this.setState((prepState) => {
       let propValuesList = [...prepState.propValuesList];
       propValuesList.map((p, index) => {
         if (index == name[0]) {
-          p.name = e
+          p.name = { label: e.name, value: e.id }
         }
       });
       return {
@@ -114,16 +125,25 @@ class ProductModal extends Component {
     })
   }
 
+  renderValOption = (name) => {
+    for (let variant of this.props.variantVals) {
+      if (variant.id == name) return variant.values
+    }
+  }
   renderValues = (item, index) => {
+    console.log(item);
     return (
       <div key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div style={{ marginRight: '11px', width: '178px' }}>
           <Creatable
             key={index}
             placeholder="Thuộc tính..."
-            options={this.state.variants}
+            options={this.props.variantVals}
             name={index + "pname"}
             onChange={this.onSelectVarChange}
+            getOptionLabel={(option) => option.name}
+            getOptionValue={(option) => option.id}
+            value={this.props.variantVals.filter(option => option.id == item.name.value)}
           />
         </div>
 
@@ -132,11 +152,13 @@ class ProductModal extends Component {
             return (
               <Creatable
                 key={indexVal}
-                placeholder="Chọn..."
-                options={index == 0 ? this.state.colors : this.state.sizes}
-                // /className="form-control"
+                options={this.renderValOption(item.name.value)}
+                getOptionLabel={(option) => option.value}
+                getOptionValue={(option) => option.id}
+                value={{ value: v.label, id: v.value }}
                 name={index + String(indexVal) + "pvalue"}
                 onChange={this.onSelectChange}
+                placeholder="Chọn..."
               />
             );
           })}
@@ -273,5 +295,5 @@ class ProductModal extends Component {
   }
 }
 
-//export default connect(mapStateToProps, { updateProductAdd })(ProductModal);
-export default (ProductModal);
+export default connect(mapStateToProps, { getVariantVals })(ProductModal);
+//export default (ProductModal);

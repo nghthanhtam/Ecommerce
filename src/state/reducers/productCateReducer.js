@@ -1,57 +1,57 @@
 import {
-  GET_PRODUCTS,
-  ADD_PRODUCT,
-  DELETE_PRODUCT,
-  PRODUCT_DELETED,
-  PRODUCTS_RECEIVED,
-  PRODUCT_ADDED,
-  PRODUCT_UPDATED,
+  GET_PRODUCT_CATES,
+  ADD_PRODUCT_CATE,
+  DELETE_PRODUCT_CATE,
+  PRODUCT_CATE_DELETED,
+  PRODUCT_CATES_RECEIVED,
+  PRODUCT_CATE_ADDED,
+  PRODUCT_CATE_UPDATED,
 } from "../actions/types";
 
 const initialState = {
-  products: [],
+  productCates: [],
   isLoaded: false,
   totalDocuments: 0
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case GET_PRODUCTS:
+    case GET_PRODUCT_CATES:
       return {
         ...state,
-        // isLoaded: true,
+        //isLoaded: true,
       };
-    case PRODUCTS_RECEIVED:
+    case PRODUCT_CATES_RECEIVED:
       return {
         ...state,
-        products: action.payload.data.items,
+        productCates: action.payload.data.items,
         isLoaded: true,
         totalDocuments: action.payload.data.total,
       };
-    case PRODUCT_ADDED:
+    case PRODUCT_CATE_ADDED:
       return {
         ...state,
-        products: [action.payload, ...state.products],
+        productCates: [action.payload, ...state.productCates],
         isLoaded: true,
       };
-    case DELETE_PRODUCT:
+    case DELETE_PRODUCT_CATE:
       return {
         ...state,
       };
-    case PRODUCT_DELETED:
+    case PRODUCT_CATE_DELETED:
       return {
         ...state,
-        products: state.products.filter(
-          (product) => product._id !== action.payload._id
+        productCates: state.productCates.filter(
+          (productCate) => productCate._id !== action.payload._id
         ),
       };
-    case ADD_PRODUCT:
+    case ADD_PRODUCT_CATE:
       return {
         ...state,
         isLoaded: false,
       };
 
-    case PRODUCT_UPDATED:
+    case PRODUCT_CATE_UPDATED:
       return {
         ...state,
       };

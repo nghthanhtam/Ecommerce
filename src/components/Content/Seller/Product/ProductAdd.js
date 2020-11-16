@@ -9,12 +9,21 @@ import { connect } from 'react-redux';
 import ProductModal from './ProductModal';
 import DuplicateProduct from './DuplicateProduct';
 import { updateProductAdd } from '../../../../state/actions/productaddActions';
+import { getMovies } from '../../../../state/actions/movieActions';
+import PropTypes from 'prop-types';
 //rick text editor
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
+import { getProductCates } from '../../../../state/actions/productCateActions';
+import { getProducts } from '../../../../state/actions/productActions';
 
 const mapStateToProps = (state) => ({
-  productadds: state.productadd.productadds,
+  movies: state.movie.movies,
+  productCates: state.productCate.productCates,
+  products: state.product.products,
+  isMovieLoaded: state.movie.isLoaded,
+  isProductCatesLoaded: state.productCate.isLoaded,
+  isProductLoaded: state.product.isLoaded
 });
 
 class ProductAdd extends Component {
@@ -49,12 +58,7 @@ class ProductAdd extends Component {
         selectedFiles: []
       },
     ],
-    productList: [1, 2, 3, 4, 5, 6, 7, 8],
-    categoryList: [
-      { id: 1, name: 'BOOK', value: 1, label: 'Sách' },
-      { id: 2, name: 'TOY', value: 2, label: 'Đồ chơi' },
-      { id: 3, name: 'CLOTHES', value: 3, label: 'Quần áo' },
-    ],
+    productList: [1,],
     requiredName: '',
     requiredMovie: '',
     requiredCate: '',
@@ -70,6 +74,10 @@ class ProductAdd extends Component {
   };
 
   componentDidMount() {
+    const { getMovies, getProductCates, getProducts } = this.props
+    getMovies({ limit: 1000, page: 1, query: '' });
+    getProductCates({ limit: 1000, page: 1, query: '' })
+
     if (this.props.location.details) {
       const { arrProductVar, arrVariants } = this.props.location.details
       const { name, description, brand, idProduct, idShop, idMovie, idProductCat } = this.props.location.details.product
@@ -79,7 +87,6 @@ class ProductAdd extends Component {
         variantList: arrVariants,
         name, description, brand, idProduct, idShop, idMovie, idProductCat,
       })
-
     }
   }
 
@@ -103,7 +110,6 @@ class ProductAdd extends Component {
   };
 
   getVarValue = (variant, product) => {
-    // console.log(variant.name.label);
     // if (variant.name.label == 'color') return this.state.variantList[0].values[0]
     // else if (variant.name.label == 'size') return this.state.variantList[1].values[0]
     const { variantList } = this.state
@@ -130,11 +136,9 @@ class ProductAdd extends Component {
       for (let k in product.variants[2]) {
         for (let i in variantList) {
           if (variantList[i].name.label == variant.name.label) {
-            console.log(variantList[i].name.label)
             for (let j in variantList[i].values) {
               if (variantList[i].values[j].value == product.variants[2][k]) {
                 res = variantList[i].values[j]
-                console.log(res);
                 return res
               }
             }
@@ -144,7 +148,7 @@ class ProductAdd extends Component {
     }
   }
 
-  onChange = (e, index, name, variant) => {
+  onChangeProductVar = (e, index, name, variant) => {
     let changeProp, val;
     if (!name) { //thay đổi text
       val = e.target.textContent
@@ -171,9 +175,32 @@ class ProductAdd extends Component {
             // skuProductList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
 
             if (name) { //thay đổi select
-              console.log();
               if (!variant.name.__isNew__) {
-                if (!e.__isNew__) product['variants'][2].push(e.value)
+                if (!e.__isNew__) {
+
+                  if (product['variants'][2].length == 0) { console.log('mang = 0'); product['variants'][2].push(e.value) }
+                  else {
+                    for (let ele of this.state.variantList) {
+                      if (ele.name.value == variant.name.value) {
+                        for (let v of ele.values) {
+                          if (product['variants'][2].includes(v.value)) { //kt xem variant này trc đó chọn value chưa
+                            product['variants'][2] = product['variants'][2].filter(ele => ele != v.value) //nếu có thì xóa đi
+                            product['variants'][2].push(e.value) //và thay bằng value mới chọn
+                            return {
+                              skuProductList,
+                            };
+                          }
+                        }
+                        console.log('abccc');
+                        product['variants'][2].push(e.value)
+                      }
+                    }
+                    // if (product['variants'][2].some(ele => Object.keys(ele)[0] == variant.name.value)) { //kt xem variant này trc đó chọn value chưa
+                    //   product['variants'][2] = product['variants'][2].filter(ele => Object.keys(ele)[0] != variant.name.value) //nếu có thì thay bằng value mới chọn
+                    //   product['variants'][2].push({ [variant.name.value]: e.value })
+                    // }
+                  }
+                }
                 else { product['variants'][1].push({ [variant.name.value]: e.value }) }
               } else product['variants'][0].push({ [variant.name.label]: e.label })
             }
@@ -202,22 +229,32 @@ class ProductAdd extends Component {
   };
 
   onChangeSelect = (selectedItem, { name }) => {
-    if (selectedItem.value) {
+    if (selectedItem.id) {
       if (name == 'idProductCat') this.setState({ requiredCate: '' })
       if (name == 'idMovie') this.setState({ requiredMovie: '' })
     }
-    this.setState({ [name]: selectedItem.value });
+    this.setState({ [name]: selectedItem.id });
   };
 
   onChangeProductInfor = e => {
+    console.log('changeee');
     if (!e.target) {
       this.setState({ description: e })
       return
     }
-    if (e.target.value !== '') {
-      if (e.target.name == 'name') this.setState({ requiredName: '' })
+    const { name, value } = e.target
+    //search for similar products
+    if (name == 'name') {
+      let query = ''
+      query = value
+      if (value == '') query = undefined
+      this.props.getProducts({ limit: 50, page: 1, query })
     }
-    this.setState({ [e.target.name]: e.target.value })
+
+    if (value !== '') {
+      if (name == 'name') this.setState({ requiredName: '' })
+    }
+    this.setState({ [name]: value })
   }
 
   onSubmit = () => {
@@ -231,7 +268,6 @@ class ProductAdd extends Component {
         arrVariants: variantList,
         product: { idMovie, idProductCat, name, description, brand, details: { idProduct: 1, detail: 'AUTHOR', value: 'Nguyen Nhat Anh' } },
         selectedFiles: this.props.location.details ? this.props.location.details.selectedFiles : null,
-
       });
       return;
     }
@@ -245,8 +281,6 @@ class ProductAdd extends Component {
     const {
       variantList,
       skuProductList,
-      categoryList,
-      productList,
       requiredName,
       requiredMovie,
       requiredCate,
@@ -254,351 +288,362 @@ class ProductAdd extends Component {
       description,
       brand,
       idProductCat,
+      idMovie
     } = this.state,
       settings = {
         infinite: true,
         speed: 800,
-        slidesToShow: 5,
-        slidesToScroll: 4,
+        slidesToScroll: 1,
         className: 'slider',
       };
-    const { updateProduct } = this.props;
+    const { updateProduct, products, movies, productCates, isMovieLoaded, isProductCatesLoaded, isProductLoaded } = this.props;
 
     return (
       <Fragment>
-        <Fragment>
-          {/* Content Header (Page header) */}
-          <section className="content-header">
-            <h1>
-              Đăng ký sản phẩm mới
-              {/* <small>Preview</small> */}
-            </h1>
-            <ol className="breadcrumb">
-              <li>
-                <a href="fake_url">
-                  <i className="fa fa-dashboard" /> Trang chủ
-                </a>
-              </li>
-              <li>
-                <a href="fake_url">Đăng ký sản phẩm</a>
-              </li>
-            </ol>
-          </section>
-          {/* Main content */}
-          <section className="content">
-            <div className="row">
-              {/* left column */}
-              <div className="col-md-12">
-                <div className="box">
-                  <div className="box-header" style={{ marginTop: '5px' }}>
-                    <div className="form-group">
-                      <label htmlFor="exampleInputEmail1">Tên sản phẩm</label>
-                      <div className={requiredName}>
-                        <input
-                          className="form-control"
-                          name="name"
-                          placeholder="Nhập tên sản phẩm ..."
-                          value={name}
-                          onChange={this.onChangeProductInfor}
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="exampleInputEmail1">
-                        Sản phẩm có thể trùng
-                      </label>
-                      <div className="duplicate-wrapper">
-                        <div className="sliderwrapper">
-                          <Slider
-                            style={{
-                              width: '1150px',
-                            }}
-                            {...settings}
-                          >
-                            {productList.map((item, index) => {
-                              return <DuplicateProduct key={index} />;
-                            })}
-                          </Slider>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="form-group"  >
-                      <label>Sản phẩm thuộc về phim</label>
-                      <div className={requiredMovie}>
-                        <Select
-                          name="idMovie"
-                          onChange={this.onChangeSelect}
-                          isSearchable={true}
-                          options={categoryList}
-                          placeholder="Chọn phim ..."
-                          value={categoryList.filter(option => option.value === idProductCat)} />
-                      </div>
-                      <p style={{ marginTop: '5px' }}>Không tìm thấy bộ phim phù hợp với sản phẩm? <span style={{ color: '#337ab7', cursor: 'pointer' }}>Yêu cầu thêm phim mới</span></p>
-                    </div>
-                    <div className="form-group">
-                      <label>Danh mục</label>
-                      <div className={requiredCate}>
-                        <Select
-                          name="idProductCat"
-                          onChange={this.onChangeSelect}
-                          isSearchable={true}
-                          options={categoryList}
-                          placeholder="Chọn thể loại ..."
-                          value={categoryList.filter(option => option.value === idProductCat)}
-                        />
-                        {/* <div>Nếu sản phẩm của bạn không nằm trong danh sách danh mục của chúng tối, 
-                        xin vùi lòng liên hệ với ShopNow thông qua kênh liên lạc dành riêng cho nhà bán hàng</div> */}
-                      </div>
-
-                    </div>
-                    {idProductCat == 2 || idProductCat == 3 ? (
-                      <div className="row-flex">
-                        <div className="form-group" style={{ width: '50%', paddingRight: '20px' }}>
-                          <label htmlFor="exampleInputEmail1">
-                            Thương hiệu
-                          </label>
+        {!isMovieLoaded || !isProductCatesLoaded ? (
+          <Loader></Loader>
+        ) : <Fragment>
+            {/* Content Header (Page header) */}
+            <section className="content-header">
+              <h1>
+                Đăng ký sản phẩm mới
+            {/* <small>Preview</small> */}
+              </h1>
+              <ol className="breadcrumb">
+                <li>
+                  <a href="fake_url">
+                    <i className="fa fa-dashboard" /> Trang chủ
+              </a>
+                </li>
+                <li>
+                  <a href="fake_url">Đăng ký sản phẩm</a>
+                </li>
+              </ol>
+            </section>
+            {/* Main content */}
+            <section className="content">
+              <div className="row">
+                {/* left column */}
+                <div className="col-md-12">
+                  <div className="box">
+                    <div className="box-header" style={{ marginTop: '5px' }}>
+                      <div className="form-group">
+                        <label htmlFor="exampleInputEmail1">Tên sản phẩm</label>
+                        <div className={requiredName}>
                           <input
                             className="form-control"
-                            id="exampleInputEmail1"
-                            placeholder="Nhập tên thương hiệu ..."
-                            name='brand'
-                            value={brand}
+                            name="name"
+                            placeholder="Nhập tên sản phẩm ..."
+                            value={name}
                             onChange={this.onChangeProductInfor}
                           />
                         </div>
-                        <div className="form-group" style={{ width: '50%' }}>
-                          <label htmlFor="exampleInputEmail1">Chất liệu</label>
-                          <input
-                            className="form-control"
-                            id="exampleInputEmail1"
-                            placeholder="Nhập tên chất liệu ..."
-                          />
-                        </div>
                       </div>
-                    ) : null}
-                    {idProductCat == 1 ? (
-                      <div className="row-flex">
-                        <div
-                          className="form-group"
-                          style={{ width: '50%', paddingRight: '20px' }}
-                        >
+                      {isProductLoaded && products.length > 0 &&
+                        <div className="form-group" >
                           <label htmlFor="exampleInputEmail1">
-                            Tên tác giả
-                          </label>
-                          <input
-                            className="form-control"
-                            id="exampleInputEmail1"
-                            placeholder="Nhập tên tác giả ..."
-                          />
-                        </div>
-                        <div className="form-group" style={{ width: '50%' }}>
-                          <label htmlFor="exampleInputEmail1">
-                            Nhà xuất bản
-                          </label>
-                          <input
-                            className="form-control"
-                            id="exampleInputEmail1"
-                            placeholder="Nhập nhà xuất bản ..."
-                          />
-                        </div>
-                      </div>
-                    ) : null}
-
-                    <div className="form-group">
-                      <label>Mô tả sản phẩm </label>
-                      <SunEditor
-                        name="description"
-                        setContents={description}
-                        onChange={this.onChangeProductInfor}
-                        height="300"
-                        placeholder="Nhập mô tả chi tiết sản phẩm ở đây..." />
-                    </div>
-
-                    <div className="form-group">
-                      <label htmlFor="exampleInputEmail1">
-                        Sản phẩm có nhiều lựa chọn theo màu sắc, kích cỡ,...?
-                      </label>
-                      <ProductModal variantList={variantList} onsaveProp={this.onsaveProp} />
-                    </div>
-                    <div className="tag-box">
-                      {variantList.map((variant, index) => {
-                        return (
-                          <div key={index} className="prop-tag">
-                            <div>{variant.name.label}</div>
-                            <div
-                              onClick={this.removeProp}
-                              className="tag-close"
-                            >
-                              ×
+                            Sản phẩm có thể trùng
+                        </label>
+                          <div className="duplicate-wrapper">
+                            <div className="sliderwrapper">
+                              <Slider
+                                {...settings}
+                                slidesToShow={products.length <= 5 ? products.length : 5}
+                              >
+                                {products.map((item, index) => {
+                                  return <DuplicateProduct key={index} item={item} arr={movies} />;
+                                })}
+                              </Slider>
                             </div>
                           </div>
-                        );
-                      })}
-                    </div>
+                        </div>}
 
-                    <section
-                      style={{ marginLeft: '-15px' }}
-                      className="content"
-                    >
-                      <label htmlFor="exampleInputEmail1">
-                        Điền thông tin giá sản phẩm
-                      </label>
+                      <div className="form-group"  >
+                        <label>Sản phẩm thuộc về phim</label>
+                        <div className={requiredMovie}>
+                          <Select
+                            name="idMovie"
+                            onChange={this.onChangeSelect}
+                            isSearchable={true}
+                            options={movies}
+                            placeholder="Chọn phim ..."
+                            value={movies.filter(option => option.value === idMovie)}
+                            getOptionLabel={(option) => option.name}
+                            getOptionValue={(option) => option.id} />
+                        </div>
+                        <p style={{ marginTop: '5px' }}>Không tìm thấy bộ phim phù hợp với sản phẩm? <span style={{ color: '#337ab7', cursor: 'pointer' }}>Yêu cầu thêm phim mới</span></p>
+                      </div>
+                      <div className="form-group">
+                        <label>Danh mục</label>
+                        <div className={requiredCate}>
+                          <Select
+                            styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                            name="idProductCat"
+                            onChange={this.onChangeSelect}
+                            isSearchable={true}
+                            options={productCates}
+                            placeholder="Chọn thể loại ..."
+                            getOptionLabel={(option) => option.description}
+                            getOptionValue={(option) => option.id}
+                            value={productCates.filter(option => option.value === idProductCat)}
+                          />
+                          {/* <div>Nếu sản phẩm của bạn không nằm trong danh sách danh mục của chúng tối, 
+                      xin vui lòng liên hệ với ShopNow thông qua kênh liên lạc dành riêng cho nhà bán hàng</div> */}
+                        </div>
 
-                      {/* /.box-header */}
-                      <div className="box-body">
-                        <div className="row">
-                          <div>
-                            <div className="col-sm-6">
+                      </div>
+                      {idProductCat == 2 || idProductCat == 3 ? (
+                        <div className="row-flex">
+                          <div className="form-group" style={{ width: '50%', paddingRight: '20px' }}>
+                            <label htmlFor="exampleInputEmail1">
+                              Thương hiệu
+                            </label>
+                            <input
+                              className="form-control"
+                              id="exampleInputEmail1"
+                              placeholder="Nhập tên thương hiệu ..."
+                              name='brand'
+                              value={brand}
+                              onChange={this.onChangeProductInfor}
+                            />
+                          </div>
+                          <div className="form-group" style={{ width: '50%' }}>
+                            <label htmlFor="exampleInputEmail1">Chất liệu</label>
+                            <input
+                              className="form-control"
+                              id="exampleInputEmail1"
+                              placeholder="Nhập tên chất liệu ..."
+                            />
+                          </div>
+                        </div>
+                      ) : null}
+                      {idProductCat == 1 ? (
+                        <div className="row-flex">
+                          <div
+                            className="form-group"
+                            style={{ width: '50%', paddingRight: '20px' }}
+                          >
+                            <label htmlFor="exampleInputEmail1">
+                              Tên tác giả
+                        </label>
+                            <input
+                              className="form-control"
+                              id="exampleInputEmail1"
+                              placeholder="Nhập tên tác giả ..."
+                            />
+                          </div>
+                          <div className="form-group" style={{ width: '50%' }}>
+                            <label htmlFor="exampleInputEmail1">
+                              Nhà xuất bản
+                        </label>
+                            <input
+                              className="form-control"
+                              id="exampleInputEmail1"
+                              placeholder="Nhập nhà xuất bản ..."
+                            />
+                          </div>
+                        </div>
+                      ) : null}
+
+                      <div className="form-group">
+                        <label>Mô tả sản phẩm </label>
+                        <SunEditor
+                          name="description"
+                          setContents={description}
+                          onChange={this.onChangeProductInfor}
+                          height="300"
+                          placeholder="Nhập mô tả chi tiết sản phẩm ở đây..." />
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="exampleInputEmail1">
+                          Sản phẩm có nhiều lựa chọn theo màu sắc, kích cỡ,...?
+                    </label>
+                        <ProductModal variantList={variantList} onsaveProp={this.onsaveProp} />
+                      </div>
+                      <div className="tag-box">
+                        {variantList.map((variant, index) => {
+                          return (
+                            <div key={index} className="prop-tag">
+                              <div>{variant.name.label}</div>
                               <div
-                                className="dataTables_length"
-                                id="example1_length"
+                                onClick={this.removeProp}
+                                className="tag-close"
                               >
-                                <button
-                                  type="button"
-                                  id="btnAdd"
-                                  style={{ float: 'left' }}
-                                  className="btn btn-primary"
-                                  data-toggle="modal"
-                                  onClick={this.addRow}
+                                ×
+                          </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      <section
+                        style={{ marginLeft: '-15px' }}
+                        className="content"
+                      >
+                        <label htmlFor="exampleInputEmail1">
+                          Điền thông tin giá sản phẩm
+                        </label>
+
+                        {/* /.box-header */}
+                        <div className="box-body">
+                          <div className="row">
+                            <div>
+                              <div className="col-sm-6">
+                                <div
+                                  className="dataTables_length"
+                                  id="example1_length"
                                 >
-                                  Thêm dòng
-                                </button>
+                                  <button
+                                    type="button"
+                                    id="btnAdd"
+                                    style={{ float: 'left' }}
+                                    className="btn btn-primary"
+                                    data-toggle="modal"
+                                    onClick={this.addRow}
+                                  >
+                                    Thêm dòng
+                              </button>
+                                </div>
+                              </div>
+                              <div className="col-sm-6">
+                                <div
+                                  id="example1_filter"
+                                  className="dataTables_filter"
+                                ></div>
                               </div>
                             </div>
-                            <div className="col-sm-6">
-                              <div
-                                id="example1_filter"
-                                className="dataTables_filter"
-                              ></div>
+                          </div>
+
+                          <div className="row" style={{ width: '105%' }}>
+                            <div className="col-sm-12">
+                              <table
+                                id="example1"
+                                className="table table-bordered table-striped"
+                              >
+                                <thead>
+                                  <tr>
+                                    <th style={{ width: '2%' }}>#</th>
+                                    {variantList.map((item, index) => (
+                                      <th key={index} style={{ width: '15%' }}>
+                                        {item.name.label}
+                                      </th>
+                                    ))}
+                                    <th style={{ width: '20%' }}>Tên sản phẩm</th>
+                                    <th style={{ width: '15%' }}>Mã sản phẩm</th>
+                                    <th style={{ width: '15%' }}>Giá niêm yết</th>
+                                    <th style={{ width: '15%' }}>Giá bán</th>
+                                    <th style={{ width: '2%' }}></th>
+                                  </tr>
+                                </thead>
+
+                                <tbody>
+                                  {skuProductList.map((product, index) => (
+                                    <tr key={index}>
+                                      <td>{index + 1}</td>
+                                      {variantList.map((item, varindex) => (
+                                        <td key={varindex} bgcolor="#FFFFFF">
+                                          <Select
+                                            styles={{
+                                              control: (base, state) => ({
+                                                ...base,
+                                                borderColor: 'transparent',
+                                              }),
+                                            }}
+                                            options={item.values}
+                                            value={this.getVarValue(item, product)}
+                                            name="select"
+                                            onChange={(e) =>
+                                              this.onChangeProductVar(e, index, item.name.label, item)
+                                            }
+                                          />
+                                        </td>
+                                      ))}
+
+                                      <td
+                                        onBlur={(e) => this.onChangeProductVar(e, index)}
+                                        name="name"
+                                        bgcolor="#FFFFFF"
+                                        style={inputField}
+                                        contentEditable="true"
+                                        suppressContentEditableWarning={true}
+                                      >{product.name}</td>
+                                      <td
+                                        onBlur={(e) => this.onChangeProductVar(e, index)}
+                                        name="SKU"
+                                        bgcolor="#FFFFFF"
+                                        style={inputField}
+                                        contentEditable="true"
+                                        suppressContentEditableWarning={true}
+                                      >{product.SKU}</td>
+
+                                      <td
+                                        name="marketPrice"
+                                        bgcolor="#FFFFFF"
+                                        style={inputField}
+                                        contentEditable="true"
+                                        onBlur={(e) => this.onChangeProductVar(e, index)}
+                                        suppressContentEditableWarning={true}
+                                      ></td>
+                                      <td
+                                        name="price"
+                                        bgcolor="#FFFFFF"
+                                        style={inputField}
+                                        contentEditable="true"
+                                        onBlur={(e) => this.onChangeProductVar(e, index)}
+                                        suppressContentEditableWarning={true}
+                                      ></td>
+                                      <td bgcolor="#FFFFFF">
+                                        <div
+                                          style={{
+                                            cursor: 'pointer',
+                                            float: 'right',
+                                          }}
+                                          onClick={() => this.removeItem(index)}
+                                          className="fa fa-trash"
+                                        ></div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
                             </div>
                           </div>
                         </div>
+                      </section>
 
-                        <div className="row" style={{ width: '105%' }}>
-                          <div className="col-sm-12">
-                            <table
-                              id="example1"
-                              className="table table-bordered table-striped"
-                            >
-                              <thead>
-                                <tr>
-                                  <th style={{ width: '2%' }}>#</th>
-                                  {variantList.map((item, index) => (
-                                    <th key={index} style={{ width: '15%' }}>
-                                      {item.name.label}
-                                    </th>
-                                  ))}
-                                  <th style={{ width: '20%' }}>Tên sản phẩm</th>
-                                  <th style={{ width: '15%' }}>Mã sản phẩm</th>
-                                  <th style={{ width: '15%' }}>Giá niêm yết</th>
-                                  <th style={{ width: '15%' }}>Giá bán</th>
-                                  <th style={{ width: '2%' }}></th>
-                                </tr>
-                              </thead>
-
-                              <tbody>
-                                {skuProductList.map((product, index) => (
-                                  <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    {variantList.map((item, varindex) => (
-                                      <td key={varindex} bgcolor="#FFFFFF">
-                                        <Select
-                                          styles={{
-                                            control: (base, state) => ({
-                                              ...base,
-                                              borderColor: 'transparent',
-                                            }),
-                                          }}
-                                          options={item.values}
-                                          value={this.getVarValue(item, product)}
-                                          name="select"
-                                          onChange={(e) =>
-                                            this.onChange(e, index, item.name.label, item)
-                                          }
-                                        />
-                                      </td>
-                                    ))}
-
-                                    <td
-                                      onBlur={(e) => this.onChange(e, index)}
-                                      name="name"
-                                      bgcolor="#FFFFFF"
-                                      style={inputField}
-                                      contentEditable="true"
-                                      suppressContentEditableWarning={true}
-                                    >{product.name}</td>
-                                    <td
-                                      onBlur={(e) => this.onChange(e, index)}
-                                      name="SKU"
-                                      bgcolor="#FFFFFF"
-                                      style={inputField}
-                                      contentEditable="true"
-                                      suppressContentEditableWarning={true}
-                                    >{product.SKU}</td>
-
-                                    <td
-                                      name="marketPrice"
-                                      bgcolor="#FFFFFF"
-                                      style={inputField}
-                                      contentEditable="true"
-                                      onBlur={(e) => this.onChange(e, index)}
-                                      suppressContentEditableWarning={true}
-                                    ></td>
-                                    <td
-                                      name="price"
-                                      bgcolor="#FFFFFF"
-                                      style={inputField}
-                                      contentEditable="true"
-                                      onBlur={(e) => this.onChange(e, index)}
-                                      suppressContentEditableWarning={true}
-                                    ></td>
-                                    <td bgcolor="#FFFFFF">
-                                      <div
-                                        style={{
-                                          cursor: 'pointer',
-                                          float: 'right',
-                                        }}
-                                        onClick={() => this.removeItem(index)}
-                                        className="fa fa-trash"
-                                      ></div>
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </section>
-
-                    <button
-                      type="button"
-                      style={{ float: 'right' }}
-                      className="btn btn-primary"
-                      data-toggle="modal"
-                      onClick={() => this.onSubmit()}
-                    >
-                      Tiếp theo
-                    </button>
+                      <button
+                        type="button"
+                        style={{ float: 'right' }}
+                        className="btn btn-primary"
+                        data-toggle="modal"
+                        onClick={() => this.onSubmit()}
+                      >
+                        Tiếp theo
+                  </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </section>
-          {/* /.content */}
-        </Fragment>
+            </section>
+            {/* /.content */}
+          </Fragment>}
+
       </Fragment>
     );
   }
 }
 
-// Category.propTypes = {
-//   getCategories: PropTypes.func.isRequired,
-//   categories: PropTypes.array.isRequired,
-//   isLoaded: PropTypes.bool.isRequired,
-// };
+ProductAdd.propTypes = {
+  getMovies: PropTypes.func.isRequired,
+  getProductCates: PropTypes.func.isRequired,
+  getProducts: PropTypes.func.isRequired,
+  movies: PropTypes.array.isRequired,
+  productCates: PropTypes.array.isRequired,
+  products: PropTypes.array.isRequired,
+};
 
-export default connect(mapStateToProps, { updateProductAdd })(ProductAdd);
+export default connect(mapStateToProps, { updateProductAdd, getMovies, getProductCates, getProducts })(ProductAdd);
 
 const inputField = {
   '&:focus': {

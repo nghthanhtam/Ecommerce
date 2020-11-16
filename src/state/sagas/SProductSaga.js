@@ -24,7 +24,7 @@ function* fetchProducts(params) {
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_HOST}/api/productvar?limit=${limit}&page=${page}&query=${query}`,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product?limit=${limit}&page=${page}&query=${query}`,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -38,12 +38,11 @@ function* fetchProducts(params) {
 
 function* addProduct(params) {
   const state = yield select();
-  console.log(params);
   try {
     const response = yield call(
       () =>
         axios.post(
-          `${process.env.REACT_APP_BACKEND_HOST}/api/productvar/`,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/`,
           params.newProduct,
           tokenConfig(state)
         )
@@ -66,7 +65,7 @@ function* updateProduct(params) {
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/productvar/${params.newProduct._id}`,
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${params.newProduct._id}`,
         params.newCategory,
         tokenConfig(state)
       )
@@ -82,7 +81,7 @@ function* deleteProducts(params) {
   try {
     const response = yield call(() =>
       axios.delete(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/productvar/${params.id}`,
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${params.id}`,
         tokenConfig(state)
       )
     );

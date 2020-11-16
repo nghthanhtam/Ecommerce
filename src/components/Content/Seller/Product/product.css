@@ -24,8 +24,7 @@
   border-radius: 8px;
 }
 .duplicate-wrapper {
-  height: 340px;
-  margin: -30px 0 0 0px;
+  margin: 0px 0 0 -30px;
 }
 .duplicate-info {
   display: flex;

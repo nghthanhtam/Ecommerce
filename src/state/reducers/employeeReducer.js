@@ -19,7 +19,7 @@ export default function (state = initialState, action) {
     case GET_EMPLOYEES:
       return {
         ...state,
-        isLoaded: true,
+        //isLoaded: true,
       };
     case EMPLOYEES_RECEIVED:
       return {

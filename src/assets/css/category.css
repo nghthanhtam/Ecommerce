@@ -107,8 +107,7 @@
 }
 .sliderwrapper {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
 }
 .cate-grid {
   display: inline-grid;
