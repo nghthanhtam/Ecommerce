@@ -1,8 +1,18 @@
-import React, { Component } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { connect } from 'react-redux';
 
-export default class Menu extends Component {
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
+
+class Menu extends React.Component {
+  componentDidMount() {
+    console.log(this.props.user);
+  }
+
   render() {
+    const { user } = this.props
     return (
       <div>
         {/* Left side column. contains the logo and sidebar */}
@@ -19,7 +29,7 @@ export default class Menu extends Component {
                 />
               </div>
               <div className="pull-left info">
-                <p>Alexander Pierce</p>
+                <p>{user.name}</p>
                 <a href="fake_url">
                   <i className="fa fa-circle text-success" /> Online
                 </a>
@@ -399,3 +409,5 @@ export default class Menu extends Component {
     );
   }
 }
+
+export default connect(mapStateToProps, null)(Menu);

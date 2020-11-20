@@ -11,6 +11,8 @@ import shopReducer from './shopReducer';
 import productaddReducer from './productaddReducer';
 import employeeRoleReducer from './employeeRoleReducer';
 import variantValReducer from './variantValReducer';
+import movieCateReducer from './movieCateReducer';
+import modalReducer from './modalReducer';
 
 import memberReducer from './memberReducer';
 import invoiceReducer from './invoiceReducer';
@@ -20,7 +22,7 @@ import notificationReducer from './notificationReducer';
 import supplierReducer from './supplierReducer';
 import storageReportReducer from './storageReportReducer';
 import invoicedetReducer from './invoicedetReducer';
-
+import cartReducer from './cartReducer';
 
 export default combineReducers({
   employee: employeeReducer,
@@ -35,6 +37,9 @@ export default combineReducers({
   shop: shopReducer,
   movie: movieReducer,
   productCate: productCateReducer,
+  movieCate: movieCateReducer,
+  cart: cartReducer,
+  modal: modalReducer,
 
   invoice: invoiceReducer,
   invoicedet: invoicedetReducer,

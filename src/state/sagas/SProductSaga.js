@@ -11,7 +11,8 @@ import {
   UPDATE_PRODUCT,
   PRODUCT_UPDATED,
   UPDATE_PRODUCTADD,
-  PRODUCTADD_UPDATED
+  PRODUCTADD_UPDATED,
+  GET_PRODUCTS_BY_MOVIECAT
 } from "../actions/types";
 
 import mongoose from "mongoose";
@@ -36,6 +37,26 @@ function* fetchProducts(params) {
   }
 }
 
+function* fetchProductsByMovieCate(params) {
+  try {
+    const state = yield select(),
+      { limit, page, query, idMovieCat } = params.pages;
+
+    const response = yield call(() =>
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/moviecat/${idMovieCat}?limit=${limit}&page=${page}&query=${query}`,
+          tokenConfig(state)
+        )
+        .catch((er) => console.log(er.response))
+    );
+
+    yield put({ type: PRODUCTS_RECEIVED, payload: response });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function* addProduct(params) {
   const state = yield select();
   try {
@@ -46,9 +67,6 @@ function* addProduct(params) {
           params.newProduct,
           tokenConfig(state)
         )
-      // .then((res) => {
-      //   console.log(res);
-      // })
     );
     if (response.data._id instanceof mongoose.Types.ObjectId) {
       response.data._id = response.data._id.toString();
@@ -104,6 +122,7 @@ function* updateProductAdd(params) {
 
 export default function* sProductSaga() {
   yield takeEvery(GET_PRODUCTS, fetchProducts);
+  yield takeEvery(GET_PRODUCTS_BY_MOVIECAT, fetchProductsByMovieCate);
   yield takeEvery(ADD_PRODUCT, addProduct);
   yield takeEvery(UPDATE_PRODUCT, updateProduct);
   yield takeEvery(DELETE_PRODUCT, deleteProducts);

@@ -279,11 +279,9 @@ class Employee extends Component {
           <Loader></Loader>
         ) : ( */}
         <Fragment>
-          {/* Content Header (Page header) */}
           <section className="content-header">
             <h1>
               Nhân viên
-              {/* <small>Preview</small> */}
             </h1>
             <ol className="breadcrumb">
               <li>

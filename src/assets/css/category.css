@@ -86,7 +86,7 @@
 }
 .card .info-cate p {
   letter-spacing: 1px;
-  font-size: 15px;
+  font-size: 13px;
   margin-bottom: 10px;
 }
 .card .info-cate .btn {
@@ -107,7 +107,7 @@
 }
 .sliderwrapper {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
 }
 .cate-grid {
   display: inline-grid;

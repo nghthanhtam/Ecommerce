@@ -96,3 +96,6 @@
   grid-column-gap: 12px;
   grid-row-gap: 12px;
 }
+.similar-wrapper {
+  display: flex;
+}

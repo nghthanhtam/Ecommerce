@@ -25,7 +25,6 @@ function* fetchEmployees(params) {
           `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/employee/shop/${idShop}?limit=${limit}&page=${page}&query=${query}&deletedEmp=${deletedEmp}&activeEmp=${activeEmp}`,
           tokenConfig(state)
         )
-        .catch((er) => console.log(er.response))
     );
 
     // const response = yield call(getEmployeesAPI, {
@@ -34,7 +33,7 @@ function* fetchEmployees(params) {
     // });
     yield put({ type: EMPLOYEES_RECEIVED, payload: response });
   } catch (error) {
-    console.log(error);
+    console.log({ ...error });
   }
 }
 

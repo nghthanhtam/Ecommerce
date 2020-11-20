@@ -5,6 +5,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import '../../../../assets/css/product.css';
 
 import Product from './Product';
+import ShowingProduct from './ShowingProduct';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 
@@ -12,7 +13,8 @@ class ProductList extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      productList: [1, 2, 3, 4, 5, 6, 7, 8],
+      similarProductList: [{ id: 1, variants: [{ filePath: '../img/blue.png' }, { filePath: '../img/red.png' }, { filePath: '../img/blue.png' }, { filePath: '../img/black.png' }] }],
+      productList: [1, 2, 3, 4, 5, 6, 7],
       header: 'header',
       picLink: './img/blue.png',
       section: 'section-blue',
@@ -53,7 +55,7 @@ class ProductList extends React.Component {
   };
 
   render() {
-    let { productList } = this.state;
+    let { productList, similarProductList } = this.state;
     const settings = {
       infinite: true,
       speed: 800,
@@ -64,24 +66,17 @@ class ProductList extends React.Component {
     return (
       <div>
         <Header />
-
         <div
           style={{
             zIndex: 10,
             marginBottom: '300px',
             position: 'relative',
-            backgroundColor: '#f7f7f7',
+            backgroundColor: '#f7f7f7'
           }}
         >
-          <div className="nohome-section"></div>
+          <div className="nohome-section" />
 
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '20px',
-            }}
-          >
+          <div style={{ display: 'flex', padding: '40px', justifyContent: 'center' }}>
             <div className="filter-list">
               <div className="ui action input">
                 <input type="text" placeholder="Search..." />
@@ -208,52 +203,42 @@ class ProductList extends React.Component {
               <div>
                 <div className="list-wrapper">
                   <div className="grid">
-                    {productList.map((item, index) => {
-                      return <Product key={index} />;
+                    {similarProductList.map((item, index) => {
+                      return <ShowingProduct key={index} item={item} />;
                     })}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div style={{ marginTop: '50px' }}>
-            <h3 style={{ margin: '0 0 -20px 155px', color: '#0d1136' }}>
-              PRODUCTS RELATED TO THIS MOVIE
-            </h3>
-            <div className="sliderwrapper">
-              <Slider
-                style={{
-                  width: '85%',
-                }}
-                {...settings}
-              >
+          <div >
+
+            <div className="rec-product-wrapper">
+              <h3 style={{ color: '#0d1136', marginRight: 'auto' }}>
+                SẢN PHẨM KHÁC TRONG CÙNG PHIM
+              </h3>
+              <Slider style={{ width: '106%', paddingTop: 0 }} {...settings} >
                 {productList.map((item, index) => {
                   return <Product key={index} />;
                 })}
               </Slider>
             </div>
-            <div style={{ marginTop: '15px' }}>
-              <h3 style={{ margin: '0 0 -20px 155px', color: '#0d1136' }}>
-                SIMILAR PRODUCTS INSPIRED BY THIS ITEM
+            <div className="rec-product-wrapper">
+              <h3 style={{ color: '#0d1136', marginRight: 'auto' }}>
+                SẢN PHẨM KHÁC TƯƠNG TỰ
               </h3>
-              <div className="sliderwrapper">
-                <Slider
-                  style={{
-                    width: '85%',
-                  }}
-                  {...settings}
-                >
-                  {productList.map((item, index) => {
-                    return <Product key={index} />;
-                  })}
-                </Slider>
-              </div>
+              <Slider style={{ width: '106%', paddingTop: 0 }} {...settings} >
+                {productList.map((item, index) => {
+                  return <Product key={index} />;
+                })}
+              </Slider>
             </div>
           </div>
+
         </div>
 
         <Footer />
-      </div>
+      </div >
     );
   }
 }

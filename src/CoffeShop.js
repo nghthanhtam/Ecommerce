@@ -108,6 +108,8 @@ class CoffeShop extends Component {
           <Route exact path="/product-list">
             <ProductList />
           </Route>
+          <Route path={`/product-list/:topicId`} component={ProductList} />
+
           <Route exact path="/product-detail">
             <ProductDetail />
           </Route>

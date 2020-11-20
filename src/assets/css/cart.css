@@ -27,19 +27,25 @@
   display: flex;
   margin-bottom: 50px;
 }
-.order-list {
+.order-wrapper {
   display: flex;
   flex-direction: column;
-  width: 300%;
+  width: 200%;
+}
+.order-list {
+  margin-top: 5px;
+  margin-bottom: 30px;
 }
 
 .order {
   height: 180px;
-  margin: 10px 0 -10px 20px;
+  margin: 5px 0 -10px 0px;
   background-color: white;
   display: flex;
   padding: 30px 20px 20px 20px;
   color: #0d1136;
+  display: flex;
+  justify-content: column;
 }
 
 .order img {

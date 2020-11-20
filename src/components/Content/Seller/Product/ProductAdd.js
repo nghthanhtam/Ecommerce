@@ -178,7 +178,7 @@ class ProductAdd extends Component {
               if (!variant.name.__isNew__) {
                 if (!e.__isNew__) {
 
-                  if (product['variants'][2].length == 0) { console.log('mang = 0'); product['variants'][2].push(e.value) }
+                  if (product['variants'][2].length == 0) product['variants'][2].push(e.value)
                   else {
                     for (let ele of this.state.variantList) {
                       if (ele.name.value == variant.name.value) {
@@ -191,14 +191,9 @@ class ProductAdd extends Component {
                             };
                           }
                         }
-                        console.log('abccc');
                         product['variants'][2].push(e.value)
                       }
                     }
-                    // if (product['variants'][2].some(ele => Object.keys(ele)[0] == variant.name.value)) { //kt xem variant này trc đó chọn value chưa
-                    //   product['variants'][2] = product['variants'][2].filter(ele => Object.keys(ele)[0] != variant.name.value) //nếu có thì thay bằng value mới chọn
-                    //   product['variants'][2].push({ [variant.name.value]: e.value })
-                    // }
                   }
                 }
                 else { product['variants'][1].push({ [variant.name.value]: e.value }) }
@@ -237,7 +232,6 @@ class ProductAdd extends Component {
   };
 
   onChangeProductInfor = e => {
-    console.log('changeee');
     if (!e.target) {
       this.setState({ description: e })
       return
@@ -275,6 +269,12 @@ class ProductAdd extends Component {
     if (!name) { this.setState({ requiredName: 'required' }) }
     if (!idMovie) { this.setState({ requiredMovie: 'required' }) }
     if (!idProductCat) { this.setState({ requiredCate: 'required' }) }
+  }
+
+  removeProp = (variant) => {
+    this.setState((prepState) => ({
+      variantList: [...prepState.variantList.filter(ele => ele.name.value !== variant.name.value)],
+    }));
   }
 
   render() {
@@ -345,7 +345,7 @@ class ProductAdd extends Component {
                             Sản phẩm có thể trùng
                         </label>
                           <div className="duplicate-wrapper">
-                            <div className="sliderwrapper">
+                            <div className="similar-wrapper">
                               <Slider
                                 {...settings}
                                 slidesToShow={products.length <= 5 ? products.length : 5}
@@ -458,7 +458,7 @@ class ProductAdd extends Component {
                       <div className="form-group">
                         <label htmlFor="exampleInputEmail1">
                           Sản phẩm có nhiều lựa chọn theo màu sắc, kích cỡ,...?
-                    </label>
+                        </label>
                         <ProductModal variantList={variantList} onsaveProp={this.onsaveProp} />
                       </div>
                       <div className="tag-box">
@@ -467,11 +467,11 @@ class ProductAdd extends Component {
                             <div key={index} className="prop-tag">
                               <div>{variant.name.label}</div>
                               <div
-                                onClick={this.removeProp}
+                                onClick={() => this.removeProp(variant)}
                                 className="tag-close"
                               >
                                 ×
-                          </div>
+                              </div>
                             </div>
                           );
                         })}

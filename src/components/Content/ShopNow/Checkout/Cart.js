@@ -12,7 +12,7 @@ class Cart extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      orderList: [1, 2, 3, 4, 5],
+      orderList: [1, 2, 3,],
     };
   }
   checkout = () => { };
@@ -33,11 +33,21 @@ class Cart extends React.Component {
           <div className="nohome-section"></div>
           <div className="cart-container">
             <div className="cart-card">
-              <div className="order-list">
-                {orderList.map(() => {
-                  return <CartDetail />;
-                })}
+              <div className="order-wrapper">
+                <div className="order-list">
+                  <p>TOY SHOP  </p>
+                  {orderList.map(() => {
+                    return <CartDetail />;
+                  })}
+                </div>
+                <div className="order-list">
+                  <p>TOY SHOP  </p>
+                  {orderList.map(() => {
+                    return <CartDetail />;
+                  })}
+                </div>
               </div>
+
               <div className="center-col-flex">
                 <p className="promo-title">Mã giảm giá</p>
                 <div class="ui action input">
@@ -63,8 +73,6 @@ class Cart extends React.Component {
             </div>
           </div>
         </div>
-
-
         <Footer />
       </div>
     );

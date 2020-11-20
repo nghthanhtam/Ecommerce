@@ -1,11 +1,9 @@
 import React, { Fragment, Component } from 'react';
-
 import { connect } from 'react-redux';
 import { pushHistory } from '../../../../state/actions/historyActions';
 import Loader from 'react-loader';
 import axios from 'axios';
 import { updateEmployee } from '../../../../state/actions/employeeActions';
-import { tokenConfig } from '../../../../state/actions/authActions';
 
 class EmployeeEdit extends Component {
   state = {
@@ -52,10 +50,6 @@ class EmployeeEdit extends Component {
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
-    // if (token) {
-    //   config.headers['x-auth-token'] = token;
-    // }
-
     return config;
   };
 

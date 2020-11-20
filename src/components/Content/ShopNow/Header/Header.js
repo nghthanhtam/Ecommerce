@@ -47,10 +47,10 @@ class Header extends React.Component {
             height: '48px',
             visibility: hideSearchBar,
           }}
-          class="ui action input"
+          className="ui action input"
         >
-          <button style={searchBtn} class="ui icon button">
-            <i class="search icon"></i>
+          <button style={searchBtn} className="ui icon button">
+            <i className="search icon"></i>
           </button>
           <input
             style={searchInput}
@@ -75,13 +75,14 @@ class Header extends React.Component {
             </Link>
           </li>
           <li>
-            <Link className="item" to="/">
+            <Link className="item">
               <div style={itemIcon}>
                 <i className="fa fa-user"></i>
               </div>
               <div>Profile</div>
             </Link>
           </li>
+
           <li>
             <Link className="item" to="/">
               Need Help

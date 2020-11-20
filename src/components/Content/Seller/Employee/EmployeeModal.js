@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import mongoose from 'mongoose';
 import { addEmployee } from '../../../../state/actions/employeeActions';
 
 class EmployeeModal extends Component {
@@ -133,7 +132,6 @@ class EmployeeModal extends Component {
           className="btn btn-primary"
           data-toggle="modal"
           data-target="#exampleModalCenter"
-          onClick={this.handleOnClick}
         >
           Thêm nhân viên mới
         </button>

@@ -1,11 +1,14 @@
 import React from "react";
 import "../../../../assets/css/category.css";
-import { Link } from "react-router-dom";
+import { pushHistory } from '../../../../state/actions/historyActions';
+import { connect } from 'react-redux';
+import { Link, Route } from "react-router-dom";
+import { getProductsByMovieCate } from "../../../../state/actions/productActions"
+import ProductList from '../Product/ProductList';
 
 class Category extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {};
+  componentDidMount() {
+
   }
 
   render() {
@@ -13,11 +16,11 @@ class Category extends React.Component {
     return (
       <div className="wrapper">
         <div className="card">
-          <img src={cate.picLink} alt="blue" />
+          <img src={cate.imageUrl} alt="blue" />
           <div className="info-cate">
             <h3>{cate.name}</h3>
             <p>{cate.description}</p>
-            <Link className="btn">See more </Link>
+            <Link to={`/product-list/${cate.name}`} className="btn">Xem thêm </Link>
           </div>
         </div>
       </div>
@@ -25,4 +28,4 @@ class Category extends React.Component {
   }
 }
 
-export default Category;
+export default connect(null, { pushHistory })(Category);

@@ -3,10 +3,16 @@ import {
   ADD_PRODUCT,
   DELETE_PRODUCT,
   UPDATE_PRODUCT,
+  GET_PRODUCTS_BY_MOVIECAT,
 } from './types';
 
 export const getProducts = (params) => ({
   type: GET_PRODUCTS,
+  pages: params,
+});
+
+export const getProductsByMovieCate = (params) => ({
+  type: GET_PRODUCTS_BY_MOVIECAT,
   pages: params,
 });
 

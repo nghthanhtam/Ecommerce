@@ -131,9 +131,8 @@ class ProductModal extends Component {
     }
   }
   renderValues = (item, index) => {
-    console.log(item);
     return (
-      <div key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
         <div style={{ marginRight: '11px', width: '178px' }}>
           <Creatable
             key={index}
@@ -168,10 +167,19 @@ class ProductModal extends Component {
   }
 
   onCheckManyVars = () => {
-    this.setState({ has2Vars: !this.state.has2Vars })
-    this.setState((prepState) => ({
-      propValuesList: [...prepState.propValuesList, { name: '', values: [{ label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }] }],
-    }));
+    const { has2Vars, propValuesList } = this.state
+    this.setState({ has2Vars: !has2Vars }, () => {
+      if (this.state.has2Vars) {
+        this.setState((prepState) => ({
+          propValuesList: [...prepState.propValuesList, { name: '', values: [{ label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }] }],
+        }));
+      } else {
+        propValuesList.pop()
+        this.setState({
+          propValuesList
+        });
+      }
+    })
   }
 
   render() {

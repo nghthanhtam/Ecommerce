@@ -22,22 +22,21 @@
 
 .product-card {
   width: 230px;
-  /* background: #ecedef; */
   background: white;
-  padding: 20px;
+  padding: 15px;
   position: relative;
   transition: 0.5s;
   border-radius: 8px;
 }
 
 .product-card:hover {
-  width: 227px;
+  width: 230px;
   background: #dae3f3;
-  padding: 20px;
+  padding: 15px;
   position: relative;
   transition: 0.5s;
   box-shadow: 0px 10px 12px rgba(0, 0, 0, 0.5);
-  transform: scale(0.95);
+  transform: scale(0.96);
   cursor: pointer;
 }
 
@@ -56,7 +55,6 @@
   width: 100%;
   margin-bottom: 10px;
 }
-
 .product-info {
   display: flex;
   align-items: center;
@@ -385,7 +383,7 @@
 .filter-list {
   display: flex;
   flex-direction: column;
-  padding: 0 35px 10px 0;
+  padding-right: 15px;
   color: #0d1136;
 }
 .filter-list .ui {
@@ -461,6 +459,13 @@
   padding: 20px;
   background-color: #3571a7;
   color: white;
+}
+.rec-product-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 70px 0 70px;
 }
 
 /* ADMIN */
