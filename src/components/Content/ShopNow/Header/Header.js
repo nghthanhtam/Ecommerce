@@ -1,18 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { showModal } from '../../../../state/actions/modalActions'
+
+const mapStateToProps = (state) => ({
+  user: state.authUser.user,
+});
 
 class Header extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {
-      header: 'header',
-      left: 0,
-      hideSearchBar: 'hidden',
-    };
-    this.handleScroll = this.handleScroll.bind(this);
-  }
+  state = {
+    header: 'header',
+    left: 0,
+    hideSearchBar: 'hidden',
+  };
+
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
+    console.log(this.props.user);
   }
 
   componentWillUnmount() {
@@ -32,7 +36,9 @@ class Header extends React.Component {
   };
 
   render() {
-    let { hideSearchBar } = this.state;
+    const { hideSearchBar } = this.state;
+    const { user } = this.props
+
     return (
       <div className={this.state.header}>
         <Link className="logo" to="/home">
@@ -75,12 +81,16 @@ class Header extends React.Component {
             </Link>
           </li>
           <li>
-            <Link className="item">
-              <div style={itemIcon}>
-                <i className="fa fa-user"></i>
-              </div>
-              <div>Profile</div>
-            </Link>
+            {user ?
+              <Link className="item">
+                <div style={itemIcon}>
+                  <i className="fa fa-user"></i>
+                </div>
+                <div>Profile</div>
+              </Link> :
+              <Link onClick={() => this.props.showModal({ show: true, modalName: 'login' })} className="item">
+                <div>Join</div>
+              </Link>}
           </li>
 
           <li>
@@ -94,7 +104,7 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+export default connect(mapStateToProps, { showModal })(Header);
 
 const searchBtn = {
   background: '#f5f5f5',

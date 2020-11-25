@@ -3,16 +3,14 @@ import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => ({
-  user: state.auth.user,
+  employee: state.auth.employee,
 });
 
 class Menu extends React.Component {
-  componentDidMount() {
-    console.log(this.props.user);
-  }
+
 
   render() {
-    const { user } = this.props
+    const { employee } = this.props
     return (
       <div>
         {/* Left side column. contains the logo and sidebar */}
@@ -23,13 +21,13 @@ class Menu extends React.Component {
             <div className="user-panel">
               <div className="pull-left image">
                 <img
-                  src="dist/img/user2-160x160.jpg"
+                  src="../img/avatar2.png"
                   className="img-circle"
                   alt="User"
                 />
               </div>
               <div className="pull-left info">
-                <p>{user.name}</p>
+                <p>{employee.username}</p>
                 <a href="fake_url">
                   <i className="fa fa-circle text-success" /> Online
                 </a>

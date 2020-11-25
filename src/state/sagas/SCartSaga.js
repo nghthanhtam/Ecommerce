@@ -2,7 +2,7 @@ import { takeEvery, put, call, select } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../actions/authActions";
 import {
-  GET_CARTS,
+  GET_CARTS_BY_IDUSER,
   ADD_CART,
   CARTS_RECEIVED,
   CART_ADDED,
@@ -10,21 +10,19 @@ import {
   CART_DELETED,
   UPDATE_CART,
   CART_UPDATED,
-  UPDATE_CARTADD,
-  CARTADD_UPDATED
 } from "../actions/types";
 
 import mongoose from "mongoose";
 
-function* fetchCarts(params) {
+function* fetchCartsByIdUser(params) {
   try {
     const state = yield select(),
-      { limit, page, query } = params.pages;
+      { limit, page, idUser } = params.pages;
 
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_USER_USER}/api/cart/user/${idUser}`,
+          `${process.env.REACT_APP_BACKEND_USER}/api/cart/user/${idUser}?limit=${limit}&page=${page}`,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -32,7 +30,7 @@ function* fetchCarts(params) {
 
     yield put({ type: CARTS_RECEIVED, payload: response });
   } catch (error) {
-    console.log(error);
+    console.log({ ...error });
   }
 }
 
@@ -42,7 +40,7 @@ function* addCart(params) {
     const response = yield call(
       () =>
         axios.post(
-          `${process.env.REACT_APP_BACKEND_USER_CART}/api/cart/`,
+          `${process.env.REACT_APP_BACKEND_USER}/api/cart/`,
           params.newCart,
           tokenConfig(state)
         )
@@ -62,7 +60,7 @@ function* updateCart(params) {
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_USER_CART}/api/cart/${params.newCart._id}`,
+        `${process.env.REACT_APP_BACKEND_USER}/api/cart/${params.newCart._id}`,
         params.newCategory,
         tokenConfig(state)
       )
@@ -78,7 +76,7 @@ function* deleteCarts(params) {
   try {
     const response = yield call(() =>
       axios.delete(
-        `${process.env.REACT_APP_BACKEND_USER_CART}/api/cart/${params.id}`,
+        `${process.env.REACT_APP_BACKEND_USER}/api/cart/${params.id}`,
         tokenConfig(state)
       )
     );
@@ -89,20 +87,9 @@ function* deleteCarts(params) {
   }
 }
 
-function* updateCartAdd(params) {
-  try {
-    const { arrVariants } = params.params
-    console.log('sagaArrVariants: ', arrVariants);
-    yield put({ type: CARTADD_UPDATED, payload: arrVariants });
-  } catch (error) {
-    console.log(error.response);
-  }
-}
-
 export default function* sCartSaga() {
-  yield takeEvery(GET_CARTS, fetchCarts);
+  yield takeEvery(GET_CARTS_BY_IDUSER, fetchCartsByIdUser);
   yield takeEvery(ADD_CART, addCart);
   yield takeEvery(UPDATE_CART, updateCart);
   yield takeEvery(DELETE_CART, deleteCarts);
-  yield takeEvery(UPDATE_CARTADD, updateCartAdd);
 }

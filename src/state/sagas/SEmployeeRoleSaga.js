@@ -30,7 +30,7 @@ function* fetchEmpRoles(params) {
 
     yield put({ type: EMPROLES_RECEIVED, payload: response });
   } catch (error) {
-    console.log(error);
+    console.log({ ...error });
   }
 }
 
@@ -55,7 +55,7 @@ function* addEmpRole(params) {
       pages: params.newEmpRole.pages,
     });
   } catch (error) {
-    console.log(error.response);
+    console.log({ ...error });
   }
 }
 
@@ -72,7 +72,7 @@ function* updateEmpRole(params) {
 
     yield put({ type: EMPROLE_UPDATED, payload: response.data });
   } catch (error) {
-    console.log(error.response);
+    console.log({ ...error });
   }
 }
 
@@ -88,7 +88,7 @@ function* deleteEmpRoles(params) {
 
     yield put({ type: EMPROLE_DELETED, payload: { id: params.id } });
   } catch (error) {
-    console.log(error.response);
+    console.log({ ...error });
   }
 }
 

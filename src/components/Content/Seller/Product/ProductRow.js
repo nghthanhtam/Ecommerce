@@ -1,8 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { deleteProduct } from '../../../../state/actions/productActions';
+import { updateProductVarStatus } from '../../../../state/actions/productVarActions';
+import { showModal } from '../../../../state/actions/modalActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
 import UpdateQtyModal from './UpdateQtyModal';
+
+const mapStateToProps = (state) => ({
+  history: state.history.history,
+});
 
 class ProductRow extends Component {
   convertDate = (date) => {
@@ -17,43 +23,59 @@ class ProductRow extends Component {
 
     return year + '-' + month + '-' + dt;
   };
-  handleEdit = (id) => {
-    this.props.pushHistory(`/product/edit/${id}`);
+
+  approve = () => {
+    const { productVar } = this.props;
+    productVar.status = 'active'
+    this.props.updateProductVarStatus(productVar)
   };
 
   render() {
-    const { name, SKU, price, id, status } = this.props.product;
-    const { index, isPending } = this.props
+    const { name, SKU, price, id, status, stockAmount, Images } = this.props.productVar;
+    const { index, getActive } = this.props
 
     return (
-      <tr>
-        <td>{index + 1}</td>
-        <td><img src="./img/banner.png" alt="" border='3' height='100' width='200' /> {SKU}</td>
-        <td>{name}</td>
-        <td>{SKU}</td>
-        <td >{price}</td>
-        <td>22</td>
-        {!isPending ? <td>
-          <div className="btn-group">
-            <button
-              onClick={() => this.handleEdit(id)}
-              type="button"
-              className="btn btn-success"
-            >
-              Sửa
-            </button>
-            <UpdateQtyModal name={name} />
-          </div>
-        </td> : status === 1 ?
-            <td style={{ color: 'green' }}>
-              <i style={{ color: '#52c41a' }} className="fa fa-check-circle" aria-hidden="true"></i> Đã duyệt
-            </td > :
-            <td style={{ color: 'grey' }}>
-              <i style={{ color: '#52c41a' }} className="fa fa-spinner" aria-hidden="true"></i> Chờ duyệt
-            </td>}
-      </tr>
+      <Fragment>
+        {getActive == false && status !== 'active' || getActive == true && status == 'active' ?
+          <tr>
+            <td>{index + 1}</td>
+            <td><img src={Images[0].url} alt="" border='3' height='100' width='200' /> {SKU}</td>
+            <td>{name}</td>
+            <td>{SKU}</td>
+            <td >{price}  VND</td>
+            <td>{stockAmount}</td>
+
+            {status == 'active' &&
+              <td>
+                <div className="btn-group">
+                  <button onClick={() => this.props.history.push({ pathname: `/productvar/edit/${id}` })}
+                    type="button" className="btn btn-success">
+                    Sửa
+                  </button>
+                  <UpdateQtyModal name={name} />
+                </div>
+              </td>}
+
+            {status == 'pending' &&
+              <>
+                <td style={{ color: 'grey' }}>
+                  <i style={{ color: '#52c41a' }} className="fa fa-spinner" aria-hidden="true"></i> Chờ duyệt
+                </td>
+                <td>
+                  <div className="btn-group">
+                    <button
+                      onClick={() => this.approve()}
+                      type="button"
+                      className="btn btn-success">
+                      Duyệt
+                    </button>
+                  </div>
+                </td>
+              </>}
+          </tr> : null}
+      </Fragment>
     );
   }
 }
 
-export default connect(null, { deleteProduct, pushHistory })(ProductRow);
+export default connect(mapStateToProps, { deleteProduct, pushHistory, updateProductVarStatus, showModal })(ProductRow);

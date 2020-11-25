@@ -19,7 +19,6 @@ export default function (state = initialState, action) {
     case GET_PRODUCTVARS:
       return {
         ...state,
-        // isLoaded: true,
       };
     case PRODUCTVARS_RECEIVED:
       return {

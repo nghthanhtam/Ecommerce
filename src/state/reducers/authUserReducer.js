@@ -1,41 +1,40 @@
 import {
-  EMPLOYEE_LOADED,
-  EMPLOYEE_LOADING,
-  AUTH_ERROR,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  LOGOUT_SUCCESS,
-  REGISTER_SUCCESS,
-  REGISTER_FAIL,
-  UPDATE_AUTH_SUCCESS,
+  USER_LOADED,
+  USER_LOADING,
+  USER_AUTH_ERROR,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT_SUCCESS,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_UPDATE_AUTH_SUCCESS,
 } from '../actions/types';
 
 const initialState = {
   token: localStorage.getItem('token'),
   isAuthenticated: false,
   isLoading: false,
-  employee: null,
-  role: null,
+  user: null,
   isLoaded: false,
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case EMPLOYEE_LOADING:
+    case USER_LOADING:
       return {
         ...state,
         isLoading: true,
       };
-    case EMPLOYEE_LOADED:
+    case USER_LOADED:
       return {
         ...state,
         isLoading: false,
         isAuthenticated: true,
-        employee: action.payload,
+        user: action.payload,
         isLoaded: true,
       };
-    case LOGIN_SUCCESS:
-    case REGISTER_SUCCESS:
+    case USER_LOGIN_SUCCESS:
+    case USER_REGISTER_SUCCESS:
       localStorage.setItem('token', action.payload.token);
       return {
         ...state,
@@ -43,26 +42,26 @@ export default function (state = initialState, action) {
         isAuthenticated: true,
         isLoading: false,
         isLoaded: true,
-        employee: action.payload.employee
+        user: action.payload.user
       };
-    case UPDATE_AUTH_SUCCESS:
+    case USER_UPDATE_AUTH_SUCCESS:
       return {
         ...state,
         ...action.payload,
         isAuthenticated: true,
         isLoading: false,
         isLoaded: true,
-        employee: action.payload.employee
+        user: action.payload.user
       };
-    case AUTH_ERROR:
-    case LOGIN_FAIL:
-    case LOGOUT_SUCCESS:
-    case REGISTER_FAIL:
+    case USER_AUTH_ERROR:
+    case USER_LOGIN_FAIL:
+    case USER_LOGOUT_SUCCESS:
+    case USER_REGISTER_FAIL:
       localStorage.removeItem('token');
       return {
         ...state,
         token: null,
-        employee: null,
+        user: null,
         isLoading: false,
         isAuthenticated: false,
         isLoaded: true,

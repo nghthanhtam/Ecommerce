@@ -15,7 +15,10 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import AddressDetail from "../Checkout/AddressDetail";
 
-class Cart extends React.Component {
+import { connect } from 'react-redux';
+import { pushHistory } from '../../../../state/actions/historyActions';
+
+class Payment extends React.Component {
   constructor(props) {
     super();
     this.state = {
@@ -33,7 +36,7 @@ class Cart extends React.Component {
       isCardHidden: true,
     };
   }
-  checkout = () => {};
+  checkout = () => { };
   chkboxChange = (e) => {
     console.log(e.target);
   };
@@ -181,8 +184,7 @@ class Cart extends React.Component {
                     width: "100%",
                     marginTop: "20px",
                   }}
-                  onClick={() => this.checkout()}
-                >
+                  onClick={() => this.props.pushHistory('/checkout/order-receipt')}>
                   Đặt mua
                 </Button>
               </div>
@@ -196,4 +198,4 @@ class Cart extends React.Component {
   }
 }
 
-export default Cart;
+export default connect(null, { pushHistory })(Payment);

@@ -84,7 +84,7 @@ function* updateProduct(params) {
     const response = yield call(() =>
       axios.put(
         `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${params.newProduct._id}`,
-        params.newCategory,
+        params.newProduct,
         tokenConfig(state)
       )
     );

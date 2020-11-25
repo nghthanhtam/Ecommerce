@@ -7,18 +7,36 @@ import "slick-carousel/slick/slick-theme.css";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import CartDetail from "./CartDetail";
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { pushHistory } from '../../../../state/actions/historyActions';
+import { getCartsByIdUser } from '../../../../state/actions/cartActions';
+
+const mapStateToProps = (state) => ({
+  carts: state.cart.carts,
+  isLoaded: state.cart.isLoaded,
+  user: state.authUser.user
+});
 
 class Cart extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {
-      orderList: [1, 2, 3,],
-    };
+  state = {
+    orderList: [1, 2, 3,],
+  };
+
+  componentDidMount() {
+    const { getCartsByIdUser, user } = this.props
+    getCartsByIdUser({ limit: 1000, page: 1, idUser: user.id })
   }
+
+  deleteCartItem = (itemId) => {
+    console.log('itemId: ', itemId);
+  }
+
   checkout = () => { };
 
   render() {
-    let { orderList } = this.state;
+    const { orderList } = this.state;
+    const { carts, isLoaded } = this.props
     return (
       <div>
         <Header />
@@ -33,26 +51,25 @@ class Cart extends React.Component {
           <div className="nohome-section"></div>
           <div className="cart-container">
             <div className="cart-card">
-              <div className="order-wrapper">
-                <div className="order-list">
-                  <p>TOY SHOP  </p>
-                  {orderList.map(() => {
-                    return <CartDetail />;
+              {!isLoaded ? null :
+                <div className="order-wrapper">
+                  {carts.map((cItem, cIndex) => {
+                    return (
+                      <div key={cIndex} className="order-list">
+                        <p> {cItem.name} > </p>
+                        {cItem.productVars.map((item, index) => {
+                          return <CartDetail key={index} item={item} cItem={cItem} deleteCartItem={this.deleteCartItem} />;
+                        })}
+                      </div>
+                    )
                   })}
-                </div>
-                <div className="order-list">
-                  <p>TOY SHOP  </p>
-                  {orderList.map(() => {
-                    return <CartDetail />;
-                  })}
-                </div>
-              </div>
+                </div>}
 
               <div className="center-col-flex">
                 <p className="promo-title">Mã giảm giá</p>
-                <div class="ui action input">
+                <div className="ui action input">
                   <input type="text" placeholder="Nhập ở đây..." />
-                  <button class="ui button">Áp dụng</button>
+                  <button className="ui button">Áp dụng</button>
                 </div>
                 <div className="checkout">
                   <p> Thành tiền</p>
@@ -65,7 +82,7 @@ class Cart extends React.Component {
                     width: "108%",
                     marginTop: "20px",
                   }}
-                  onClick={() => this.checkout()}
+                  onClick={() => this.props.pushHistory('/checkout/payment')}
                 >
                   Tiến hành đặt hàng
               </Button>
@@ -74,9 +91,13 @@ class Cart extends React.Component {
           </div>
         </div>
         <Footer />
-      </div>
+      </div >
     );
   }
 }
 
-export default Cart;
+Cart.propTypes = {
+  getCartsByIdUser: PropTypes.func.isRequired,
+  carts: PropTypes.array.isRequired,
+};
+export default connect(mapStateToProps, { pushHistory, getCartsByIdUser })(Cart);

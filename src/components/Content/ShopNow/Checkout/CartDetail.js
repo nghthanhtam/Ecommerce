@@ -5,38 +5,41 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 class CartDetail extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {
-      productList: [1, 2, 3, 4, 5, 6, 7, 8],
-      replyBoxHidden: false,
-    };
-  }
+  state = {
+    productList: [1, 2, 3, 4, 5, 6, 7, 8],
+    replyBoxHidden: false,
+  };
 
+  showDiscount = () => {
+    const { item } = this.props
+    return ((item.marketPrice - item.price) / item.marketPrice) * 100
+  }
   render() {
+    const { item, cItem, deleteCartItem } = this.props
     return (
       <div className="order">
         <div className="order-pic">
           <img alt="product" src="../img/blue.png" />
         </div>
         <div className="order-content">
-          <div className="order-title">Chuột Captain America</div>
+          <div className="order-title">{item.name}</div>
           <div className="row-flex">
             <div className="order-shop">Cung cấp bởi</div>
-            <div className="order-button"> Hana Shop</div>
+            <div className="order-button"> {cItem.name}</div>
           </div>
 
           <div className="row-flex">
-            <div className="order-button"> Xóa</div>
+            <div className="order-button" onClick={() => deleteCartItem(item.idCart)}> Xóa</div>
             <div className="order-button">Để dành mua sau</div>
           </div>
         </div>
         <div className="order-price">
-          <p className="price-af">100000đ</p>
-          <div className="row-flex">
-            <div className="price-bf">200000đ</div>|
-            <div className="percent">-50%</div>
-          </div>
+          <p className="price-af">{item.price} VND</p>
+          {this.showDiscount() != 0 ?
+            <div className="row-flex">
+              <div className="price-bf">{item.marketPrice}</div>|
+              <div className="percent">-{this.showDiscount()}%</div>
+            </div> : null}
         </div>
         <div
           style={{

@@ -302,8 +302,8 @@
 }
 .btn-home {
   border-radius: 8px;
-  margin-left: 620px;
-
+  margin-left: auto;
+  padding: 8px;
   height: 40px;
   border: 1px solid #ccc;
   color: grey;

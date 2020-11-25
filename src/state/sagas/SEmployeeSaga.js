@@ -1,3 +1,4 @@
+import { Redirect } from 'react-router-dom';
 import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { tokenConfig } from '../../state/actions/authActions';
@@ -34,6 +35,12 @@ function* fetchEmployees(params) {
     yield put({ type: EMPLOYEES_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });
+    let err = { ...error }
+    if (err.status == 401) {
+      this.props.history.push({
+        pathname: '/login',
+      });
+    }
   }
 }
 

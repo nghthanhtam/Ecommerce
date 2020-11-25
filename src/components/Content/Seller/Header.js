@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 
 const mapStateToProps = (state) => ({
   history: state.history,
-  user: state.auth.user,
+  employee: state.auth.employee,
 });
 
 class Header extends Component {
@@ -26,7 +26,7 @@ class Header extends Component {
     this.props.pushHistory('/');
   };
   render() {
-    const { user } = this.props;
+    const { employee } = this.props;
     return (
       <div>
         <header className="main-header">
@@ -63,17 +63,17 @@ class Header extends Component {
                     data-toggle="dropdown"
                   >
                     <img
-                      src="dist/img/user2-160x160.jpg"
+                      src="../img/avatar2.png"
                       className="user-image"
                       alt="User"
                     />
-                    <span className="hidden-xs">{user.username}</span>
+                    <span className="hidden-xs">{employee.username}</span>
                   </a>
                   <ul className="dropdown-menu">
                     {/* User image */}
                     <li className="user-header">
                       <img
-                        src="dist/img/user2-160x160.jpg"
+                        src="../img/avatar2.png"
                         className="img-circle"
                         alt="User"
                       />

@@ -13,13 +13,13 @@ export default function Footer() {
       </div>
       <div className="social">
         <div>
-          <i className="fab fa-facebook"></i>
+          <i className="fa fa-facebook"></i>
         </div>
         <div>
-          <i className="fab fa-instagram"></i>
+          <i className="fa fa-instagram"></i>
         </div>
         <div>
-          <i className="fab fa-twitter"></i>
+          <i className="fa fa-twitter"></i>
         </div>
       </div>
       <div className="footer-cate">

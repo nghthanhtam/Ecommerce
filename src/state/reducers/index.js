@@ -4,11 +4,13 @@ import movieReducer from './movieReducer';
 import productCateReducer from './productCateReducer';
 import errorReducer from './errorReducer';
 import authReducer from './authReducer';
+import authUserReducer from './authUserReducer';
 import historyReducer from './historyReducer';
 import roleReducer from './roleReducer';
 import productReducer from './productReducer';
 import shopReducer from './shopReducer';
 import productaddReducer from './productaddReducer';
+import productVarReducer from './productVarReducer';
 import employeeRoleReducer from './employeeRoleReducer';
 import variantValReducer from './variantValReducer';
 import movieCateReducer from './movieCateReducer';
@@ -29,6 +31,7 @@ export default combineReducers({
   emprole: employeeRoleReducer,
   error: errorReducer,
   auth: authReducer,
+  authUser: authUserReducer,
   history: historyReducer,
   role: roleReducer,
   member: memberReducer,
@@ -40,6 +43,7 @@ export default combineReducers({
   movieCate: movieCateReducer,
   cart: cartReducer,
   modal: modalReducer,
+  productVar: productVarReducer,
 
   invoice: invoiceReducer,
   invoicedet: invoicedetReducer,

@@ -20,7 +20,9 @@ import Login from "./Auth/Login"
 const mapStateToProps = (state) => ({
   movieCates: state.movieCate.movieCates,
   isLoadedMovieCate: state.movieCate.isLoaded,
-  show: state.modal.show
+  show: state.modal.show,
+  modalName: state.modal.modalName,
+  isAuthenticated: state.authUser.isAuthenticated,
 });
 
 class HomePage extends React.Component {
@@ -96,8 +98,12 @@ class HomePage extends React.Component {
     getMovieCates({ limit: 1000, page: 1, query: '' })
   }
 
+  componentDidUpdate() {
+    const { isAuthenticated, showModal } = this.props
+    if (isAuthenticated) showModal({ show: false })
+  }
+
   changePic = (e) => {
-    console.log(e.target.alt);
     if (e.target.alt === "blue") {
       this.setState({ picLink: "./img/blue.png" });
       this.setState({ section: "section-blue" });
@@ -112,7 +118,7 @@ class HomePage extends React.Component {
 
   render() {
     const { productList, keywords } = this.state;
-    const { movieCates, isLoadedMovieCate } = this.props
+    const { movieCates, isLoadedMovieCate, show, modalName } = this.props
     const settings = {
       dots: true,
       infinite: true,
@@ -137,7 +143,7 @@ class HomePage extends React.Component {
     };
     return (
       <Fragment>
-        {this.props.show && (
+        {show && modalName == 'login' && (
           <Login />
         )}
         <Header />
@@ -297,7 +303,6 @@ class HomePage extends React.Component {
                   })}
                 </div>
               </div>
-              <button onClick={() => this.props.showModal({ show: true })}>model open</button>
 
               <TitlePane title="Top Adventure Movie Products" />
               <div className="list-wrapper">

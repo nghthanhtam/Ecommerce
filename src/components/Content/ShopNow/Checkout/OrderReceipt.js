@@ -7,6 +7,9 @@ import "slick-carousel/slick/slick-theme.css";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 
+import { connect } from 'react-redux';
+import { pushHistory } from '../../../../state/actions/historyActions';
+
 class OrderReceipt extends React.Component {
   constructor(props) {
     super();
@@ -20,6 +23,7 @@ class OrderReceipt extends React.Component {
     let { replyBoxHidden } = this.state;
     this.setState({ replyBoxHidden: !replyBoxHidden });
   };
+
   render() {
     return (
       <div>
@@ -28,7 +32,7 @@ class OrderReceipt extends React.Component {
         <div className="receipt-container">
           <div className="order-res-card">
             <div className="res-infor">
-              <div className="btn-home">Quay lại trang chủ</div>
+              <div className="btn-home" onClick={() => this.props.pushHistory('/shopnow')}>Quay lại trang chủ</div>
               <h1>Đặt hàng thành công</h1>
               <p>Cảm ơn! Bạn đã đặt hàng thành công</p>
               <div className="sumup">
@@ -96,4 +100,4 @@ class OrderReceipt extends React.Component {
   }
 }
 
-export default OrderReceipt;
+export default connect(null, { pushHistory })(OrderReceipt);

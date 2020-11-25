@@ -7,6 +7,7 @@ import Menu from './components/Content/Seller/Menu';
 import Employee from './components/Content/Seller/Employee/Employee';
 import ProductAdd from './components/Content/Seller/Product/ProductAdd';
 import ProductAddNextPage from './components/Content/Seller/Product/ProductAddNextPage';
+import ProductVarEdit from './components/Content/Seller/Product/ProductVarEdit'
 import Product from './components/Content/Seller/Product/Product';
 import OrderEdit from './components/Content/Seller/Order/OrderEdit';
 import EmployeeEdit from './components/Content/Seller/Employee/EmployeeEdit';
@@ -19,7 +20,8 @@ import ErrorPage from './components/Content/Seller/ErrorPage/ErrorPage';
 import Login from './components/Content/Seller/Auth/Login';
 import Home from './components/Content/Seller/Home/Home';
 
-import { loadUser, updateAuth } from './state/actions/authActions';
+import { updateAuth } from './state/actions/authActions';
+import { updateAuthUser } from './state/actions/authUserActions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Loader from 'react-loader';
@@ -53,10 +55,11 @@ const mapStateToProps = (state) => ({
   isLoading: state.auth.isLoading,
   history: state.history,
   isLoaded: state.auth.isLoaded,
-  user: state.auth.user,
   token: state.auth.token,
   role: state.auth.role,
+  userToken: state.authUser.token,
 });
+
 const roles = {
   employee: 'employeeManagement',
   role: 'roleManagement',
@@ -72,24 +75,24 @@ const roles = {
 };
 class CoffeShop extends Component {
   state = {
-    //firstPathname: '/',
   };
   componentWillMount() {
-    // this.setState({
-    //   firstPathname: this.props.history.history.location.pathname,
-    // });
-    //update uer và role trong store, vì khi f5 hoặc tắt browser thì store bị xóa, chỉ còn token ở localstorage
-    const { token, updateAuth } = this.props;
+    //update user và role trong store, vì khi f5 hoặc tắt browser thì store bị xóa, chỉ còn token ở localstorage
+    const { token, userToken, updateAuth, updateAuthUser } = this.props;
     if (token) {
       updateAuth(token);
+    }
+    if (userToken) {
+      updateAuthUser(token);
     }
   }
 
   onChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
+
   render() {
-    const { token, user } = this.props;
+    const { token } = this.props;
     return (
       <Fragment>
         {/* {!this.props.isLoaded ? (
@@ -115,6 +118,12 @@ class CoffeShop extends Component {
           </Route>
           <Route exact path="/checkout/cart">
             <Cart />
+          </Route>
+          <Route exact path="/checkout/payment">
+            <Payment />
+          </Route>
+          <Route exact path="/checkout/order-receipt">
+            <OrderReceipt />
           </Route>
           <Route
             exact
@@ -176,6 +185,13 @@ class CoffeShop extends Component {
                     exact
                     path="/product"
                     component={Product}
+                    role={roles.product}
+                    token={token}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/productvar/edit/:id"
+                    component={ProductVarEdit}
                     role={roles.product}
                     token={token}
                   ></PrivateRoute>
@@ -259,4 +275,4 @@ Employee.propTypes = {
   user: PropTypes.object,
 };
 
-export default connect(mapStateToProps, { loadUser, updateAuth })(CoffeShop);
+export default connect(mapStateToProps, { updateAuth, updateAuthUser })(CoffeShop);

@@ -1,13 +1,12 @@
 import {
-  GET_CARTS,
   ADD_CART,
   DELETE_CART,
   UPDATE_CART,
-  GET_CARTS_BY_MOVIECAT,
+  GET_CARTS_BY_IDUSER,
 } from './types';
 
-export const getCarts = (params) => ({
-  type: GET_CARTS,
+export const getCartsByIdUser = (params) => ({
+  type: GET_CARTS_BY_IDUSER,
   pages: params,
 });
 

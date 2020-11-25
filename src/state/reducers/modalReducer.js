@@ -4,15 +4,16 @@ import {
 
 const initialState = {
   show: false,
+  modalName: ''
 };
 
 export default function (state = initialState, action) {
-  console.log('abccc: ', action.payload);
   switch (action.type) {
     case SHOW_MODAL:
       return {
         ...state,
-        show: action.payload.show
+        show: action.payload.show,
+        modalName: action.payload.modalName
       };
 
     default:

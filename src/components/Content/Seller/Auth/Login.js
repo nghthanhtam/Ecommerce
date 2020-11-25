@@ -36,13 +36,6 @@ class Login extends Component {
     }
   }
 
-  // static propTypes = {
-  //   isAuthenticated: PropTypes.bool,
-  //   error: PropTypes.object.isRequired,
-  //   login: PropTypes.func.isRequired,
-  //   clearErrors: PropTypes.func.isRequired
-  // };
-
   validateUsername(username) {
     return new RegExp(/^[a-zA-Z0-9_-]+$/).test(username);
   }
@@ -79,12 +72,12 @@ class Login extends Component {
     };
     this.props.login(user);
 
-    const { isAuthenticated } = this.props;
+    // const { isAuthenticated } = this.props;
 
-    if (isAuthenticated) {
-      //Redirect to main page
-      this.props.pushHistory('/');
-    }
+    // if (isAuthenticated) {
+    //   //Redirect to main page
+    //   this.props.pushHistory('/');
+    // }
   };
 
   render() {

@@ -40,10 +40,7 @@ export default function (state = initialState, action) {
         //employees: [action.payload, ...state.employees],
         isLoaded: true,
       };
-    // case DELETE_EMPLOYEE:
-    //   return {
-    //     ...state,
-    //   };
+
     case EMPLOYEE_DELETED:
       return {
         ...state,

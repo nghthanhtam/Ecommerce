@@ -1,8 +1,9 @@
 import {
-  GET_PRODUCTVARVARS,
-  ADD_PRODUCTVAR,
+  GET_PRODUCTVARS,
+  GET_PRODUCTVARS_BY_IDSHOP,
   DELETE_PRODUCTVAR,
   UPDATE_PRODUCTVAR,
+  UPDATE_PRODUCTVAR_STATUS
 } from './types';
 
 export const getProductVars = (params) => ({
@@ -10,17 +11,22 @@ export const getProductVars = (params) => ({
   pages: params,
 });
 
+export const getProductVarsByIdShop = (params) => ({
+  type: GET_PRODUCTVARS_BY_IDSHOP,
+  pages: params,
+});
+
 export const deleteProductVar = (id) => ({
-  type: DELETE_PRODUCTVARVAR,
+  type: DELETE_PRODUCTVAR,
   id: id,
 });
 
-export const addProductVar = (newProductVar) => ({
-  type: ADD_PRODUCTVARVAR,
+export const updateProductVar = (newProductVar) => ({
+  type: UPDATE_PRODUCTVAR,
   newProductVar: newProductVar,
 });
 
-export const updateProductVar = (newProductVar) => ({
-  type: UPDATE_PRODUCTVARVAR,
+export const updateProductVarStatus = (newProductVar) => ({
+  type: UPDATE_PRODUCTVAR_STATUS,
   newProductVar: newProductVar,
 });

@@ -1,8 +1,8 @@
-import { USER_LOADING, USER_LOGIN, USER_LOGOUT, UPDATE_AUTH } from './types';
+import { EMPLOYEE_LOADING, EMPLOYEE_LOGIN, EMPLOYEE_LOGOUT, UPDATE_AUTH } from './types';
 //Check token and load user
 // export const loadUser = () => (dispatch, getState) => {
 //   //User loading
-//   dispatch({ type: USER_LOADING });
+//   dispatch({ type: EMPLOYEE_LOADING });
 
 //   axios
 //     .get(
@@ -11,7 +11,7 @@ import { USER_LOADING, USER_LOGIN, USER_LOGOUT, UPDATE_AUTH } from './types';
 //     )
 //     .then((res) =>
 //       dispatch({
-//         type: USER_LOADED,
+//         type: EMPLOYEE_LOADED,
 //         payload: res.data,
 //       })
 //     )
@@ -23,11 +23,11 @@ import { USER_LOADING, USER_LOGIN, USER_LOGOUT, UPDATE_AUTH } from './types';
 //     });
 // };
 export const loadUser = () => ({
-  type: USER_LOADING,
+  type: EMPLOYEE_LOADING,
 });
 
 export const logout = () => ({
-  type: USER_LOGOUT,
+  type: EMPLOYEE_LOGOUT,
 });
 
 // export const login = (user) => (dispatch) => {
@@ -62,7 +62,7 @@ export const logout = () => ({
 //     });
 // };
 export const login = (user) => ({
-  type: USER_LOGIN,
+  type: EMPLOYEE_LOGIN,
   user: user,
 });
 

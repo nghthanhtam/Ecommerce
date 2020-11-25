@@ -30,10 +30,11 @@ class ProductAddNextPage extends Component {
 
   back = () => {
     const { selectedFiles } = this.state
-    const { arrProductVar, arrVariants, product, details } = this.props.location
+    const { arrProductVar, arrVariants, product, details, idProduct } = this.props.location
     this.props.history.push({
       pathname: '/add-product',
       details: {
+        idProduct,
         selectedFiles,
         arrProductVar,
         arrVariants,
@@ -44,7 +45,7 @@ class ProductAddNextPage extends Component {
   }
 
   upload = () => {
-    const { arrProductVar, arrVariants, product } = this.props.location
+    const { arrProductVar, arrVariants, product, idProduct } = this.props.location
     const { selectedFiles } = this.state
     let validateArrVariants = []
     arrVariants.map(variant => {
@@ -64,25 +65,24 @@ class ProductAddNextPage extends Component {
       }
     })
 
-
     console.log('arrProductVar: ', arrProductVar);
     console.log('arrVariants: ', validateArrVariants);
     console.log('product: ', product);
     console.log('selectedFiles: ', selectedFiles);
+
     const formData = new FormData();
     selectedFiles.forEach(file => {
       formData.append("photos", file);
     });
     formData.append('arrProductVar', JSON.stringify(arrProductVar))
     formData.append('arrVariants', JSON.stringify(validateArrVariants))
-    formData.append('product', JSON.stringify(product))
+    if (!idProduct) formData.append('product', JSON.stringify(product))
 
     const config = {
       headers: {
         'Content-Type': 'multipart/form-data; charset=utf-8; boundary="another cool boundary";'
       }
     };
-
     axios.post(`${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`, formData, config).then((resp) => {
       console.log(resp);
     }).catch(err => {
@@ -91,7 +91,7 @@ class ProductAddNextPage extends Component {
   };
 
   render() {
-    const { selectedFiles, errorMessage, arrProductVarState } = this.state;
+    const { errorMessage } = this.state;
     const { arrProductVar } = this.props.location
     const dragOver = (e) => {
       e.preventDefault();
@@ -134,7 +134,6 @@ class ProductAddNextPage extends Component {
           );
 
           files[i].filePath = URL.createObjectURL(files[i]);
-          //console.log(files[i]);
           this.setState((prepState) => ({
             selectedFiles: [...prepState.selectedFiles, files[i]]
           }));

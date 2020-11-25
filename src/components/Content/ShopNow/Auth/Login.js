@@ -1,10 +1,16 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { login } from '../../../../state/actions/authActions';
+import { login } from '../../../../state/actions/authUserActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
 import { showModal } from '../../../../state/actions/modalActions';
 import PropTypes from 'prop-types';
 import './Login.css'
+
+const mapStateToProps = (state) => ({
+  error: state.error,
+  history: state.history,
+  isAuthenticated: state.authUser.isAuthenticated,
+});
 
 class Login extends Component {
   state = {
@@ -20,13 +26,14 @@ class Login extends Component {
     error: PropTypes.object.isRequired,
     pushHistory: PropTypes.func.isRequired,
   };
+
   componentDidMount() {
     const currentUrl = window.location.pathname;
     document.body.className = currentUrl === '/login' && 'hold-transition login-page';
   }
+
   componentDidUpdate(prevProps) {
     const { error } = this.props;
-
     if (error !== prevProps.error) {
       // Check for register error
       if (error.id === 'LOGIN_FAIL') {
@@ -36,13 +43,6 @@ class Login extends Component {
       }
     }
   }
-
-  // static propTypes = {
-  //   isAuthenticated: PropTypes.bool,
-  //   error: PropTypes.object.isRequired,
-  //   login: PropTypes.func.isRequired,
-  //   clearErrors: PropTypes.func.isRequired
-  // };
 
   validateUsername(username) {
     return new RegExp(/^[a-zA-Z0-9_-]+$/).test(username);
@@ -83,8 +83,8 @@ class Login extends Component {
     const { isAuthenticated } = this.props;
 
     if (isAuthenticated) {
-      //Redirect to main page
-      this.props.pushHistory('/');
+      //Redirect to homepage
+      this.props.pushHistory('/shopnow');
     }
   };
 
@@ -92,13 +92,11 @@ class Login extends Component {
     return (
       <div className='login-wrapper'>
         <div style={{ background: '#fff', padding: '30px 20px 20px 20px', transition: 'opacity 0.5s linear' }} className="login-box">
-          <button onClick={() => this.showModal({ show: false })} style={{ float: 'right', marginTop: '-15px' }} type="button" className="close" data-dismiss="alert" aria-hidden="true">
+          <button onClick={() => this.props.showModal({ show: false })} style={{ float: 'right', marginTop: '-15px' }} type="button" className="close" data-dismiss="alert" aria-hidden="true">
             ×
           </button>
           <div className="login-logo">
-            <a href="/login">
-              <b>Admin</b>LTE
-            </a>
+            <b>Shop</b>NOW
           </div>
           {/* /.login-logo */}
           <div className="login-box-body">
@@ -155,12 +153,12 @@ class Login extends Component {
                 {/* /.col */}
               </div>
             </form>
-            <div class="social-auth-links text-center">
+            <div className="social-auth-links text-center">
               <p>- OR -</p>
-              <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using
+              <a href="#" className="btn btn-block btn-social btn-facebook btn-flat"><i className="fa fa-facebook"></i> Sign in using
               Facebook
               </a>
-              <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using
+              <a href="#" className="btn btn-block btn-social btn-google btn-flat"><i className="fa fa-google-plus"></i> Sign in using
               Google+
               </a>
             </div>
@@ -173,10 +171,5 @@ class Login extends Component {
     );
   }
 }
-const mapStateToProps = (state) => ({
-  error: state.error,
-  history: state.history,
-  isAuthenticated: state.auth.isAuthenticated,
-});
 
 export default connect(mapStateToProps, { login, pushHistory, showModal })(Login);

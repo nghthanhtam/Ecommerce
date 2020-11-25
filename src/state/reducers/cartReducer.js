@@ -1,5 +1,5 @@
 import {
-  GET_CARTS,
+  GET_CARTS_BY_IDUSER,
   ADD_CART,
   DELETE_CART,
   CART_DELETED,
@@ -16,17 +16,15 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case GET_CARTS:
+    case GET_CARTS_BY_IDUSER:
       return {
         ...state,
-        // isLoaded: true,
       };
     case CARTS_RECEIVED:
       return {
         ...state,
-        carts: action.payload.data.items,
+        carts: action.payload.data,
         isLoaded: true,
-        totalDocuments: action.payload.data.total,
       };
     case CART_ADDED:
       return {

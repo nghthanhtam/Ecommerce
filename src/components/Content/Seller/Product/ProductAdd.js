@@ -8,7 +8,6 @@ import './product.css';
 import { connect } from 'react-redux';
 import ProductModal from './ProductModal';
 import DuplicateProduct from './DuplicateProduct';
-import { updateProductAdd } from '../../../../state/actions/productaddActions';
 import { getMovies } from '../../../../state/actions/movieActions';
 import PropTypes from 'prop-types';
 //rick text editor
@@ -23,7 +22,8 @@ const mapStateToProps = (state) => ({
   products: state.product.products,
   isMovieLoaded: state.movie.isLoaded,
   isProductCatesLoaded: state.productCate.isLoaded,
-  isProductLoaded: state.product.isLoaded
+  isProductLoaded: state.product.isLoaded,
+  idShop: state.auth.role.idShop,
 });
 
 class ProductAdd extends Component {
@@ -32,18 +32,6 @@ class ProductAdd extends Component {
     errorMessage: '',
     variantList: [],
     isPriceBoardHidden: true,
-    skuproduct: {
-      index: 0,
-      idProduct: 1,
-      idShop: 1,
-      name: '',
-      SKU: '',
-      marketPrice: 0,
-      price: 0,
-      stockAmount: 0,
-      variants: [[], [], []],
-      selectedFiles: []
-    },
     skuProductList: [
       {
         index: 0,
@@ -67,20 +55,22 @@ class ProductAdd extends Component {
     name: '',
     description: '',
     brand: '',
-    idProduct: 0,
-    idShop: 0,
+    idProduct: undefined,
     idMovie: 0,
     idProductCat: 0,
   };
 
   componentDidMount() {
-    const { getMovies, getProductCates, getProducts } = this.props
+    const { getMovies, getProductCates } = this.props
+    const { productUpdate, details } = this.props.location
+    console.log(this.props.location);
     getMovies({ limit: 1000, page: 1, query: '' });
     getProductCates({ limit: 1000, page: 1, query: '' })
 
-    if (this.props.location.details) {
+    //details là data truyền từ ProductNextPage
+    if (details) {
       const { arrProductVar, arrVariants } = this.props.location.details
-      const { name, description, brand, idProduct, idShop, idMovie, idProductCat } = this.props.location.details.product
+      const { name, description, brand, idProduct, idShop, idMovie, idProductCat } = details.product
       this.setState({
         arrProductVar,
         skuProductList: arrProductVar,
@@ -88,6 +78,17 @@ class ProductAdd extends Component {
         name, description, brand, idProduct, idShop, idMovie, idProductCat,
       })
     }
+
+    //productUpdate là data của object prodVar cần edit
+    // if(productUpdate){
+    //   const { name, description, brand, idProduct, idShop, idMovie, idProductCat } = productUpdate.Product
+    //   this.setState({
+    //     arrProductVar,
+    //     skuProductList: arrProductVar,
+    //     variantList: arrVariants,
+    //     name, description, brand, idProduct, idShop, idMovie, idProductCat,
+    //   })
+    // }
   }
 
   onsaveProp = (objList) => {
@@ -99,14 +100,27 @@ class ProductAdd extends Component {
   };
 
   addRow = () => {
-    let { skuproduct, skuProductList } = this.state,
+    let { skuProductList, idProduct } = this.state,
       obj = {};
-    obj = Object.assign(skuproduct);
+    const { idShop } = this.props
+    obj = {
+      index: 0,
+      idProduct,
+      idShop: idShop,
+      name: '',
+      SKU: '',
+      marketPrice: 0,
+      price: 0,
+      stockAmount: 0,
+      variants: [[], [], []],
+      selectedFiles: []
+    }
     obj.index = Math.max.apply(Math, skuProductList.map(function (element) { return element.index })) + 1
+
     this.setState((prepState) => ({
       //add obj to list SKU product
       skuProductList: [...prepState.skuProductList, obj],
-    }));
+    }), () => console.log(this.state.skuProductList));
   };
 
   getVarValue = (variant, product) => {
@@ -160,8 +174,11 @@ class ProductAdd extends Component {
         let skuProductList = [...state.skuProductList];
         for (var product of skuProductList) {
           if (product.index == index) {
+            if (index == 0) { //defaul idShop va idProduct la 0
+              product.idProduct = this.state.idProduct
+              product.idShop = this.props.idShop
+            }
             //const newItem = Object.assign(product);
-
             // if (name) { //thay đổi select
             //   newItem['variants'] = [[], [], []]
             //   if (!variant.__isNew__) {
@@ -170,7 +187,6 @@ class ProductAdd extends Component {
             //   } else newItem['variants'][0].push({ [variant.name]: e.value })
             // }
             // else newItem[changeProp] = val; //thay đổi text
-
             // skuProductList.splice(index, 1); //xoa 1 phan tu o vi tri index
             // skuProductList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
 
@@ -252,9 +268,9 @@ class ProductAdd extends Component {
   }
 
   onSubmit = () => {
-    const { skuProductList, variantList, idMovie, idProductCat, name, description, brand } = this.state
+    const { idProduct, skuProductList, variantList, idMovie, idProductCat, name, description, brand } = this.state
 
-    //check blank required-fields
+    //check if required-fields are blank
     if (name && idProductCat && idMovie && skuProductList.length > 0) {
       this.props.history.push({
         pathname: '/add-product/photos',
@@ -262,6 +278,7 @@ class ProductAdd extends Component {
         arrVariants: variantList,
         product: { idMovie, idProductCat, name, description, brand, details: { idProduct: 1, detail: 'AUTHOR', value: 'Nguyen Nhat Anh' } },
         selectedFiles: this.props.location.details ? this.props.location.details.selectedFiles : null,
+        idProduct
       });
       return;
     }
@@ -275,6 +292,11 @@ class ProductAdd extends Component {
     this.setState((prepState) => ({
       variantList: [...prepState.variantList.filter(ele => ele.name.value !== variant.name.value)],
     }));
+  }
+
+  //dùng hàm này để chọn bán sp đã có sẵn
+  pickProduct = (idProduct) => {
+    this.setState({ idProduct })
   }
 
   render() {
@@ -296,7 +318,7 @@ class ProductAdd extends Component {
         slidesToScroll: 1,
         className: 'slider',
       };
-    const { updateProduct, products, movies, productCates, isMovieLoaded, isProductCatesLoaded, isProductLoaded } = this.props;
+    const { products, movies, productCates, isMovieLoaded, isProductCatesLoaded, isProductLoaded } = this.props;
 
     return (
       <Fragment>
@@ -351,7 +373,7 @@ class ProductAdd extends Component {
                                 slidesToShow={products.length <= 5 ? products.length : 5}
                               >
                                 {products.map((item, index) => {
-                                  return <DuplicateProduct key={index} item={item} arr={movies} />;
+                                  return <DuplicateProduct key={index} item={item} arr={movies} pickProduct={this.pickProduct} />;
                                 })}
                               </Slider>
                             </div>
@@ -367,7 +389,7 @@ class ProductAdd extends Component {
                             isSearchable={true}
                             options={movies}
                             placeholder="Chọn phim ..."
-                            value={movies.filter(option => option.value === idMovie)}
+                            value={movies.filter(option => option.id === idMovie)}
                             getOptionLabel={(option) => option.name}
                             getOptionValue={(option) => option.id} />
                         </div>
@@ -385,7 +407,7 @@ class ProductAdd extends Component {
                             placeholder="Chọn thể loại ..."
                             getOptionLabel={(option) => option.description}
                             getOptionValue={(option) => option.id}
-                            value={productCates.filter(option => option.value === idProductCat)}
+                            value={productCates.filter(option => option.id === idProductCat)}
                           />
                           {/* <div>Nếu sản phẩm của bạn không nằm trong danh sách danh mục của chúng tối, 
                       xin vui lòng liên hệ với ShopNow thông qua kênh liên lạc dành riêng cho nhà bán hàng</div> */}
@@ -503,7 +525,7 @@ class ProductAdd extends Component {
                                     onClick={this.addRow}
                                   >
                                     Thêm dòng
-                              </button>
+                                  </button>
                                 </div>
                               </div>
                               <div className="col-sm-6">
@@ -643,7 +665,7 @@ ProductAdd.propTypes = {
   products: PropTypes.array.isRequired,
 };
 
-export default connect(mapStateToProps, { updateProductAdd, getMovies, getProductCates, getProducts })(ProductAdd);
+export default connect(mapStateToProps, { getMovies, getProductCates, getProducts })(ProductAdd);
 
 const inputField = {
   '&:focus': {
