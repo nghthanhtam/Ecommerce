@@ -12,14 +12,16 @@ class CartDetail extends React.Component {
 
   showDiscount = () => {
     const { item } = this.props
-    return ((item.marketPrice - item.price) / item.marketPrice) * 100
+    let discount = ((item.marketPrice - item.price) / item.marketPrice) * 100
+    return Math.ceil(discount * Math.pow(10, 2)) / Math.pow(10, 2)
   }
+
   render() {
-    const { item, cItem, deleteCartItem } = this.props
+    const { item, cItem, deleteCartItem, amountChange } = this.props
     return (
       <div className="order">
         <div className="order-pic">
-          <img alt="product" src="../img/blue.png" />
+          <img alt="product" src={item.Images[0].url} />
         </div>
         <div className="order-content">
           <div className="order-title">{item.name}</div>
@@ -46,17 +48,8 @@ class CartDetail extends React.Component {
             display: "flex",
           }}
         >
-          <div
-            style={{
-              backgroundColor: "white",
-              height: "35px",
-              width: "35px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              border: "1px solid #ccc",
-            }}
-          >
+          <div className='minus-btn'
+            onClick={() => amountChange(item.amount - 1, item.id)}>
             <i className="fa fa-minus"></i>
           </div>
           <input
@@ -66,17 +59,10 @@ class CartDetail extends React.Component {
               textAlign: "center",
               border: "1px solid #ccc",
             }}
+            value={item.amount}
           />
-          <div
-            style={{
-              backgroundColor: "white",
-              height: "35px",
-              width: "35px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              border: "1px solid #ccc",
-            }}
+          <div className='plus-btn'
+            onClick={() => amountChange(item.amount + 1, item.id)}
           >
             <i className="fa fa-plus"></i>
           </div>

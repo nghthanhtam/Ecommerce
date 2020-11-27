@@ -30,7 +30,7 @@
 .order-wrapper {
   display: flex;
   flex-direction: column;
-  width: 200%;
+  width: 280%;
 }
 .order-list {
   margin-top: 5px;
@@ -78,14 +78,16 @@
 }
 .order-shop {
   margin-right: 5px;
+  font-size: 14px;
 }
 .order-title {
-  font-weight: 500;
-  font-size: 18px;
+  font-weight: 400;
+  font-size: 14px;
 }
 .order-button {
   color: #3571a7;
   margin-right: 10px;
+  font-size: 14px;
 }
 .order-button:hover {
   color: #3571a7;
@@ -94,7 +96,7 @@
 }
 .price-af {
   font-weight: 500;
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: -2px;
   margin-left: auto;
 }
@@ -106,6 +108,16 @@
 .percent {
   margin-left: 8px;
   font-weight: 500;
+}
+.cart-noitem {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  margin: 10px;
+  background-color: white;
+  width: 200%;
 }
 .center-col-flex {
   display: flex;
@@ -124,7 +136,7 @@
   color: #0d1136;
 }
 .total {
-  font-size: 28px;
+  font-size: 26px;
   margin-left: auto;
   font-weight: 500;
   color: #0d1136;
@@ -326,4 +338,31 @@
   align-items: center;
   float: left;
   flex: 1;
+}
+/* CART DETAIL */
+.minus-btn {
+  background-color: white;
+  height: 35px;
+  width: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+}
+.minus-btn:hover {
+  cursor: pointer;
+  background-color: #d6d6d6;
+}
+.plus-btn {
+  background-color: white;
+  height: 35px;
+  width: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+}
+.plus-btn:hover {
+  cursor: pointer;
+  background-color: #d6d6d6;
 }

@@ -29,6 +29,7 @@ class ActiveList extends React.Component {
     componentDidMount() {
         const { limit, page, query } = this.state;
         const { idShop } = this.props
+        console.log('idShop: ', idShop);
         this.props.getProductVarsByIdShop({ limit, page, query, idShop, getActive: true });
     }
 

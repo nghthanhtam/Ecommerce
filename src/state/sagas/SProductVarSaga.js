@@ -99,6 +99,23 @@ function* updateProductVarStatus(params) {
     console.log(error.response);
   }
 }
+
+function* updateProductVar(params) {
+  const state = yield select();
+  try {
+    const response = yield call(() =>
+      axios.put(
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/${params.newProductVar.id}`,
+        params.newProductVar,
+        tokenConfig(state)
+      )
+    );
+    yield put({ type: PRODUCTVAR_UPDATED, payload: response.data });
+  } catch (error) {
+    console.log(error.response);
+  }
+}
+
 function* deleteProductVars(params) {
   const state = yield select();
   try {
@@ -120,6 +137,7 @@ export default function* sProductVarSaga() {
   yield takeEvery(GET_PRODUCTVARS_BY_IDSHOP, fetchProductVarsByIdShop);
   yield takeEvery(ADD_PRODUCTVAR, addProductVar);
   yield takeEvery(UPDATE_PRODUCTVAR_STATUS, updateProductVarStatus);
+  yield takeEvery(UPDATE_PRODUCTVAR, updateProductVar);
   yield takeEvery(DELETE_PRODUCTVAR, deleteProductVars);
 
 }

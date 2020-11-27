@@ -11,7 +11,7 @@ import {
 } from '../actions/types';
 
 const initialState = {
-  token: localStorage.getItem('token'),
+  token: localStorage.getItem('usertoken'),
   isAuthenticated: false,
   isLoading: false,
   user: null,
@@ -35,7 +35,7 @@ export default function (state = initialState, action) {
       };
     case USER_LOGIN_SUCCESS:
     case USER_REGISTER_SUCCESS:
-      localStorage.setItem('token', action.payload.token);
+      localStorage.setItem('usertoken', action.payload.token);
       return {
         ...state,
         ...action.payload,
@@ -57,7 +57,7 @@ export default function (state = initialState, action) {
     case USER_LOGIN_FAIL:
     case USER_LOGOUT_SUCCESS:
     case USER_REGISTER_FAIL:
-      localStorage.removeItem('token');
+      localStorage.removeItem('usertoken');
       return {
         ...state,
         token: null,

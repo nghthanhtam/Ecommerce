@@ -36,7 +36,7 @@ export default function (state = initialState, action) {
     case SHOP_DELETED:
       return {
         ...state,
-        shops: state.shops.filter((emp) => emp._id !== action.payload._id),
+        shops: state.shops.filter((shop) => shop.id !== action.payload.id),
       };
 
     case SHOP_UPDATED:

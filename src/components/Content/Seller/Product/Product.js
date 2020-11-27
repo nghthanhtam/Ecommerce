@@ -1,17 +1,16 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Switch, Route, Link } from "react-router-dom";
-import Select from "react-select";
 import ProductRow from './ProductRow';
+import PendingList from './Tab/PendingList'
+import ActiveList from './Tab/ActiveList'
+import QtyUpdate from './Tab/QtyUpdate'
+
 import { getProductVarsByIdShop } from '../../../../state/actions/productVarActions';
 import { showNoti } from '../../../../state/actions/notificationActions';
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer } from 'react-notifications';
 import Loader from 'react-loader';
-import PendingList from './Tab/PendingList'
-import ActiveList from './Tab/ActiveList'
-import Login from '../../ShopNow/Auth/Login'
 
 const mapStateToProps = (state) => ({
   productVars: state.productVar.productVars,
@@ -33,7 +32,6 @@ class Product extends Component {
     start: 1,
     end: 5,
     isNextBtnShow: false,
-    propValueList: [],
     isPriceBoardHidden: true,
     skuproduct: {
       index: 0,
@@ -47,31 +45,8 @@ class Product extends Component {
       qtyAdd: 0,
       status: 1
     },
-    productList: [
-      {
-        index: 0,
-        id: 0,
-        idProduct: '',
-        idShop: '',
-        SKU: '',
-        marketPrice: 0,
-        name: '',
-        price: 0,
-        qty: 0,
-        qtyAdd: 0,
-        status: 1
-      },
-    ],
     block: <ActiveList />
   };
-
-  // componentDidMount() {
-  //   const { limit, page, query } = this.state;
-  //   const { idShop } = this.props
-  //   this.props.getProductVarsByIdShop({ limit: 1000, page, query, idShop, getActive: '' });
-  //   // if (!this.props.location.state) return;
-  //   // else this.setState({ notiType: this.props.location.state.notiType });
-  // }
 
   //set lai end khi danh sach chi co 1 trang, va so luong sp khong du limit cua trang do
   componentDidUpdate = (prevProps, prevState, snapshot) => {
@@ -241,16 +216,6 @@ class Product extends Component {
     }
   };
 
-  addRow = () => {
-    let { skuproduct, productList } = this.state, obj = {};
-    obj = Object.assign(skuproduct);
-    obj.index = Math.max.apply(Math, productList.map(function (element) { return element.index })) + 1
-    this.setState((prepState) => ({
-      //add obj to warehouse product list
-      productList: [...prepState.productList, obj],
-    }));
-  };
-
   onChange = (e, index) => {
     this.setState((prepState) => {
       let productList = [...prepState.productList];
@@ -282,16 +247,6 @@ class Product extends Component {
     });
   };
 
-  onAddingQty = (e, index) => {
-    const { productList } = this.state
-    productList.map((pd) => {
-      if (pd.index === index) {
-        pd.qtyAdd = Number(e.target.textContent);
-      }
-    });
-    console.log(this.state.productList);
-  }
-
   onSubmit = () => {
 
   }
@@ -302,8 +257,12 @@ class Product extends Component {
   };
 
   onTabClick = (name) => {
+    const { propValueList, productList } = this.state
+    const { products } = this.props
+
     if (name == 'pending') this.setState({ block: <PendingList /> })
-    else this.setState({ block: <ActiveList /> })
+    else if (name == 'active') this.setState({ block: <ActiveList /> })
+    else this.setState({ block: <QtyUpdate /> })
   }
 
   render() {
@@ -333,7 +292,7 @@ class Product extends Component {
         <section className="content" >
           <div className="nav-tabs-custom">
             <ul className="nav nav-tabs">
-              <li onClick={() => this.onTabClick('list')} className="active">
+              <li onClick={() => this.onTabClick('active')} className="active">
                 <a href="#list" data-toggle="tab">
                   Dánh sách sản phẩm
                 </a>
@@ -343,7 +302,7 @@ class Product extends Component {
                   Chờ duyệt
                 </a>
               </li>
-              <li>
+              <li onClick={() => this.onTabClick('qtyupdate')}>
                 <a href="#warehouse" data-toggle="tab">
                   Nhập kho
                 </a>
@@ -368,8 +327,3 @@ Product.propTypes = {
 };
 
 export default connect(mapStateToProps, { getProductVarsByIdShop, showNoti })(Product);
-const inputField = {
-  '&:focus': {
-    outline: 'none',
-  },
-};

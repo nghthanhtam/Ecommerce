@@ -1,7 +1,6 @@
 import {
   GET_CARTS_BY_IDUSER,
   ADD_CART,
-  DELETE_CART,
   CART_DELETED,
   CARTS_RECEIVED,
   CART_ADDED,
@@ -11,7 +10,8 @@ import {
 const initialState = {
   carts: [],
   isLoaded: false,
-  totalDocuments: 0
+  totalDocuments: 0,
+  total: 0
 };
 
 export default function (state = initialState, action) {
@@ -23,7 +23,8 @@ export default function (state = initialState, action) {
     case CARTS_RECEIVED:
       return {
         ...state,
-        carts: action.payload.data,
+        carts: action.payload.items,
+        total: action.payload.total,
         isLoaded: true,
       };
     case CART_ADDED:
@@ -32,15 +33,12 @@ export default function (state = initialState, action) {
         carts: [action.payload, ...state.carts],
         isLoaded: true,
       };
-    case DELETE_CART:
-      return {
-        ...state,
-      };
+
     case CART_DELETED:
       return {
         ...state,
         carts: state.carts.filter(
-          (cart) => cart._id !== action.payload._id
+          (cart) => cart.id !== action.payload.id
         ),
       };
     case ADD_CART:
@@ -48,12 +46,10 @@ export default function (state = initialState, action) {
         ...state,
         isLoaded: false,
       };
-
     case CART_UPDATED:
       return {
         ...state,
       };
-
     default:
       return state;
   }

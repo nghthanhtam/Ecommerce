@@ -1,8 +1,7 @@
 import {
   GET_USERS,
   ADD_USER,
-  DELETE_USER,
-  GET_USER,
+  USER_DELETED,
   USERS_LOADING,
   CHECK_CUR_PASS_USER
 } from "../actions/types";
@@ -20,11 +19,11 @@ export default function (state = initialState, action) {
         users: action.payload,
         loading: false
       };
-    case DELETE_USER:
+    case USER_DELETED:
       return {
         ...state,
         users: state.users.filter(
-          supplier => supplier._id !== action.payload._id
+          user => user.id !== action.payload.id
         )
       };
     case ADD_USER:

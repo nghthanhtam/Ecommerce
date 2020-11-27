@@ -83,7 +83,7 @@ class CoffeShop extends Component {
       updateAuth(token);
     }
     if (userToken) {
-      updateAuthUser(token);
+      updateAuthUser(userToken);
     }
   }
 
@@ -92,12 +92,13 @@ class CoffeShop extends Component {
   };
 
   render() {
-    const { token } = this.props;
+    const { token, userToken } = this.props;
     return (
       <Fragment>
         {/* {!this.props.isLoaded ? (
           <Loader></Loader>
         ) : ( */}
+
         <Switch>
           <Route exact path="/register">
             <Register />
@@ -112,7 +113,6 @@ class CoffeShop extends Component {
             <ProductList />
           </Route>
           <Route path={`/product-list/:topicId`} component={ProductList} />
-
           <Route exact path="/product-detail">
             <ProductDetail />
           </Route>
@@ -125,6 +125,7 @@ class CoffeShop extends Component {
           <Route exact path="/checkout/order-receipt">
             <OrderReceipt />
           </Route>
+
           <Route
             exact
             path="/"
@@ -142,8 +143,8 @@ class CoffeShop extends Component {
             path="/login"
             render={() => {
               return !token ? <Login /> : <Redirect to="/home" />;
-            }}
-          />
+            }} />
+
           {token && (
             <Fragment>
               <Header />

@@ -10,9 +10,9 @@ export const getCartsByIdUser = (params) => ({
   pages: params,
 });
 
-export const deleteCart = (id) => ({
+export const deleteCart = (params) => ({
   type: DELETE_CART,
-  id: id,
+  params
 });
 
 export const addCart = (newCart) => ({

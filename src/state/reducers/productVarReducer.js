@@ -41,7 +41,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         productVars: state.productVars.filter(
-          (productVar) => productVar._id !== action.payload._id
+          (productVar) => productVar.id !== action.payload.id
         ),
       };
     case ADD_PRODUCTVAR:

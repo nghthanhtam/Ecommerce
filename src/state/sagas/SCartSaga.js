@@ -28,7 +28,14 @@ function* fetchCartsByIdUser(params) {
         .catch((er) => console.log(er.response))
     );
 
-    yield put({ type: CARTS_RECEIVED, payload: response });
+    let total = 0
+    response.data.map(cart => {
+      cart.productVars.map(item => {
+        total += Number(item.price) * item.amount
+      })
+    })
+    console.log(total);
+    yield put({ type: CARTS_RECEIVED, payload: { items: response.data, total } });
   } catch (error) {
     console.log({ ...error });
   }
@@ -60,28 +67,34 @@ function* updateCart(params) {
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_USER}/api/cart/${params.newCart._id}`,
-        params.newCategory,
+        `${process.env.REACT_APP_BACKEND_USER}/api/cart/${params.newCart.id}`,
+        params.newCart,
         tokenConfig(state)
       )
     );
-
+    console.log(response.data);
     yield put({ type: CART_UPDATED, payload: response.data });
+    yield put({ type: GET_CARTS_BY_IDUSER, pages: { limit: 10000, page: 1, idUser: params.newCart.idUser } })
+
   } catch (error) {
     console.log(error.response);
   }
 }
 function* deleteCarts(params) {
+  console.log(params);
   const state = yield select();
   try {
     const response = yield call(() =>
       axios.delete(
-        `${process.env.REACT_APP_BACKEND_USER}/api/cart/${params.id}`,
+        `${process.env.REACT_APP_BACKEND_USER}/api/cart/${params.params.id}`,
         tokenConfig(state)
       )
     );
 
     yield put({ type: CART_DELETED, payload: response.data });
+    yield put({
+      type: GET_CARTS_BY_IDUSER, pages: { limit: 10000, page: 1, idUser: params.params.idUser },
+    });
   } catch (error) {
     console.log(error.response);
   }

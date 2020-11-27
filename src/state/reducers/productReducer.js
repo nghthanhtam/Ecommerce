@@ -42,7 +42,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         products: state.products.filter(
-          (product) => product._id !== action.payload._id
+          (product) => product.id !== action.payload.id
         ),
       };
     case ADD_PRODUCT:

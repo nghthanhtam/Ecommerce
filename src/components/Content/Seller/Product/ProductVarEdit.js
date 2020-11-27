@@ -5,7 +5,14 @@ import Loader from 'react-loader';
 import axios from 'axios';
 
 import { pushHistory } from '../../../../state/actions/historyActions';
-import { updateEmployee } from '../../../../state/actions/employeeActions';
+import { updateProductVar } from '../../../../state/actions/productVarActions';
+
+const mapStateToProps = (state, props) => {
+  return {
+    history: state.history.history,
+    auth: state.auth,
+  };
+};
 
 class ProductVarEdit extends Component {
   state = {
@@ -52,7 +59,6 @@ class ProductVarEdit extends Component {
     this.setState({ [name]: selectedItem.value });
   }
 
-
   handleFileSelect = (e) => {
     const validateFile = (file) => {
       const validTypes = [
@@ -87,17 +93,31 @@ class ProductVarEdit extends Component {
     const { id, name, SKU, marketPrice, price, status } = this.state;
     e.preventDefault();
 
-    const newEmployee = {
+    const newProductVar = {
       id, name, SKU, marketPrice, price, status
     };
-    this.props.updateEmployee(newEmployee);
+    this.props.updateProductVar(newProductVar);
     //Quay về trang chính
-    this.props.history.push('/employee');
+    this.props.history.push('/product');
   };
 
   handleCancel = (e) => {
     this.props.history.push('/product');
   };
+
+  oncheckboxChange = (id) => {
+    this.setState((prepState) => {
+      let Images = [...prepState.Images];
+      Images.map((image) => {
+        if (image.id == id) image.isMain = true
+        else image.isMain = false
+      })
+      return {
+        Images,
+      };
+    }, () => console.log(this.state.Images));
+  }
+
   render() {
     const { id, name, SKU, marketPrice, price, status, Images,
       statuses } = this.state;
@@ -172,29 +192,30 @@ class ProductVarEdit extends Component {
                         <input type="file" id="exampleInputFile" onChange={this.handleFileSelect} />
                       </div>
                       <div className="sku-grid">
-                        {/* {Images.length > 0 &&
-                          Images.map((item, index) => {
+                        {Images.length > 0 &&
+                          Images.map((photo, index) => {
                             return (
                               <label
                                 key={index}
-                                htmlFor={item}
+                                htmlFor={photo}
                                 className="skuproduct-card">
                                 <img
                                   style={{ width: '100%', height: '90%' }}
                                   className="product-pic"
-                                  src={item.filePath}
-                                  alt="product"
+                                  src={photo.url}
+                                  alt="sản phẩm"
                                 />
                                 <div className="product-info">
                                   <input
                                     className="color-checked"
                                     type="checkbox"
-                                    id={item}
+                                    checked={photo.isMain}
+                                    onChange={() => this.oncheckboxChange(photo.id)}
                                   />
                                 </div>
                               </label>
                             );
-                          })} */}
+                          })}
                         {/* <div className="upload-area">
                           <i className="fa fa-upload fa-3x" />
                           <p className="upload-text">Kéo và thả ảnh vào để tải ảnh lên</p>
@@ -227,14 +248,5 @@ class ProductVarEdit extends Component {
     );
   }
 }
-const mapStateToProps = (state, props) => {
-  return {
-    history: state.history.history,
-    auth: state.auth,
-  };
-};
 
-export default connect(mapStateToProps, {
-  pushHistory,
-  updateEmployee,
-})(ProductVarEdit);
+export default connect(mapStateToProps, { pushHistory, updateProductVar, })(ProductVarEdit);

@@ -18,6 +18,11 @@ import AddressDetail from "../Checkout/AddressDetail";
 import { connect } from 'react-redux';
 import { pushHistory } from '../../../../state/actions/historyActions';
 
+const mapStateToProps = (state) => ({
+  carts: state.cart.carts,
+  total: state.cart.total,
+});
+
 class Payment extends React.Component {
   constructor(props) {
     super();
@@ -198,4 +203,4 @@ class Payment extends React.Component {
   }
 }
 
-export default connect(null, { pushHistory })(Payment);
+export default connect(mapStateToProps, { pushHistory })(Payment);
