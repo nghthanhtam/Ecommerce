@@ -3,12 +3,18 @@ import {
   GET_PRODUCTVARS_BY_IDSHOP,
   DELETE_PRODUCTVAR,
   UPDATE_PRODUCTVAR,
-  UPDATE_PRODUCTVAR_STATUS
+  UPDATE_PRODUCTVAR_STATUS,
+  GET_PRODUCTVAR_BY_ID,
 } from './types';
 
 export const getProductVars = (params) => ({
   type: GET_PRODUCTVARS,
   pages: params,
+});
+
+export const getProductVarById = (params) => ({
+  type: GET_PRODUCTVAR_BY_ID,
+  params: params,
 });
 
 export const getProductVarsByIdShop = (params) => ({

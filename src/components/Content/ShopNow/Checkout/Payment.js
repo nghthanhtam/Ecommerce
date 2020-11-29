@@ -1,10 +1,6 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
-import { ObjectId } from "mongodb";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import "font-awesome/css/font-awesome.min.css";
 import "../../../../assets/css/cart.css";
@@ -14,72 +10,84 @@ import "slick-carousel/slick/slick-theme.css";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import AddressDetail from "../Checkout/AddressDetail";
+import AddressAdd from "./AddressAdd";
 
 import { connect } from 'react-redux';
 import { pushHistory } from '../../../../state/actions/historyActions';
+import { getAddresses } from '../../../../state/actions/addressActions';
+import { getPayments } from '../../../../state/actions/paymentActions';
+import { showModal } from '../../../../state/actions/modalActions';
 
 const mapStateToProps = (state) => ({
   carts: state.cart.carts,
   total: state.cart.total,
+  addresses: state.address.addresses,
+  user: state.authUser.user,
+  isLoaded: state.address.isLoaded,
+  payments: state.payment.payments,
+  isPMLoaded: state.payment.isPMLoaded,
+  show: state.modal.show,
+  modalName: state.modal.modalName
 });
 
 class Payment extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {
-      addList: [
-        {
-          _id: ObjectId("507c7f79bcf86cd7994f6c0e").toString(),
-          label: "Nguyễn Huỳnh Thanh Tâm",
-        },
-        {
-          _id: ObjectId("507c7f78bcf86cd7994f6c0e").toString(),
-          label: "Nguyễn Tây Trung",
-        },
-      ],
-      chkboxVal: "",
-      isCardHidden: true,
-    };
-  }
-  checkout = () => { };
-  chkboxChange = (e) => {
-    console.log(e.target);
+  state = {
+    chkboxVal: "",
+    isCardHidden: true,
+    address: '',
+    idAddress: ''
   };
+
+  componentDidMount() {
+    const { getAddresses, getPayments, getProductVarById, user } = this.props
+    getAddresses({ limit: 1000, page: 1, idUser: user.id })
+    //getPayments({ limit: 1000, page: 1 })
+  }
+
+  checkout = () => { };
+
+  addressChkboxChange = (id) => {
+    const { addresses } = this.props
+    for (let i in addresses) {
+      if (addresses[i].id == id) {
+        this.setState({ idAddress: id })
+        this.setState({ address: addresses[i].address })
+      }
+    }
+  };
+
   paymentChkboxChange = (e) => {
-    if (e.target.value === "card") this.setState({ isCardHidden: false });
+    if (e.target.value == 2) this.setState({ isCardHidden: false });
     else this.setState({ isCardHidden: true });
   };
 
   render() {
-    let { addList, isCardHidden } = this.state;
+    const { isCardHidden, idAddress } = this.state;
+    const { isLoaded, addresses, payments, carts, total, show, modalName, showModal } = this.props;
     return (
-      <div>
+      <Fragment>
+        {show && modalName == 'addressAdd' && (
+          <AddressAdd />
+        )}
         <Header />
-
-        <div
-          style={{
-            zIndex: 10,
-            marginBottom: "300px",
-            position: "relative",
-            backgroundColor: "#fff",
-          }}
-        >
+        <div style={{
+          zIndex: 10,
+          marginBottom: "300px",
+          position: "relative",
+          backgroundColor: "#fff",
+        }}>
           <div className="nohome-section"></div>
           <div className="cart-container">
             <div className="cart-card">
               <div className="address-container">
                 <h3>Địa chỉ giao hàng</h3>
+                {isLoaded &&
+                  <div className="form-group">
+                    {addresses.map((item, index) => {
+                      return <AddressDetail key={index} item={item} addressChkboxChange={this.addressChkboxChange} />;
+                    })}
+                  </div>}
 
-                <RadioGroup
-                  aria-label="address"
-                  // name={chkboxVal}
-                  // value={chkboxVal}
-                  onChange={(e) => this.chkboxChange(e)}
-                >
-                  {addList.map((item) => {
-                    return <AddressDetail item={item} />;
-                  })}
-                </RadioGroup>
                 <div className="row-flex">
                   <Button
                     style={{
@@ -87,6 +95,7 @@ class Payment extends React.Component {
                       backgroundColor: "#3571a7",
                       margin: "10px 10px 0 0",
                     }}
+                    onClick={() => showModal({ show: true, modalName: 'addressAdd' })}
                   >
                     Thêm địa chỉ
                   </Button>
@@ -97,12 +106,24 @@ class Payment extends React.Component {
                       marginTop: "10px",
                       border: "1px solid #ccc",
                     }}
-                  >
+                    onClick={() => showModal({ show: true, modalName: 'addressAdd', details: { id: idAddress } })}>
                     Sửa
                   </Button>
                 </div>
                 <h3>Hình thức thanh toán</h3>
-                <RadioGroup
+                <div className="form-group">
+                  {payments.map((item, index) => {
+                    return (
+                      <div className="radio" key={index}>
+                        <label>
+                          <input type="radio" name="payment" value={item.id} onClick={(e) => this.paymentChkboxChange(e)} />
+                          {item.name}
+                        </label>
+                      </div>
+                    )
+                  })}
+                </div>
+                {/* <RadioGroup
                   aria-label="payment"
                   onChange={(e) => this.paymentChkboxChange(e)}
                 >
@@ -118,7 +139,7 @@ class Payment extends React.Component {
                     control={<Radio color="default" />}
                     label="Thanh toán bằng thẻ quốc tế"
                   />
-                </RadioGroup>
+                </RadioGroup> */}
                 {isCardHidden ? null : (
                   <div>
                     <div className="pm-card">
@@ -158,29 +179,25 @@ class Payment extends React.Component {
               </div>
               <div className="center-col-flex">
                 <p>Đơn hàng (7 sản phẩm)</p>
-                <div className="pm-order">
-                  <div className="pm-orderdet">
-                    <h5>2x</h5>
-                    <Link to="/product-detail">
-                      Moojt noi com dien ap chao thiet la dep la dep la dep la
-                      dep
-                    </Link>
-                  </div>
-                  <div>2000000đ</div>
-                </div>
-                <div className="pm-order">
-                  <div className="pm-orderdet">
-                    <h5>2x</h5>
-                    <Link to="/product-detail">
-                      Moojt noi com dien ap chao thiet la dep la dep la dep la
-                      dep
-                    </Link>
-                  </div>
-                  <div>2000000đ</div>
-                </div>
+                {carts.map(c => {
+                  return (c.productVars.map(p => {
+                    return (
+                      <div className="pm-order">
+                        <div className="pm-orderdet">
+                          <h5>{p.amount}x</h5>
+                          <Link to={{ pathname: "/product-detail", productDet: {} }}>
+                            {p.name}
+                          </Link>
+                        </div>
+                        <div>{p.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}đ</div>
+                      </div>
+                    )
+                  }))
+                })}
+
                 <div className="checkout">
                   <h4> Thành tiền</h4>
-                  <p className="total"> 200000đ</p>
+                  <p className="total"> {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}đ</p>
                 </div>
                 <Button
                   style={{
@@ -196,11 +213,10 @@ class Payment extends React.Component {
             </div>
           </div>
         </div>
-
         <Footer />
-      </div>
+      </Fragment>
     );
   }
 }
 
-export default connect(mapStateToProps, { pushHistory })(Payment);
+export default connect(mapStateToProps, { pushHistory, getAddresses, getPayments, showModal })(Payment);

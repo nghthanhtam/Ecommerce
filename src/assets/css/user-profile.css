@@ -18,7 +18,7 @@
   flex-direction: column;
   background-color: white;
 
-  width: 23%;
+  width: 22%;
   padding: 20px;
   height: 500px;
   margin-top: 10px;
@@ -71,23 +71,102 @@
 }
 
 /* ORDER HISTORY */
-table {
-  border-collapse: collapse;
-  width: 100%;
-  font-family: Poppins, sans-serif;
+.orderhis-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  /* padding: 20px; */
+  background-color: white;
+  width: 65%;
+  margin: 10px 0 0 10px;
 }
-
-th,
-td {
-  padding: 8px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+.my-order {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: rgb(241, 241, 241) 1px solid;
+  flex: 1;
 }
-
-tr:hover {
-  background-color: #f5f5f5;
+.order-box {
+  width: 260px;
+  height: 150px;
+  background-color: #f7f7f7;
+  border: 1 solid gray;
+  padding: 10px;
 }
-
+.orderhis-line {
+  display: flex;
+  justify-content: space-between;
+}
+.orderhis-line1 {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.status-btn {
+  border: 1px solid rgba(46, 112, 250, 0.1);
+  border-radius: 5px;
+  background-color: rgba(46, 112, 250, 0.1);
+  color: rgb(46, 112, 250);
+  padding: 5px;
+}
+.order-details {
+  flex: 2;
+}
+.orderhis-title {
+  font-weight: 600;
+  font-size: 23px;
+  text-align: center;
+}
+.detail-infor {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: rgb(241, 241, 241) 1px solid;
+}
+.orderhis-address {
+  flex: 1;
+  border-right: rgb(241, 241, 241) 1px solid;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+}
+.orderhis-total {
+  flex: 1;
+  height: 150px;
+}
+.status-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 20px;
+  background-color: #3571a7;
+}
+.status-circle-no {
+  width: 30px;
+  height: 30px;
+  border-radius: 20px;
+  border: 1px dashed #3571a7;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  padding-top: 3px;
+}
+.status-line {
+  border: 2px solid #3571a7;
+  width: 100px;
+  height: 0;
+}
+.status-line-no {
+  border: 2px solid rgb(206, 205, 205);
+  width: 100px;
+  height: 0;
+}
+.status-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 /* ADDRESS BOOK */
 .edit-text {
   color: rgb(0, 132, 255);

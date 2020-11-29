@@ -82,7 +82,7 @@ class Header extends React.Component {
           </li>
           <li>
             {user ?
-              <Link className="item">
+              <Link className="item" to="/user/account">
                 <div style={itemIcon}>
                   <i className="fa fa-user"></i>
                 </div>

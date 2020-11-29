@@ -14,7 +14,6 @@ import Product from "./Product/Product";
 import Keyword from "./Product/Keyword";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
-
 import Login from "./Auth/Login"
 
 const mapStateToProps = (state) => ({
@@ -93,6 +92,7 @@ class HomePage extends React.Component {
 
     this.changePic = this.changePic.bind(this);
   }
+
   componentDidMount() {
     const { getMovieCates } = this.props
     getMovieCates({ limit: 1000, page: 1, query: '' })
@@ -141,6 +141,7 @@ class HomePage extends React.Component {
       slidesToScroll: 3,
       className: "slider",
     };
+
     return (
       <Fragment>
         {show && modalName == 'login' && (

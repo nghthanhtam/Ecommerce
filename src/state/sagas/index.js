@@ -15,6 +15,8 @@ import sRoleSaga from './SRoleSaga';
 import sShopSaga from './SShopSaga';
 import sInvoiceSaga from './SInvoiceSaga';
 import sAuthUserSaga from './SAuthUserSaga';
+import sAddressSaga from './SAddressSaga';
+import sPaymentSaga from './SPaymentSaga';
 
 export default function* rootSaga() {
   yield all([
@@ -33,7 +35,9 @@ export default function* rootSaga() {
     sRoleSaga(),
     sInvoiceSaga(),
     sShopSaga(),
-    sEmpRoleSaga()
+    sEmpRoleSaga(),
+    sAddressSaga(),
+    sPaymentSaga()
   ]);
 }
 

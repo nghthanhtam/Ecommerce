@@ -74,35 +74,72 @@ class OrderHistory extends React.Component {
           >
             <UserProfile selectedItem={this.props} />
 
-            <div className="acc-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Mã đơn hàng</th>
-                    <th>Ngày mua</th>
-                    <th>Tổng tiền</th>
-                    <th>Trạng thái</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orderList.map((item, index) => {
-                    return (
-                      <tr key={index}>
-                        <td>{item._id}</td>
-                        <td>{item.createAt}</td>
-                        <td>{item.total}</td>
-                        <td>{item.status}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            <div className="orderhis-container">
+              <div className="my-order">
+                <h2>Đơn hàng</h2>
+                <div className='order-box'>
+                  <div className="orderhis-line1" >
+                    <h4>Order #1</h4>
+                    <div className="status-btn">Đang vận chuyển</div>
+                  </div>
+                  <div className="orderhis-line" >
+                    <p>Ngày đặt</p>
+                    <p>12/02/2020</p>
+                  </div>
+                  <div className="orderhis-line" >
+                    <p>Ngày giao hàng </p>
+                    <p>16/02/2020</p>
+                  </div>
+                  <div className="orderhis-line" >
+                    <h4>Tổng tiền </h4>
+                    <div style={{ fontWeight: '600' }}>280000</div>
+                  </div>
+                </div>
+              </div>
+              <div className="order-details">
+                <div className="orderhis-title">Chi tiết đơn hàng</div>
+                <div className="detail-infor">
+                  <div className="orderhis-address">
+                    <h4>Địa chỉ giao hàng</h4>
+                    <p>672 Le Duc Tho, P.15, Go Vap, HCM</p>
+                  </div>
+                  <div className="orderhis-total">
+                    <div className="orderhis-line" >
+                      <p>Giảm giá </p>
+                      <p>325000đ</p>
+                    </div>
+                    <div className="orderhis-line" >
+                      <p>Phí vận chuyển</p>
+                      <p>325000đ</p>
+                    </div>
+                    <div className="orderhis-line" >
+                      <h4>Tổng tiền </h4>
+                      <div style={{ fontWeight: '600' }}>280000</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="status-wrapper">
+                  <div className="status-circle"> <i
+                    style={{ display: 'flex', justifyContent: 'center', marginTop: '7px', color: 'white' }}
+                    class="fa fa-check"
+                  ></i></div>
+                  {/* <div className="status-circle-no"> 1</div> */}
+                  <div className="status-line-no"></div>
+                  <div className="status-circle-no"> 2</div>
+                  {/* <div className="status-line"></div> */}
+                  {/* <div className="status-circle"></div> */}
+                  <div className="status-line-no"></div>
+                  <div className="status-circle-no"> 3</div>
+                  {/* <div className="status-line"></div> */}
+                  {/* <div className="status-circle"></div> */}
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <Footer />
-      </div>
+      </div >
     );
   }
 }

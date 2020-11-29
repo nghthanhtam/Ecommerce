@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addEmployee } from '../../../../state/actions/employeeActions';
 
+const mapStateToProps = (state) => ({
+  employee: state.employee,
+});
+
 class EmployeeModal extends Component {
   state = {
     fullname: '',
@@ -287,7 +291,5 @@ class EmployeeModal extends Component {
     );
   }
 }
-const mapStateToProps = (state) => ({
-  employee: state.employee,
-});
+
 export default connect(mapStateToProps, { addEmployee })(EmployeeModal);

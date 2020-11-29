@@ -1,19 +1,19 @@
 import React from "react";
 import "../../../../assets/css/user-profile.css";
 import history from "../history";
+import { connect } from 'react-redux';
+import { pushHistory } from '../../../../state/actions/historyActions';
 
 class ProfileItem extends React.Component {
-  constructor(props) {
-    super();
-  }
+  state = {}
 
   render() {
-    let { item, selectedItem } = this.props;
+    let { item, selectedItem, pushHistory } = this.props;
 
     return (
       <div
         onClick={() => {
-          history.push(item.link, { selectedItem: item.link });
+          pushHistory(item.link, { selectedItem: item.link });
         }}
         className={
           selectedItem === item.link ? "pro-item-selected" : "pro-item"
@@ -26,4 +26,4 @@ class ProfileItem extends React.Component {
   }
 }
 
-export default ProfileItem;
+export default connect(null, { pushHistory })(ProfileItem);

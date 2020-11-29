@@ -6,10 +6,12 @@ import {
   PRODUCTVARS_RECEIVED,
   PRODUCTVAR_ADDED,
   PRODUCTVAR_UPDATED,
+  PRODUCTVAR_RECEIVED
 } from "../actions/types";
 
 const initialState = {
   productVars: [],
+  productVar: {},
   isLoaded: false,
   totalDocuments: 0
 };
@@ -26,6 +28,12 @@ export default function (state = initialState, action) {
         productVars: action.payload.data.items,
         isLoaded: true,
         totalDocuments: action.payload.data.total,
+      };
+    case PRODUCTVAR_RECEIVED:
+      return {
+        ...state,
+        productVar: action.payload.data,
+        isLoaded: true,
       };
     case PRODUCTVAR_ADDED:
       return {

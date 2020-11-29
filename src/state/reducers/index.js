@@ -15,6 +15,8 @@ import employeeRoleReducer from './employeeRoleReducer';
 import variantValReducer from './variantValReducer';
 import movieCateReducer from './movieCateReducer';
 import modalReducer from './modalReducer';
+import addressReducer from './addressReducer';
+import paymentReducer from './paymentReducer';
 
 import memberReducer from './memberReducer';
 import invoiceReducer from './invoiceReducer';
@@ -44,6 +46,8 @@ export default combineReducers({
   cart: cartReducer,
   modal: modalReducer,
   productVar: productVarReducer,
+  address: addressReducer,
+  payment: paymentReducer,
 
   invoice: invoiceReducer,
   invoicedet: invoicedetReducer,

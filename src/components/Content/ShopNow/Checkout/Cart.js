@@ -42,7 +42,6 @@ class Cart extends React.Component {
 
   componentDidMount() {
     const { getCartsByIdUser, user } = this.props
-    console.log('user: ', this.props);
     getCartsByIdUser({ limit: 1000, page: 1, idUser: user.id })
   }
 
@@ -89,7 +88,7 @@ class Cart extends React.Component {
                   {carts.map((cItem, cIndex) => {
                     return (
                       <div key={cIndex} className="order-list">
-                        <p> {cItem.name} > </p>
+                        <p> {cItem.name} {'>'} </p>
                         {cItem.productVars.map((item, index) => {
                           return <CartDetail key={index} item={item} cItem={cItem}
                             deleteCartItem={this.deleteCartItem} amountChange={this.amountChange} />;
@@ -111,7 +110,7 @@ class Cart extends React.Component {
                   </div>
                   <div className="checkout">
                     <p> Thành tiền</p>
-                    {isLoaded && <p className="total"> {total}đ</p>}
+                    {isLoaded && <p className="total"> {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}đ</p>}
                   </div>
                   <Button
                     style={{

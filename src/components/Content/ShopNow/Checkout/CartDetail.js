@@ -36,10 +36,10 @@ class CartDetail extends React.Component {
           </div>
         </div>
         <div className="order-price">
-          <p className="price-af">{item.price} VND</p>
+          <p className="price-af">{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</p>
           {this.showDiscount() != 0 ?
             <div className="row-flex">
-              <div className="price-bf">{item.marketPrice}</div>|
+              <div className="price-bf">{item.marketPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</div>|
               <div className="percent">-{this.showDiscount()}%</div>
             </div> : null}
         </div>

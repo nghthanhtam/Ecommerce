@@ -12,9 +12,31 @@ import {
   UPDATE_PRODUCTVAR,
   UPDATE_PRODUCTVAR_STATUS,
   PRODUCTVAR_UPDATED,
+  GET_PRODUCTVAR_BY_ID,
+  PRODUCTVAR_RECEIVED,
 } from "../actions/types";
 
 import mongoose from "mongoose";
+
+function* fetchProductVarByid(params) {
+  try {
+    const state = yield select(),
+      { id } = params.params;
+    console.log(params.params);
+    const response = yield call(() =>
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/${id}?`,
+          tokenConfig(state)
+        )
+        .catch((er) => console.log(er.response))
+    );
+    console.log(response);
+    yield put({ type: PRODUCTVAR_RECEIVED, payload: response });
+  } catch (error) {
+    console.log({ ...error });
+  }
+}
 
 function* fetchProductVars(params) {
   try {
@@ -133,11 +155,11 @@ function* deleteProductVars(params) {
 }
 
 export default function* sProductVarSaga() {
+  yield takeEvery(GET_PRODUCTVAR_BY_ID, fetchProductVarByid);
   yield takeEvery(GET_PRODUCTVARS, fetchProductVars);
   yield takeEvery(GET_PRODUCTVARS_BY_IDSHOP, fetchProductVarsByIdShop);
   yield takeEvery(ADD_PRODUCTVAR, addProductVar);
   yield takeEvery(UPDATE_PRODUCTVAR_STATUS, updateProductVarStatus);
   yield takeEvery(UPDATE_PRODUCTVAR, updateProductVar);
   yield takeEvery(DELETE_PRODUCTVAR, deleteProductVars);
-
 }

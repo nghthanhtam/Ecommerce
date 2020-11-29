@@ -2,14 +2,17 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import 'font-awesome/css/font-awesome.min.css';
 import '../../../../assets/css/product.css';
-import { Link } from 'react-router-dom';
-import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { Link } from 'react-router-dom';
+import Slider from 'react-slick';
 
 import Product from './Product';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
+import { connect } from 'react-redux';
+
+import { getProductVarById } from '../../../../state/actions/productVarActions';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -18,6 +21,11 @@ class ProductDetail extends React.Component {
       productList: [1, 2, 3, 4, 5, 6, 7, 8],
       replyBoxHidden: false,
     };
+  }
+
+  componentDidMount() {
+
+
   }
 
   replyClick = () => {
@@ -333,4 +341,9 @@ class ProductDetail extends React.Component {
   }
 }
 
-export default ProductDetail;
+const mapStateToProps = (state) => ({
+  productVar: state.productVar.productVar,
+  isLoaded: state.productVar.isLoaded,
+});
+
+export default connect(mapStateToProps, { getProductVarById })(ProductDetail);

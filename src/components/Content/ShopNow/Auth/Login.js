@@ -18,7 +18,6 @@ class Login extends Component {
     password: '',
     msg: null,
     inputErrors: false,
-    show: false
   };
 
   static propTypes = {

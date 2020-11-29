@@ -41,6 +41,7 @@ import Cart from './components/Content/ShopNow/Checkout/Cart';
 import CartDetail from './components/Content/ShopNow/Checkout/CartDetail';
 import Payment from './components/Content/ShopNow/Checkout/Payment';
 import OrderReceipt from './components/Content/ShopNow/Checkout/OrderReceipt';
+import UserProfile from './components/Content/ShopNow/User/UserProfile';
 import Account from './components/Content/ShopNow/User/Account';
 import LaterList from './components/Content/ShopNow/User/LaterList';
 import LaterListDetail from './components/Content/ShopNow/User/LaterListDetail';
@@ -124,6 +125,27 @@ class CoffeShop extends Component {
           </Route>
           <Route exact path="/checkout/order-receipt">
             <OrderReceipt />
+          </Route>
+          <Route exact path="/user/account">
+            <Account />
+          </Route>
+          <Route exact path="/user/laterlist">
+            <LaterList />
+          </Route>
+          <Route exact path="/user/order-history">
+            <OrderHistory />
+          </Route>
+          <Route exact path="/user/address-book">
+            <AddressBook />
+          </Route>
+          <Route exact path="/user/review">
+            <Review />
+          </Route>
+          <Route exact path="/user/watchlist">
+            <Watchlist />
+          </Route>
+          <Route exact path="/user/wishlist">
+            <Wishlist />
           </Route>
 
           <Route
