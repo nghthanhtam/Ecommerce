@@ -41,9 +41,9 @@ class Account extends React.Component {
     });
   };
 
-  componentDidMount = () => {
-    // console.log(this.props);
-  };
+  handleSubmit = (e) => {
+    e.preventDefault();
+  }
 
   render() {
     return (
@@ -63,35 +63,42 @@ class Account extends React.Component {
             style={{
               display: "flex",
               justifyContent: "center",
-              padding: "20px",
-            }}
-          >
+              padding: "20px"
+            }}>
+
             <UserProfile selectedItem={this.props} />
 
             <div className="acc-container">
               <form
                 style={{ fontFamily: "Poppins, sans-serif", color: "#0d1136" }}
                 className="ui form"
+                onSubmit={this.handleSubmit}
               >
                 <div className="field">
                   <label style={{ fontWeight: "400", fontSize: "15px" }}>
                     Họ tên
                   </label>
-                  <input type="text" name="last-name" placeholder="name" />
+                  <input required type="text" name="fullname" placeholder="Họ tên" />
+                </div>
+                <div className="field">
+                  <label style={{ fontWeight: "400", fontSize: "15px" }}>
+                    Họ tên
+                  </label>
+                  <input required type="text" name="username" placeholder="Tài khoản đăng nhập" />
                 </div>
                 <div className="field">
                   <label style={{ fontWeight: "400", fontSize: "15px" }}>
                     Số điện thoại
                   </label>
-                  <input type="text" name="last-name" placeholder="telephone" />
+                  <input type="text" name="phone" placeholder="Số điện thoại" />
                 </div>
                 <div className="field">
                   <label style={{ fontWeight: "400", fontSize: "15px" }}>
                     Email
                   </label>
-                  <input type="text" name="last-name" placeholder="telephone" />
+                  <input type="text" name="email" placeholder="Email" />
                 </div>
-                <div className="field">
+                {/* <div className="field">
                   <label style={{ fontWeight: "400", fontSize: "15px" }}>
                     Giới tính
                   </label>
@@ -101,17 +108,12 @@ class Account extends React.Component {
                       <option value="0">Nứ</option>
                     </select>
                   </div>
-                </div>
+                </div> */}
 
                 <button
-                  style={{
-                    backgroundColor: "#3571a7",
-                    color: "white",
-                    fontWeight: "400",
-                  }}
+                  style={{ backgroundColor: "#3571a7", color: "white", fontWeight: "400" }}
                   className="ui button"
-                  type="submit"
-                >
+                  type="submit">
                   Cập nhật
                 </button>
               </form>

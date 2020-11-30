@@ -76,7 +76,7 @@ function* updateEmpRole(params) {
   }
 }
 
-function* deleteEmpRoles(params) {
+function* deleteEmpRole(params) {
   const state = yield select();
   try {
     yield call(() =>
@@ -96,5 +96,5 @@ export default function* sEmpRoleSaga() {
   yield takeEvery(GET_EMPROLES, fetchEmpRoles);
   yield takeEvery(ADD_EMPROLE, addEmpRole);
   yield takeEvery(UPDATE_EMPROLE, updateEmpRole);
-  yield takeEvery(DELETE_EMPROLE, deleteEmpRoles);
+  yield takeEvery(DELETE_EMPROLE, deleteEmpRole);
 }

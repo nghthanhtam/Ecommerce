@@ -72,7 +72,7 @@ function* updateRole(params) {
     console.log(error.response);
   }
 }
-function* deleteRoles(params) {
+function* deleteRole(params) {
   const state = yield select();
   try {
     const response = yield call(() =>
@@ -92,5 +92,5 @@ export default function* sRoleSaga() {
   yield takeEvery(GET_ROLES, fetchRoles);
   yield takeEvery(ADD_ROLE, addRoles);
   yield takeEvery(UPDATE_ROLE, updateRole);
-  yield takeEvery(DELETE_ROLE, deleteRoles);
+  yield takeEvery(DELETE_ROLE, deleteRole);
 }

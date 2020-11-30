@@ -11,7 +11,8 @@ const initialState = {
   carts: [],
   isLoaded: false,
   totalDocuments: 0,
-  total: 0
+  total: 0,
+  totalCount: 0
 };
 
 export default function (state = initialState, action) {
@@ -25,6 +26,7 @@ export default function (state = initialState, action) {
         ...state,
         carts: action.payload.items,
         total: action.payload.total,
+        totalCount: action.payload.totalCount,
         isLoaded: true,
       };
     case CART_ADDED:

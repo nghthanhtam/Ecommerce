@@ -23,11 +23,6 @@ class ProductDetail extends React.Component {
     };
   }
 
-  componentDidMount() {
-
-
-  }
-
   replyClick = () => {
     let { replyBoxHidden } = this.state;
     this.setState({ replyBoxHidden: !replyBoxHidden });

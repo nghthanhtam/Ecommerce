@@ -75,7 +75,7 @@ function* updateShop(params) {
     console.log(error.response);
   }
 }
-function* deleteShops(params) {
+function* deleteShop(params) {
   const state = yield select();
   try {
     const response = yield call(() =>
@@ -95,5 +95,5 @@ export default function* sShopSaga() {
   yield takeEvery(GET_SHOPS, fetchShops);
   yield takeEvery(ADD_SHOP, addShop);
   yield takeEvery(UPDATE_SHOP, updateShop);
-  yield takeEvery(DELETE_SHOP, deleteShops);
+  yield takeEvery(DELETE_SHOP, deleteShop);
 }

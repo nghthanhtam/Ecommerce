@@ -4,16 +4,24 @@
   box-sizing: border-box;
   font-family: Poppins, sans-serif;
 }
+@keyframes transitionIn {
+  from {
+    opacity: 0;
+    transform: rotateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: rotateY(0);
+  }
+}
 .cart-container {
   padding-top: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   z-index: 10;
   margin-bottom: 300px;
-
   position: relative;
   background-color: #f7f7f7;
 }
@@ -260,11 +268,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   z-index: 10;
   margin-bottom: 300px;
   position: relative;
   background-color: #f7f7f7;
+  animation: transitionIn 0.75s;
 }
 
 .order-res-card {

@@ -1,4 +1,3 @@
-import { Redirect } from 'react-router-dom';
 import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { tokenConfig } from '../actions/authActions';
@@ -13,12 +12,10 @@ import {
   ADDRESS_UPDATED,
 } from '../actions/types';
 
-import mongoose from 'mongoose';
-
-function* fetchAddresss(params) {
+function* fetchAddresses(params) {
   try {
     const state = yield select(),
-      { limit, page, idUser, } = params.pages;
+      { limit, page, idUser } = params.pages;
 
     const response = yield call(() =>
       axios
@@ -27,7 +24,7 @@ function* fetchAddresss(params) {
           tokenConfig(state)
         )
     );
-
+    console.log(response);
     yield put({ type: ADDRESSES_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });
@@ -51,9 +48,6 @@ function* addAddress(params) {
         tokenConfig(state)
       )
     );
-    if (response.data._id instanceof mongoose.Types.ObjectId) {
-      response.data._id = response.data._id.toString();
-    }
 
     yield put({ type: ADDRESS_ADDED, payload: response.data });
     yield put({
@@ -77,11 +71,13 @@ function* updateAddress(params) {
     );
 
     yield put({ type: ADDRESS_UPDATED, payload: response.data });
+    yield put({ type: GET_ADDRESSES, pages: { limit: 1000, page: 1, idUser: params.newAddress.idUser } });
   } catch (error) {
     console.log(error.response);
   }
 }
-function* deleteAddresss(params) {
+
+function* deleteAddress(params) {
   const state = yield select();
   try {
     yield call(() =>
@@ -98,8 +94,8 @@ function* deleteAddresss(params) {
 }
 
 export default function* sAddressSaga() {
-  yield takeEvery(GET_ADDRESSES, fetchAddresss);
+  yield takeEvery(GET_ADDRESSES, fetchAddresses);
   yield takeEvery(ADD_ADDRESS, addAddress);
   yield takeEvery(UPDATE_ADDRESS, updateAddress);
-  yield takeEvery(DELETE_ADDRESS, deleteAddresss);
+  yield takeEvery(DELETE_ADDRESS, deleteAddress);
 }

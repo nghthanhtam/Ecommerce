@@ -138,7 +138,7 @@ function* updateProductVar(params) {
   }
 }
 
-function* deleteProductVars(params) {
+function* deleteProductVar(params) {
   const state = yield select();
   try {
     const response = yield call(() =>
@@ -161,5 +161,5 @@ export default function* sProductVarSaga() {
   yield takeEvery(ADD_PRODUCTVAR, addProductVar);
   yield takeEvery(UPDATE_PRODUCTVAR_STATUS, updateProductVarStatus);
   yield takeEvery(UPDATE_PRODUCTVAR, updateProductVar);
-  yield takeEvery(DELETE_PRODUCTVAR, deleteProductVars);
+  yield takeEvery(DELETE_PRODUCTVAR, deleteProductVar);
 }

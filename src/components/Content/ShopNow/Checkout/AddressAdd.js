@@ -1,16 +1,30 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+
 import { login } from '../../../../state/actions/authUserActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
 import { showModal } from '../../../../state/actions/modalActions';
-import PropTypes from 'prop-types';
-import axios from 'axios';
+import { getCities } from '../../../../state/actions/cityActions';
+import { getDistricts } from '../../../../state/actions/districtActions';
+import { getWards } from '../../../../state/actions/wardActions';
+import { addAddress, updateAddress } from '../../../../state/actions/addressActions';
 
 const mapStateToProps = (state) => ({
     error: state.error,
     history: state.history,
     isAuthenticated: state.authUser.isAuthenticated,
     userToken: state.authUser.token,
+    user: state.authUser.user,
+    details: state.modal.details,
+    cities: state.city.cities,
+    districts: state.district.districts,
+    wards: state.ward.wards,
+    isCityLoaded: state.city.isLoaded,
+    isDistrictLoaded: state.district.isLoaded,
+    isWardLoaded: state.ward.isLoaded,
+    address: state.address.address
 });
 
 class AddressAdd extends Component {
@@ -48,25 +62,34 @@ class AddressAdd extends Component {
     componentDidMount() {
         // const currentUrl = window.location.pathname;
         // document.body.className = currentUrl === '/login' && 'hold-transition login-page';
+        const { getCities, getDistricts, getWards, details } = this.props
         let id = ''
-        if (this.props.match) id = this.props.match.params.id;
-        axios
-            .get(
-                `${process.env.REACT_APP_BACKEND_USER}/api/address/${id}`,
-                this.tokenConfig(this.props.userToken)
-            )
-            .then((response) => {
-                let {
-                    fullname, phone, idCity, idDistrict, idWard, address
-                } = response.data;
-                this.setState({ fullname, phone, idCity, idDistrict, idWard, address });
-            })
-            .catch((er) => console.log(er.response));
+
+        getCities({ limit: 1000, page: 1 })
+        if (details) id = details.id
+        if (id !== '') {
+            axios
+                .get(
+                    `${process.env.REACT_APP_BACKEND_USER}/api/address/${id}`,
+                    this.tokenConfig(this.props.userToken)
+                )
+                .then((response) => {
+                    let {
+                        fullname, phone, idCity, idDistrict, idWard, numberAndStreet
+                    } = response.data;
+                    this.setState({ fullname, phone, idCity, idDistrict, idWard, numberAndStreet });
+                    getDistricts({ limit: 1000, page: 1, idCity })
+                    getWards({ limit: 1000, page: 1, idDistrict })
+                })
+                .catch((er) => console.log(er.response));
+        }
     }
 
-    validateUsername(fullname) {
-        return new RegExp(/^[a-zA-Z0-9_-]+$/).test(fullname);
-    }
+    validateUsername = (fullname) => {
+        return !new RegExp(
+            /[^a-z0-9A-Z_-_ ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽếềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]/u
+        ).test(fullname);
+    };
 
     validatePhone(phone) {
         return new RegExp(/(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/).test(phone);
@@ -74,11 +97,10 @@ class AddressAdd extends Component {
 
     handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name);
         let msg = '';
 
         //Validation
-        const isPassed = true
+        let isPassed = true
         if (name === 'fullname') isPassed = this.validateUsername(value)
         else if (name === 'phone') isPassed = this.validatePhone(value)
         const inputErrors = isPassed ? false : true;
@@ -93,23 +115,28 @@ class AddressAdd extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        const { fullname, idCity, idDistrict, idWard, address, phone } = this.state;
+        const { fullname, idCity, idDistrict, idWard, numberAndStreet, phone } = this.state;
+        const { user, details, updateAddress, addAddress, showModal } = this.props
         const newAddress = {
-            fullname, idCity, idDistrict, idWard, address, phone
+            fullname, idCity, idDistrict, idWard, numberAndStreet, phone, isHome: true, isMain: true, idUser: user.id
         };
-        //this.props.addAddress(newAddress);
+        if (details) {
+            newAddress.id = details.id
+            updateAddress(newAddress);
+        }
+        else addAddress(newAddress)
+        showModal({ show: false })
     };
 
     render() {
-        const { fullname, phone, idCity, idDistrict, idWard, address, msg, inputErrors } = this.state
-        const { showModal } = this.props
+        const { fullname, phone, idCity, idDistrict, idWard, numberAndStreet, inputErrors } = this.state
+        const { showModal, cities, districts, wards, isCityLoaded, isDistrictLoaded, isWardLoaded } = this.props
         return (
-            <div className='login-wrapper'>
+            <div className='modal-wrapper'>
                 <div style={{ background: '#fff', padding: '30px 20px 20px 20px', transition: 'opacity 0.5s linear' }} className="login-box">
                     <button onClick={() => this.props.showModal({ show: false })} style={{ float: 'right', marginTop: '-15px' }} type="button" className="close" data-dismiss="alert" aria-hidden="true">
                         ×
                     </button>
-
                     <div className="login-box-body">
                         <p className="login-box-msg">Thêm địa chỉ giao hàng mới</p>
                         {this.state.msg ? (
@@ -129,6 +156,7 @@ class AddressAdd extends Component {
                                     name="fullname"
                                     className="form-control"
                                     placeholder="Họ và tên"
+                                    required
                                     value={fullname}
                                     onChange={this.handleChange}
                                 />
@@ -139,32 +167,45 @@ class AddressAdd extends Component {
                                     name="phone"
                                     className="form-control"
                                     placeholder="Số điện thoại"
+                                    required
                                     value={phone}
                                     onChange={this.handleChange}
                                 />
                             </div>
+                            <div className="form-group has-feedback">
+                                <input
+                                    type="numberAndStreet"
+                                    name="numberAndStreet"
+                                    className="form-control"
+                                    placeholder="Số nhà, đường"
+                                    required
+                                    value={numberAndStreet}
+                                    onChange={this.handleChange}
+                                />
+                            </div>
                             <div className="form-group">
-                                <select className="form-control" name="idCity" value={idCity} onChange={this.handleChange} >
-                                    <option value="" disabled selected>Chọn thành phố / tỉnh</option>
-                                    <option value="1">option 1</option>
-                                    <option value="2">option 2</option>
-                                    <option value="2">option 3</option>
+                                <select defaultValue={0} className="form-control" name="idCity" value={idCity !== '' ? idCity : 0} onChange={this.handleChange} >
+                                    <option value="0" disabled>Chọn thành phố / tỉnh</option>
+                                    {isCityLoaded && cities.map((item, index) => {
+                                        return (<option key={index} value={item.id}>{item.city}</option>)
+                                    })}
+
                                 </select>
                             </div>
                             <div className="form-group">
-                                <select className="form-control" name="idDistrict" value={idDistrict} onChange={this.handleChange} >
-                                    <option value="" disabled selected>Chọn quận / huyện</option>
-                                    <option value="1">option 1</option>
-                                    <option value="2">option 2</option>
-                                    <option value="2">option 3</option>
+                                <select defaultValue={0} className="form-control" name="idDistrict" value={idDistrict !== '' ? idDistrict : 0} onChange={this.handleChange} >
+                                    <option value="0" disabled>Chọn quận / huyện</option>
+                                    {isDistrictLoaded && districts.map((item, index) => {
+                                        return (<option key={index} value={item.id}>{item.district}</option>)
+                                    })}
                                 </select>
                             </div>
                             <div className="form-group">
-                                <select className="form-control" name="idWard" value={idWard} onChange={this.handleChange} >
-                                    <option value="" disabled selected>Chọn phường / xã</option>
-                                    <option value="1">option 1</option>
-                                    <option value="2">option 2</option>
-                                    <option value="2">option 3</option>
+                                <select defaultValue={0} className="form-control" name="idWard" value={idWard !== '' ? idWard : 0} onChange={this.handleChange} >
+                                    <option value="0" disabled>Chọn phường / xã</option>
+                                    {isWardLoaded && wards.map((item, index) => {
+                                        return (<option key={index} value={item.id}>{item.ward}</option>)
+                                    })}
                                 </select>
                             </div>
                             <div className="row">
@@ -173,11 +214,8 @@ class AddressAdd extends Component {
                                     <button
                                         type="submit"
                                         className="btn btn-primary btn-block btn-flat"
-                                        disabled={
-                                            !inputErrors &&
-                                                fullname !== '' && phone !== '' && idCity !== '' && idDistrict !== '' && idWard !== ''
-                                                ? false : true}>
-                                        Thêm
+                                        disabled={!inputErrors ? false : true}>
+                                        Lưu
                                     </button>
                                     <button
                                         className="btn btn-default btn-block btn-flat"
@@ -196,4 +234,4 @@ class AddressAdd extends Component {
     }
 }
 
-export default connect(mapStateToProps, { login, pushHistory, showModal })(AddressAdd);
+export default connect(mapStateToProps, { login, pushHistory, showModal, getCities, getDistricts, getWards, addAddress, updateAddress })(AddressAdd);

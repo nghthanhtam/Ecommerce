@@ -17,6 +17,11 @@ import sInvoiceSaga from './SInvoiceSaga';
 import sAuthUserSaga from './SAuthUserSaga';
 import sAddressSaga from './SAddressSaga';
 import sPaymentSaga from './SPaymentSaga';
+import sOrderSaga from './SOrderSaga';
+import sCitySaga from './SCitySaga';
+import sDistrictSaga from './SDistrictSaga';
+import sWardSaga from './SWardSaga'
+import sUserSaga from './SUserSaga'
 
 export default function* rootSaga() {
   yield all([
@@ -37,7 +42,12 @@ export default function* rootSaga() {
     sShopSaga(),
     sEmpRoleSaga(),
     sAddressSaga(),
-    sPaymentSaga()
+    sPaymentSaga(),
+    sOrderSaga(),
+    sCitySaga(),
+    sDistrictSaga(),
+    sWardSaga(),
+    sUserSaga()
   ]);
 }
 

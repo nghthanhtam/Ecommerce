@@ -12,6 +12,15 @@ export const EMPLOYEE_DELETED = 'EMPLOYEE_DELETED';
 export const GET_PAYMENTS = 'GET_PAYMENTS';
 export const PAYMENTS_RECEIVED = 'PAYMENTS_RECEIVED';
 
+export const GET_CITIES = 'GET_CITIES';
+export const CITIES_RECEIVED = 'CITIES_RECEIVED';
+
+export const GET_DISTRICTS = 'GET_DISTRICTS';
+export const DISTRICTS_RECEIVED = 'DISTRICTS_RECEIVED';
+
+export const GET_WARDS = 'GET_WARDS';
+export const WARDS_RECEIVED = 'WARDS_RECEIVED';
+
 export const GET_EMPROLES = 'GET_EMPROLES';
 export const EMPROLES_RECEIVED = 'EMPROLES_RECEIVED';
 export const UPDATE_EMPROLE = 'UPDATE_EMPROLE';
@@ -20,6 +29,15 @@ export const ADD_EMPROLE = 'ADD_EMPROLE';
 export const EMPROLE_ADDED = 'EMPROLE_ADDED';
 export const DELETE_EMPROLE = 'DELETE_EMPROLE';
 export const EMPROLE_DELETED = 'EMPROLE_DELETED';
+
+export const GET_ORDERS = 'GET_ORDERS';
+export const ORDERS_RECEIVED = 'ORDERS_RECEIVED';
+export const UPDATE_ORDER = 'UPDATE_ORDER';
+export const ORDER_UPDATED = 'ORDER_UPDATED';
+export const ADD_ORDER = 'ADD_ORDER';
+export const ORDER_ADDED = 'ORDER_ADDED';
+export const DELETE_ORDER = 'DELETE_ORDER';
+export const ORDER_DELETED = 'ORDER_DELETED';
 
 export const GET_SHOPS = 'GET_SHOPS';
 export const SHOPS_RECEIVED = 'SHOPS_RECEIVED';
@@ -42,6 +60,17 @@ export const USER_REGISTER_SUCCESS = 'USER_REGISTER_SUCCESS';
 export const USER_REGISTER_FAIL = 'USER_REGISTER_FAIL';
 export const USER_UPDATE_AUTH = 'USER_UPDATE_AUTH';
 export const USER_UPDATE_AUTH_SUCCESS = 'USER_UPDATE_AUTH_SUCCESS';
+export const GET_USERS = 'GET_USERS';
+export const USERS_RECEIVED = 'USERS_RECEIVED';
+export const ADD_USER = 'ADD_USER';
+export const USER_ADDED = 'USER_ADDED';
+export const DELETE_USER = 'DELETE_USER';
+export const USER_DELETED = 'USER_DELETED';
+export const UPDATE_USER = 'UPDATE_USER';
+export const USER_UPDATED = 'USER_UPDATED';
+export const GET_USER = 'GET_USER';
+export const GET_USER_BY_ID = 'GET_USER_BY_ID';
+export const USER_RECEIVED = 'USER_RECEIVED';
 
 export const EMPLOYEE_LOADING = 'EMPLOYEE_LOADING';
 export const EMPLOYEE_LOADED = 'EMPLOYEE_LOADED';
@@ -196,11 +225,6 @@ export const DELETE_SUPPLIER = 'DELETE_SUPPLIER';
 export const GET_SUPPLIER = 'GET_SUPPPLIER';
 
 export const UPDATE_SUPPLIER = 'UPDATE_SUPPLIER';
-
-export const GET_USERS = 'GET_USERS';
-export const ADD_USER = 'ADD_USER';
-export const DELETE_USER = 'DELETE_USER';
-export const GET_USER = 'GET_USER';
 
 export const GET_MATERIALS = 'GET_MATERIALS';
 export const ADD_MATERIAL = 'ADD_MATERIAL';

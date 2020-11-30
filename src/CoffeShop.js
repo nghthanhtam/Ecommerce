@@ -123,7 +123,7 @@ class CoffeShop extends Component {
           <Route exact path="/checkout/payment">
             <Payment />
           </Route>
-          <Route exact path="/checkout/order-receipt">
+          <Route exact path="/order-receipt">
             <OrderReceipt />
           </Route>
           <Route exact path="/user/account">
@@ -132,7 +132,7 @@ class CoffeShop extends Component {
           <Route exact path="/user/laterlist">
             <LaterList />
           </Route>
-          <Route exact path="/user/order-history">
+          <Route exact path="/sales/order/history">
             <OrderHistory />
           </Route>
           <Route exact path="/user/address-book">

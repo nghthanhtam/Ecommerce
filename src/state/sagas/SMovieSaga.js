@@ -45,9 +45,6 @@ function* addMovie(params) {
         tokenConfig(state)
       )
     );
-    if (response.data._id instanceof mongoose.Types.ObjectId) {
-      response.data._id = response.data._id.toString();
-    }
 
     yield put({ type: MOVIE_ADDED, payload: response.data });
     yield put({
@@ -75,7 +72,7 @@ function* updateMovie(params) {
     console.log(error.response);
   }
 }
-function* deleteMovies(params) {
+function* deleteMovie(params) {
   const state = yield select();
   try {
     yield call(() =>
@@ -95,5 +92,5 @@ export default function* sMovieSaga() {
   yield takeEvery(GET_MOVIES, fetchMovies);
   yield takeEvery(ADD_MOVIE, addMovie);
   yield takeEvery(UPDATE_MOVIE, updateMovie);
-  yield takeEvery(DELETE_MOVIE, deleteMovies);
+  yield takeEvery(DELETE_MOVIE, deleteMovie);
 }

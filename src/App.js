@@ -33,7 +33,6 @@ class App extends Component {
   state = {};
   componentDidMount() {
     store.dispatch(loadHistory(history));
-    console.log(process.env.REACT_APP_BACKEND_HOST);
   }
 
   render() {

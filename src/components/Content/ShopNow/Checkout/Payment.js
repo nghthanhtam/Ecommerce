@@ -11,23 +11,29 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import AddressDetail from "../Checkout/AddressDetail";
 import AddressAdd from "./AddressAdd";
+import Loading from "../Loading/Loading"
 
 import { connect } from 'react-redux';
 import { pushHistory } from '../../../../state/actions/historyActions';
 import { getAddresses } from '../../../../state/actions/addressActions';
 import { getPayments } from '../../../../state/actions/paymentActions';
 import { showModal } from '../../../../state/actions/modalActions';
+import { addOrder } from '../../../../state/actions/orderActions';
 
 const mapStateToProps = (state) => ({
+  history: state.history.history,
   carts: state.cart.carts,
   total: state.cart.total,
+  totalCount: state.cart.totalCount,
   addresses: state.address.addresses,
   user: state.authUser.user,
   isLoaded: state.address.isLoaded,
   payments: state.payment.payments,
   isPMLoaded: state.payment.isPMLoaded,
   show: state.modal.show,
-  modalName: state.modal.modalName
+  modalName: state.modal.modalName,
+  idShop: state.role.idShop,
+  isAdded: state.order.isAdded
 });
 
 class Payment extends React.Component {
@@ -35,38 +41,76 @@ class Payment extends React.Component {
     chkboxVal: "",
     isCardHidden: true,
     address: '',
-    idAddress: ''
+    idAddress: '',
+    idPaymentMethod: '',
+    idCity: '',
+    idWard: '',
+    numberAndStreet: '',
+    recipient: '',
+    phone: '',
+    saleOffPercentage: '',
+
+    isTransition: false
   };
 
   componentDidMount() {
-    const { getAddresses, getPayments, getProductVarById, user } = this.props
+    const { getAddresses, getPayments, user } = this.props
     getAddresses({ limit: 1000, page: 1, idUser: user.id })
-    //getPayments({ limit: 1000, page: 1 })
+    getPayments({ limit: 1000, page: 1 })
   }
 
-  checkout = () => { };
-
-  addressChkboxChange = (id) => {
-    const { addresses } = this.props
-    for (let i in addresses) {
-      if (addresses[i].id == id) {
-        this.setState({ idAddress: id })
-        this.setState({ address: addresses[i].address })
-      }
+  componentDidUpdate() {
+    if (this.props.isAdded) {
+      setTimeout(() => this.props.history.push('/order-receipt'), 1500)
     }
+  }
+
+  addressChkboxChange = (item) => {
+    const { id, idCity, idDistrict, idWard, numberAndStreet, fullname, phone } = item
+    this.setState({ idCity, idDistrict, idWard, numberAndStreet, recipient: fullname, phone })
+    this.setState({ idAddress: id })
   };
 
   paymentChkboxChange = (e) => {
-    if (e.target.value == 2) this.setState({ isCardHidden: false });
+    const { value, name } = e.target
+    if (value == 2) this.setState({ isCardHidden: false });
     else this.setState({ isCardHidden: true });
+    this.setState({ idPaymentMethod: value })
   };
 
+  submit = (e) => {
+    e.preventDefault();
+    const { idPaymentMethod, idCity, idDistrict, idWard, numberAndStreet, fullname, phone, saleOffPercentage, recipient } = this.state;
+    const { user, carts, addOrder } = this.props
+    let newOrder = {}, arrOrders = []
+    carts.map((c) => {
+      newOrder = {
+        idUser: user.id,
+        idShop: c.productVars[0].idShop,
+        idPaymentMethod,
+        idCity, idDistrict, idWard,
+        numberAndStreet,
+        fullname,
+        phone,
+        recipient,
+        saleOffPercentage: 1,
+        arrayOfProductVar: c.productVars
+      };
+      arrOrders.push(newOrder)
+    })
+    console.log(arrOrders);
+
+    this.setState({ isTransition: true })
+    addOrder(arrOrders);
+  }
+
   render() {
-    const { isCardHidden, idAddress } = this.state;
-    const { isLoaded, addresses, payments, carts, total, show, modalName, showModal } = this.props;
+    const { isCardHidden, idAddress, isTransition } = this.state;
+    const { isLoaded, addresses, payments, carts, total, totalCount, show, modalName, showModal } = this.props;
     return (
       <Fragment>
-        {show && modalName == 'addressAdd' && (
+        {isTransition && <Loading />}
+        {show && (modalName == 'addressAdd' || modalName == 'addressEdit') && (
           <AddressAdd />
         )}
         <Header />
@@ -82,7 +126,7 @@ class Payment extends React.Component {
               <div className="address-container">
                 <h3>Địa chỉ giao hàng</h3>
                 {isLoaded &&
-                  <div className="form-group">
+                  <div className="form-group" style={{ marginBottom: '-10px' }}>
                     {addresses.map((item, index) => {
                       return <AddressDetail key={index} item={item} addressChkboxChange={this.addressChkboxChange} />;
                     })}
@@ -106,18 +150,18 @@ class Payment extends React.Component {
                       marginTop: "10px",
                       border: "1px solid #ccc",
                     }}
-                    onClick={() => showModal({ show: true, modalName: 'addressAdd', details: { id: idAddress } })}>
+                    onClick={() => showModal({ show: true, modalName: 'addressEdit', details: { id: idAddress } })}>
                     Sửa
                   </Button>
                 </div>
-                <h3>Hình thức thanh toán</h3>
+                <h3 style={{ marginTop: '50px' }}>Hình thức thanh toán</h3>
                 <div className="form-group">
                   {payments.map((item, index) => {
                     return (
                       <div className="radio" key={index}>
                         <label>
                           <input type="radio" name="payment" value={item.id} onClick={(e) => this.paymentChkboxChange(e)} />
-                          {item.name}
+                          {item.methodName}
                         </label>
                       </div>
                     )
@@ -178,11 +222,11 @@ class Payment extends React.Component {
                 )}
               </div>
               <div className="center-col-flex">
-                <p>Đơn hàng (7 sản phẩm)</p>
+                <p>Đơn hàng ({totalCount} sản phẩm)</p>
                 {carts.map(c => {
-                  return (c.productVars.map(p => {
+                  return (c.productVars.map((p, index) => {
                     return (
-                      <div className="pm-order">
+                      <div key={index} className="pm-order">
                         <div className="pm-orderdet">
                           <h5>{p.amount}x</h5>
                           <Link to={{ pathname: "/product-detail", productDet: {} }}>
@@ -206,7 +250,7 @@ class Payment extends React.Component {
                     width: "100%",
                     marginTop: "20px",
                   }}
-                  onClick={() => this.props.pushHistory('/checkout/order-receipt')}>
+                  onClick={(e) => this.submit(e)}>
                   Đặt mua
                 </Button>
               </div>
@@ -219,4 +263,4 @@ class Payment extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { pushHistory, getAddresses, getPayments, showModal })(Payment);
+export default connect(mapStateToProps, { pushHistory, getAddresses, getPayments, showModal, addOrder })(Payment);

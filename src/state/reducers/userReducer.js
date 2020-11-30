@@ -1,14 +1,20 @@
 import {
   GET_USERS,
+  GET_USER_BY_ID,
+  USER_RECEIVED,
+  USERS_RECEIVED,
   ADD_USER,
+  USER_ADDED,
   USER_DELETED,
-  USERS_LOADING,
-  CHECK_CUR_PASS_USER
+  USER_UPDATED
+
 } from "../actions/types";
 
 const initialState = {
   users: [],
-  loading: false
+  totalDocuments: 0,
+  isLoaded: false,
+  user: {}
 };
 
 export default function (state = initialState, action) {
@@ -16,33 +22,44 @@ export default function (state = initialState, action) {
     case GET_USERS:
       return {
         ...state,
-        users: action.payload,
-        loading: false
       };
-    case USER_DELETED:
+    case USERS_RECEIVED:
       return {
         ...state,
-        users: state.users.filter(
-          user => user.id !== action.payload.id
-        )
+        users: action.payload.data.items,
+        totalDocuments: action.payload.data.total,
+        isLoaded: true,
+      };
+    case USER_RECEIVED:
+      return {
+        ...state,
+        user: action.payload.data,
+        isLoaded: true,
       };
     case ADD_USER:
       return {
         ...state,
-        users: [action.payload, ...state.users]
+        isLoaded: false,
       };
-    case USERS_LOADING:
+    case USER_ADDED:
       return {
         ...state,
-        loading: true
+        isLoaded: true,
       };
-    default:
-      return state;
-    case CHECK_CUR_PASS_USER:
+
+    case USER_DELETED:
       return {
         ...state,
-        checkCurPass: true
+        users: state.users.filter(
+          (user) => user.id !== action.payload.id
+        ),
       };
+
+    case USER_UPDATED:
+      return {
+        ...state,
+      };
+
     default:
       return state;
   }

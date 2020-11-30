@@ -75,8 +75,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
-  /* padding: 20px; */
+  padding: 10px 10px 0 0;
   background-color: white;
   width: 65%;
   margin: 10px 0 0 10px;
@@ -84,17 +83,28 @@
 .my-order {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   border-right: rgb(241, 241, 241) 1px solid;
   flex: 1;
+  padding: 10px;
+  cursor: pointer;
 }
 .order-box {
   width: 260px;
-  height: 150px;
+  height: 160px;
   background-color: #f7f7f7;
-  border: 1 solid gray;
+  border-radius: 5px;
   padding: 10px;
+  margin-bottom: 10px;
+}
+.order-box-selected {
+  width: 260px;
+  height: 160px;
+  background-color: #f7f7f7;
+  border: 2px solid rgb(46, 112, 250);
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 .orderhis-line {
   display: flex;
@@ -103,6 +113,7 @@
 .orderhis-line1 {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 15px;
 }
 .status-btn {
@@ -114,16 +125,21 @@
 }
 .order-details {
   flex: 2;
+  padding: 10px;
 }
 .orderhis-title {
   font-weight: 600;
   font-size: 23px;
   text-align: center;
+  padding: 12px;
+  margin-bottom: 8px;
+  color: #0d1136;
 }
 .detail-infor {
   display: flex;
   justify-content: space-between;
   border-bottom: rgb(241, 241, 241) 1px solid;
+  border-top: rgb(241, 241, 241) 1px solid;
 }
 .orderhis-address {
   flex: 1;
@@ -131,10 +147,12 @@
   height: 150px;
   display: flex;
   flex-direction: column;
+  padding: 10px;
 }
 .orderhis-total {
   flex: 1;
   height: 150px;
+  padding: 10px;
 }
 .status-circle {
   width: 30px;
@@ -154,18 +172,25 @@
 }
 .status-line {
   border: 2px solid #3571a7;
-  width: 100px;
+  width: 50px;
   height: 0;
 }
 .status-line-no {
   border: 2px solid rgb(206, 205, 205);
-  width: 100px;
+  width: 50px;
   height: 0;
+}
+.status-tick {
+  display: flex;
+  justify-content: center;
+  margin-top: 7px;
+  color: white;
 }
 .status-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 /* ADDRESS BOOK */
 .edit-text {

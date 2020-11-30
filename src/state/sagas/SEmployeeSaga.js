@@ -55,9 +55,6 @@ function* addEmployee(params) {
         tokenConfig(state)
       )
     );
-    if (response.data._id instanceof mongoose.Types.ObjectId) {
-      response.data._id = response.data._id.toString();
-    }
 
     yield put({ type: EMPLOYEE_ADDED, payload: response.data });
     yield put({
@@ -85,7 +82,7 @@ function* updateEmployee(params) {
     console.log(error.response);
   }
 }
-function* deleteEmployees(params) {
+function* deleteEmployee(params) {
   const state = yield select();
   try {
     yield call(() =>
@@ -105,5 +102,5 @@ export default function* sEmployeeSaga() {
   yield takeEvery(GET_EMPLOYEES, fetchEmployees);
   yield takeEvery(ADD_EMPLOYEE, addEmployee);
   yield takeEvery(UPDATE_EMPLOYEE, updateEmployee);
-  yield takeEvery(DELETE_EMPLOYEE, deleteEmployees);
+  yield takeEvery(DELETE_EMPLOYEE, deleteEmployee);
 }

@@ -28,14 +28,23 @@ function* fetchCartsByIdUser(params) {
         .catch((er) => console.log(er.response))
     );
 
+    //get total
     let total = 0
     response.data.map(cart => {
       cart.productVars.map(item => {
         total += Number(item.price) * item.amount
       })
     })
-    console.log(total);
-    yield put({ type: CARTS_RECEIVED, payload: { items: response.data, total } });
+
+    //get totalCount
+    let totalCount = 0
+    response.data.map(cart => {
+      cart.productVars.map(item => {
+        totalCount += 1
+      })
+    })
+
+    yield put({ type: CARTS_RECEIVED, payload: { items: response.data, total, totalCount } });
   } catch (error) {
     console.log({ ...error });
   }

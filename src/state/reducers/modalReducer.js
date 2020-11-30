@@ -4,7 +4,8 @@ import {
 
 const initialState = {
   show: false,
-  modalName: ''
+  modalName: '',
+  details: {}
 };
 
 export default function (state = initialState, action) {
@@ -13,7 +14,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         show: action.payload.show,
-        modalName: action.payload.modalName
+        modalName: action.payload.modalName,
+        details: action.payload.details
       };
 
     default:

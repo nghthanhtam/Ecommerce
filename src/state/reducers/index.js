@@ -17,6 +17,8 @@ import movieCateReducer from './movieCateReducer';
 import modalReducer from './modalReducer';
 import addressReducer from './addressReducer';
 import paymentReducer from './paymentReducer';
+import orderReducer from './orderReducer';
+import userReducer from './userReducer';
 
 import memberReducer from './memberReducer';
 import invoiceReducer from './invoiceReducer';
@@ -27,6 +29,9 @@ import supplierReducer from './supplierReducer';
 import storageReportReducer from './storageReportReducer';
 import invoicedetReducer from './invoicedetReducer';
 import cartReducer from './cartReducer';
+import cityReducer from './cityReducer';
+import districtReducer from './districtReducer';
+import wardReducer from './wardReducer';
 
 export default combineReducers({
   employee: employeeReducer,
@@ -48,6 +53,11 @@ export default combineReducers({
   productVar: productVarReducer,
   address: addressReducer,
   payment: paymentReducer,
+  order: orderReducer,
+  city: cityReducer,
+  district: districtReducer,
+  ward: wardReducer,
+  user: userReducer,
 
   invoice: invoiceReducer,
   invoicedet: invoicedetReducer,

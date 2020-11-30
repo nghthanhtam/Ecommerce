@@ -7,7 +7,7 @@ class UserProfile extends React.Component {
   state = {
     profileItemList: [
       { name: "Thông tin khách hàng", link: "/user/account" },
-      { name: "Quản lý đơn hàng", link: "/user/order-history" },
+      { name: "Quản lý đơn hàng", link: "/sales/order/history" },
       { name: "Sổ địa chỉ", link: "/user/address-book" },
       { name: "Nhận xét sản phẩm đã mua", link: "/user/review" },
       { name: "Sản phẩm mua sau", link: "/user/laterlist" },
@@ -17,7 +17,7 @@ class UserProfile extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.selectedItem)
+    // console.log(this.props.selectedItem)
   }
   render() {
     let { profileItemList } = this.state;

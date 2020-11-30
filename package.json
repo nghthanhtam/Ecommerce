@@ -22,6 +22,7 @@
     "react-loader": "^2.4.5",
     "react-moment": "^0.9.7",
     "react-notifications": "^1.4.3",
+    "react-pretty-loading": "^1.0.9",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.1",
     "react-scripts": "3.1.2",

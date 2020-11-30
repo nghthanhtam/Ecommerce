@@ -2,11 +2,11 @@ import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { tokenConfig } from '../actions/authActions';
 import {
-  GET_PAYMENTS,
-  PAYMENTS_RECEIVED,
+  GET_CITIES,
+  CITIES_RECEIVED,
 } from '../actions/types';
 
-function* fetchPayments(params) {
+function* fetchCities(params) {
   try {
     const state = yield select(),
       { limit, page } = params.pages;
@@ -14,12 +14,12 @@ function* fetchPayments(params) {
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_ORDER}/api/paymentMethod?limit=${limit}&page=${page}`,
+          `${process.env.REACT_APP_BACKEND_USER}/api/city?limit=${limit}&page=${page}`,
           tokenConfig(state)
         )
     );
 
-    yield put({ type: PAYMENTS_RECEIVED, payload: response });
+    yield put({ type: CITIES_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });
     let err = { ...error }
@@ -31,6 +31,6 @@ function* fetchPayments(params) {
   }
 }
 
-export default function* sPaymentSaga() {
-  yield takeEvery(GET_PAYMENTS, fetchPayments);
+export default function* sCitySaga() {
+  yield takeEvery(GET_CITIES, fetchCities);
 }

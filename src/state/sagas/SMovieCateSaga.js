@@ -45,9 +45,6 @@ function* addMovie(params) {
         tokenConfig(state)
       )
     );
-    if (response.data._id instanceof mongoose.Types.ObjectId) {
-      response.data._id = response.data._id.toString();
-    }
 
     yield put({ type: MOVIE_CATE_ADDED, payload: response.data });
     yield put({
@@ -75,7 +72,7 @@ function* updateMovie(params) {
     console.log(error.response);
   }
 }
-function* deleteMovieCates(params) {
+function* deleteMovieCate(params) {
   const state = yield select();
   try {
     yield call(() =>
@@ -95,5 +92,5 @@ export default function* sMovieCateSaga() {
   yield takeEvery(GET_MOVIE_CATES, fetchMovieCates);
   yield takeEvery(ADD_MOVIE_CATE, addMovie);
   yield takeEvery(UPDATE_MOVIE_CATE, updateMovie);
-  yield takeEvery(DELETE_MOVIE_CATE, deleteMovieCates);
+  yield takeEvery(DELETE_MOVIE_CATE, deleteMovieCate);
 }
