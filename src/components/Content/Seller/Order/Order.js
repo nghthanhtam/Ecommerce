@@ -1,274 +1,401 @@
-import React, { Fragment, Component } from "react";
-import axios from "axios";
-import { connect } from "react-redux";
-import { showNoti } from "../../../../actions/notificationActions";
-import "react-notifications/lib/notifications.css";
-import { NotificationContainer } from "react-notifications";
+import React, { Component, Fragment } from 'react';
+import OrderRow from './OrderRow';
+import Loader from 'react-loader'
 
-class InvoiceEdit extends Component {
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { getOrders } from '../../../../state/actions/orderActions';
+
+const mapStateToProps = (state) => ({
+  orders: state.order.orders,
+  isLoaded: state.order.isLoaded,
+  totalDocuments: state.order.totalDocuments,
+  idShop: state.auth.role.idShop,
+  details: state.modal.details,
+});
+
+class Order extends Component {
   state = {
-    idMember: "",
-    idUser: "",
-    totalAmt: 0,
-    createddate: new Date(),
-    comments: "",
-    _id: "",
-    notiType: "",
+    sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
+    limit: 5,
+    page: 1,
+    pages: [],
+    query: '',
+    start: 1,
+    end: 5,
+    isNextBtnShow: true,
   };
 
   componentDidMount() {
-    const { id } = this.props.match.params;
-    axios
-      .get(`/api/invoice/${id}`)
-      .then((response) => {
-        if (response.data === null) this.props.history.push("/404");
-        else
-          this.setState({
-            _id: response.data._id,
-            idMember: response.data.idMember,
-            idUser: response.data.idUser,
-            totalAmt: response.data.totalAmt,
-            createddate: response.data.createddate,
-            comments: response.data.comments,
-          });
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
+    const { limit, page, query } = this.state;
+    const { idShop } = this.props;
+    this.props.getOrders({
+      limit,
+      page,
+      query,
+      idShop,
+    });
   }
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { isLoaded } = this.props;
+    if (isLoaded == true && this.state.pages == prevState.pages) {
+      this.getPages();
+    }
+  }
+
+  getStartEndDocuments() {
+    const { limit, page } = this.state;
+    const { totalDocuments } = this.props;
+
+    let pages = Math.floor(totalDocuments / limit),
+      remainder = totalDocuments % limit;
+    if (remainder !== 0) pages += 1;
+    console.log(totalDocuments);
+
+    this.setState({ start: (page - 1) * limit + 1 }, () => {
+      let end;
+      if (Math.floor(totalDocuments / limit) + 1 == page)
+        end = (page - 1) * limit + (totalDocuments % limit);
+      else end = page * limit;
+      this.setState({ end: end });
+    });
+  }
+
+  getPages = () => {
+    const { limit, query } = this.state;
+    const { totalDocuments } = this.props;
+    if (totalDocuments == 0) return;
+
+    let newQuery = '';
+    if (query === '') newQuery = 'undefined';
+    else newQuery = query;
+
+    let pages = Math.floor(totalDocuments / limit);
+    let remainder = totalDocuments % limit;
+    let newArray = [];
+    if (remainder !== 0) pages += 1;
+
+    for (let i = 0; i < pages; i++) {
+      newArray.push({ pageNumber: i + 1 });
+    }
+
+    //Nếu totalDocuments > 6 thì pageButtons được chia ra làm 3 nút số đầu - dấu 3 chấm - nút số cuối
+    if (newArray && newArray.length > 6) {
+      newArray = [
+        { pageNumber: 1 },
+        { pageNumber: 2 },
+        { pageNumber: 3 },
+        { pageNumber: '...' },
+        { pageNumber: newArray.length },
+      ];
+    }
+    this.setState({ pages: newArray });
   };
 
-  handleSubmit = (e) => {
-    const {
-      _id,
-      idMember,
-      idUser,
-      totalAmt,
-      createddate,
-      comments,
-    } = this.state;
-    e.preventDefault();
+  handleOnChange = (e) => {
+    e.persist();
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      if (e.target.name === 'query') {
+        this.setState({ page: 1 }, () => {
+          this.rerenderPage();
+        });
+      } else {
+        this.rerenderPage();
+      }
+    });
+  };
 
-    const newInvoice = {
-      _id,
-      idMember,
-      idUser,
-      totalAmt,
-      createddate,
-      comments,
-    };
+  rerenderPage = () => {
+    const { limit, page, query, deletedEmp, activeEmp } = this.state;
+    let idShop = 1;
+    this.props.getOrders({
+      limit,
+      page,
+      query,
+      idShop,
+      deletedEmp,
+      activeEmp,
+    });
+    this.getPages();
+    this.getStartEndDocuments();
+  };
 
-    axios
-      .put(`/api/invoice/${_id}`, newInvoice)
+  renderOrders = () => {
+    const { start, limit, page } = this.state;
+    const { orders, isLoaded } = this.props;
 
-      .then((response) => {
-        if (response.status === 200) {
-          this.setState({ notiType: "success" });
+    return !isLoaded ? (
+      <tr>
+        <td>
+          <Loader></Loader>
+        </td>
+      </tr>
+    ) : (
+        orders.map((eachOrder, index) => (
+          <OrderRow
+            history={this.props.history}
+            key={eachOrder.id}
+            order={eachOrder}
+            index={index + start - 1}
+          />
+        ))
+      );
+  };
 
-          setTimeout(
-            function () {
-              //Start the timer
-              window.location.replace("/invoice");
-            }.bind(this),
-            500
-          );
-        }
-        console.log(response.data);
-      })
-      .catch((error) => {
-        this.setState({ notiType: "failure" });
-        console.log(error.response);
+  handleChoosePage = (e) => {
+    const { totalDocuments } = this.props;
+    const { limit, page } = this.state;
+    let pages = Math.floor(totalDocuments / limit),
+      remainder = totalDocuments % limit;
+    if (remainder !== 0) pages += 1;
+
+    console.log(page + ' and ' + pages);
+
+    if (e === -1) {
+      e = page + 1;
+      if (e === pages) this.setState({ isNextBtnShow: false });
+    } else {
+      if (e === pages) this.setState({ isNextBtnShow: false });
+      else this.setState({ isNextBtnShow: true });
+    }
+
+    this.setState({ page: e }, () => {
+      const { limit, page, query } = this.state;
+      let idShop = 1;
+      this.props.getOrders({
+        limit,
+        page,
+        query,
+        idShop
       });
+      this.getStartEndDocuments();
+    });
   };
 
-  handleCancel = (e) => {
-    this.props.history.push("/invoice");
+  renderSelect = () => {
+    const { sort, limit } = this.state;
+    return (
+      <select
+        onChange={this.handleOnChange}
+        name="limit"
+        aria-controls="example1"
+        style={{ margin: '0px 5px' }}
+        className="form-control input-sm"
+        value={limit}
+      >
+        {sort.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.value}
+          </option>
+        ))}
+      </select>
+    );
   };
 
-  createNotification = () => {
-    const { notiType } = this.state;
-    this.props.showNoti(notiType);
-    this.setState({ notiType: "" });
+  renderPageButtons = () => {
+    const { pages, page, isNextBtnShow } = this.state;
+    if (pages.length > 1) {
+      return (
+        <>
+          {pages.map((eachButton) => (
+            <li
+              key={eachButton.pageNumber}
+              className={
+                page === eachButton.pageNumber
+                  ? 'paginae_button active'
+                  : 'paginate_button '
+              }
+            >
+              <a
+                className="paga-link"
+                name="currentPage"
+                href="#"
+                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+              >
+                {eachButton.pageNumber}
+              </a>
+            </li>
+          ))}
+          <li className="paginate_button">
+            <a
+              className={
+                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
+              }
+              name="currentPage"
+              href="#"
+              onClick={() => this.handleChoosePage(-1)}
+            >
+              {'>>'}
+            </a>
+          </li>
+        </>
+      );
+    }
   };
 
   render() {
-    const {
-      _id,
-      idMember,
-      idUser,
-      totalAmt,
-      createddate,
-      comments,
-    } = this.state;
-
+    const { limit, page, start, end, query, } = this.state;
+    const { totalDocuments } = this.props;
     return (
       <Fragment>
-        {this.state.notiType !== "" ? this.createNotification() : null}
-        <NotificationContainer />
 
-        {/* Content Header (Page header) */}
-        <section className="content-header">
-          <h1>
-            Invoice
-            {/* <small>Preview</small> */}
-          </h1>
-          <ol className="breadcrumb">
-            <li>
-              <a href="fake_url">
-                <i className="fa fa-dashboard" /> Home
-              </a>
-            </li>
-            <li>
-              <a href="fake_url">Invoice</a>
-            </li>
-            <li>
-              <a href="fake_url">Edit</a>
-            </li>
-          </ol>
-        </section>
-        {/* Main content */}
-        <section className="content">
-          <div className="row">
-            <div className="col-md-6">
-              <div className="box box-info">
-                <div className="box-header with-border">
-                  <h3 className="box-title">Horizontal Form</h3>
-                </div>
-                {/* /.box-header */}
-                {/* form start */}
-                <form className="form-horizontal" onSubmit={this.handleSubmit}>
+        <Fragment>
+          <section className="content-header">
+            <h1>
+              Đơn hàng
+            </h1>
+            <ol className="breadcrumb">
+              <li>
+                <a href="fake_url">
+                  <i className="fa fa-dashboard" /> Trang chủ
+                </a>
+              </li>
+              <li>
+                <a href="fake_url">Đơn hàng</a>
+              </li>
+            </ol>
+          </section>
+          {/* Main content */}
+          <section className="content">
+            <div className="row">
+              {/* left column */}
+              <div className="col-md-12">
+                <div className="box">
+                  <div className="box-header" style={{ marginTop: '5px' }}>
+                    <div style={{ paddingLeft: '5px' }} className="col-md-8">
+                      <h3 className="box-title">Quản lý đơn hàng</h3>
+                    </div>
+
+                    {/* <div className="col-md-4">
+                      <OrderModal limit={limit} page={page} />
+                    </div> */}
+                  </div>
+                  {/* /.box-header */}
                   <div className="box-body">
-                    <div className="form-group">
-                      <label
-                        htmlFor="inputEmail3"
-                        className="col-sm-2 control-label"
-                      >
-                        ID
-                      </label>
-                      <div className="col-sm-10">
-                        <input
-                          name="_id"
-                          type="text"
-                          id="inputEmail3"
-                          placeholder="Loading..."
-                          className="form-control"
-                          defaultValue={_id}
-                          disabled
-                          onChange={this.handleChange}
-                        />
+                    <div
+                      id="example1_wrapper"
+                      className="dataTables_wrapper form-inline dt-bootstrap"
+                    >
+                      <div className="row">
+                        <div>
+                          <div className="col-sm-6">
+                            <div
+                              className="dataTables_length"
+                              id="example1_length"
+                            >
+                              <label>
+                                Hiển thị
+                                {this.renderSelect()}
+                                kết quả
+                              </label>
+                            </div>
+                          </div>
+                          {/* <div className="col-sm-6">
+                            <div id="example1_filter" className="dataTables_filter" >
+                              <label style={{ float: 'right' }}>
+                                Tìm kiếm
+                                                <input
+                                  type="search"
+                                  name="query"
+                                  style={{ margin: '0px 5px' }}
+                                  className="form-control input-sm"
+                                  placeholder="Nhập từ khóa...  "
+                                  aria-controls="example1"
+                                  onChange={this.handleOnChange}
+                                  value={query} />
+                              </label>
+                            </div>
+                          </div> */}
+                        </div>
                       </div>
-                    </div>
-                    <div className="form-group">
-                      <label
-                        htmlFor="inputPassword3"
-                        className="col-sm-2 control-label"
-                      >
-                        Member
-                      </label>
-                      <div className="col-sm-10">
-                        <input
-                          name="idMember"
-                          type="text"
-                          className="form-control"
-                          id="inputMember"
-                          placeholder="Loaiding..."
-                          defaultValue={idMember}
-                          onChange={this.handleChange}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <label
-                        htmlFor="inputPassword3"
-                        className="col-sm-2 control-label"
-                      >
-                        User
-                      </label>
-                      <div className="col-sm-10">
-                        <input
-                          name="idUser"
-                          type="text"
-                          className="form-control"
-                          id="inputUser"
-                          placeholder="Loading..."
-                          defaultValue={idUser}
-                          onChange={this.handleChange}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <label
-                        htmlFor="inputPassword3"
-                        className="col-sm-2 control-label"
-                      >
-                        Total
-                      </label>
-                      <div className="col-sm-10">
-                        <input
-                          name="totalAmt"
-                          type="text"
-                          className="form-control"
-                          id="inputTotalAmt"
-                          placeholder="Loading..."
-                          defaultValue={totalAmt}
-                          onChange={this.handleChange}
-                          disabled
-                        />
-                      </div>
-                    </div>
 
-                    <div className="form-group">
-                      <label
-                        htmlFor="inputPassword3"
-                        className="col-sm-2 control-label"
-                      >
-                        Comments
-                      </label>
-                      <div className="col-sm-10">
-                        <input
-                          name="comments"
-                          type="text"
-                          className="form-control"
-                          id="inputComments"
-                          placeholder="Loading..."
-                          defaultValue={comments}
-                          onChange={this.handleChange}
-                        />
+                      <div className="row">
+                        <div className="col-sm-12">
+                          <table
+                            id="example1"
+                            className="table table-bordered table-striped"
+                          >
+                            <thead>
+                              <tr>
+                                <th style={{ width: '5%' }}>#</th>
+                                <th style={{ width: '5%' }}>Mã đơn hàng</th>
+                                <th style={{ width: '15%' }}>Người nhận</th>
+                                <th style={{ width: '12%' }}>Số điện thoại</th>
+                                <th style={{ width: '15%' }}>Địa chỉ</th>
+                                <th style={{ width: '10%' }}>Tổng cộng</th>
+                                <th style={{ width: '10%' }}>Ngày đặt</th>
+                                <th style={{ width: '10%' }}>Tình trạng</th>
+                                <th style={{ width: '15%' }}>Lý do hủy</th>
+                              </tr>
+                            </thead>
+
+                            <tbody>{this.renderOrders()}</tbody>
+
+                            <tfoot>
+                              <tr>
+                                <th>#</th>
+                                <th>Người nhận  </th>
+                                <th>Số điện thoại</th>
+                                <th>Địa chỉ</th>
+                                <th>Tổng cộng</th>
+                                <th>Ngày đặt</th>
+                                <th>Tình trạng</th>
+                                <th>Lý do hủy</th>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-sm-5">
+                          <div
+                            className="dataTables_info"
+                            id="example1_info"
+                            role="status"
+                            aria-live="polite"
+                          >
+                            Hiển thị{' '}
+                            {query == ''
+                              ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
+                              : ''}{' '}
+                            {totalDocuments} kết quả
+                          </div>
+                        </div>
+                        <div className="col-sm-7">
+                          <div
+                            className="dataTables_paginate paging_simple_numbers"
+                            id="example1_paginate">
+                            <ul
+                              className="pagination"
+                              style={{ float: 'right' }}
+                            >
+                              {this.renderPageButtons()}
+                            </ul>
+                          </div>
+                        </div>
                       </div>
                     </div>
+                    {/*/.col (left) */}
                   </div>
-                  {/* /.box-body */}
-                  <div className="box-footer">
-                    <button
-                      id="btncancel"
-                      type="button"
-                      onClick={this.handleCancel}
-                      className="btn btn-default"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      id="btnsave"
-                      type="submit"
-                      className="btn btn-info pull-right"
-                    >
-                      Save
-                    </button>
-                  </div>
-                  {/* /.box-footer */}
-                </form>
+                  {/* /.row */}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+          {/* /.content */}
+        </Fragment>
+        {/* )} */}
       </Fragment>
     );
   }
 }
 
-const mapStateToProps = (state) => ({});
-export default connect(mapStateToProps, { showNoti })(InvoiceEdit);
+Order.propTypes = {
+  getOrders: PropTypes.func.isRequired,
+  orders: PropTypes.array.isRequired,
+  isLoaded: PropTypes.bool.isRequired,
+  totalDocuments: PropTypes.number.isRequired,
+};
+
+export default connect(mapStateToProps, { getOrders })(Order);

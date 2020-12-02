@@ -9,6 +9,7 @@ import ProductAdd from './components/Content/Seller/Product/ProductAdd';
 import ProductAddNextPage from './components/Content/Seller/Product/ProductAddNextPage';
 import ProductVarEdit from './components/Content/Seller/Product/ProductVarEdit'
 import Product from './components/Content/Seller/Product/Product';
+import Order from './components/Content/Seller/Order/Order';
 import OrderEdit from './components/Content/Seller/Order/OrderEdit';
 import EmployeeEdit from './components/Content/Seller/Employee/EmployeeEdit';
 import StorageReport from './components/Content/Seller/Report/StorageReport';
@@ -51,6 +52,8 @@ import Review from './components/Content/ShopNow/User/Review';
 import Watchlist from './components/Content/ShopNow/User/Watchlist';
 import Wishlist from './components/Content/ShopNow/User/Wishlist';
 
+import ModalCancel from './components/Content/Modal/ModalCancel'
+
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   isLoading: state.auth.isLoading,
@@ -59,6 +62,8 @@ const mapStateToProps = (state) => ({
   token: state.auth.token,
   role: state.auth.role,
   userToken: state.authUser.token,
+  show: state.modal.show,
+  modalName: state.modal.modalName
 });
 
 const roles = {
@@ -93,7 +98,7 @@ class CoffeShop extends Component {
   };
 
   render() {
-    const { token, userToken } = this.props;
+    const { token, userToken, show, modalName } = this.props;
     return (
       <Fragment>
         {/* {!this.props.isLoaded ? (
@@ -114,9 +119,10 @@ class CoffeShop extends Component {
             <ProductList />
           </Route>
           <Route path={`/product-list/:topicId`} component={ProductList} />
-          <Route exact path="/product-detail">
+          <Route path={`/product-detail/:id`} component={ProductDetail} />
+          {/* <Route exact path="/product-detail">
             <ProductDetail />
-          </Route>
+          </Route> */}
           <Route exact path="/checkout/cart">
             <Cart />
           </Route>
@@ -169,117 +175,127 @@ class CoffeShop extends Component {
 
           {token && (
             <Fragment>
-              <Header />
-              <Menu />
+              {show && modalName == 'modalCancel' && <ModalCancel />}
+              <Fragment>
+                <Header />
+                <Menu />
 
-              <div className="content-wrapper">
-                <Switch>
-                  <Route exact path="/home">
-                    <Home />
-                  </Route>
-                  <Route path="/404">
-                    <ErrorPage />
-                  </Route>
-                  <Route path="/403">
-                    <NoPermissionPage />
-                  </Route>
-                  <PrivateRoute
-                    exact
-                    path="/employee"
-                    component={Employee}
-                    role={roles.employee}
-                    token={token}
-                  ></PrivateRoute>
-                  <PrivateRoute
-                    exact
-                    path="/add-product"
-                    component={ProductAdd}
-                    role={roles.product}
-                    token={token}
-                  ></PrivateRoute>
-                  <PrivateRoute
-                    exact
-                    path="/add-product/photos"
-                    component={ProductAddNextPage}
-                    role={roles.product}
-                    token={token}
-                  ></PrivateRoute>
-                  <PrivateRoute
-                    exact
-                    path="/product"
-                    component={Product}
-                    role={roles.product}
-                    token={token}
-                  ></PrivateRoute>
-                  <PrivateRoute
-                    exact
-                    path="/productvar/edit/:id"
-                    component={ProductVarEdit}
-                    role={roles.product}
-                    token={token}
-                  ></PrivateRoute>
-                  <PrivateRoute
-                    exact
-                    path="/role"
-                    component={Role}
-                    role={roles.role}
-                    token={token}
-                  ></PrivateRoute>
-                  <PrivateRoute
-                    exact
-                    path="/supplierinfor"
-                    component={SupplierInfor}
-                    // role={roles.supplier}
-                    token={token}
-                  ></PrivateRoute>
-                  <PrivateRoute
-                    exact
-                    path="/role/edit/:id"
-                    component={RoleEdit}
-                    role={roles.role}
-                    token={token}
-                  ></PrivateRoute>
-                  <PrivateRoute
-                    exact
-                    path="/employee/edit/:id"
-                    component={EmployeeEdit}
-                    role={roles.employee}
-                    token={token}
-                  ></PrivateRoute>
-                  <PrivateRoute
-                    exact
-                    path="/order/edit/:id"
-                    component={OrderEdit}
-                    role={roles.order}
-                    token={token}
-                  ></PrivateRoute>
-                  <PrivateRoute
-                    exact
-                    path="/supplier/edit/:id"
-                    component={SupplierEdit}
-                    role={roles.supplier}
-                    token={token}
-                  ></PrivateRoute>
-                  <Route
-                    exact
-                    path="/dailycheck"
-                    component={DailyCheck}
-                  ></Route>
-                  <Route
-                    exact
-                    path="/warehouse-report"
-                    component={StorageReport}
-                  ></Route>
-                  <Route
-                    exact
-                    path="/sale-report"
-                    component={SaleReport}
-                  ></Route>
+                <div className="content-wrapper">
+                  <Switch>
+                    <Route exact path="/home">
+                      <Home />
+                    </Route>
+                    <Route path="/404">
+                      <ErrorPage />
+                    </Route>
+                    <Route path="/403">
+                      <NoPermissionPage />
+                    </Route>
+                    <PrivateRoute
+                      exact
+                      path="/employee"
+                      component={Employee}
+                      role={roles.employee}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/add-product"
+                      component={ProductAdd}
+                      role={roles.product}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/add-product/photos"
+                      component={ProductAddNextPage}
+                      role={roles.product}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/product"
+                      component={Product}
+                      role={roles.product}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/productvar/edit/:id"
+                      component={ProductVarEdit}
+                      role={roles.product}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/role"
+                      component={Role}
+                      role={roles.role}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/supplierinfor"
+                      component={SupplierInfor}
+                      // role={roles.supplier}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/role/edit/:id"
+                      component={RoleEdit}
+                      role={roles.role}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/employee/edit/:id"
+                      component={EmployeeEdit}
+                      role={roles.employee}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/order"
+                      component={Order}
+                      role={roles.order}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/order/edit/:id"
+                      component={OrderEdit}
+                      role={roles.order}
+                      token={token}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/supplier/edit/:id"
+                      component={SupplierEdit}
+                      role={roles.supplier}
+                      token={token}
+                    ></PrivateRoute>
+                    <Route
+                      exact
+                      path="/dailycheck"
+                      component={DailyCheck}
+                    ></Route>
+                    <Route
+                      exact
+                      path="/warehouse-report"
+                      component={StorageReport}
+                    ></Route>
+                    <Route
+                      exact
+                      path="/sale-report"
+                      component={SaleReport}
+                    ></Route>
 
-                  <Route path="*" render={() => <Redirect to="/404" />} />
-                </Switch>
-              </div>
-              <Footer />
+                    <Route path="*" render={() => <Redirect to="/404" />} />
+                  </Switch>
+                </div>
+                <Footer />
+              </Fragment>
             </Fragment>
           )}
 

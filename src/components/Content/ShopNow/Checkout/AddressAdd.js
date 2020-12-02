@@ -142,7 +142,7 @@ class AddressAdd extends Component {
                         {this.state.msg ? (
                             <div className="alert alert-danger alert-dismissible">
                                 <button type="button" className="close" data-dismiss="alert" aria-hidden="true"
-                                    onClick={() => this.showModal({ show: false })}>
+                                    onClick={() => showModal({ show: false })}>
                                     ×
                                 </button>
                                 {this.state.msg}
@@ -220,7 +220,7 @@ class AddressAdd extends Component {
                                     <button
                                         className="btn btn-default btn-block btn-flat"
                                         disabled={
-                                            !this.state.inputErrors && this.state.password !== '' && this.state.username !== '' ? false : true}
+                                            !this.state.inputErrors ? false : true}
                                         onClick={() => showModal({ show: false })}>
                                         Hủy
                                     </button>

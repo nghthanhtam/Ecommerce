@@ -16,17 +16,14 @@ import {
   PRODUCTVAR_RECEIVED,
 } from "../actions/types";
 
-import mongoose from "mongoose";
-
 function* fetchProductVarByid(params) {
   try {
     const state = yield select(),
-      { id } = params.params;
-    console.log(params.params);
+      { id } = params;
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/${id}?`,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/${id}`,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -63,8 +60,6 @@ function* fetchProductVarsByIdShop(params) {
     const state = yield select();
     let { limit, page, query, idShop, getActive } = params.pages;
 
-
-
     const response = yield call(() =>
       axios
         .get(
@@ -91,9 +86,6 @@ function* addProductVar(params) {
           tokenConfig(state)
         )
     );
-    if (response.data._id instanceof mongoose.Types.ObjectId) {
-      response.data._id = response.data._id.toString();
-    }
 
     yield put({ type: PRODUCTVAR_ADDED, payload: response.data });
   } catch (error) {

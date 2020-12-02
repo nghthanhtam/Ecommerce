@@ -12,9 +12,9 @@ export const getProductVars = (params) => ({
   pages: params,
 });
 
-export const getProductVarById = (params) => ({
+export const getProductVarById = (id) => ({
   type: GET_PRODUCTVAR_BY_ID,
-  params: params,
+  id,
 });
 
 export const getProductVarsByIdShop = (params) => ({

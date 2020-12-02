@@ -159,10 +159,11 @@ class Employee extends Component {
 
     if (e === -1) {
       e = page + 1;
-      if (page === pages) {
-        this.setState({ isNextBtnShow: false });
-      }
-    } else this.setState({ isNextBtnShow: true });
+      if (e === pages) this.setState({ isNextBtnShow: false });
+    } else {
+      if (e === pages) this.setState({ isNextBtnShow: false });
+      else this.setState({ isNextBtnShow: true });
+    }
 
     this.setState({ page: e }, () => {
       const { limit, page, query, deletedEmp, activeEmp } = this.state;
@@ -431,7 +432,7 @@ class Employee extends Component {
                           >
                             Hiển thị{' '}
                             {query == ''
-                              ? start + ' đến ' + end + ' trong '
+                              ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
                               : ''}{' '}
                             {totalDocuments} kết quả
                           </div>
@@ -439,8 +440,7 @@ class Employee extends Component {
                         <div className="col-sm-7">
                           <div
                             className="dataTables_paginate paging_simple_numbers"
-                            id="example1_paginate"
-                          >
+                            id="example1_paginate">
                             <ul
                               className="pagination"
                               style={{ float: 'right' }}

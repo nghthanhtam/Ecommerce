@@ -15,12 +15,12 @@ import {
 function* fetchOrders(params) {
   try {
     const state = yield select(),
-      { limit, page, idUser } = params.pages;
+      { limit, page, idShop } = params.pages;
 
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_ORDER}/api/order/user/${idUser}?limit=${limit}&page=${page}`,
+          `${process.env.REACT_APP_BACKEND_ORDER}/api/order/shop/${idShop}?limit=${limit}&page=${page}`,
           tokenConfig(state)
         )
     );
@@ -60,7 +60,7 @@ function* updateOrder(params) {
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_ORDER}/api/order/${params.newOrder.id}`,
+        `${process.env.REACT_APP_BACKEND_ORDER}/api/order/${params.newOrder.id}/status`,
         params.newOrder,
         tokenConfig(state)
       )

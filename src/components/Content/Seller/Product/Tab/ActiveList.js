@@ -237,13 +237,10 @@ class ActiveList extends React.Component {
                                             </div>
                                         </div>
                                         <div className="col-sm-6">
-                                            <div
-                                                id="example1_filter"
-                                                className="dataTables_filter"
-                                            >
+                                            <div id="example1_filter" className="dataTables_filter" >
                                                 <label style={{ float: 'right' }}>
                                                     Tìm kiếm
-                                    <input
+                                                <input
                                                         type="search"
                                                         name="query"
                                                         style={{ margin: '0px 5px' }}
@@ -251,8 +248,7 @@ class ActiveList extends React.Component {
                                                         placeholder="Nhập từ khóa...  "
                                                         aria-controls="example1"
                                                         onChange={this.handleOnChange}
-                                                        value={this.state.query}
-                                                    />
+                                                        value={this.state.query} />
                                                 </label>
                                             </div>
                                         </div>

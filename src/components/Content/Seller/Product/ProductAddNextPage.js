@@ -5,6 +5,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './product.css';
 import axios from "axios";
+import Loading from "../../ShopNow/Loading/Loading"
 
 const mapStateToProps = (state) => ({
   arrVariants: state.productadd.arrVariants,
@@ -18,6 +19,7 @@ class ProductAddNextPage extends Component {
     propValueList: [],
     isPriceBoardHidden: true,
     variantList: [],
+    isTransition: false
   };
 
   componentDidMount = () => {
@@ -46,7 +48,7 @@ class ProductAddNextPage extends Component {
 
   upload = () => {
     const { arrProductVar, arrVariants, product, idProduct } = this.props.location
-    const { selectedFiles } = this.state
+    const { selectedFiles, isTransition } = this.state
     let validateArrVariants = []
     arrVariants.map(variant => {
       if (!variant.name.__isNew__) {
@@ -83,15 +85,20 @@ class ProductAddNextPage extends Component {
         'Content-Type': 'multipart/form-data; charset=utf-8; boundary="another cool boundary";'
       }
     };
-    axios.post(`${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`, formData, config).then((resp) => {
-      console.log(resp);
+    this.setState({ isTransition: true })
+    axios.post(`${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`, formData, config).then((response) => {
+      console.log('response product add: ', response);
+      if (response) {
+        this.props.history.push('/home')
+        this.setState({ isTransition: false })
+      }
     }).catch(err => {
       console.log(err);
     });
   };
 
   render() {
-    const { errorMessage } = this.state;
+    const { errorMessage, isTransition } = this.state;
     const { arrProductVar } = this.props.location
     const dragOver = (e) => {
       e.preventDefault();
@@ -155,132 +162,132 @@ class ProductAddNextPage extends Component {
 
     return (
       <Fragment>
-        <Fragment>
-          {/* Content Header (Page header) */}
-          <section className="content-header">
-            <h1>
-              Đăng ký sản phẩm mới
+        {isTransition && <Loading />}
+        {/* Content Header (Page header) */}
+        <section className="content-header">
+          <h1>
+            Đăng ký sản phẩm mới
               {/* <small>Preview</small> */}
-            </h1>
-            <ol className="breadcrumb">
-              <li>
-                <a href="fake_url">
-                  <i className="fa fa-dashboard" /> Trang chủ
+          </h1>
+          <ol className="breadcrumb">
+            <li>
+              <a href="fake_url">
+                <i className="fa fa-dashboard" /> Trang chủ
                 </a>
-              </li>
-              <li>
-                <a href="fake_url">Đăng ký sản phẩm mới</a>
-              </li>
-              <li>
-                <a href="fake_url">Chọn hình ảnh</a>
-              </li>
-            </ol>
-          </section>
-          {/* Main content */}
-          <section className="content">
-            <div className="row">
-              {/* left column */}
-              <div className="col-md-12">
-                <div className="box">
-                  <div className="box-header" style={{ marginTop: '5px' }}>
-                    <div style={{ marginBottom: '20px' }}>
-                      <label>
-                        Chọn hình ảnh cho sản phẩm
+            </li>
+            <li>
+              <a href="fake_url">Đăng ký sản phẩm mới</a>
+            </li>
+            <li>
+              <a href="fake_url">Chọn hình ảnh</a>
+            </li>
+          </ol>
+        </section>
+        {/* Main content */}
+        <section className="content">
+          <div className="row">
+            {/* left column */}
+            <div className="col-md-12">
+              <div className="box">
+                <div className="box-header" style={{ marginTop: '5px' }}>
+                  <div style={{ marginBottom: '20px' }}>
+                    <label>
+                      Chọn hình ảnh cho sản phẩm
                       </label>
-                      <br />
-                      <span>1. Kích thước yêu cầu: 240 x 300 px</span>
-                      <br />
-                      <span>2. Hình ảnh không được chứa tên cửa hàng</span>
-                      <br />
-                      <span>
-                        3. Hình ảnh đầu tiên là hình đại diện cho mỗi nhóm thuộc
-                        tính
+                    <br />
+                    <span>1. Kích thước yêu cầu: 800 x 687 px</span>
+                    <br />
+                    <span>2. Hình ảnh phải được xóa nền và không được chứa tên cửa hàng</span>
+                    <br />
+                    <span>
+                      3. Hình ảnh được tick là hình đại diện cho mỗi nhóm thuộc
+                      tính
                       </span>
-                    </div>
+                  </div>
 
-                    {arrProductVar.map((product, pindex) => {
-                      return (
-                        <div key={pindex}>
-                          <p
-                            style={{
-                              background: '#f5f5f5',
-                              padding: '10px',
-                              fontSize: '16px',
-                              fontWeight: '700',
-                            }}
-                          >
-                            {product.name}
-                          </p>
-                          <div
-                            className="sku-grid"
-                            onDragOver={dragOver}
-                            onDragEnter={dragEnter}
-                            onDragLeave={dragLeave}
-                            onDrop={(e) => fileDrop(e, pindex)}
-                          >
-                            {product.selectedFiles.length > 0 &&
-                              product.selectedFiles.map((item, index) => {
-                                return (
-                                  <label
-                                    key={index}
-                                    htmlFor={item}
-                                    className="skuproduct-card"
-                                  >
-                                    <img
-                                      style={{ width: '100%', height: '90%' }}
-                                      className="product-pic"
-                                      src={item.filePath}
-                                      alt="product"
+                  {arrProductVar.map((product, pindex) => {
+                    return (
+                      <div key={pindex}>
+                        <p
+                          style={{
+                            background: '#f5f5f5',
+                            padding: '10px',
+                            fontSize: '16px',
+                            fontWeight: '700',
+                          }}
+                        >
+                          {product.name}
+                        </p>
+                        <div
+                          className="sku-grid"
+                          onDragOver={dragOver}
+                          onDragEnter={dragEnter}
+                          onDragLeave={dragLeave}
+                          onDrop={(e) => fileDrop(e, pindex)}
+                        >
+                          {product.selectedFiles.length > 0 &&
+                            product.selectedFiles.map((item, index) => {
+                              return (
+                                <label
+                                  key={index}
+                                  htmlFor={item}
+                                  className="skuproduct-card"
+                                >
+                                  <img
+                                    style={{ width: '100%', height: '90%' }}
+                                    className="product-pic"
+                                    src={item.filePath}
+                                    alt="product"
+                                  />
+                                  <div className="product-info">
+                                    <input
+                                      className="color-checked"
+                                      type="checkbox"
+                                      id={item}
                                     />
-                                    <div className="product-info">
-                                      <input
-                                        className="color-checked"
-                                        type="checkbox"
-                                        id={item}
-                                      />
-                                    </div>
-                                  </label>
-                                );
-                              })}
-                            <div className="upload-area">
-                              <i className="fa fa-upload fa-3x" />
-                              <p className="upload-text">
-                                Kéo và thả ảnh vào để tải ảnh lên
+                                  </div>
+                                </label>
+                              );
+                            })}
+                          <div className="upload-area">
+                            <i className="fa fa-upload fa-3x" />
+                            <p className="upload-text">
+                              Kéo và thả ảnh vào để tải ảnh lên
                               </p>
-                              {errorMessage}
-                            </div>
+                            {errorMessage}
                           </div>
                         </div>
-                      );
-                    })}
+                      </div>
+                    );
+                  })}
 
-                    <div
-                      style={{ display: 'flex', justifyContent: 'flex-end' }}
+                  <div
+                    style={{ display: 'flex', justifyContent: 'flex-end' }}
+                  >
+                    <button
+                      style={{ width: '100px', marginRight: '5px' }}
+                      type="button"
+                      className="btn btn-block btn-default"
+                      onClick={this.back}
                     >
-                      <button
-                        style={{ width: '100px', marginRight: '5px' }}
-                        type="button"
-                        className="btn btn-block btn-default"
-                        onClick={this.back}
-                      >
-                        Quay lại
+                      Quay lại
                       </button>
-                      <button
-                        type="button"
-                        className="btn btn-warning"
-                        onClick={this.upload}
-                      >
-                        Yêu cầu phê duyệt
+                    <button
+                      type="button"
+                      className="btn btn-warning"
+                      onClick={this.upload}
+                    >
+                      Yêu cầu phê duyệt
                       </button>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
-          {/* /.content */}
-        </Fragment>
+          </div>
+        </section>
+        {/* /.content */}
       </Fragment>
+
     );
   }
 }

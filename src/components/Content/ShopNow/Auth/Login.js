@@ -90,8 +90,8 @@ class Login extends Component {
   render() {
     return (
       <div className='modal-wrapper'>
-        <div style={{ background: '#fff', padding: '30px 20px 20px 20px', transition: 'opacity 0.5s linear' }} className="login-box">
-          <button onClick={() => this.props.showModal({ show: false })} style={{ float: 'right', marginTop: '-15px' }} type="button" className="close" data-dismiss="alert" aria-hidden="true">
+        <div style={{ background: '#fff', padding: '20px 20px 20px 20px', transition: 'opacity 0.5s linear' }} className="login-box">
+          <button onClick={() => this.props.showModal({ show: false })} style={{ float: 'right', marginTop: '-10px' }} type="button" className="close" data-dismiss="alert" aria-hidden="true">
             ×
           </button>
           <div className="login-logo">

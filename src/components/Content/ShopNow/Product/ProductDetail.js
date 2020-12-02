@@ -12,7 +12,7 @@ import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import { connect } from 'react-redux';
 
-import { getProductVarById } from '../../../../state/actions/productVarActions';
+import { getProductById } from '../../../../state/actions/productActions';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -23,10 +23,48 @@ class ProductDetail extends React.Component {
     };
   }
 
+  tokenConfig = (token) => {
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+      },
+    };
+
+    //Header
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  };
+
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    console.log(id);
+    this.props.getProductById(id)
+    // axios
+    //   .get(
+    //     `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/${id}`,
+    //     this.tokenConfig(this.props.authUser.token)
+    //   )
+    //   .then((response) => {
+    //     let {
+    //       fullname,
+    //       idRole,
+    //       identityCard,
+    //       phone,
+    //       username,
+    //       id,
+    //     } = response.data;
+    //     this.setState({ fullname, idRole, identityCard, phone, username, id });
+    //   })
+    //   .catch((er) => console.log(er.response));
+  }
+
   replyClick = () => {
     let { replyBoxHidden } = this.state;
     this.setState({ replyBoxHidden: !replyBoxHidden });
   };
+
   render() {
     let { productList, replyBoxHidden } = this.state;
     const settings = {
@@ -63,7 +101,7 @@ class ProductDetail extends React.Component {
               <div className="infor">
                 <h1>Captain Ameria Mouse</h1>
                 <div className="availibity">
-                  <div>Avaibility:</div>
+                  <div>Tình trạng:</div>
                   <div>In Stock</div>
                 </div>
                 <div className="review">
@@ -197,32 +235,22 @@ class ProductDetail extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="recommend-wrapper">
-              <h3 className="recommend-pane">PRODUCTS RELATED TO THIS MOVIE</h3>
+            <div className="recommend-wrapper" >
+              <h3 style={{ marginLeft: 'auto' }} className="recommend-pane">PRODUCTS RELATED TO THIS MOVIE</h3>
               <div className="sliderwrapper">
-                <Slider
-                  style={{
-                    width: '85%',
-                  }}
-                  {...settings}
-                >
-                  {productList.map(() => {
-                    return <Product />;
+                <Slider style={{ width: '107%' }} {...settings}>
+                  {productList.map((item, index) => {
+                    return <Product key={index} />;
                   })}
                 </Slider>
               </div>
             </div>
             <div className="recommend-wrapper">
-              <h3 className="recommend-pane">
+              <h3 className="recommend-pane" style={{ marginLeft: 'auto' }}>
                 SIMILAR PRODUCTS INSPIRED BY THIS ITEM
               </h3>
               <div className="sliderwrapper">
-                <Slider
-                  style={{
-                    width: '85%',
-                  }}
-                  {...settings}
-                >
+                <Slider style={{ width: '107%' }}  {...settings} >
                   {productList.map(() => {
                     return <Product />;
                   })}
@@ -341,4 +369,4 @@ const mapStateToProps = (state) => ({
   isLoaded: state.productVar.isLoaded,
 });
 
-export default connect(mapStateToProps, { getProductVarById })(ProductDetail);
+export default connect(mapStateToProps, { getProductById })(ProductDetail);

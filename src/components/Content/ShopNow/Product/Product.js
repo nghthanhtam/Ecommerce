@@ -30,7 +30,8 @@ class Product extends React.Component {
         <div className="product-info">
           <div className="product-price">90$</div>
           <div onClick={() => this.addToCart()} className="product-btn">
-            <i className="las la-cart-plus"></i>Cart
+            {/* <i className="fa fa-eye"></i> */}
+            Chi tiết
           </div>
         </div>
       </div>

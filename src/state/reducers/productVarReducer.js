@@ -13,7 +13,8 @@ const initialState = {
   productVars: [],
   productVar: {},
   isLoaded: false,
-  totalDocuments: 0
+  totalDocuments: 0,
+  isAdded: false
 };
 
 export default function (state = initialState, action) {
@@ -39,7 +40,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         productVars: [action.payload, ...state.productVars],
-        isLoaded: true,
+        //isLoaded: true,
+        isAdded: true
       };
     case DELETE_PRODUCTVAR:
       return {

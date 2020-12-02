@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { logout } from '../../../state/actions/authActions';
 import { pushHistory } from '../../../state/actions/historyActions';
+import { showModal } from '../../../state/actions/modalActions';
 import PropTypes from 'prop-types';
 
 const mapStateToProps = (state) => ({
@@ -24,7 +25,9 @@ class Header extends Component {
     e.preventDefault();
     this.props.logout();
     this.props.pushHistory('/');
+    this.props.showModal({ show: false })
   };
+
   render() {
     const { employee } = this.props;
     return (
@@ -130,4 +133,5 @@ class Header extends Component {
   }
 }
 
-export default connect(mapStateToProps, { logout, pushHistory })(Header);
+export default connect(mapStateToProps, { logout, pushHistory, showModal })(Header);
+

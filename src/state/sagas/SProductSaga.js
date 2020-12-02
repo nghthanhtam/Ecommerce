@@ -3,7 +3,9 @@ import axios from "axios";
 import { tokenConfig } from "../actions/authActions";
 import {
   GET_PRODUCTS,
+  GET_PRODUCT_BY_ID,
   ADD_PRODUCT,
+  PRODUCT_RECEIVED,
   PRODUCTS_RECEIVED,
   PRODUCT_ADDED,
   DELETE_PRODUCT,
@@ -16,6 +18,25 @@ import {
 } from "../actions/types";
 
 import mongoose from "mongoose";
+
+function* fetchProductByid(params) {
+  try {
+    const state = yield select(),
+      { id } = params;
+    const response = yield call(() =>
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${id}`,
+          tokenConfig(state)
+        )
+        .catch((er) => console.log(er.response))
+    );
+    console.log(response);
+    yield put({ type: PRODUCT_RECEIVED, payload: response });
+  } catch (error) {
+    console.log({ ...error });
+  }
+}
 
 function* fetchProducts(params) {
   try {
@@ -40,12 +61,12 @@ function* fetchProducts(params) {
 function* fetchProductsByMovieCate(params) {
   try {
     const state = yield select(),
-      { limit, page, query, idMovieCat } = params.pages;
+      { limit, page, idCategory } = params.pages;
 
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/moviecat/${idMovieCat}?limit=${limit}&page=${page}&query=${query}`,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/moviecat/${idCategory}?limit=${limit}&page=${page}`,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -121,6 +142,7 @@ function* updateProductAdd(params) {
 }
 
 export default function* sProductSaga() {
+  yield takeEvery(GET_PRODUCT_BY_ID, fetchProductByid);
   yield takeEvery(GET_PRODUCTS, fetchProducts);
   yield takeEvery(GET_PRODUCTS_BY_MOVIECAT, fetchProductsByMovieCate);
   yield takeEvery(ADD_PRODUCT, addProduct);

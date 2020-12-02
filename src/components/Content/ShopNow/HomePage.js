@@ -390,7 +390,6 @@ class HomePage extends React.Component {
             </div>
             <Footer />
           </Fragment> : null}
-
       </Fragment>
     );
   }

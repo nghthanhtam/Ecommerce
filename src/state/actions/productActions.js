@@ -4,11 +4,17 @@ import {
   DELETE_PRODUCT,
   UPDATE_PRODUCT,
   GET_PRODUCTS_BY_MOVIECAT,
+  GET_PRODUCT_BY_ID
 } from './types';
 
 export const getProducts = (params) => ({
   type: GET_PRODUCTS,
   pages: params,
+});
+
+export const getProductById = (id) => ({
+  type: GET_PRODUCT_BY_ID,
+  id,
 });
 
 export const getProductsByMovieCate = (params) => ({

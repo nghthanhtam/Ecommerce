@@ -4,6 +4,7 @@ import {
   DELETE_PRODUCT,
   PRODUCT_DELETED,
   PRODUCTS_RECEIVED,
+  PRODUCT_RECEIVED,
   PRODUCT_ADDED,
   PRODUCT_UPDATED,
 } from "../actions/types";
@@ -19,7 +20,6 @@ export default function (state = initialState, action) {
     case GET_PRODUCTS:
       return {
         ...state,
-        // isLoaded: true,
       };
     case PRODUCTS_RECEIVED:
       return {
@@ -27,6 +27,12 @@ export default function (state = initialState, action) {
         products: action.payload.data.items,
         isLoaded: true,
         totalDocuments: action.payload.data.total,
+      };
+    case PRODUCT_RECEIVED:
+      return {
+        ...state,
+        product: action.payload.data,
+        isLoaded: true,
       };
     case PRODUCT_ADDED:
       return {

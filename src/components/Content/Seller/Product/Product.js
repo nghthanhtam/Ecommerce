@@ -187,14 +187,8 @@ class Product extends Component {
               className={
                 page === eachButton.pageNumber
                   ? 'paginae_button active'
-                  : 'paginate_button '
-              }>
-              <a
-                className="paga-link"
-                name="currentPage"
-                href="#"
-                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
-              >
+                  : 'paginate_button'}>
+              <a className="paga-link" name="currentPage" href="#" onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
                 {eachButton.pageNumber}
               </a>
             </li>
