@@ -3,6 +3,7 @@ import axios from 'axios';
 import { tokenConfig } from '../../state/actions/authActions';
 import {
   GET_ORDERS,
+  GET_ORDERDETS_BY_ORDERID,
   ADD_ORDER,
   ORDERS_RECEIVED,
   ORDER_ADDED,
@@ -10,7 +11,34 @@ import {
   ORDER_DELETED,
   UPDATE_ORDER,
   ORDER_UPDATED,
+  GET_USER_ORDERS,
+  ORDER_DETS_RECEIVED
 } from '../actions/types';
+
+function* fetchOrderDetsByOrderId(params) {
+  try {
+    const state = yield select(),
+      { id } = params;
+
+    const response = yield call(() =>
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_ORDER}/api/order/${id}`,
+          tokenConfig(state)
+        )
+    );
+
+    yield put({ type: ORDER_DETS_RECEIVED, payload: response });
+  } catch (error) {
+    console.log({ ...error });
+    let err = { ...error }
+    if (err.status == 401) {
+      this.props.history.push({
+        pathname: '/login',
+      });
+    }
+  }
+}
 
 function* fetchOrders(params) {
   try {
@@ -21,6 +49,31 @@ function* fetchOrders(params) {
       axios
         .get(
           `${process.env.REACT_APP_BACKEND_ORDER}/api/order/shop/${idShop}?limit=${limit}&page=${page}`,
+          tokenConfig(state)
+        )
+    );
+
+    yield put({ type: ORDERS_RECEIVED, payload: response });
+  } catch (error) {
+    console.log({ ...error });
+    let err = { ...error }
+    if (err.status == 401) {
+      this.props.history.push({
+        pathname: '/login',
+      });
+    }
+  }
+}
+
+function* fetchUserOrders(params) {
+  try {
+    const state = yield select(),
+      { limit, page, idUser } = params.pages;
+
+    const response = yield call(() =>
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_ORDER}/api/order/user/${idUser}?limit=${limit}&page=${page}`,
           tokenConfig(state)
         )
     );
@@ -88,7 +141,9 @@ function* deleteOrder(params) {
 }
 
 export default function* sOrderSaga() {
+  yield takeEvery(GET_ORDERDETS_BY_ORDERID, fetchOrderDetsByOrderId);
   yield takeEvery(GET_ORDERS, fetchOrders);
+  yield takeEvery(GET_USER_ORDERS, fetchUserOrders);
   yield takeEvery(ADD_ORDER, addOrder);
   yield takeEvery(UPDATE_ORDER, updateOrder);
   yield takeEvery(DELETE_ORDER, deleteOrder);

@@ -21,7 +21,8 @@ class ShowingProduct extends React.Component {
 
   componentDidMount() {
     const { item } = this.props
-    this.setState({ mainPhoto: item.productVars[0].Images[0].url })
+    console.log(item);
+    if (item.productVars.length > 0) this.setState({ mainPhoto: item.productVars[0].Images[0].url })
   }
 
   render() {
@@ -32,26 +33,31 @@ class ShowingProduct extends React.Component {
       speed: 800,
       slidesToScroll: 2,
       className: 'slider-provar',
-      arrows: false
     };
     return (
-      <div className="product-card" onClick={() => this.props.history.push(`/product-detail/${item.id}`)}>
-        <h1>Captain Mouse</h1>
-        <p>Saved: $4</p>
-        <img className="product-pic" src={mainPhoto} alt="../img/not-avai.jpg" />
+      <div className="product-card" >
+        <div style={{ height: '335px', }}>
+          <div onClick={() => this.props.history.push(`/product-detail/${item.id}`)}>
+            <h1>{item.name}</h1>
+            {item.marketPrice - Number(item.price) > 0 && <p>Saved: ${item.marketPrice - Number(item.price)}</p>}
+            <img className="product-pic" src={mainPhoto} alt="../img/not-avai.jpg" />
+          </div>
 
-        <Slider {...settings} slidesToShow={4} >
-          {item.productVars.map((ele, index) => {
-            return (
-              <div key={index} style={{ padding: '-10px' }}>
-                <img onMouseOver={() => this.handleVariantPhotos(ele)}
-                  onMouseOut={() => this.handleVariantPhotos(ele)}
-                  style={{ width: '40px', height: '40px' }} src={ele.Images[0].url} alt="photo" />
-              </div>
-            )
-          })}
-        </Slider>
+          <div style={{ zIndex: 1000 }} >
+            <Slider {...settings} slidesToShow={item.productVars.length < 4 ? item.productVars.length : 4} >
+              {item.productVars.map((ele, index) => {
+                return (
+                  <div key={index} style={{}}>
+                    <img onMouseOver={() => this.handleVariantPhotos(ele)}
+                      onMouseOut={() => this.handleVariantPhotos(ele)}
+                      style={{ width: '32px', height: '40px' }} src={ele.Images[0].url} alt="photo" />
+                  </div>
+                )
+              })}
+            </Slider>
+          </div>
 
+        </div>
         <div className="product-info">
           <div className="product-price">90$</div>
           <div className="product-btn">

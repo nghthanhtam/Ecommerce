@@ -195,14 +195,11 @@ class ProductAddNextPage extends Component {
                       Chọn hình ảnh cho sản phẩm
                       </label>
                     <br />
-                    <span>1. Kích thước yêu cầu: 800 x 687 px</span>
+                    <span>1. Kích thước yêu cầu: 500 x 500</span>
                     <br />
-                    <span>2. Hình ảnh phải được xóa nền và không được chứa tên cửa hàng</span>
+                    <span>2. Hình ảnh phải được xóa nền và không được chứa chữ</span>
                     <br />
-                    <span>
-                      3. Hình ảnh được tick là hình đại diện cho mỗi nhóm thuộc
-                      tính
-                      </span>
+                    <span>3. Hình ảnh được tick là hình đại diện cho mỗi nhóm thuộc tính</span>
                   </div>
 
                   {arrProductVar.map((product, pindex) => {

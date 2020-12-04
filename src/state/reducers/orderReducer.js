@@ -5,13 +5,15 @@ import {
   ORDERS_RECEIVED,
   ORDER_ADDED,
   ORDER_UPDATED,
+  ORDER_DETS_RECEIVED
 } from '../actions/types';
 
 const initialState = {
   orders: [],
   totalDocuments: 0,
   isLoaded: false,
-  isAdded: false
+  isOrderDetsLoaded: false,
+  isAdded: false,
 };
 
 export default function (state = initialState, action) {
@@ -26,6 +28,12 @@ export default function (state = initialState, action) {
         orders: action.payload.data.items,
         totalDocuments: action.payload.data.total,
         isLoaded: true,
+      };
+    case ORDER_DETS_RECEIVED:
+      return {
+        ...state,
+        order: action.payload.data,
+        isOrderDetsLoaded: true,
       };
     case ADD_ORDER:
       return {
@@ -50,7 +58,6 @@ export default function (state = initialState, action) {
       return {
         ...state,
       };
-
     default:
       return state;
   }

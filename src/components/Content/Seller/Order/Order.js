@@ -247,12 +247,12 @@ class Order extends Component {
             </h1>
             <ol className="breadcrumb">
               <li>
-                <a href="fake_url">
+                <a href="/home">
                   <i className="fa fa-dashboard" /> Trang chủ
                 </a>
               </li>
               <li>
-                <a href="fake_url">Đơn hàng</a>
+                <a href="/order">Đơn hàng</a>
               </li>
             </ol>
           </section>

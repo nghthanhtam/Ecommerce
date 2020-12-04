@@ -8,6 +8,7 @@ import Product from './Product';
 import ShowingProduct from './ShowingProduct';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
+import RecProduct from './RecProduct'
 
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -45,8 +46,6 @@ class ProductList extends React.Component {
     end: 8,
     pages: [],
     isNextBtnShow: true
-    // this.handleScroll = this.handleScroll.bind(this);
-    // this.changePic = this.changePic.bind(this);
   }
 
   componentDidMount() {
@@ -398,27 +397,26 @@ class ProductList extends React.Component {
           <div >
 
             <div className="rec-product-wrapper">
-              <h3 style={{ color: '#0d1136', marginRight: 'auto' }}>
+              <h3>
                 SẢN PHẨM KHÁC TRONG CÙNG PHIM
               </h3>
               <Slider style={{ width: '106%', paddingTop: 0 }} {...settings} >
                 {productList.map((item, index) => {
-                  return <Product key={index} />;
+                  return <RecProduct key={index} />;
                 })}
               </Slider>
             </div>
             <div className="rec-product-wrapper">
-              <h3 style={{ color: '#0d1136', marginRight: 'auto' }}>
+              <h3>
                 SẢN PHẨM KHÁC TƯƠNG TỰ
               </h3>
               <Slider style={{ width: '106%', paddingTop: 0 }} {...settings} >
                 {productList.map((item, index) => {
-                  return <Product key={index} />;
+                  return <RecProduct key={index} />;
                 })}
               </Slider>
             </div>
           </div>
-
         </div>
 
         <Footer />

@@ -15,10 +15,20 @@ class Header extends React.Component {
     header: 'header',
     left: 0,
     hideSearchBar: 'hidden',
+    cartWrapper: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#0d1136',
+      padding: '8px',
+      borderRadius: '7px',
+      backgroundColor: 'transparent'
+    }
   };
 
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
+    this.setHeader()
     const { user, getCartsByIdUser } = this.props
     getCartsByIdUser({ limit: 1000, page: 1, idUser: user.id })
   }
@@ -27,21 +37,45 @@ class Header extends React.Component {
     window.removeEventListener('scroll', this.handleScroll);
   }
 
-  handleScroll = () => {
+  setHeader = () => {
     if (window.scrollY > 10) {
       this.setState({ header: 'header1' });
+      this.setState({
+        cartWrapper: {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#0d1136',
+          padding: '8px',
+          borderRadius: '7px',
+        }
+      });
       this.setState({ hideSearchBar: 'visible' });
     } else {
       this.setState({ header: 'header' });
       this.setState({ hideSearchBar: 'hidden' });
+      this.setState({
+        cartWrapper: {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#0d1136',
+          padding: '8px',
+          borderRadius: '7px',
+          backgroundColor: 'transparent'
+        }
+      });
     }
+  }
+  handleScroll = () => {
+    this.setHeader();
     this.setState({
       left: (-window.scrollY * 0.5).toString() + 'px',
     });
   };
 
   render() {
-    const { hideSearchBar, } = this.state;
+    const { hideSearchBar, cartWrapper, } = this.state;
     const { user, totalCount, isLoaded } = this.props
 
     return (
@@ -79,7 +113,7 @@ class Header extends React.Component {
             </Link>
           </li>
           <li>
-            <Link className="item" style={cartWrapper} to="/checkout/cart">
+            <Link style={cartWrapper} className="item" to="/checkout/cart">
               <div style={{ color: 'white' }}>Giỏ hàng</div>
               {isLoaded && <div style={cartInfor}>{totalCount}</div>}
             </Link>
@@ -146,4 +180,13 @@ const cartWrapper = {
   backgroundColor: '#0d1136',
   padding: '8px',
   borderRadius: '7px',
+};
+const cartWrapper1 = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#0d1136',
+  padding: '8px',
+  borderRadius: '7px',
+  backgroundColor: 'transparent',
 };

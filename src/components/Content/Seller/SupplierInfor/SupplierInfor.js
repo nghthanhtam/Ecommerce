@@ -144,45 +144,8 @@ class SupplierInfor extends Component {
   };
 
   render() {
-    const { select, totalDocuments } = this.state;
+    const { } = this.state;
     const { isLoaded } = this.props;
-
-    // const validate1 = (values) => {
-    //   const errors = {};
-    //   if (!values.name) {
-    //     errors.name = 'Required';
-    //   } else if (values.name.length > 50) {
-    //     errors.name = 'Must be 50 characters or less';
-    //   }
-    //   if (!values.code) {
-    //     errors.code = 'Required';
-    //   } else if (values.code.length > 15) {
-    //     errors.code = 'Must be 15 characters or less';
-    //   }
-    //   if (!values.buscode) {
-    //     errors.buscode = 'Required';
-    //   } else if (values.buscode.length > 20) {
-    //     errors.buscode = 'Must be 20 characters or less';
-    //   }
-    //   if (!values.city) {
-    //     errors.city = 'Required';
-    //   } else if (values.city.length > 50) {
-    //     errors.city = 'Must be 50 characters or less';
-    //   }
-    //   if (!values.admin) {
-    //     errors.admin = 'Required';
-    //   } else if (values.admin.length > 50) {
-    //     errors.admin = 'Must be 50 characters or less';
-    //   }
-    //   if (!values.email) {
-    //     errors.email = 'Required';
-    //   } else if (
-    //     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-    //   ) {
-    //     errors.email = 'Invalid email address';
-    //   }
-    //   return errors;
-    // };
 
     const SignupForm = () => {
       const formik = useFormik({
@@ -192,6 +155,7 @@ class SupplierInfor extends Component {
           email: '',
           buscode: '',
           city: '',
+          admin: ''
         },
         validationSchema: Yup.object({
           name: Yup.string()
@@ -199,9 +163,6 @@ class SupplierInfor extends Component {
             .required('Bắt buộc nhập!'),
           code: Yup.string()
             .max(15, 'Chỉ được phép nhập ít hơn 15 kí tự')
-            .required('Bắt buộc nhập!'),
-          busLicenId: Yup.string()
-            .max(20, 'Chỉ được phép nhập ít hơn 20 kí tự')
             .required('Bắt buộc nhập!'),
           city: Yup.string()
             .max(50, 'Chỉ được phép nhập ít hơn 50 kí tự')
@@ -220,11 +181,12 @@ class SupplierInfor extends Component {
           alert(JSON.stringify(values, null, 2));
         },
       });
+
       return (
         <form onSubmit={formik.handleSubmit} style={{ padding: '5px' }}>
           <div className="row-flex">
             <div style={{ width: '100%', padding: '5px' }}>
-              <label htmlFor="name">Tên gian hàng</label>
+              <div className="label-text1" htmlFor="name">Tên gian hàng</div>
               <input
                 className="form-control"
                 id="name"
@@ -233,14 +195,15 @@ class SupplierInfor extends Component {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
+                style={{ borderColor: formik.errors.name && formik.touched.name ? 'red' : '' }}
               />
               {formik.errors.name && formik.touched.name ? (
                 <div className="errors">{formik.errors.name}</div>
               ) : null}
 
-              <label style={{ marginTop: '15px' }} htmlFor="code">
+              <p className="label-text" htmlFor="code">
                 Mã gian hàng
-              </label>
+              </p>
               <input
                 className="form-control"
                 id="code"
@@ -249,14 +212,15 @@ class SupplierInfor extends Component {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.code}
+                style={{ borderColor: formik.errors.code && formik.touched.code ? 'red' : '' }}
               />
               {formik.errors.code && formik.touched.code ? (
                 <div className="errors">{formik.errors.code}</div>
               ) : null}
 
-              <label style={{ marginTop: '15px' }} htmlFor="email">
+              <p className="label-text" htmlFor="email">
                 Email{' '}
-              </label>
+              </p>
               <input
                 className="form-control"
                 id="email"
@@ -265,13 +229,14 @@ class SupplierInfor extends Component {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.email}
+                style={{ borderColor: formik.errors.email && formik.touched.email ? 'red' : '' }}
               />
               {formik.errors.email && formik.touched.email ? (
                 <div className="errors">{formik.errors.email}</div>
               ) : null}
             </div>
-            <div style={{ width: '100%', padding: '5px' }}>
-              <label htmlFor="buscode">Mã đăng ký kinh doanh</label>
+            <div style={{ width: '100%', padding: '3px' }}>
+              <p className="label-text1" htmlFor="buscode">Mã đăng ký kinh doanh</p>
               <input
                 className="form-control"
                 id="buscode"
@@ -280,14 +245,15 @@ class SupplierInfor extends Component {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.buscode}
+                style={{ borderColor: formik.errors.buscode && formik.touched.buscode ? 'red' : '' }}
               />
               {formik.errors.buscode && formik.touched.buscode ? (
                 <div className="errors">{formik.errors.buscode}</div>
               ) : null}
 
-              <label style={{ marginTop: '15px' }} htmlFor="city">
+              <p className="label-text" htmlFor="city">
                 Tỉnh/Thành phố
-              </label>
+              </p>
               <input
                 className="form-control"
                 id="city"
@@ -296,14 +262,15 @@ class SupplierInfor extends Component {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.city}
+                style={{ borderColor: formik.errors.city && formik.touched.city ? 'red' : '' }}
               />
               {formik.errors.city && formik.touched.city ? (
                 <div className="errors">{formik.errors.city}</div>
               ) : null}
 
-              <label style={{ marginTop: '15px' }} htmlFor="admin">
+              <p className="label-text" htmlFor="admin">
                 Người phụ trách
-              </label>
+              </p>
               <input
                 className="form-control"
                 id="admin"
@@ -312,6 +279,7 @@ class SupplierInfor extends Component {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.admin}
+                style={{ borderColor: formik.errors.admin && formik.touched.admin ? 'red' : '' }}
               />
               {formik.errors.admin && formik.touched.admin ? (
                 <div className="errors">{formik.errors.admin}</div>

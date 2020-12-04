@@ -5,7 +5,7 @@ import "../../../../assets/css/user-profile.css";
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { getOrders } from '../../../../state/actions/orderActions'
+import { getUserOrders } from '../../../../state/actions/orderActions'
 import { showModal } from '../../../../state/actions/modalActions'
 
 import Header from "../Header/Header";
@@ -37,8 +37,8 @@ class OrderHistory extends React.Component {
 
   componentDidMount() {
     window.addEventListener("scroll", this.handleScroll);
-    const { getOrders, user } = this.props
-    getOrders({ limit: 1000, page: 1, idUser: user.id })
+    const { getUserOrders, user } = this.props
+    getUserOrders({ limit: 1000, page: 1, idUser: user.id })
   }
 
   componentWillUnmount() {
@@ -83,7 +83,7 @@ class OrderHistory extends React.Component {
                     <div key={index} className={item.id == selectedOrderId ? 'order-box-selected' : 'order-box'} onClick={() => this.selectOrder(item.id)}>
                       <div className="orderhis-line1" >
                         <h4>Đơn hàng #{item.id}</h4>
-                        <div className="status-btn">{item.status == 'pending' ? 'Đang chờ xử lý' : (item.status == 'in transit' ? 'Đang giao hàng' : (item.status == 'delivered' ? 'Đã nhận' : 'Đã hủy'))}</div>
+                        <div className="status-btn">{item.status == 'pending' ? 'Đang chờ xử lý' : (item.status == 'in transit' ? 'Đang giao hàng' : (item.status == 'delivered' ? 'Đã nhận hàng' : (item.status !== 'received' ? 'Đã tiếp nhận' : 'Đã hủy')))}</div>
                       </div>
                       <div className="orderhis-line" >
                         <p>Ngày đặt</p>
@@ -109,16 +109,16 @@ class OrderHistory extends React.Component {
                     <div className="detail-infor">
                       <div className="orderhis-address">
                         <h4>Địa chỉ giao hàng</h4>
-                        <p>672 Le Duc Tho, P.15, Go Vap, HCM</p>
+                        <p>{item.numberAndStreet},{' '}{item.Ward.ward},{' '}{item.District.district},{' '}{item.City.city}</p>
                       </div>
                       <div className="orderhis-total">
                         <div className="orderhis-line" >
                           <p>Giảm giá </p>
-                          <p>325000đ</p>
+                          <p>0đ</p>
                         </div>
                         <div className="orderhis-line" >
                           <p>Phí vận chuyển</p>
-                          <p>325000đ</p>
+                          <p>0đ</p>
                         </div>
                         <div className="orderhis-line" >
                           <h4>Tổng tiền </h4>
@@ -171,11 +171,11 @@ class OrderHistory extends React.Component {
                             </tr>
                           </thead>
                           <tbody>
-                            {item.OrderDets.map((o, index) => {
+                            {item.ProductVars.map((o, index) => {
                               return (
                                 <tr key={index}>
-                                  <td><img src={o.url} alt="hình ảnh" border='4' height='100' width='80' /></td>
-                                  <td>{o.idProductVar}</td>
+                                  <td><img src={o.Images[0].url} alt="hình ảnh" border='4' height='100' width='80' /></td>
+                                  <td>{o.name}</td>
                                   <td>{o.quantity}</td>
                                   <td>{o.priceWhenBuy}</td>
                                 </tr>
@@ -187,7 +187,7 @@ class OrderHistory extends React.Component {
                     </div>
                     {item.status !== 'canceled' &&
                       <button onClick={() => this.props.showModal({ show: true, modalName: 'modalCancel', details: { order: item } })}
-                        type="button" class="btn btn-block btn-default">Hủy đơn hàng</button>
+                        type="button" className="btn btn-block btn-default">Hủy đơn hàng</button>
                     }
                   </>
                 )}
@@ -203,4 +203,4 @@ class OrderHistory extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { getOrders, showModal })(OrderHistory);
+export default connect(mapStateToProps, { getUserOrders, showModal })(OrderHistory);

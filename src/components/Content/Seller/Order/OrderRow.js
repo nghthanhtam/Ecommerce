@@ -11,13 +11,14 @@ const mapStateToProps = (state) => ({
 class OrderRow extends Component {
   state = {
     statuses: [
-      { value: "accepted", label: 'Đã tiếp nhận' },
+      { value: "received", label: 'Đã tiếp nhận' },
       { value: "in transit", label: 'Đang giao hàng' },
       { value: "delivered", label: 'Đã nhận hàng' },
       { value: "canceled", label: 'Đã hủy' },
     ],
     disabledState: ''
   }
+
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
@@ -30,9 +31,11 @@ class OrderRow extends Component {
 
     return year + '-' + month + '-' + dt;
   };
+
   handleEdit = (id) => {
-    this.props.pushHistory(`/order/edit/${id}`);
+    this.props.history.push(`/order/edit/${id}`);
   };
+
   handleDelete = (id) => {
     this.props.deleteEmployee(id);
   };
@@ -51,15 +54,15 @@ class OrderRow extends Component {
         <td>{numberAndStreet}</td>
         <td>{totalPrice}</td>
         <td>{this.convertDate(createdAt)}</td>
-        <td>{status == 'pending' ? 'Đang xử lý' : (status == 'in transit' ? 'Đang giao hàng' : (status == 'delivered' ? 'Đã nhận hàng' : 'Đã hủy'))}</td>
+        <td >{status == 'pending' ? 'Đang xử lý' : (status == 'in transit' ? 'Đang giao hàng' : (status == 'delivered' ? 'Đã nhận hàng' : (status == 'received' ? 'Đã tiếp nhận' : 'Đã hủy')))}</td>
         <td>{cancelReason}</td>
 
         <td>
-          <div className="btn-group">
+          {/* <div className="btn-group">
             <button onClick={() => this.handleEdit(id)} type="button" className="btn btn-default">
               Xem chi tiết
             </button>
-          </div>
+          </div> */}
           {status !== 'canceled' && status !== 'delivered' &&
             <div className="btn-group">
               <button type="button" className="btn btn-info">Duyệt</button>
@@ -69,9 +72,12 @@ class OrderRow extends Component {
               </button>
               <ul className="dropdown-menu" role="menu">
                 {statuses.map((item, index) => (
-                  <li key={index} className={(status == 'in transit' && item.value == 'accepted')
-                    || (status !== 'pending' && item.value == 'canceled') || (status == item.value)
-                    ? 'disabled-link' : ''} onClick={() => { this.props.updateOrder({ id, status: item.value }) }}><a href="#"> {item.label} </a></li>
+                  <li key={index} className={(status == 'in transit' && item.value == 'recieved')
+                    || (status !== 'pending' && item.value == 'canceled') || (status == item.value) ? 'disabled-link' : ''}
+                    onClick={() => {
+                      this.props.updateOrder({ id, status: item.value });
+                      window.location.reload()
+                    }}><a href="#"> {item.label} </a></li>
                 ))}
               </ul>
             </div>}

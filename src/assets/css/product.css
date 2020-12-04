@@ -1,11 +1,11 @@
-* {
+/* * {
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif, Geneva, Tahoma,
     sans-serif;
-}
+} */
 .nohome-section {
   position: relative;
   width: 100%;
@@ -19,9 +19,17 @@
   /* background: linear-gradient(to bottom, rgb(53, 113, 167), rgb(162, 188, 233)); */
   transition: 0.5s;
 }
-
+.recproduct-card {
+  width: 224px;
+  background: white;
+  padding: 15px;
+  position: relative;
+  transition: 0.5s;
+  border-radius: 8px;
+}
 .product-card {
-  width: 230px;
+  width: 224px;
+  height: 400px;
   background: white;
   padding: 15px;
   position: relative;
@@ -29,8 +37,8 @@
   border-radius: 8px;
 }
 
-.product-card:hover {
-  width: 230px;
+.product-card:hover,
+.recproduct-card:hover {
   background: #dae3f3;
   padding: 15px;
   position: relative;
@@ -39,25 +47,36 @@
   transform: scale(0.96);
   cursor: pointer;
 }
-
-.product-card h1 {
+.product-card h1,
+.recproduct-card h1 {
   font-size: 15px;
   margin-bottom: 4px;
   color: #0d1136;
   text-transform: uppercase;
 }
-.product-card .p {
+.product-card .p,
+.recproduct-card .p {
   font-size: 4px;
   color: #bbb;
 }
-.product-pic {
-  align-items: center;
+.recproduct-card img {
   width: 100%;
-  margin-bottom: 10px;
+  align-items: center;
+  padding-top: 20px;
+  width: 200px;
+  padding-bottom: 20px;
+}
+.product-pic {
+  width: 100%;
+  align-items: center;
+  padding-top: 20px;
+  width: 200px;
+  height: 200px;
 }
 .product-info {
   display: flex;
   align-items: center;
+  margin-bottom: auto;
 }
 .product-price {
   color: #3571a7;
@@ -163,7 +182,7 @@
   color: gray;
   text-decoration: line-through;
 }
-.label {
+.label-prodet {
   font-weight: 600;
   margin-right: 5px;
 }
@@ -181,6 +200,9 @@
 }
 .voucher-list > * {
   margin-bottom: 2px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif, Geneva, Tahoma,
+    sans-serif;
 }
 .add-your-review {
   margin-left: 4px;
@@ -278,12 +300,16 @@
   margin-left: 153px;
   margin-bottom: -30px;
   color: #0d1136;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif, Geneva, Tahoma,
+    sans-serif;
 }
 .grid-option {
   display: inline-grid;
   flex-direction: row;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   margin-top: -8px;
+  margin-left: -2px;
 }
 .mes-wrapper {
   /* background-color: #f5f5f5; */
@@ -297,14 +323,14 @@
   display: flex;
 }
 .ava {
-  border-radius: 42px;
-  width: 90px;
-  height: 90px;
+  border-radius: 40px;
+  width: 85px;
+  height: 80px;
   background-color: rgb(236, 235, 235);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 38px;
+  margin-right: 32px;
 }
 .ava img {
   max-width: 80%;
@@ -313,17 +339,25 @@
 .col-flex {
   display: inline-block;
 }
+.reply-wrapper {
+  display: inline-block;
+  width: 100%;
+}
+.reply-wrapper textarea {
+  height: 70px;
+}
 .reply-btn {
   color: #3571a7;
-  font-size: 17px;
+  font-size: 16px;
+  font-weight: 500;
   margin-top: 10px;
   width: 50px;
   margin-bottom: 10px;
   cursor: pointer;
 }
 .reply-box {
-  width: 85%;
-  height: 100px;
+  width: 100%;
+  height: 120px;
   border: none;
   /* resize: none; */
   box-sizing: border-box;
@@ -333,6 +367,7 @@
 .comments {
   font-size: 18px;
   margin-top: 10px;
+  font-weight: 500;
 }
 .cancel-btn {
   width: 115px;
@@ -351,10 +386,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 0px 10px 40px 40px;
+  padding: 0px 0px 40px 40px;
 }
 .review-wrapper p {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 500;
 }
 .review-score {
@@ -366,7 +401,8 @@
 .myreview-wrapper {
   display: flex;
   flex-direction: column;
-  padding: 30px;
+  padding: 30px 30px 30px 30px;
+  flex: 1;
 }
 .myreview-wrapper .review {
   margin-top: -10px;
@@ -374,7 +410,6 @@
 }
 .myreview-wrapper textarea {
   margin-top: -8px;
-  width: 925px;
 }
 /* PRODUCT LIST */
 .title-filter {
@@ -474,7 +509,13 @@
   align-items: center;
   padding: 0 70px 0 70px;
 }
-
+.rec-product-wrapper h3 {
+  color: #0d1136;
+  margin-right: auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif, Geneva, Tahoma,
+    sans-serif;
+}
 /* ADMIN */
 .prop-tag {
   display: flex;
@@ -519,4 +560,18 @@
 }
 .upload-area > p {
   margin-top: 10px;
+}
+.reply-answer {
+  border-left: 2px solid rgb(211, 211, 211);
+  padding: 10px;
+}
+.ava-reply {
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: rgb(236, 235, 235);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 32px;
 }

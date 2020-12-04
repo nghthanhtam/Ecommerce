@@ -10,7 +10,7 @@ import ProductAddNextPage from './components/Content/Seller/Product/ProductAddNe
 import ProductVarEdit from './components/Content/Seller/Product/ProductVarEdit'
 import Product from './components/Content/Seller/Product/Product';
 import Order from './components/Content/Seller/Order/Order';
-import OrderEdit from './components/Content/Seller/Order/OrderEdit';
+import OrderDetail from './components/Content/Seller/Order/OrderDetail';
 import EmployeeEdit from './components/Content/Seller/Employee/EmployeeEdit';
 import StorageReport from './components/Content/Seller/Report/StorageReport';
 import SaleReport from './components/Content/Seller/Report/SaleReport';
@@ -230,7 +230,7 @@ class CoffeShop extends Component {
                       exact
                       path="/role"
                       component={Role}
-                      role={roles.role}
+                      role={roles.employee}
                       token={token}
                     ></PrivateRoute>
                     <PrivateRoute
@@ -264,7 +264,7 @@ class CoffeShop extends Component {
                     <PrivateRoute
                       exact
                       path="/order/edit/:id"
-                      component={OrderEdit}
+                      component={OrderDetail}
                       role={roles.order}
                       token={token}
                     ></PrivateRoute>

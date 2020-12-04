@@ -6,13 +6,21 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
-
 import Product from './Product';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
-import { connect } from 'react-redux';
+import RecProduct from './RecProduct'
+import ModalShopList from '../../Modal/ModalShopList'
 
+import { connect } from 'react-redux';
 import { getProductById } from '../../../../state/actions/productActions';
+import { showModal } from '../../../../state/actions/modalActions';
+
+const mapStateToProps = (state) => ({
+  product: state.product.product,
+  show: state.modal.show,
+  modalName: state.modal.modalName
+});
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -66,7 +74,8 @@ class ProductDetail extends React.Component {
   };
 
   render() {
-    let { productList, replyBoxHidden } = this.state;
+    const { productList, replyBoxHidden } = this.state;
+    const { showModal, show, modalName } = this.props
     const settings = {
       infinite: true,
       speed: 800,
@@ -76,6 +85,7 @@ class ProductDetail extends React.Component {
     };
     return (
       <div>
+        {show && modalName == 'modalShopList' && <ModalShopList />}
         <Header />
         <div
           style={{
@@ -205,64 +215,60 @@ class ProductDetail extends React.Component {
                 </div>
 
                 <div style={{ display: 'flex' }}>
-                  <div className="label">SHOP:</div>
+                  <div className="label-prodet">Tên nhà bán:</div>
                   <div> Toy Store</div>
                   <div className="link">
-                    <Link to="/shop">Visit</Link>
+                    <Link to="/shop">Ghé thăm</Link>
                   </div>
 
-                  <div className="link">Change</div>
+                  <div className="link" onClick={() => { showModal({ show: true, modalName: 'modalShopList' }) }}>Thay đổi nhà bán</div>
                 </div>
                 <div style={{ display: 'flex' }}>
-                  <div className="label">DELIVERY ADDRESS:</div>
-                  <div> 545 Le Duc Tho, p115, Go Vap, TPHCM</div>
-                  <div className="link">Change</div>
+                  <div className="label-prodet">Sản phẩm thuộc về phim:</div>
+                  <div> Attack on Titan</div>
                 </div>
                 <div className="voucher-list">
-                  <h5>RELATED PROMOTIONS:</h5>
+                  <h5>NHẬP MÃ KHUYẾN MÃI ĐỂ ĐƯỢC GIẢM GIÁ:</h5>
                   <p>
-                    Enter <span>SHOP50</span> to get a promotion of 50000 VND to
-                    your order
+                    Nhập <span>SHOP50</span> được giảm 50.000đ trên tổng hóa đơn
                   </p>
                   <p>
-                    Enter <span>SHOP50</span> to get a promotion of 50000 VND to
-                    your order
+                    Nhập <span>SHOP50</span> được giảm 50.000đ trên tổng hóa đơn
                   </p>
                   <p>
-                    Enter <span>SHOP50</span> to get a promotion of 50000 VND to
-                    your order
+                    Nhập <span>SHOP50</span> được giảm 50.000đ trên tổng hóa đơn
                   </p>
                 </div>
               </div>
             </div>
             <div className="recommend-wrapper" >
-              <h3 style={{ marginLeft: 'auto' }} className="recommend-pane">PRODUCTS RELATED TO THIS MOVIE</h3>
+              <h3 style={{ marginLeft: 'auto' }} className="recommend-pane">NHỮNG SẢN PHẨM KHÁC CÙNG PHIM</h3>
               <div className="sliderwrapper">
                 <Slider style={{ width: '107%' }} {...settings}>
                   {productList.map((item, index) => {
-                    return <Product key={index} />;
+                    return <RecProduct key={index} />;
                   })}
                 </Slider>
               </div>
             </div>
             <div className="recommend-wrapper">
               <h3 className="recommend-pane" style={{ marginLeft: 'auto' }}>
-                SIMILAR PRODUCTS INSPIRED BY THIS ITEM
+                NHỮNG SẢN PHẨM KHÁC TƯƠNG TỰ
               </h3>
               <div className="sliderwrapper">
                 <Slider style={{ width: '107%' }}  {...settings} >
                   {productList.map(() => {
-                    return <Product />;
+                    return <RecProduct />;
                   })}
                 </Slider>
               </div>
             </div>
 
-            <h3 className="recommend-pane">Reviews</h3>
+            <h3 className="recommend-pane">Đánh giá</h3>
             <div className="mes-wrapper">
               <div className="row-flex">
                 <div className="review-wrapper">
-                  <p>Đánh giá trung bình</p>
+                  <p>ĐÁNH GIÁ</p>
                   <div className="review-score">4/5</div>
                   <div className="review">
                     <i className="fa fa-star"></i>
@@ -284,10 +290,7 @@ class ProductDetail extends React.Component {
                     <i className="fa fa-star-half-o"></i>
                   </div>
                   <p>Nhận xét của bạn</p>
-                  <textarea
-                    placeholder="Viết nhận xét tại đây"
-                    className="reply-box"
-                  ></textarea>
+                  <textarea placeholder="Viết nhận xét tại đây" className="reply-box" ></textarea>
                   <div className="row-flex">
                     <Button
                       style={{
@@ -304,11 +307,11 @@ class ProductDetail extends React.Component {
                 </div>
               </div>
 
-              <div className="mes-detail">
+              <div className="mes-detail" >
                 <div className="ava">
                   <img src="./img/ava.png" alt="ava" />
                 </div>
-                <div className="col-flex">
+                <div className="reply-wrapper">
                   <div className="review">
                     <i className="fa fa-star"></i>
                     <i className="fa fa-star"></i>
@@ -317,12 +320,12 @@ class ProductDetail extends React.Component {
                     <i className="fa fa-star-half-o"></i>
                   </div>
                   <div className="comments">Sản phẩm đẹp gói hàng cẩn thận</div>
-                  <div className="time-agp">6 phút trước</div>
+                  <div>6 phút trước</div>
                   <div className="reply-btn" onClick={() => this.replyClick()}>
                     Trả lời
                   </div>
                   {replyBoxHidden ? (
-                    <div>
+                    <div style={{ width: '100%' }}>
                       <textarea className="reply-box"></textarea>
                       <div className="row-flex">
                         <Button
@@ -332,8 +335,7 @@ class ProductDetail extends React.Component {
                             width: '115px',
                             height: '38px',
                             margin: '5px 5px 5px 0',
-                          }}
-                        >
+                          }}>
                           Gửi
                         </Button>
                         <Button
@@ -352,6 +354,22 @@ class ProductDetail extends React.Component {
                       </div>
                     </div>
                   ) : null}
+                  <div className="reply-answer">
+                    <p>
+                      ncourage people to post such bad question again and again.
+                      New people need to understand how to correctly write
+                      question because they need to understand that the question
+                      will be useful for new comer. We are not in a discussion
+                      forum. We all can check the link to see the code and put an
+                      answer to get reputation but this is not the purpose of t
+                    </p>
+                    <div className='row-flex-center'>
+                      <div className="ava-reply">
+                        <img src="./img/ava.png" alt="ava" />
+                      </div>
+                      <div style={{ color: 'grey' }}>20/03/2020</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -364,9 +382,4 @@ class ProductDetail extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  productVar: state.productVar.productVar,
-  isLoaded: state.productVar.isLoaded,
-});
-
-export default connect(mapStateToProps, { getProductById })(ProductDetail);
+export default connect(mapStateToProps, { getProductById, showModal })(ProductDetail);

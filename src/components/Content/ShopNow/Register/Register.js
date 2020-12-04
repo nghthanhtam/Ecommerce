@@ -101,6 +101,7 @@ class Register extends React.Component {
         },
 
         onSubmit: (values) => {
+          console.log('abcccc');
           const {
             fullname,
             password,
@@ -185,6 +186,7 @@ class Register extends React.Component {
           }
         }
       };
+
       return (
         <form
           onSubmit={formik.handleSubmit}

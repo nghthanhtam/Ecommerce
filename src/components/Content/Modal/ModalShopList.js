@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
 import { pushHistory } from '../../../state/actions/historyActions';
 import { showModal } from '../../../state/actions/modalActions';
 import { updateOrder } from '../../../state/actions/orderActions';
+import './modal.css'
 
 const mapStateToProps = (state) => ({
     history: state.history,
@@ -12,7 +14,7 @@ const mapStateToProps = (state) => ({
     details: state.modal.details,
 });
 
-class ModalCancel extends Component {
+class ModalShopList extends Component {
     state = {
         cancelReason: '',
         msg: null,
@@ -56,7 +58,6 @@ class ModalCancel extends Component {
     };
 
     render() {
-        const { cancelReason, inputErrors } = this.state
         const { showModal } = this.props
         return (
             <div className='modal-wrapper'>
@@ -65,49 +66,52 @@ class ModalCancel extends Component {
                         ×
                     </button>
                     <div className="login-box-body">
-                        <h3 className="login-box-msg">Lý do hủy đơn hàng </h3>
-                        <p>Mã giảm giá có thể áp dụng cho đơn hàng khác</p>
+                        <h2 className="login-box-msg">Các nhà bán khác</h2>
                         {this.state.msg ? (
                             <div className="alert alert-danger alert-dismissible">
                                 <button type="button" className="close" data-dismiss="alert" aria-hidden="true"
                                     onClick={() => showModal({ show: false })}>
                                     ×
                                 </button>
-                                {this.state.msg}
                             </div>
                         ) : null}
 
-                        <form onSubmit={this.handleSubmit}>
-                            <div className="form-group has-feedback">
-                                <input
-                                    type="text"
-                                    name="cancelReason"
-                                    className="form-control"
-                                    placeholder="Lý do hủy đơn"
-                                    required
-                                    value={cancelReason}
-                                    onChange={this.handleChange}
-                                />
+                        <div className='shoplist-wrapper' >
+                            <div className="ava-reply">
+                                <img src="./img/ava.png" alt="ava" />
                             </div>
-                            <div className="row">
-                                {/* /.col */}
-                                <div className="col-xs-12">
-                                    <button
-                                        type="submit"
-                                        className="btn btn-primary btn-block btn-flat"
-                                        disabled={!inputErrors ? false : true}>
-                                        Lưu
-                                    </button>
-                                    <button
-                                        className="btn btn-default btn-block btn-flat"
-                                        disabled={
-                                            !this.state.inputErrors ? false : true}
-                                        onClick={() => showModal({ show: false })}>
-                                        Hủy
-                                    </button>
-                                </div>
+                            <div className="shoplist-infor">
+                                <h4>Tiki notTrading</h4>
+                                <p style={{ fontSize: '17px' }}>150,000đ</p>
                             </div>
-                        </form>
+                            <button className="btn btn-default"
+                                onClick={() => showModal({ show: false })}> Chọn
+                            </button>
+                        </div>
+                        <div className='shoplist-wrapper'>
+                            <div className="ava-reply">
+                                <img src="./img/ava.png" alt="ava" />
+                            </div>
+                            <div className="shoplist-infor">
+                                <h4>Tiki notTrading</h4>
+                                <p style={{ fontSize: '17px' }}>150,000đ</p>
+                            </div>
+                            <button className="btn btn-default"
+                                onClick={() => showModal({ show: false })}> Chọn
+                            </button>
+                        </div>
+                        <div className='shoplist-wrapper'>
+                            <div className="ava-reply">
+                                <img src="./img/ava.png" alt="ava" />
+                            </div>
+                            <div className="shoplist-infor">
+                                <h4>Tiki notTrading</h4>
+                                <p style={{ fontSize: '17px' }}>150,000đ</p>
+                            </div>
+                            <button className="btn btn-default"
+                                onClick={() => showModal({ show: false })}> Chọn
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -115,4 +119,4 @@ class ModalCancel extends Component {
     }
 }
 
-export default connect(mapStateToProps, { pushHistory, showModal, updateOrder })(ModalCancel);
+export default connect(mapStateToProps, { pushHistory, showModal, updateOrder })(ModalShopList);
