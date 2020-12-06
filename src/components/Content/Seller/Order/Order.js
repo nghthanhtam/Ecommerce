@@ -318,15 +318,15 @@ class Order extends Component {
                           >
                             <thead>
                               <tr>
-                                <th style={{ width: '5%' }}>#</th>
-                                <th style={{ width: '5%' }}>Mã đơn hàng</th>
+                                <th style={{ width: '3%' }}>#</th>
+                                <th style={{ width: '10%' }}>Mã đơn hàng</th>
                                 <th style={{ width: '15%' }}>Người nhận</th>
-                                <th style={{ width: '12%' }}>Số điện thoại</th>
+                                <th style={{ width: '10%' }}>Số điện thoại</th>
                                 <th style={{ width: '15%' }}>Địa chỉ</th>
                                 <th style={{ width: '10%' }}>Tổng cộng</th>
                                 <th style={{ width: '10%' }}>Ngày đặt</th>
                                 <th style={{ width: '10%' }}>Tình trạng</th>
-                                <th style={{ width: '15%' }}>Lý do hủy</th>
+                                <th style={{ width: '10%' }}>Lý do hủy</th>
                               </tr>
                             </thead>
 
@@ -335,7 +335,8 @@ class Order extends Component {
                             <tfoot>
                               <tr>
                                 <th>#</th>
-                                <th>Người nhận  </th>
+                                <th>Mã đơn hàng</th>
+                                <th>Người nhận</th>
                                 <th>Số điện thoại</th>
                                 <th>Địa chỉ</th>
                                 <th>Tổng cộng</th>

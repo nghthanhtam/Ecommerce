@@ -4,7 +4,6 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../../../../assets/css/product.css';
 
-import Product from './Product';
 import ShowingProduct from './ShowingProduct';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
@@ -23,16 +22,6 @@ const mapStateToProps = (state) => ({
 
 class ProductList extends React.Component {
   state = {
-    similarProductList:
-      [{ variants: [{ filePath: '../img/blue.png' }, { filePath: '../img/red.png' }, { filePath: '../img/blue.png' }, { filePath: '../img/black.png' }] },
-      { variants: [{ filePath: '../img/blue.png' }, { filePath: '../img/red.png' }, { filePath: '../img/blue.png' }, { filePath: '../img/black.png' }] },
-      { variants: [{ filePath: '../img/blue.png' }, { filePath: '../img/red.png' }, { filePath: '../img/blue.png' }, { filePath: '../img/black.png' }] },
-      { variants: [{ filePath: '../img/blue.png' }, { filePath: '../img/red.png' }, { filePath: '../img/blue.png' }, { filePath: '../img/black.png' }] },
-      { variants: [{ filePath: '../img/blue.png' }, { filePath: '../img/red.png' }, { filePath: '../img/blue.png' }, { filePath: '../img/black.png' }] },
-      { variants: [{ filePath: '../img/blue.png' }, { filePath: '../img/red.png' }, { filePath: '../img/blue.png' }, { filePath: '../img/black.png' }] },
-      { variants: [{ filePath: '../img/blue.png' }, { filePath: '../img/red.png' }, { filePath: '../img/blue.png' }, { filePath: '../img/black.png' }] },
-      { variants: [{ filePath: '../img/blue.png' }, { filePath: '../img/red.png' }, { filePath: '../img/blue.png' }, { filePath: '../img/black.png' }] }
-      ],
     productList: [1, 2, 3, 4, 5, 6, 7],
     header: 'header',
     picLink: './img/blue.png',
@@ -52,6 +41,8 @@ class ProductList extends React.Component {
     window.addEventListener('scroll', this.handleScroll);
     const { getProductsByMovieCate } = this.props
     const { limit, page } = this.state
+
+    //get productlist by movieCate
     if (this.props.location.idMovieCat) {
       const { idMovieCat } = this.props.location
       this.setState({ idMovieCat })
@@ -229,7 +220,7 @@ class ProductList extends React.Component {
   };
 
   render() {
-    const { productList, similarProductList, start, end } = this.state;
+    const { productList, start, end } = this.state;
     const { products, isLoaded, totalDocuments } = this.props
     const settings = {
       infinite: true,

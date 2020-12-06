@@ -84,19 +84,20 @@ class Cart extends React.Component {
           {!isLoaded ? <Loader></Loader> :
             <div className="cart-container">
               <div className="cart-card">
-                {carts.length > 0 ? <div className="order-wrapper">
-                  {carts.map((cItem, cIndex) => {
-                    return (
-                      <div key={cIndex} className="order-list">
-                        <p> {cItem.name} {'>'} </p>
-                        {cItem.productVars.map((item, index) => {
-                          return <CartDetail key={index} item={item} cItem={cItem}
-                            deleteCartItem={this.deleteCartItem} amountChange={this.amountChange} />;
-                        })}
-                      </div>
-                    )
-                  })}
-                </div> : <div className="cart-noitem">
+                {carts.length > 0 ?
+                  <div className="order-wrapper">
+                    {carts.map((cItem, cIndex) => {
+                      return (
+                        <div key={cIndex} className="order-list">
+                          <p> {cItem.name} {'>'} </p>
+                          {cItem.productVars.map((item, index) => {
+                            return <CartDetail key={index} item={item} cItem={cItem}
+                              deleteCartItem={this.deleteCartItem} amountChange={this.amountChange} />;
+                          })}
+                        </div>
+                      )
+                    })}
+                  </div> : <div className="cart-noitem">
                     <img src="../img/noitem.png" alt="visa" />
                     <p>Không có sản phẩm nào trong giỏ hàng của bạn</p>
                   </div>}

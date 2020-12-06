@@ -22,6 +22,7 @@ import sCitySaga from './SCitySaga';
 import sDistrictSaga from './SDistrictSaga';
 import sWardSaga from './SWardSaga'
 import sUserSaga from './SUserSaga'
+import sRatingSaga from './SRatingSaga'
 
 export default function* rootSaga() {
   yield all([
@@ -47,7 +48,8 @@ export default function* rootSaga() {
     sCitySaga(),
     sDistrictSaga(),
     sWardSaga(),
-    sUserSaga()
+    sUserSaga(),
+    sRatingSaga()
   ]);
 }
 

@@ -12,9 +12,9 @@ export const getProducts = (params) => ({
   pages: params,
 });
 
-export const getProductById = (id) => ({
+export const getProductById = (params) => ({
   type: GET_PRODUCT_BY_ID,
-  id,
+  params
 });
 
 export const getProductsByMovieCate = (params) => ({

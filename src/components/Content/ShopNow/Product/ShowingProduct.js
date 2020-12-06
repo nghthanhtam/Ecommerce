@@ -15,18 +15,17 @@ class ShowingProduct extends React.Component {
   };
 
   handleVariantPhotos = (ele) => {
-    console.log(ele);
-    this.setState({ mainPhoto: ele.Images[0].url })
+    this.setState({ mainPhoto: ele.url })
   }
 
   componentDidMount() {
     const { item } = this.props
     console.log(item);
-    if (item.productVars.length > 0) this.setState({ mainPhoto: item.productVars[0].Images[0].url })
+    if (item.arrayImage.length > 0) this.setState({ mainPhoto: item.arrayImage[0].url })
   }
 
   render() {
-    const { name, description, filePath, price, item } = this.props;
+    const { item } = this.props;
     const { mainPhoto } = this.state
     const settings = {
       infinite: true,
@@ -37,20 +36,20 @@ class ShowingProduct extends React.Component {
     return (
       <div className="product-card" >
         <div style={{ height: '335px', }}>
-          <div onClick={() => this.props.history.push(`/product-detail/${item.id}`)}>
+          <div onClick={() => this.props.history.push({ pathname: `/product-detail/${item.id}`, state: { idShop: item.idShop } })}>
             <h1>{item.name}</h1>
             {item.marketPrice - Number(item.price) > 0 && <p>Saved: ${item.marketPrice - Number(item.price)}</p>}
             <img className="product-pic" src={mainPhoto} alt="../img/not-avai.jpg" />
           </div>
 
           <div style={{ zIndex: 1000 }} >
-            <Slider {...settings} slidesToShow={item.productVars.length < 4 ? item.productVars.length : 4} >
-              {item.productVars.map((ele, index) => {
+            <Slider {...settings} slidesToShow={item.arrayImage.length < 4 ? item.arrayImage.length : 4} >
+              {item.arrayImage.map((ele, index) => {
                 return (
-                  <div key={index} style={{}}>
+                  <div key={index}>
                     <img onMouseOver={() => this.handleVariantPhotos(ele)}
                       onMouseOut={() => this.handleVariantPhotos(ele)}
-                      style={{ width: '32px', height: '40px' }} src={ele.Images[0].url} alt="photo" />
+                      style={{ width: '32px', height: '40px' }} src={ele.url} alt="photo" />
                   </div>
                 )
               })}

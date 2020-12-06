@@ -32,7 +32,7 @@ export default function (state = initialState, action) {
     case CART_ADDED:
       return {
         ...state,
-        carts: [action.payload, ...state.carts],
+        //carts: [action.payload, ...state.carts],
         isLoaded: true,
       };
 

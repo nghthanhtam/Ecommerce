@@ -21,12 +21,13 @@ import mongoose from "mongoose";
 
 function* fetchProductByid(params) {
   try {
+    console.log(params);
     const state = yield select(),
-      { id } = params;
+      { idProduct, idShop } = params.params;
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${id}`,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${idProduct}/shop/${idShop}`,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))

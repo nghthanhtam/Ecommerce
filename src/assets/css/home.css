@@ -63,12 +63,13 @@
   transition: 0.5s;
 }
 
-.header {
+.sheader {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 10px 40px;
+  height: 100px;
+  padding: 0px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -77,22 +78,24 @@
   z-index: 11;
 }
 
-.header .logo {
+.sheader .logo {
   position: relative;
   max-width: 80px;
   color: #fff;
   font-weight: 400;
   font-size: 30px;
+  margin-top: -30px;
+  flex: 1;
 }
 
-.header ul {
+.sheader ul {
   position: relative;
   display: flex;
 }
-.header ul li {
+.sheader ul li {
   list-style: none;
 }
-.header ul li .item {
+.sheader ul li .item {
   display: flex;
   color: #fff;
   font-weight: 400;
@@ -100,6 +103,8 @@
   text-decoration: none;
   align-items: center;
   font-weight: 600;
+  margin-top: -30px;
+  transition: 0.75s;
 }
 
 .header1 {
@@ -107,13 +112,14 @@
   top: 0;
   left: 0;
   width: 100%;
+  height: 70px;
   padding: 15px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: 0.6s;
   background-color: white;
-  border-bottom: 2px solid #f7f7f7;
+  border-bottom: 2px solid #ebebeb;
   box-shadow: 10px 1px 5px #e2e2e2;
   z-index: 11;
 }
@@ -123,7 +129,7 @@
   max-width: 100px;
   color: #0d1136;
   font-weight: 400;
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -142,6 +148,7 @@
   text-decoration: none;
   align-items: center;
   font-weight: 600;
+  transition: 0.75s;
 }
 
 .user-content {

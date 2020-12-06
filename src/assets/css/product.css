@@ -174,11 +174,11 @@
 .infor .price {
   display: flex;
 }
-.infor .price h1 {
-  font-weight: 900;
+.infor .price h2 {
+  font-weight: 600;
   font-size: 30px;
 }
-.infor .price h3 {
+.infor .price h4 {
   color: gray;
   text-decoration: line-through;
 }
@@ -194,9 +194,7 @@
 }
 .review {
   display: flex;
-}
-.review i {
-  color: gold;
+  margin-left: -10px;
 }
 .voucher-list > * {
   margin-bottom: 2px;
@@ -266,8 +264,24 @@
   width: 75%;
   margin: auto;
 }
+.big-photo {
+  width: 224px;
+  background: white;
+  padding: 10px;
+  position: relative;
+  transition: 0.5s;
+  border-radius: 8px;
+}
+.small-photo {
+  width: 100px;
+  height: 100px;
+  background: white;
+  padding: 15px;
+  position: relative;
+  transition: 0.5s;
+}
 .slider {
-  height: 85%;
+  height: 500px;
   display: flex;
   align-items: center;
   padding: 40px;
@@ -277,20 +291,22 @@
   margin: auto;
 }
 .img-slider {
+  height: 50px;
   display: flex;
-  height: 40px;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
   margin-top: auto;
   margin-left: auto;
   margin-right: auto;
-  margin-top: -50px;
-  width: 60%;
+  margin-top: -40px;
 }
-.img-slider div {
+/* .img-slider div {
   width: 20%;
-}
+} */
 .img-slider img {
   height: 100%;
+  margin: auto;
 }
 .recommend-wrapper {
   width: 100%;
@@ -330,7 +346,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 32px;
+  margin-right: 48px;
 }
 .ava img {
   max-width: 80%;
@@ -389,7 +405,7 @@
   padding: 0px 0px 40px 40px;
 }
 .review-wrapper p {
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 500;
 }
 .review-score {
@@ -492,13 +508,16 @@
   border: none;
   color: #0d1136;
 }
-.tag:hover {
+.tag:hover,
+.selected-tag {
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
+  border: none;
   height: 30px;
   padding: 20px;
+  margin: 3px;
   background-color: #3571a7;
   color: white;
 }
@@ -574,4 +593,11 @@
   align-items: center;
   justify-content: center;
   margin-right: 32px;
+}
+.rate-btn {
+  background-color: #3571a7;
+  color: white;
+  width: 115px;
+  height: 38px;
+  margin: 5px 5px 5px 0;
 }

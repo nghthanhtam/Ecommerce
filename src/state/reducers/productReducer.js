@@ -12,7 +12,8 @@ import {
 const initialState = {
   products: [],
   isLoaded: false,
-  totalDocuments: 0
+  totalDocuments: 0,
+  isProductLoaded: false
 };
 
 export default function (state = initialState, action) {
@@ -32,7 +33,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         product: action.payload.data,
-        isLoaded: true,
+        isProductLoaded: true,
       };
     case PRODUCT_ADDED:
       return {

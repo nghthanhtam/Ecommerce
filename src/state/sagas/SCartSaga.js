@@ -61,11 +61,9 @@ function* addCart(params) {
           tokenConfig(state)
         )
     );
-    if (response.data._id instanceof mongoose.Types.ObjectId) {
-      response.data._id = response.data._id.toString();
-    }
 
     yield put({ type: CART_ADDED, payload: response.data });
+    yield put({ type: GET_CARTS_BY_IDUSER, pages: { limit: 10000, page: 1, idUser: params.newCart.idUser } });
   } catch (error) {
     console.log(error.response);
   }

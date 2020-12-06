@@ -19,6 +19,7 @@ import addressReducer from './addressReducer';
 import paymentReducer from './paymentReducer';
 import orderReducer from './orderReducer';
 import userReducer from './userReducer';
+import ratingReducer from './ratingReducer';
 
 import memberReducer from './memberReducer';
 import invoiceReducer from './invoiceReducer';
@@ -58,6 +59,7 @@ export default combineReducers({
   district: districtReducer,
   ward: wardReducer,
   user: userReducer,
+  rating: ratingReducer,
 
   invoice: invoiceReducer,
   invoicedet: invoicedetReducer,

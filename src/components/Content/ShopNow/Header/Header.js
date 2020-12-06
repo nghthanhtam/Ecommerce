@@ -12,7 +12,7 @@ const mapStateToProps = (state) => ({
 
 class Header extends React.Component {
   state = {
-    header: 'header',
+    header: 'sheader',
     left: 0,
     hideSearchBar: 'hidden',
     cartWrapper: {
@@ -23,7 +23,13 @@ class Header extends React.Component {
       padding: '8px',
       borderRadius: '7px',
       backgroundColor: 'transparent'
-    }
+    },
+    isLogoText: false,
+    // logo: {
+    //   width: '150px',
+    //   height: '150px',
+    //   transition: '0.75s',
+    // },
   };
 
   componentDidMount() {
@@ -50,10 +56,19 @@ class Header extends React.Component {
           borderRadius: '7px',
         }
       });
+      this.setState({ isLogoText: true })
+      // this.setState({
+      //   logo: {
+      //     width: '90px',
+      //     height: '90px',
+      //     transition: '0.75s'
+      //   }
+      // })
       this.setState({ hideSearchBar: 'visible' });
     } else {
-      this.setState({ header: 'header' });
+      this.setState({ header: 'sheader' });
       this.setState({ hideSearchBar: 'hidden' });
+      this.setState({ isLogoText: false })
       this.setState({
         cartWrapper: {
           display: 'flex',
@@ -65,8 +80,16 @@ class Header extends React.Component {
           backgroundColor: 'transparent'
         }
       });
+      // this.setState({
+      //   logo: {
+      //     width: '150px',
+      //     height: '150px',
+      //     transition: '0.75s'
+      //   }
+      // })
     }
   }
+
   handleScroll = () => {
     this.setHeader();
     this.setState({
@@ -75,25 +98,27 @@ class Header extends React.Component {
   };
 
   render() {
-    const { hideSearchBar, cartWrapper, } = this.state;
+    const { hideSearchBar, cartWrapper, isLogoText } = this.state;
     const { user, totalCount, isLoaded } = this.props
 
     return (
       <div className={this.state.header}>
         <Link className="logo" to="/shopnow">
-          Logo
+          {isLogoText ? 'ShopNow' :
+            <div style={logo}>
+              <img style={{ width: '100%', height: '100%' }} src="../img/logo.png" alt="ava" />
+            </div>}
         </Link>
 
         <div
           className="searchbar"
           style={{
             marginLeft: '50px',
-            width: '55%',
+            width: '50%',
             height: '48px',
             visibility: hideSearchBar,
           }}
-          className="ui action input"
-        >
+          className="ui action input">
           <button style={searchBtn} className="ui icon button">
             <i className="search icon"></i>
           </button>
@@ -115,7 +140,7 @@ class Header extends React.Component {
           <li>
             <Link style={cartWrapper} className="item" to="/checkout/cart">
               <div style={{ color: 'white' }}>Giỏ hàng</div>
-              {isLoaded && <div style={cartInfor}>{totalCount}</div>}
+              {!totalCount ? <div style={cartInfor}>0</div> : <div style={cartInfor}>{totalCount}</div>}
             </Link>
           </li>
           <li>
@@ -133,7 +158,10 @@ class Header extends React.Component {
 
           <li>
             <Link className="item" to="/">
-              Hỗ trợ
+              <div style={itemIcon}>
+                <i className="fa fa-question-circle"></i>
+              </div>
+              <div>Hỗ trợ</div>
             </Link>
           </li>
         </ul>
@@ -190,3 +218,8 @@ const cartWrapper1 = {
   borderRadius: '7px',
   backgroundColor: 'transparent',
 };
+const logo = {
+  width: '150px',
+  height: '150px',
+  transition: '0.75s'
+}

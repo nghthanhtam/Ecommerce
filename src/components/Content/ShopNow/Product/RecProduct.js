@@ -10,14 +10,6 @@ class Product extends React.Component {
 
   render() {
     let { name, description, filePath, price } = this.props;
-    const settings = {
-      infinite: true,
-      speed: 800,
-      slidesToShow: 4,
-      slidesToScroll: 2,
-      className: 'slider',
-      arrows: false
-    };
     return (
       <div className="recproduct-card">
         <h1>Captain Mouse</h1>
