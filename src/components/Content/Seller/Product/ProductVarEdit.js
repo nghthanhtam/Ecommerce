@@ -158,11 +158,11 @@ class ProductVarEdit extends Component {
                     onSubmit={this.handleSubmit}>
                     <div className="box-body">
                       <div className="form-group">
-                        <label for="id">ID</label>
+                        <label htmlFor="id">ID</label>
                         <input className="form-control" name="id" type="text" placeholder="Loading..." className="form-control" value={id} disabled onChange={this.handleChange} />
                       </div>
                       <div className="form-group">
-                        <label for="SKU">SKU</label>
+                        <label htmlFor="SKU">SKU</label>
                         <input className="form-control" name="SKU" type="text" placeholder="Loading..." className="form-control" value={SKU} onChange={this.handleChange} />
                       </div>
                       <div className="form-group">
@@ -170,15 +170,15 @@ class ProductVarEdit extends Component {
                         <input className="form-control" name="name" type="text" placeholder="Loading..." className="form-control" value={name} onChange={this.handleChange} />
                       </div>
                       <div className="form-group">
-                        <label for="marketPrice">Giá niêm yết</label>
+                        <label htmlFor="marketPrice">Giá niêm yết</label>
                         <input className="form-control" name="marketPrice" type="number" placeholder="Loading..." className="form-control" value={marketPrice} onChange={this.handleChange} />
                       </div>
                       <div className="form-group">
-                        <label for="price">Giá bán</label>
+                        <label htmlFor="price">Giá bán</label>
                         <input className="form-control" name="price" type="number" placeholder="Loading..." className="form-control" value={price} onChange={this.handleChange} />
                       </div>
                       <div className="form-group">
-                        <label for="price">Tình trạng</label>
+                        <label htmlFor="price">Tình trạng</label>
                         <Select
                           name="status"
                           onChange={this.handleChangeSelect}
@@ -187,8 +187,8 @@ class ProductVarEdit extends Component {
                           placeholder="Loading ..."
                           value={statuses.filter(option => option.value === status)} />
                       </div>
-                      <div class="form-group">
-                        <label for="exampleInputFile">Hình ảnh</label>
+                      <div className="form-group">
+                        <label htmlFor="exampleInputFile">Hình ảnh</label>
                         <input type="file" id="exampleInputFile" onChange={this.handleFileSelect} />
                       </div>
                       <div className="sku-grid">

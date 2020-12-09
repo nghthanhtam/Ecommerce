@@ -26,6 +26,7 @@ import sRatingSaga from './SRatingSaga'
 import sAdminSaga from './SAdminSaga'
 import sCommentSaga from './SCommentSaga'
 import sQuestionSaga from './SQuestionSaga'
+import sAnswerSaga from './SAnswerSaga'
 
 export default function* rootSaga() {
   yield all([
@@ -55,7 +56,8 @@ export default function* rootSaga() {
     sRatingSaga(),
     sAdminSaga(),
     sCommentSaga(),
-    sQuestionSaga()
+    sQuestionSaga(),
+    sAnswerSaga()
   ]);
 }
 

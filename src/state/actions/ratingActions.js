@@ -3,7 +3,9 @@ import {
   ADD_RATING,
   DELETE_RATING,
   UPDATE_RATING,
-  ADD_RATING_IMAGE
+  UPDATE_RATING_STATUS,
+  ADD_RATING_IMAGE,
+  GET_RATINGS_BY_PRODUCT
 } from './types';
 
 export const addRatingImage = (params) => ({
@@ -13,6 +15,11 @@ export const addRatingImage = (params) => ({
 
 export const getRatings = (params) => ({
   type: GET_RATINGS,
+  pages: params,
+});
+
+export const getRatingsByProduct = (params) => ({
+  type: GET_RATINGS_BY_PRODUCT,
   pages: params,
 });
 
@@ -29,4 +36,9 @@ export const addRating = (newRating) => ({
 export const updateRating = (newRating) => ({
   type: UPDATE_RATING,
   newRating: newRating,
+});
+
+export const updateRatingStatus = ({ status, id }) => ({
+  type: UPDATE_RATING_STATUS,
+  params: { status, id },
 });

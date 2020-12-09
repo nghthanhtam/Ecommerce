@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import CommentRow from './ACommentRow';
+import SlotRow from '../../Slots/SlotRow';
 import { connect } from 'react-redux';
-import { getComments } from '../../../../state/actions/commentActions';
+import { getComments, deleteComment, updateCommentStatus } from '../../../../state/actions/commentActions';
 import PropTypes from 'prop-types';
 import Loader from 'react-loader';
 
@@ -29,6 +29,7 @@ class AComment extends Component {
       limit,
       page,
       query,
+      status: 'pending'
     });
   }
 
@@ -102,20 +103,18 @@ class AComment extends Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    let idShop = 1;
     this.props.getComments({
       limit,
       page,
       query,
-      idShop,
     });
     this.getPages();
     this.getStartEndDocuments();
   };
 
   renderComments = () => {
-    const { start, limit, page } = this.state;
-    const { comments, isLoaded } = this.props;
+    const { start } = this.state;
+    const { comments, isLoaded, deleteComment, updateCommentStatus } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -124,12 +123,14 @@ class AComment extends Component {
         </td>
       </tr>
     ) : (
-        comments.map((eachComment, index) => (
-          <CommentRow
-            history={this.props.history}
-            key={eachComment.id}
-            comment={eachComment}
+        comments.map((cmt, index) => (
+          <SlotRow
+            cate='comment'
+            key={index}
+            item={cmt}
             index={index + start - 1}
+            deleteItem={deleteComment}
+            updateItemStatus={updateCommentStatus}
           />
         ))
       );
@@ -152,11 +153,12 @@ class AComment extends Component {
 
     this.setState({ page: e }, () => {
       const { limit, page, query, } = this.state;
-      let idShop = 1;
       this.props.getComments({
         limit,
         page,
         query,
+        isUser: true,
+        status: 'pending'
       });
       this.getStartEndDocuments();
     });
@@ -193,13 +195,11 @@ class AComment extends Component {
               className={
                 page === eachButton.pageNumber
                   ? 'paginae_button active'
-                  : 'paginate_button '
-              }
-            >
+                  : 'paginate_button '}   >
               <a
                 className="paga-link"
                 name="page"
-                href="#"
+                href="javascript:void(0);"
                 onClick={() => this.handleChoosePage(eachButton.pageNumber)}
               >
                 {eachButton.pageNumber}
@@ -212,7 +212,7 @@ class AComment extends Component {
                 isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
               }
               name="currentPage"
-              href="#"
+              href="javascript:void(0);"
               onClick={() => this.handleChoosePage(-1)}
             >
               {'>>'}
@@ -224,26 +224,23 @@ class AComment extends Component {
   };
 
   render() {
-    const { limit, page, start, end, query } = this.state;
+    const { start, end, query } = this.state;
     const { totalDocuments } = this.props;
     return (
       <Fragment>
-        {/* {!isLoaded ? (
-          <Loader></Loader>
-        ) : ( */}
         <Fragment>
           <section className="content-header">
             <h1>
-              Nhân viên
+              Duyệt bình luận người dùng
             </h1>
             <ol className="breadcrumb">
               <li>
-                <a href="fake_url">
+                <a href="/admin">
                   <i className="fa fa-dashboard" /> Trang chủ
                 </a>
               </li>
               <li>
-                <a href="fake_url">Nhân viên</a>
+                <a href="/admin/comment">Bình luận</a>
               </li>
             </ol>
           </section>
@@ -253,12 +250,6 @@ class AComment extends Component {
               {/* left column */}
               <div className="col-md-12">
                 <div className="box">
-                  <div className="box-header" style={{ marginTop: '5px' }}>
-                    <div style={{ paddingLeft: '5px' }} className="col-md-8">
-                      <h3 className="box-title">Quản lý nhân viên</h3>
-                    </div>
-
-                  </div>
                   {/* /.box-header */}
                   <div className="box-body">
                     <div
@@ -283,14 +274,13 @@ class AComment extends Component {
                             <div
                               id="example1_filter"
                               className="dataTables_filter"
-                              style={{ display: 'flex' }}
+                              style={{ float: 'right' }}
                             >
                               <label>
-                                Tìm kiếm:
+                                Tìm kiếm{' '}
                                 <input
                                   type="search"
                                   name="query"
-                                  style={{ margin: '0px 0px' }}
                                   className="form-control input-sm"
                                   placeholder="Nhập từ khóa... "
                                   aria-controls="example1"
@@ -312,11 +302,10 @@ class AComment extends Component {
                             <thead>
                               <tr>
                                 <th style={{ width: '5%' }}>#</th>
-                                <th style={{ width: '15%' }}>Tên tài khoản</th>
-                                <th style={{ width: '10%' }}>Vai trò</th>
-                                <th style={{ width: '20%' }}>Họ tên</th>
-                                <th style={{ width: '15%' }}>Số điện thoại</th>
-                                <th style={{ width: '20%' }}>Hành động</th>
+                                <th style={{ width: '10%' }}>Người viết</th>
+                                <th style={{ width: '25%' }}>Câu ngữ cảnh</th>
+                                <th style={{ width: '30%' }}>Nội dung</th>
+                                <th style={{ width: '10%' }}>Ngày viết</th>
                               </tr>
                             </thead>
 
@@ -325,11 +314,10 @@ class AComment extends Component {
                             <tfoot>
                               <tr>
                                 <th>#</th>
-                                <th>Tên tài khoản</th>
-                                <th>Vai trò</th>
-                                <th>Họ tên</th>
-                                <th>Số điện thoại</th>
-                                <th>Hành động</th>
+                                <th>Người viết</th>
+                                <th>Câu ngữ cảnh</th>
+                                <th>Nội dung</th>
+                                <th>Ngày viết</th>
                               </tr>
                             </tfoot>
                           </table>
@@ -373,7 +361,6 @@ class AComment extends Component {
           </section>
           {/* /.content */}
         </Fragment>
-        {/* )} */}
       </Fragment>
     );
   }
@@ -381,9 +368,11 @@ class AComment extends Component {
 
 AComment.propTypes = {
   getComments: PropTypes.func.isRequired,
+  deleteComment: PropTypes.func.isRequired,
+  updateCommentStatus: PropTypes.func.isRequired,
   comments: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getComments })(AComment);
+export default connect(mapStateToProps, { getComments, deleteComment, updateCommentStatus })(AComment);

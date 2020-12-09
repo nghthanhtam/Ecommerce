@@ -31,7 +31,7 @@ class Product extends Component {
     pages: [],
     start: 1,
     end: 5,
-    isNextBtnShow: false,
+    isNextBtnShow: true,
     isPriceBoardHidden: true,
     skuproduct: {
       index: 0,
@@ -188,7 +188,7 @@ class Product extends Component {
                 page === eachButton.pageNumber
                   ? 'paginae_button active'
                   : 'paginate_button'}>
-              <a className="paga-link" name="currentPage" href="#" onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
+              <a className="paga-link" name="currentPage" href="javascript:void(0);" onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
                 {eachButton.pageNumber}
               </a>
             </li>
@@ -199,7 +199,7 @@ class Product extends Component {
                 isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
               }
               name="currentPage"
-              href="#"
+              href="javascript:void(0);"
               onClick={() => this.handleChoosePage(-1)}
             >
               {'>>'}

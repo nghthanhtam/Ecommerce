@@ -3,6 +3,7 @@ import {
   ADD_QUESTION,
   DELETE_QUESTION,
   UPDATE_QUESTION,
+  UPDATE_QUESTION_STATUS
 } from './types';
 
 export const getQuestions = (params) => ({
@@ -23,4 +24,9 @@ export const addQuestion = (newQuestion) => ({
 export const updateQuestion = (newQuestion) => ({
   type: UPDATE_QUESTION,
   newQuestion: newQuestion,
+});
+
+export const updateQuestionStatus = ({ status, id }) => ({
+  type: UPDATE_QUESTION_STATUS,
+  params: { status, id },
 });

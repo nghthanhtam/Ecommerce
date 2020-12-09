@@ -22,7 +22,7 @@ class AActiveList extends React.Component {
         pages: [],
         start: 1,
         end: 5,
-        isNextBtnShow: false,
+        isNextBtnShow: true,
     }
 
     componentDidMount() {
@@ -169,7 +169,7 @@ class AActiveList extends React.Component {
                             }>
                             <a className="paga-link"
                                 name="currentPage"
-                                href="#"
+                                href="javascript:void(0);"
                                 onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
                                 {eachButton.pageNumber}
                             </a>
@@ -178,7 +178,7 @@ class AActiveList extends React.Component {
                     <li className="paginate_button">
                         <a className={isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'}
                             name="currentPage"
-                            href="#"
+                            href="javascript:void(0);"
                             onClick={() => this.handleChoosePage(-1)}>
                             {'>>'}
                         </a>
@@ -189,8 +189,8 @@ class AActiveList extends React.Component {
     };
 
     render() {
-        const { limit, page, query, start, end } = this.state
-        const { totalDocuments, productVars, } = this.props
+        const { query, start, end } = this.state
+        const { totalDocuments, } = this.props
         return (
             <div className="row">
                 <div className="col-md-12">
@@ -286,7 +286,7 @@ class AActiveList extends React.Component {
                                         >
                                             Hiển thị{' '}
                                             {query == ''
-                                                ? start + ' đến ' + end + ' trong '
+                                                ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
                                                 : ''}{' '}
                                             {totalDocuments} kết quả
                                     </div>

@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ProductRow from './ProductRow';
-import PendingList from './Tab/PendingList'
+import APendingList from './Tab/APendingList'
 import AActiveList from './Tab/AActiveList'
 
 import { getProductVarsByIdShop } from '../../../../state/actions/productVarActions';
@@ -187,7 +187,7 @@ class Product extends Component {
                 page === eachButton.pageNumber
                   ? 'paginae_button active'
                   : 'paginate_button'}>
-              <a className="paga-link" name="currentPage" href="#" onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
+              <a className="paga-link" name="currentPage" href="javascript:void(0);" onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
                 {eachButton.pageNumber}
               </a>
             </li>
@@ -198,7 +198,7 @@ class Product extends Component {
                 isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
               }
               name="currentPage"
-              href="#"
+              href="javascript:void(0);"
               onClick={() => this.handleChoosePage(-1)}
             >
               {'>>'}
@@ -253,7 +253,7 @@ class Product extends Component {
     const { propValueList, productList } = this.state
     const { products } = this.props
 
-    if (name == 'pending') this.setState({ block: <PendingList /> })
+    if (name == 'pending') this.setState({ block: <APendingList /> })
     else if (name == 'active') this.setState({ block: <AActiveList /> })
   }
 

@@ -28,6 +28,8 @@ import AHome from '../components/Content/Admin/Home/AHome';
 import AProduct from '../components/Content/Admin/Product/AProduct';
 import AComment from '../components/Content/Admin/Comment/AComment';
 import AQuestion from '../components/Content/Admin/Question/AQuestion';
+import AAnswer from '../components/Content/Admin/Answer/AAnswer';
+import ARating from '../components/Content/Admin/Rating/ARating';
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -134,6 +136,18 @@ class RAdmin extends Component {
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
+                      path="/admin/answer"
+                      component={AAnswer}
+                      token={adminToken}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/admin/rating"
+                      component={ARating}
+                      token={adminToken}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
                       path="/admin/product"
                       component={AProduct}
                       role={roles.product}
@@ -181,6 +195,7 @@ class RAdmin extends Component {
                       role={roles.order}
                       token={token}
                     ></PrivateRoute>
+                    <Route path="*" render={() => <Redirect to="/404" />} />
                   </Switch>
                 </div>
                 <Footer />

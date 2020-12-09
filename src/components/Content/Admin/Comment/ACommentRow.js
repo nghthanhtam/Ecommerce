@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { deleteEmployee } from '../../../../state/actions/employeeActions';
+import { deleteComment, updateCommentStatus } from '../../../../state/actions/commentActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
 
 class ACommentRow extends Component {
+  state = {
+    statuses: [
+      { value: "accepted", label: 'Duyệt' },
+      { value: "declined", label: 'Không duyệt' },
+    ],
+  }
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
@@ -11,47 +17,54 @@ class ACommentRow extends Component {
     let dt = newDate.getDate();
 
     dt = dt < 10 ? `0${dt}` : dt;
-
     month = month < 10 ? `0${month}` : month;
-    // if (month < 10) {
-    //   month = "0" + month;
-    // }
+    return dt + '-' + month + '-' + year;
+  };
 
-    return year + '-' + month + '-' + dt;
-  };
-  handleEdit = (id) => {
-    this.props.pushHistory(`/employee/edit/${id}`);
-  };
   handleDelete = (id) => {
-    this.props.deleteEmployee(id);
+    this.props.deleteComment(id);
   };
+
+  componentDidMount() {
+    console.log('comment: ', this.props.comment);
+  }
 
   render() {
-    const { employee, index } = this.props;
+    const { comment, index } = this.props;
+    const { statuses } = this.state
 
     return (
       <tr>
         <td>{index + 1}</td>
-        <td>{employee.username}</td>
-        {/* <td>{this.convertDate(employee.createAt)}</td> */}
-        <td>{employee.idRole}</td>
-        <td>{employee.fullname}</td>
-        <td>{employee.phone}</td>
+        <td>{comment.idUser}</td>
+        <td>
+          <div style={{ fontWeight: '500' }}>{comment.Rating.title}</div>
+          {comment.Rating.review}
+        </td>
+        <td>{comment.content}</td>
+        <td>{this.convertDate(comment.createdAt)}</td>
         <td>
           <div className="btn-group">
+            <div className="btn-group">
+              <button type="button" className="btn btn-info">Duyệt</button>
+              <button type="button" className="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                <span className="caret"></span>
+                <span className="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul className="dropdown-menu" role="menu">
+                {statuses.map((item, index) => (
+                  <li key={index} onClick={() => {
+                    this.props.updateCommentStatus({ id: comment.id, status: item.value });
+                    window.location.reload()
+                  }}><a href="javascript:void(0);"> {item.label} </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
             <button
-              onClick={() => this.handleEdit(employee.id)}
+              onClick={() => this.handleDelete(comment.id)}
               type="button"
-              className="btn btn-success"
-            >
-              Sửa
-            </button>
-
-            <button
-              onClick={() => this.handleDelete(employee.id)}
-              type="button"
-              className="btn btn-danger"
-            >
+              className="btn btn-danger">
               Xóa
             </button>
           </div>
@@ -61,4 +74,4 @@ class ACommentRow extends Component {
   }
 }
 
-export default connect(null, { deleteEmployee, pushHistory })(ACommentRow);
+export default connect(null, { deleteComment, pushHistory, updateCommentStatus })(ACommentRow);

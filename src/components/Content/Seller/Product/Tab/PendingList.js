@@ -23,7 +23,7 @@ class PendingList extends React.Component {
         pages: [],
         start: 1,
         end: 5,
-        isNextBtnShow: false,
+        isNextBtnShow: true,
     }
 
     componentDidMount() {
@@ -136,7 +136,7 @@ class PendingList extends React.Component {
 
     handleChoosePage = (e) => {
         const { limit, page } = this.state;
-        let { totalDocuments, productVars } = this.props;
+        let { totalDocuments, idShop } = this.props;
 
         let pages = Math.floor(totalDocuments / limit),
             remainder = totalDocuments % limit;
@@ -151,11 +151,7 @@ class PendingList extends React.Component {
 
         this.setState({ page: e }, () => {
             const { limit, page, query } = this.state;
-            this.props.getProducts({
-                limit,
-                page,
-                query
-            });
+            this.props.getProductVarsByIdShop({ limit, page, query, idShop, getActive: false });
             this.getStartEndDocuments();
         });
     };
@@ -175,7 +171,7 @@ class PendingList extends React.Component {
                             }>
                             <a className="paga-link"
                                 name="currentPage"
-                                href="#"
+                                href="javascript:void(0);"
                                 onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
                                 {eachButton.pageNumber}
                             </a>
@@ -184,7 +180,7 @@ class PendingList extends React.Component {
                     <li className="paginate_button">
                         <a className={isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'}
                             name="currentPage"
-                            href="#"
+                            href="javascript:void(0);"
                             onClick={() => this.handleChoosePage(-1)}>
                             {'>>'}
                         </a>
@@ -265,7 +261,6 @@ class PendingList extends React.Component {
                                                 <th style={{ width: '15%' }}>Đơn giá</th>
                                                 <th style={{ width: '15%' }}>Số lượng tồn</th>
                                                 <th style={{ width: '15%' }}>Trạng thái</th>
-                                                <th style={{ width: '15%' }}>Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody>{this.renderProducts(false)}</tbody>
@@ -278,7 +273,6 @@ class PendingList extends React.Component {
                                                 <th>Đơn giá</th>
                                                 <th>Số lượng tồn</th>
                                                 <th>Trạng thái</th>
-                                                <th>Thao tác</th>
                                             </tr>
                                         </tfoot>
                                     </table>

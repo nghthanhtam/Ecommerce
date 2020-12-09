@@ -69,7 +69,7 @@ function* fetchProductVarsByIdShop(params) {
         )
         .catch((er) => console.log(er.response))
     );
-    console.log(response.data);
+
     yield put({ type: PRODUCTVARS_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });

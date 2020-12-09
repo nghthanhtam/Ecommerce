@@ -21,6 +21,7 @@ import orderReducer from './orderReducer';
 import userReducer from './userReducer';
 import ratingReducer from './ratingReducer';
 import commentReducer from './commentReducer';
+import answerReducer from './answerReducer';
 
 import memberReducer from './memberReducer';
 import invoiceReducer from './invoiceReducer';
@@ -66,6 +67,7 @@ export default combineReducers({
   authAdmin: authAdminReducer,
   comment: commentReducer,
   question: questionReducer,
+  answer: answerReducer,
 
   invoice: invoiceReducer,
   invoicedet: invoicedetReducer,

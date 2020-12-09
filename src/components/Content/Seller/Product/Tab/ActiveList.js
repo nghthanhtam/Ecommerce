@@ -23,7 +23,7 @@ class ActiveList extends React.Component {
         pages: [],
         start: 1,
         end: 5,
-        isNextBtnShow: false,
+        isNextBtnShow: true,
     }
 
     componentDidMount() {
@@ -177,7 +177,7 @@ class ActiveList extends React.Component {
                             }>
                             <a className="paga-link"
                                 name="currentPage"
-                                href="#"
+                                href="javascript:void(0);"
                                 onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
                                 {eachButton.pageNumber}
                             </a>
@@ -186,7 +186,7 @@ class ActiveList extends React.Component {
                     <li className="paginate_button">
                         <a className={isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'}
                             name="currentPage"
-                            href="#"
+                            href="javascript:void(0);"
                             onClick={() => this.handleChoosePage(-1)}>
                             {'>>'}
                         </a>

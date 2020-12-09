@@ -1,20 +1,19 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Loader from 'react-loader';
 
-import { getProductVarsByIdShop } from '../../../../../state/actions/productVarActions';
+import { getProductVars } from '../../../../../state/actions/productVarActions';
 import { pushHistory } from '../../../../../state/actions/historyActions';
 import ProductRow from '../ProductRow';
 
 const mapStateToProps = (state) => ({
     productVars: state.productVar.productVars,
     isLoaded: state.productVar.isLoaded,
-    idShop: state.auth.role.idShop,
     totalDocuments: state.productVar.totalDocuments
 });
 
-class PendingList extends React.Component {
+class APendingList extends React.Component {
     state = {
         sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
         limit: 5,
@@ -23,13 +22,12 @@ class PendingList extends React.Component {
         pages: [],
         start: 1,
         end: 5,
-        isNextBtnShow: false,
+        isNextBtnShow: true,
     }
 
     componentDidMount() {
         const { limit, page, query } = this.state;
-        const { idShop } = this.props
-        this.props.getProductVarsByIdShop({ limit, page, query, idShop, getActive: false });
+        this.props.getProductVars({ limit, page, query, getActive: false });
     }
 
     componentDidUpdate = (prevProps, prevState, snapshot) => {
@@ -63,7 +61,7 @@ class PendingList extends React.Component {
 
     getPages = () => {
         const { limit, query } = this.state;
-        let { totalDocuments, productVars } = this.props;
+        let { totalDocuments } = this.props;
 
         if (totalDocuments == 0) return;
 
@@ -108,7 +106,7 @@ class PendingList extends React.Component {
 
     getStartEndDocuments() {
         const { limit, page } = this.state;
-        let { totalDocuments, productVars } = this.props;
+        let { totalDocuments } = this.props;
 
         let pages = Math.floor(totalDocuments / limit),
             remainder = totalDocuments % limit;
@@ -136,7 +134,7 @@ class PendingList extends React.Component {
 
     handleChoosePage = (e) => {
         const { limit, page } = this.state;
-        let { totalDocuments, productVars } = this.props;
+        let { totalDocuments, idShop } = this.props;
 
         let pages = Math.floor(totalDocuments / limit),
             remainder = totalDocuments % limit;
@@ -151,11 +149,7 @@ class PendingList extends React.Component {
 
         this.setState({ page: e }, () => {
             const { limit, page, query } = this.state;
-            this.props.getProducts({
-                limit,
-                page,
-                query
-            });
+            this.props.getProductVarsByIdShop({ limit, page, query, idShop, getActive: false });
             this.getStartEndDocuments();
         });
     };
@@ -175,7 +169,7 @@ class PendingList extends React.Component {
                             }>
                             <a className="paga-link"
                                 name="currentPage"
-                                href="#"
+                                href="javascript:void(0);"
                                 onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
                                 {eachButton.pageNumber}
                             </a>
@@ -184,7 +178,7 @@ class PendingList extends React.Component {
                     <li className="paginate_button">
                         <a className={isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'}
                             name="currentPage"
-                            href="#"
+                            href="javascript:void(0);"
                             onClick={() => this.handleChoosePage(-1)}>
                             {'>>'}
                         </a>
@@ -195,8 +189,8 @@ class PendingList extends React.Component {
     };
 
     render() {
-        const { limit, page, query, start, end } = this.state
-        const { totalDocuments, idShop, productVars } = this.props
+        const { query, start, end } = this.state
+        const { productVars, totalDocuments } = this.props
         return (
             <div className="row">
                 <div className="col-md-12">
@@ -293,7 +287,7 @@ class PendingList extends React.Component {
                                         aria-live="polite">
                                         Hiển thị{' '}
                                         {query == ''
-                                            ? start + ' đến ' + end + ' trong '
+                                            ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
                                             : ''}{' '}
                                         {productVars.filter(o => o.status !== 'active').length} kết quả
                                     </div>
@@ -316,10 +310,10 @@ class PendingList extends React.Component {
     }
 }
 
-PendingList.propTypes = {
-    getProductVarsByIdShop: PropTypes.func.isRequired,
+APendingList.propTypes = {
+    getProductVars: PropTypes.func.isRequired,
     productVars: PropTypes.array.isRequired,
     isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getProductVarsByIdShop, pushHistory })(PendingList);
+export default connect(mapStateToProps, { getProductVars, pushHistory })(APendingList);

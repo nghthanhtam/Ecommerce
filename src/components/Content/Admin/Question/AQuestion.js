@@ -1,14 +1,14 @@
 import React, { Component, Fragment } from 'react';
-import CommentRow from './AQuestionRow';
+import SlotRow from '../../Slots/SlotRow';
 import { connect } from 'react-redux';
-import { getComments } from '../../../../state/actions/commentActions';
+import { getQuestions, deleteQuestion, updateQuestionStatus } from '../../../../state/actions/questionActions';
 import PropTypes from 'prop-types';
 import Loader from 'react-loader';
 
 const mapStateToProps = (state) => ({
-  comments: state.comment.comments,
-  isLoaded: state.comment.isLoaded,
-  totalDocuments: state.comment.totalDocuments,
+  questions: state.question.questions,
+  isLoaded: state.question.isLoaded,
+  totalDocuments: state.question.totalDocuments,
 });
 
 class AQuestion extends Component {
@@ -25,10 +25,11 @@ class AQuestion extends Component {
 
   componentDidMount() {
     const { limit, page, query } = this.state;
-    this.props.getComments({
+    this.props.getQuestions({
       limit,
       page,
       query,
+      status: 'pending'
     });
   }
 
@@ -102,20 +103,18 @@ class AQuestion extends Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    let idShop = 1;
-    this.props.getComments({
+    this.props.getQuestions({
       limit,
       page,
       query,
-      idShop,
     });
     this.getPages();
     this.getStartEndDocuments();
   };
 
-  renderComments = () => {
-    const { start, limit, page } = this.state;
-    const { comments, isLoaded } = this.props;
+  renderQuestions = () => {
+    const { start } = this.state;
+    const { questions, isLoaded, deleteQuestion, updateQuestionStatus } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -124,12 +123,14 @@ class AQuestion extends Component {
         </td>
       </tr>
     ) : (
-        comments.map((eachComment, index) => (
-          <CommentRow
-            history={this.props.history}
-            key={eachComment.id}
-            comment={eachComment}
+        questions.map((question, index) => (
+          <SlotRow
+            cate='question'
+            key={index}
+            item={question}
             index={index + start - 1}
+            deleteItem={deleteQuestion}
+            updateItemStatus={updateQuestionStatus}
           />
         ))
       );
@@ -152,11 +153,12 @@ class AQuestion extends Component {
 
     this.setState({ page: e }, () => {
       const { limit, page, query, } = this.state;
-      let idShop = 1;
-      this.props.getComments({
+      this.props.getQuestions({
         limit,
         page,
         query,
+        isUser: true,
+        status: 'pending'
       });
       this.getStartEndDocuments();
     });
@@ -199,7 +201,7 @@ class AQuestion extends Component {
               <a
                 className="paga-link"
                 name="page"
-                href="#"
+                href="javascript:void(0);"
                 onClick={() => this.handleChoosePage(eachButton.pageNumber)}
               >
                 {eachButton.pageNumber}
@@ -212,7 +214,7 @@ class AQuestion extends Component {
                 isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
               }
               name="currentPage"
-              href="#"
+              href="javascript:void(0);"
               onClick={() => this.handleChoosePage(-1)}
             >
               {'>>'}
@@ -224,26 +226,23 @@ class AQuestion extends Component {
   };
 
   render() {
-    const { limit, page, start, end, query } = this.state;
+    const { start, end, query } = this.state;
     const { totalDocuments } = this.props;
     return (
       <Fragment>
-        {/* {!isLoaded ? (
-          <Loader></Loader>
-        ) : ( */}
         <Fragment>
           <section className="content-header">
             <h1>
-              Nhân viên
+              Duyệt câu hỏi người dùng
             </h1>
             <ol className="breadcrumb">
               <li>
-                <a href="fake_url">
+                <a href="/admin">
                   <i className="fa fa-dashboard" /> Trang chủ
                 </a>
               </li>
               <li>
-                <a href="fake_url">Nhân viên</a>
+                <a href="/admin/question">Câu hỏi</a>
               </li>
             </ol>
           </section>
@@ -253,13 +252,7 @@ class AQuestion extends Component {
               {/* left column */}
               <div className="col-md-12">
                 <div className="box">
-                  <div className="box-header" style={{ marginTop: '5px' }}>
-                    <div style={{ paddingLeft: '5px' }} className="col-md-8">
-                      <h3 className="box-title">Quản lý nhân viên</h3>
-                    </div>
 
-
-                  </div>
                   {/* /.box-header */}
                   <div className="box-body">
                     <div
@@ -284,14 +277,13 @@ class AQuestion extends Component {
                             <div
                               id="example1_filter"
                               className="dataTables_filter"
-                              style={{ display: 'flex' }}
+                              style={{ float: 'right' }}
                             >
                               <label>
-                                Tìm kiếm:
+                                Tìm kiếm{' '}
                                 <input
                                   type="search"
                                   name="query"
-                                  style={{ margin: '0px 0px' }}
                                   className="form-control input-sm"
                                   placeholder="Nhập từ khóa... "
                                   aria-controls="example1"
@@ -313,24 +305,22 @@ class AQuestion extends Component {
                             <thead>
                               <tr>
                                 <th style={{ width: '5%' }}>#</th>
-                                <th style={{ width: '15%' }}>Tên tài khoản</th>
-                                <th style={{ width: '10%' }}>Vai trò</th>
-                                <th style={{ width: '20%' }}>Họ tên</th>
-                                <th style={{ width: '15%' }}>Số điện thoại</th>
-                                <th style={{ width: '20%' }}>Hành động</th>
+                                <th style={{ width: '10%' }}>Người hỏi</th>
+                                <th style={{ width: '10%' }}>Sản phẩm</th>
+                                <th style={{ width: '45%' }}>Câu hỏi</th>
+                                <th style={{ width: '10%' }}>Ngày viết</th>
                               </tr>
                             </thead>
 
-                            <tbody>{this.renderComments()}</tbody>
+                            <tbody>{this.renderQuestions()}</tbody>
 
                             <tfoot>
                               <tr>
                                 <th>#</th>
-                                <th>Tên tài khoản</th>
-                                <th>Vai trò</th>
-                                <th>Họ tên</th>
-                                <th>Số điện thoại</th>
-                                <th>Hành động</th>
+                                <th>Người hỏi</th>
+                                <th>Sản phẩm</th>
+                                <th>Câu hỏi</th>
+                                <th>Ngày viết</th>
                               </tr>
                             </tfoot>
                           </table>
@@ -374,17 +364,18 @@ class AQuestion extends Component {
           </section>
           {/* /.content */}
         </Fragment>
-        {/* )} */}
       </Fragment>
     );
   }
 }
 
 AQuestion.propTypes = {
-  getComments: PropTypes.func.isRequired,
-  comments: PropTypes.array.isRequired,
+  getQuestions: PropTypes.func.isRequired,
+  deleteQuestion: PropTypes.func.isRequired,
+  updateQuestionStatus: PropTypes.func.isRequired,
+  questions: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getComments })(AQuestion);
+export default connect(mapStateToProps, { getQuestions, deleteQuestion, updateQuestionStatus })(AQuestion);

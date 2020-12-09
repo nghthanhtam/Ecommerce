@@ -3,6 +3,7 @@ import {
   ADD_COMMENT,
   DELETE_COMMENT,
   UPDATE_COMMENT,
+  UPDATE_COMMENT_STATUS
 } from './types';
 
 export const getComments = (params) => ({
@@ -23,4 +24,9 @@ export const addComment = (newCmt) => ({
 export const updateComment = (newCmt) => ({
   type: UPDATE_COMMENT,
   newCmt: newCmt,
+});
+
+export const updateCommentStatus = ({ status, id }) => ({
+  type: UPDATE_COMMENT_STATUS,
+  params: { status, id },
 });

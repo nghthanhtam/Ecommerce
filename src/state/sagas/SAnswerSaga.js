@@ -3,18 +3,18 @@ import axios from 'axios';
 import { tokenConfig } from '../actions/authActions';
 import { tokenAdminConfig } from '../actions/authAdminActions';
 import {
-  GET_COMMENTS,
-  ADD_COMMENT,
-  COMMENTS_RECEIVED,
-  COMMENT_ADDED,
-  DELETE_COMMENT,
-  COMMENT_DELETED,
-  UPDATE_COMMENT,
-  COMMENT_UPDATED,
-  UPDATE_COMMENT_STATUS
+  GET_ANSWERS,
+  ADD_ANSWER,
+  ANSWERS_RECEIVED,
+  ANSWER_ADDED,
+  DELETE_ANSWER,
+  ANSWER_DELETED,
+  UPDATE_ANSWER,
+  ANSWER_UPDATED,
+  UPDATE_ANSWER_STATUS
 } from '../actions/types';
 
-function* fetchComments(params) {
+function* fetchAnswers(params) {
   try {
     const state = yield select(),
       { limit, page, query, status } = params.pages;
@@ -22,14 +22,14 @@ function* fetchComments(params) {
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_RATING}/api/comment?limit=${limit}&page=${page}&query=${query}&status=${status}`,
+          `${process.env.REACT_APP_BACKEND_RATING}/api/answer?limit=${limit}&page=${page}&query=${query}&status=${status}`,
           tokenAdminConfig(state)
         )
     );
 
-    yield put({ type: COMMENTS_RECEIVED, payload: response });
+    yield put({ type: ANSWERS_RECEIVED, payload: response });
   } catch (error) {
-    console.log(error);
+    console.log({ ...error });
     let err = { ...error }
     if (err.status == 401) {
       this.props.history.push({
@@ -39,21 +39,21 @@ function* fetchComments(params) {
   }
 }
 
-function* addComment(params) {
+function* addAnswer(params) {
   const state = yield select();
 
   try {
     const response = yield call(() =>
       axios.post(
-        `${process.env.REACT_APP_BACKEND_RATING}/api/comment/`,
+        `${process.env.REACT_APP_BACKEND_RATING}/api/answer/`,
         params.newCmt,
         tokenConfig(state)
       )
     );
 
-    yield put({ type: COMMENT_ADDED, payload: response.data });
+    yield put({ type: ANSWER_ADDED, payload: response.data });
     yield put({
-      type: GET_COMMENTS,
+      type: GET_ANSWERS,
       pages: params.newCmt.pages,
     });
   } catch (error) {
@@ -61,60 +61,61 @@ function* addComment(params) {
   }
 }
 
-function* updateCommentStt(params) {
+function* updateAnswerStt(params) {
   const state = yield select(),
     { id, status } = params.params
 
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_RATING}/api/comment/${id}/status`,
+        `${process.env.REACT_APP_BACKEND_RATING}/api/answer/${id}/status`,
         { status },
         tokenAdminConfig(state)
       )
     );
-    yield put({ type: COMMENT_UPDATED, payload: response.data });
+    yield put({ type: ANSWER_UPDATED, payload: response.data });
   } catch (error) {
     console.log({ ...error });
   }
 }
 
-function* updateComment(params) {
+function* updateAnswer(params) {
   const state = yield select();
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_RATING}/api/comment/${params.newCmt.id}`,
+        `${process.env.REACT_APP_BACKEND_RATING}/api/answer/${params.newCmt.id}`,
         params.newCmt,
         tokenAdminConfig(state)
       )
     );
 
-    yield put({ type: COMMENT_UPDATED, payload: response.data });
+    yield put({ type: ANSWER_UPDATED, payload: response.data });
   } catch (error) {
     console.log({ ...error });
   }
 }
 
-function* deleteComment(params) {
+function* deleteAnswer(params) {
   const state = yield select();
   try {
     yield call(() =>
       axios.delete(
-        `${process.env.REACT_APP_BACKEND_RATING}/api/comment/${params.id}`,
+        `${process.env.REACT_APP_BACKEND_RATING}/api/answer/${params.id}`,
         tokenAdminConfig(state)
       )
     );
-    yield put({ type: COMMENT_DELETED, payload: { id: params.id } });
+
+    yield put({ type: ANSWER_DELETED, payload: { id: params.id } });
   } catch (error) {
     console.log(error.response);
   }
 }
 
-export default function* sCommentSaga() {
-  yield takeEvery(GET_COMMENTS, fetchComments);
-  yield takeEvery(ADD_COMMENT, addComment);
-  yield takeEvery(UPDATE_COMMENT, updateComment);
-  yield takeEvery(UPDATE_COMMENT_STATUS, updateCommentStt);
-  yield takeEvery(DELETE_COMMENT, deleteComment);
+export default function* sAnswerSaga() {
+  yield takeEvery(GET_ANSWERS, fetchAnswers);
+  yield takeEvery(ADD_ANSWER, addAnswer);
+  yield takeEvery(UPDATE_ANSWER, updateAnswer);
+  yield takeEvery(UPDATE_ANSWER_STATUS, updateAnswerStt);
+  yield takeEvery(DELETE_ANSWER, deleteAnswer);
 }

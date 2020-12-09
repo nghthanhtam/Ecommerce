@@ -61,16 +61,6 @@ class ProductRow extends Component {
                 <td style={{ color: 'grey' }}>
                   <i style={{ color: '#52c41a' }} className="fa fa-spinner" aria-hidden="true"></i> Chờ duyệt
                 </td>
-                <td>
-                  <div className="btn-group">
-                    <button
-                      onClick={() => this.approve()}
-                      type="button"
-                      className="btn btn-success">
-                      Duyệt
-                    </button>
-                  </div>
-                </td>
               </>}
           </tr> : null}
       </Fragment>

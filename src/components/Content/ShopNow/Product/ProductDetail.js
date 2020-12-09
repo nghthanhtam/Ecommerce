@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import { getProductById } from '../../../../state/actions/productActions';
 import { getProductVarById } from '../../../../state/actions/productVarActions';
 import { showModal } from '../../../../state/actions/modalActions';
-import { addRating, getRatings } from '../../../../state/actions/ratingActions';
+import { addRating, getRatingsByProduct } from '../../../../state/actions/ratingActions';
 import { addCart } from '../../../../state/actions/cartActions';
 
 const mapStateToProps = (state) => ({
@@ -609,4 +609,4 @@ class ProductDetail extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { getProductById, getProductVarById, showModal, addRating, getRatings, addCart })(ProductDetail);
+export default connect(mapStateToProps, { getProductById, getProductVarById, showModal, addRating, getRatingsByProduct, addCart })(ProductDetail);

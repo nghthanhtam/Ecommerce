@@ -1,6 +1,7 @@
 import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { tokenConfig } from '../actions/authActions';
+import { tokenAdminConfig } from '../actions/authAdminActions';
 import {
   GET_RATINGS,
   ADD_RATING,
@@ -10,9 +11,30 @@ import {
   RATING_DELETED,
   UPDATE_RATING,
   RATING_UPDATED,
+  UPDATE_RATING_STATUS,
+  GET_RATINGS_BY_PRODUCT
 } from '../actions/types';
 
 function* fetchRatings(params) {
+  try {
+    const state = yield select(),
+      { limit, page, query, status } = params.pages;
+
+    const response = yield call(() =>
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_RATING}/api/rating?limit=${limit}&page=${page}&query=${query}&status=${status}`,
+          tokenConfig(state)
+        )
+    );
+
+    yield put({ type: RATINGS_RECEIVED, payload: response });
+  } catch (error) {
+    console.log({ ...error });
+  }
+}
+
+function* fetchRatingsByProduct(params) {
   try {
     const state = yield select(),
       { limit, page, idProduct } = params.pages;
@@ -53,6 +75,25 @@ function* addRating(params) {
   }
 }
 
+function* updateRatingStt(params) {
+  const state = yield select(),
+    { id, status } = params.params
+
+  try {
+    const response = yield call(() =>
+      axios.put(
+        `${process.env.REACT_APP_BACKEND_RATING}/api/rating/${id}/status`,
+        { status },
+        tokenAdminConfig(state)
+      )
+    );
+    yield put({ type: RATING_UPDATED, payload: response.data });
+  } catch (error) {
+    console.log({ ...error });
+  }
+}
+
+
 function* updateRating(params) {
   const state = yield select();
   try {
@@ -75,7 +116,7 @@ function* deleteRating(params) {
     yield call(() =>
       axios.delete(
         `${process.env.REACT_APP_BACKEND_RATING}/api/rating/${params.id}`,
-        tokenConfig(state)
+        tokenAdminConfig(state)
       )
     );
 
@@ -86,8 +127,10 @@ function* deleteRating(params) {
 }
 
 export default function* sRatingSaga() {
+  yield takeEvery(GET_RATINGS_BY_PRODUCT, fetchRatingsByProduct);
   yield takeEvery(GET_RATINGS, fetchRatings);
   yield takeEvery(ADD_RATING, addRating);
   yield takeEvery(UPDATE_RATING, updateRating);
+  yield takeEvery(UPDATE_RATING_STATUS, updateRatingStt);
   yield takeEvery(DELETE_RATING, deleteRating);
 }
