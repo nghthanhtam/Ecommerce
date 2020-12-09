@@ -339,7 +339,19 @@
   color: white;
   cursor: pointer;
 }
-
+.btn-order-manage {
+  border-radius: 8px;
+  margin-left: auto;
+  padding: 8px;
+  height: 40px;
+  border: 1px solid #ccc;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #01080f;
+  cursor: pointer;
+}
 /* Saler Sale report */
 .filter-box {
   display: flex;

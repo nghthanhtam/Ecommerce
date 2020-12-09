@@ -20,6 +20,7 @@ import paymentReducer from './paymentReducer';
 import orderReducer from './orderReducer';
 import userReducer from './userReducer';
 import ratingReducer from './ratingReducer';
+import commentReducer from './commentReducer';
 
 import memberReducer from './memberReducer';
 import invoiceReducer from './invoiceReducer';
@@ -33,6 +34,8 @@ import cartReducer from './cartReducer';
 import cityReducer from './cityReducer';
 import districtReducer from './districtReducer';
 import wardReducer from './wardReducer';
+import authAdminReducer from './authAdminReducer'
+import questionReducer from './questionReducer'
 
 export default combineReducers({
   employee: employeeReducer,
@@ -60,6 +63,9 @@ export default combineReducers({
   ward: wardReducer,
   user: userReducer,
   rating: ratingReducer,
+  authAdmin: authAdminReducer,
+  comment: commentReducer,
+  question: questionReducer,
 
   invoice: invoiceReducer,
   invoicedet: invoicedetReducer,

@@ -1,0 +1,26 @@
+.wrapper {
+  height: 100vh;
+  background-image: url("adminlogin.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  position: relative;
+  -webkit-filter: blur(8px);
+  -moz-filter: blur(8px);
+  position: relative;
+}
+.loginbox {
+  margin: 7% auto;
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/opacity/see-through */
+  color: white;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  padding: 35px;
+  text-align: center;
+  width: 360px;
+}

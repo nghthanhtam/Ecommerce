@@ -46,7 +46,7 @@ function* addRating(params) {
     yield put({ type: RATING_ADDED, payload: response.data });
     yield put({
       type: GET_RATINGS,
-      pages: params.newRating.pages,
+      pages: { limit: 1000, page: 1, idProduct: params.newRating.idProduct },
     });
   } catch (error) {
     console.log(error.response);

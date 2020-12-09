@@ -39,7 +39,7 @@ class ProductRow extends Component {
         {getActive == false && status !== 'active' || getActive == true && status == 'active' ?
           <tr>
             <td>{index + 1}</td>
-            <td><img src={Images[0].url} alt="" border='3' height='100' width='200' /> {SKU}</td>
+            <td><img src={Images[0].url} alt="" border='3' height='200' width='200' /> {SKU}</td>
             <td>{name}</td>
             <td>{SKU}</td>
             <td >{price}  VND</td>
@@ -48,7 +48,7 @@ class ProductRow extends Component {
             {status == 'active' &&
               <td>
                 <div className="btn-group">
-                  <button onClick={() => this.props.history.push({ pathname: `/productvar/edit/${id}` })}
+                  <button onClick={() => this.props.history.push({ pathname: `/seller/productvar/edit/${id}` })}
                     type="button" className="btn btn-success">
                     Sửa
                   </button>

@@ -1,6 +1,7 @@
 import { takeEvery, put, call, select } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../actions/authActions";
+import { tokenAdminConfig } from "../actions/authAdminActions";
 import {
   GET_PRODUCTVARS,
   GET_PRODUCTVARS_BY_IDSHOP,
@@ -38,13 +39,13 @@ function* fetchProductVarByid(params) {
 function* fetchProductVars(params) {
   try {
     const state = yield select(),
-      { limit, page, query } = params.pages;
+      { limit, page, getActive } = params.pages;
 
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar?limit=${limit}&page=${page}&query=${query}`,
-          tokenConfig(state)
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar?limit=${limit}&page=${page}&getActive=${getActive}`,
+          tokenAdminConfig(state)
         )
         .catch((er) => console.log(er.response))
     );
@@ -94,7 +95,6 @@ function* addProductVar(params) {
 }
 
 function* updateProductVarStatus(params) {
-  console.log(params.newProductVar);
   const state = yield select();
   try {
     const response = yield call(() =>
@@ -107,7 +107,7 @@ function* updateProductVarStatus(params) {
 
     yield put({ type: PRODUCTVAR_UPDATED, payload: response.data });
     yield put({
-      type: GET_PRODUCTVARS_BY_IDSHOP, pages: { limit: 10, page: 1, query: '', idShop: 1, getActive: false },
+      type: GET_PRODUCTVARS_BY_IDSHOP, pages: { limit: 10, page: 1, query: '', idShop: params.newProductVar.idShop, getActive: false },
     });
   } catch (error) {
     console.log(error.response);

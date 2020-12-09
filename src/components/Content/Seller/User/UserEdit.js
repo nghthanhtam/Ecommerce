@@ -114,11 +114,11 @@ class UserEdit extends Component {
         console.log(error.response);
       });
     //Quay về trang chính
-    this.props.history.push('/user');
+    this.props.history.push('/seller/user');
   };
 
   handleCancel = (e) => {
-    this.props.history.push('/user');
+    this.props.history.push('/seller/user');
   };
 
   handleChangePass = (e) => {
@@ -174,7 +174,7 @@ class UserEdit extends Component {
               </a>
             </li>
             <li>
-              <a href="/user">User</a>
+              <a href="/seller/user">User</a>
             </li>
             <li>
               <a href="fake_url">Edit</a>
@@ -204,7 +204,7 @@ class UserEdit extends Component {
                           className="form-control"
                           defaultValue={_id}
                           disabled
-                          //onChange={this.handleChange}
+                        //onChange={this.handleChange}
                         />
                       </div>
                     </div>
@@ -422,7 +422,7 @@ class UserEdit extends Component {
                               onClick={this.handleChangePass}
                               className="btn btn-primary"
                               disabled={this.state.inputErrors}
-                              //data-dismiss="modal"
+                            //data-dismiss="modal"
                             >
                               Change
                             </button>

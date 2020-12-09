@@ -98,7 +98,7 @@ class Cart extends React.Component {
                       )
                     })}
                   </div> : <div className="cart-noitem">
-                    <img src="../img/noitem.png" alt="visa" />
+                    <img src="../img/noitem.png" alt="photo" />
                     <p>Không có sản phẩm nào trong giỏ hàng của bạn</p>
                   </div>}
 

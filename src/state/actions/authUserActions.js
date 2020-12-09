@@ -18,8 +18,8 @@ export const updateAuthUser = (token) => ({
   token: token,
 });
 
-export const tokenConfig = (getState) => {
-  const token = getState.auth.token;
+export const tokenUserConfig = (getState) => {
+  const token = getState.authUser.token;
 
   const config = {
     headers: {

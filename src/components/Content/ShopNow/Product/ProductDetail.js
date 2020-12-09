@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import 'font-awesome/css/font-awesome.min.css';
@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import { getProductById } from '../../../../state/actions/productActions';
 import { getProductVarById } from '../../../../state/actions/productVarActions';
 import { showModal } from '../../../../state/actions/modalActions';
-import { addRating } from '../../../../state/actions/ratingActions';
+import { addRating, getRatings } from '../../../../state/actions/ratingActions';
 import { addCart } from '../../../../state/actions/cartActions';
 
 const mapStateToProps = (state) => ({
@@ -30,6 +30,8 @@ const mapStateToProps = (state) => ({
   isLoaded: state.product.isProductLoaded,
   isProVarLoaded: state.productVar.isLoaded,
   productVar: state.productVar.productVar,
+  ratings: state.rating.ratings,
+  isRatingLoaded: state.rating.isLoaded
 });
 
 class ProductDetail extends React.Component {
@@ -44,6 +46,7 @@ class ProductDetail extends React.Component {
     selectedProductVar: {},
     selectedFiles: [],
     rate: '',
+    amount: 0,
     price: '',
     marketPrice: '',
     variants: [],
@@ -66,10 +69,11 @@ class ProductDetail extends React.Component {
   };
 
   componentDidMount() {
-    const { id, } = this.props.match.params;
-    const { idShop } = this.props.location.state;
-    this.setState({ idProduct: id })
-    this.props.getProductById({ idShop, idProduct: id })
+    console.log(this.props);
+    const { idProduct, idShop } = this.props.match.params;
+    this.setState({ idProduct })
+    this.props.getProductById({ idShop, idProduct })
+    this.props.getRatings({ idProduct, limit: 1000, page: 1 })
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -90,6 +94,10 @@ class ProductDetail extends React.Component {
     const { name, value } = e.target;
     this.setState({ [name]: value });
   };
+
+  onChangeAmount = (value) => {
+    this.setState({ amount: this.state.amount + value })
+  }
 
   handleFileSelect = (e) => {
     const validateFile = (file) => {
@@ -227,12 +235,12 @@ class ProductDetail extends React.Component {
   }
 
   addToCart = () => {
-    const { selectedProductVar, variants } = this.state
+    const { selectedProductVar, variants, amount } = this.state
     const { addCart, user, product } = this.props
     if (variants.length == product.variants.length) {
       addCart({
         idProductVar: selectedProductVar.id,
-        amount: 1,
+        amount,
         idUser: user.id
       })
     }
@@ -242,9 +250,20 @@ class ProductDetail extends React.Component {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   };
 
+  convertDate = (date) => {
+    const newDate = new Date(date);
+    let year = newDate.getFullYear();
+    let month = newDate.getMonth() + 1;
+    let dt = newDate.getDate();
+
+    dt = dt < 10 ? `0${dt}` : dt;
+    month = month < 10 ? `0${month}` : month;
+    return year + '-' + month + '-' + dt;
+  };
+
   render() {
-    const { productList, replyBoxHidden, selectedFiles, isTransition, rate, price, marketPrice, variants, bigPhoto, errorMsg } = this.state;
-    const { showModal, show, modalName, isLoaded, product, isProVarLoaded, productVar } = this.props
+    const { productList, replyBoxHidden, selectedFiles, isTransition, rate, amount, price, marketPrice, variants, bigPhoto, errorMsg } = this.state;
+    const { showModal, show, modalName, isLoaded, product, isProVarLoaded, productVar, ratings, isRatingLoaded } = this.props
     const settings = {
       infinite: true,
       speed: 800,
@@ -287,21 +306,20 @@ class ProductDetail extends React.Component {
               <div className="card1">
                 <div className="image">
                   <div className="slider">
-                    <Slider style={{ width: '100%' }} {...bigSettings}>
+                    <Slider style={{ width: '100%', height: '320px' }} {...bigSettings}>
                       {productList.map((item, index) => {
-                        return (<div className='big-photo'>
+                        return (<div key={index} className="big-photo">
                           <img src={bigPhoto} alt="product" />
                         </div>)
                       })}
                     </Slider>
                   </div>
                   <div className="img-slider" >
-                    <Slider style={{ width: '100%' }} {...smallSettings}>
+                    <Slider style={{ width: '100%', height: '320px' }} {...smallSettings}>
                       {product.images.map((item, index) => {
                         return <div className='small-photo' onClick={() => this.setState({ bigPhoto: item.url })}>
                           <img src={item.url} alt="product" />
                         </div>
-
                       })}
                     </Slider>
                   </div>
@@ -364,17 +382,10 @@ class ProductDetail extends React.Component {
                       }}
                     >
                       <div
-                        style={{
-                          backgroundColor: 'white',
-                          height: '37px',
-                          width: '37px',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          border: '1px solid #ccc',
-                        }}
+                        className="minus-btn"
+                        onClick={() => this.onChangeAmount(-1)}
                       >
-                        <i className="fa fa-plus"></i>
+                        <i className="fa fa-minus"></i>
                       </div>
                       <input
                         style={{
@@ -382,19 +393,16 @@ class ProductDetail extends React.Component {
                           height: '36px',
                           textAlign: 'center',
                           border: '1px solid #ccc',
-                        }} />
+                        }}
+                        name='amount'
+                        value={amount}
+                        onChange={this.handleChange}
+                      />
 
                       <div
-                        style={{
-                          backgroundColor: 'white',
-                          height: '37px',
-                          width: '37px',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          border: '1px solid #ccc',
-                        }}>
-                        <i className="fa fa-minus"></i>
+                        className="plus-btn"
+                        onClick={() => this.onChangeAmount(1)}>
+                        <i className="fa fa-plus"></i>
                       </div>
                     </div>
                     <div className="cart-btn" onClick={this.addToCart}>
@@ -431,8 +439,8 @@ class ProductDetail extends React.Component {
               </div>
               <div className="recommend-wrapper" >
                 <h3 style={{ marginLeft: 'auto' }} className="recommend-pane">NHỮNG SẢN PHẨM KHÁC CÙNG PHIM</h3>
-                <div className="sliderwrapper">
-                  <Slider style={{ width: '107%' }} {...settings}>
+                <div className="sliderwrapper" >
+                  <Slider style={{ width: '107%', height: '300px' }} {...settings}>
                     {productList.map((item, index) => {
                       return <RecProduct key={index} />;
                     })}
@@ -444,7 +452,7 @@ class ProductDetail extends React.Component {
                   NHỮNG SẢN PHẨM KHÁC TƯƠNG TỰ
                 </h3>
                 <div className="sliderwrapper">
-                  <Slider style={{ width: '107%' }}  {...settings} >
+                  <Slider style={{ width: '107%', height: '300px' }}  {...settings} >
                     {productList.map(() => {
                       return <RecProduct />;
                     })}
@@ -493,8 +501,7 @@ class ProductDetail extends React.Component {
                         return (
                           <label key={index} htmlFor={item} className="rating-image">
                             <img
-                              style={{ width: '100%', height: '90%' }}
-                              className="product-pic"
+                              className="rating-pic"
                               src={item.url}
                               alt="product"
                             />
@@ -506,76 +513,92 @@ class ProductDetail extends React.Component {
                       <Button variant="contained" style={{ backgroundColor: '#3571a7', color: 'white', width: '115px' }}
                         onClick={this.sendRating} >
                         Gửi
-                  </Button>
+                      </Button>
                     </div>
                   </div>
                 </div>
 
-                <div className="mes-detail" >
-                  <div className="ava">
-                    <img src="./img/ava.png" alt="ava" />
-                  </div>
-                  <div className="reply-wrapper">
-                    <div className="comments">Sản phẩm đẹp gói hàng cẩn thận</div>
-                    <div className="review">
-                      <Rating
-                        name="size-small"
-                        precision={0.5}
-                        value={rate}
-                        size="small"
-                      />
-                    </div>
-                    <div>6 phút trước</div>
-                    <div className="reply-btn" onClick={() => this.replyClick()}>
-                      Trả lời
-                </div>
-                    {replyBoxHidden ? (
-                      <div style={{ width: '100%' }}>
-                        <textarea className="reply-box"></textarea>
-                        <div className="row-flex">
-                          <Button
-                            style={{
-                              background: '#3571a7',
-                              color: 'white',
-                              width: '115px',
-                              height: '38px',
-                              margin: '5px 5px 5px 0',
-                            }}>
-                            Gửi
-                      </Button>
-                          <Button
-                            style={{
-                              background: '#fff',
-                              color: '#000',
-                              width: '115px',
-                              height: '38px',
-                              margin: '5px 5px 5px 0',
-                              border: '1px solid #ccc',
-                            }}
-                            onClick={() => this.replyClick()}>
-                            Hủy bỏ
-                      </Button>
-                        </div>
+                {isRatingLoaded && ratings.map((rating, index) => {
+                  return (
+                    <div className="mes-detail" key={index}>
+                      <div className="ava">
+                        <img src="./img/ava.png" alt="ava" />
                       </div>
-                    ) : null}
-                    <div className="reply-answer">
-                      <p>
-                        ncourage people to post such bad question again and again.
-                        New people need to understand how to correctly write
-                        question because they need to understand that the question
-                        will be useful for new comer. We are not in a discussion
-                        forum. We all can check the link to see the code and put an
-                        answer to get reputation but this is not the purpose of t
-                      </p>
-                      <div className='row-flex-center'>
-                        <div className="ava-reply">
-                          <img src="./img/ava.png" alt="ava" />
+                      <div className="reply-wrapper">
+                        <div className="comments">{rating.title}</div>
+                        <p>{rating.review}</p>
+                        <div className="sku-grid">
+                          {rating.RatingImages.map((image, index) => {
+                            return (
+                              <Fragment>
+                                {image.idRating == rating.id &&
+                                  <div key={index} className="rating-image">
+                                    <img
+                                      className="rating-pic"
+                                      src={image.url}
+                                      alt="product"
+                                    />
+                                  </div>}
+                              </Fragment>
+                            );
+                          })}
                         </div>
-                        <div style={{ color: 'grey' }}>20/03/2020</div>
+                        <div className="review">
+                          <Rating
+                            name="size-small"
+                            precision={0.5}
+                            value={rating.rate}
+                            size="small"
+                            readOnly
+                          />
+                        </div>
+                        <div>{this.convertDate(rating.createdAt)}</div>
+                        <div className="reply-btn" onClick={() => this.replyClick()}>
+                          Trả lời
+                        </div>
+                        {replyBoxHidden ? (
+                          <div style={{ width: '100%' }}>
+                            <textarea className="reply-box"></textarea>
+                            <div className="row-flex">
+                              <Button
+                                className="send-btn"
+                                style={{ background: '#3571a7', color: 'white', width: '115px', height: '38px', margin: '5px 5px 5px 0' }}>
+                                Gửi
+                              </Button>
+                              <Button
+                                style={{
+                                  background: '#fff',
+                                  color: '#000',
+                                  width: '115px',
+                                  height: '38px',
+                                  margin: '5px 5px 5px 0',
+                                  border: '1px solid #ccc',
+                                }}
+                                onClick={() => this.replyClick()}>
+                                Hủy bỏ
+                              </Button>
+                            </div>
+                          </div>
+                        ) : null}
+                        {rating.Comments.map((cmt, cindex) => {
+                          return (
+                            <Fragment>
+                              {cmt.idRating == rating.id && <div className="reply-answer" key={cindex}>
+                                <p> {cmt.content}  </p>
+                                <div className='cmt-wrapper'>
+                                  <div className="ava-reply">
+                                    <img src="./img/ava.png" alt="ava" />
+                                  </div>
+                                  <div style={{ color: 'grey' }}>{this.convertDate(cmt.createdAt)}</div>
+                                </div>
+                              </div>}
+                            </Fragment>)
+                        })}
                       </div>
                     </div>
-                  </div>
-                </div>
+                  )
+                })}
+
               </div>
             </div>}
         </div>
@@ -586,4 +609,4 @@ class ProductDetail extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { getProductById, getProductVarById, showModal, addRating, addCart })(ProductDetail);
+export default connect(mapStateToProps, { getProductById, getProductVarById, showModal, addRating, getRatings, addCart })(ProductDetail);

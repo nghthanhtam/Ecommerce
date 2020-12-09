@@ -3,6 +3,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../../../../assets/css/product.css';
+import queryString from 'query-string';
 
 import ShowingProduct from './ShowingProduct';
 import Header from '../Header/Header';
@@ -43,8 +44,9 @@ class ProductList extends React.Component {
     const { limit, page } = this.state
 
     //get productlist by movieCate
-    if (this.props.location.idMovieCat) {
-      const { idMovieCat } = this.props.location
+    if (this.props.match) {
+      const { idMovieCat } = this.props.match.params
+
       this.setState({ idMovieCat })
       getProductsByMovieCate({ limit, page, idCategory: idMovieCat })
     }
@@ -241,175 +243,170 @@ class ProductList extends React.Component {
           }}
         >
           <div className="nohome-section" />
+          <div className="container1">
+            <div style={{ display: 'flex', padding: '40px', justifyContent: 'center' }}>
+              <div className="filter-list">
+                <div className="ui action input">
+                  <input type="text" placeholder="Search..." />
+                  <button className="ui icon button">
+                    <i className="search icon"></i>
+                  </button>
+                </div>
 
-          <div style={{ display: 'flex', padding: '40px', justifyContent: 'center' }}>
-            <div className="filter-list">
-              <div className="ui action input">
-                <input type="text" placeholder="Search..." />
-                <button className="ui icon button">
-                  <i className="search icon"></i>
-                </button>
-              </div>
+                <h1 className="title-filter">Movie Types</h1>
 
-              <h1 className="title-filter">Movie Types</h1>
+                <div className="ui checkbox">
+                  <input type="checkbox" className="example" />
+                  <label>Make my profile visible</label>
+                </div>
+                <div style={{ marginBottom: '5px' }} className="ui checkbox">
+                  <input type="checkbox" className="example" />
+                  <label>Make my profile visible</label>
+                </div>
+                <div style={{ marginBottom: '5px' }} className="ui checkbox">
+                  <input type="checkbox" className="example" />
+                  <label>Make my profile visible</label>
+                </div>
 
-              <div className="ui checkbox">
-                <input type="checkbox" className="example" />
-                <label>Make my profile visible</label>
-              </div>
-              <div style={{ marginBottom: '5px' }} className="ui checkbox">
-                <input type="checkbox" className="example" />
-                <label>Make my profile visible</label>
-              </div>
-              <div style={{ marginBottom: '5px' }} className="ui checkbox">
-                <input type="checkbox" className="example" />
-                <label>Make my profile visible</label>
-              </div>
+                <h1 className="title-filter">Age Ranges</h1>
+                <div className="ui checkbox">
+                  <input type="checkbox" className="example" />
+                  <label>2 to 4 years</label>
+                </div>
+                <div className="ui checkbox">
+                  <input type="checkbox" className="example" />
+                  <label>5 to 7 years</label>
+                </div>
+                <div className="ui checkbox">
+                  <input type="checkbox" className="example" />
+                  <label>8 to 13 years</label>
+                </div>
 
-              <h1 className="title-filter">Age Ranges</h1>
-              <div className="ui checkbox">
-                <input type="checkbox" className="example" />
-                <label>2 to 4 years</label>
-              </div>
-              <div className="ui checkbox">
-                <input type="checkbox" className="example" />
-                <label>5 to 7 years</label>
-              </div>
-              <div className="ui checkbox">
-                <input type="checkbox" className="example" />
-                <label>8 to 13 years</label>
-              </div>
+                <h1 className="title-filter">Price</h1>
+                <p>Pick the price</p>
+                <div className="price-filter">
+                  <input
+                    className="price-inp"
+                    type="text"
+                    id="fname"
+                    name="firstname"
+                    placeholder="$ Min"
+                  />
+                  <div
+                    style={{
+                      width: '5px',
+                      borderTop: '2px solid #c8c8c8',
+                      margin: '5px',
+                    }}
+                  ></div>
+                  <input
+                    style={{
+                      borderRadius: '5px',
+                      border: '1px solid #ccc',
+                      padding: '12px',
+                      width: '90px',
+                      height: '10px',
+                      boxSizing: 'border-box',
+                    }}
+                    type="text"
+                    id="fname"
+                    name="firstname"
+                    placeholder="$ Max"
+                  />
+                </div>
 
-              <h1 className="title-filter">Price</h1>
-              <p>Pick the price</p>
-              <div className="price-filter">
-                <input
-                  className="price-inp"
-                  type="text"
-                  id="fname"
-                  name="firstname"
-                  placeholder="$ Min"
-                />
                 <div
+                  className="btn-go"
                   style={{
-                    width: '5px',
-                    borderTop: '2px solid #c8c8c8',
-                    margin: '5px',
-                  }}
-                ></div>
-                <input
-                  style={{
-                    borderRadius: '5px',
+                    width: '60px',
+                    height: '30px',
                     border: '1px solid #ccc',
-                    padding: '12px',
-                    width: '90px',
-                    height: '10px',
-                    boxSizing: 'border-box',
+                    textDecoration: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}
-                  type="text"
-                  id="fname"
-                  name="firstname"
-                  placeholder="$ Max"
-                />
+                >
+                  Go
               </div>
 
-              <div
-                className="btn-go"
-                style={{
-                  width: '60px',
-                  height: '30px',
-                  border: '1px solid #ccc',
-                  textDecoration: 'none',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                Go
-              </div>
+                <h1 className="title-filter">Avalability</h1>
+                <div className="ui checkbox">
+                  <input type="checkbox" className="example" />
+                  <label>Include Out of Stock</label>
+                </div>
 
-              <h1 className="title-filter">Avalability</h1>
-              <div className="ui checkbox">
-                <input type="checkbox" className="example" />
-                <label>Include Out of Stock</label>
-              </div>
-
-              <h1 className="title-filter">PRODUCT TAGS</h1>
-              <div>
-                <div className="row-flex">
-                  <button className="tag">Captain</button>
-                  <button className="tag">Glass</button>
-                </div>
-                <div className="row-flex">
-                  <button className="tag">Keyboard</button>
-                  <button className="tag">Mouse</button>
-                </div>
-                <div className="row-flex">
-                  <button className="tag">Tshirt</button>
-                  <button className="tag">Novel</button>
-                </div>
-              </div>
-            </div>
-            <div className="column-flex">
-              <div className="filter-pane">
-                <div>Hiển thị từ{' '} {start}  đến {totalDocuments < end ? totalDocuments : end} trong  {totalDocuments} kết quả</div>
-                <div className="row-flex-center">
-                  <div style={{ marginRight: '10px' }}>Sort By</div>
-                  <div>
-                    <select className="ui dropdown">
-                      <option value="">Price</option>
-                      <option value="1">New stock</option>
-                      <option value="0">Rate</option>
-                    </select>
+                <h1 className="title-filter">PRODUCT TAGS</h1>
+                <div>
+                  <div className="row-flex">
+                    <button className="tag">Captain</button>
+                    <button className="tag">Glass</button>
+                  </div>
+                  <div className="row-flex">
+                    <button className="tag">Keyboard</button>
+                    <button className="tag">Mouse</button>
+                  </div>
+                  <div className="row-flex">
+                    <button className="tag">Tshirt</button>
+                    <button className="tag">Novel</button>
                   </div>
                 </div>
               </div>
-              <div>
-                <div className="list-wrapper">
-                  <div className="grid">
-                    {isLoaded && products.map((item, index) => {
-                      return <ShowingProduct key={index} item={item} />;
-                    })}
+              <div className="column-flex">
+                <div className="filter-pane">
+                  <div>Hiển thị từ{' '} {start}  đến {totalDocuments < end ? totalDocuments : end} trong  {totalDocuments} kết quả</div>
+                  <div className="row-flex-center">
+                    <div style={{ marginRight: '10px' }}>Sort By</div>
+                    <div>
+                      <select className="ui dropdown">
+                        <option value="">Price</option>
+                        <option value="1">New stock</option>
+                        <option value="0">Rate</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="list-wrapper">
+                    <div className="grid">
+                      {isLoaded && products.map((item, index) => {
+                        return <ShowingProduct key={index} item={item} />;
+                      })}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-sm-7"
+                  style={{ width: '100%', display: 'flex', padding: 0 }}>
+                  <div style={{ marginLeft: 'auto' }} className="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                    <ul className="pagination">
+                      {this.renderPageButtons()}
+                    </ul>
                   </div>
                 </div>
               </div>
-              <div className="col-sm-7"
-                style={{ width: '100%', display: 'flex', padding: 0 }}>
-                <div style={{ marginLeft: 'auto' }} className="dataTables_paginate paging_simple_numbers" id="example1_paginate">
-                  <ul className="pagination">
-                    {this.renderPageButtons()}
-                  </ul>
-                </div>
-              </div>
             </div>
-          </div>
-          <div >
 
             <div className="rec-product-wrapper">
-              <h3>
-                SẢN PHẨM KHÁC TRONG CÙNG PHIM
-              </h3>
-              <Slider style={{ width: '106%', paddingTop: 0 }} {...settings} >
+              <h3>SẢN PHẨM KHÁC TRONG CÙNG PHIM </h3>
+              <Slider style={{ width: '1250px', paddingTop: 0, height: '320px' }} {...settings} >
                 {productList.map((item, index) => {
                   return <RecProduct key={index} />;
                 })}
               </Slider>
             </div>
             <div className="rec-product-wrapper">
-              <h3>
-                SẢN PHẨM KHÁC TƯƠNG TỰ
-              </h3>
-              <Slider style={{ width: '106%', paddingTop: 0 }} {...settings} >
+              <h3> SẢN PHẨM KHÁC TƯƠNG TỰ</h3>
+              <Slider style={{ width: '1250px', paddingTop: 0, height: '320px' }} {...settings} >
                 {productList.map((item, index) => {
                   return <RecProduct key={index} />;
                 })}
               </Slider>
             </div>
+
           </div>
         </div>
-
         <Footer />
       </div >
     );

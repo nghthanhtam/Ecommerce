@@ -1,55 +1,58 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { deleteMaterial } from '../../../../state/actions/materialActions';
+import { deleteEmployee } from '../../../../state/actions/employeeActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
-class MaterialRow extends Component {
+
+class ACommentRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
     let month = newDate.getMonth() + 1;
     let dt = newDate.getDate();
 
-    if (dt < 10) {
-      dt = '0' + dt;
-    }
-    if (month < 10) {
-      month = '0' + month;
-    }
+    dt = dt < 10 ? `0${dt}` : dt;
+
+    month = month < 10 ? `0${month}` : month;
+    // if (month < 10) {
+    //   month = "0" + month;
+    // }
 
     return year + '-' + month + '-' + dt;
   };
   handleEdit = (id) => {
-    this.props.pushHistory(`/material/edit/${id}`);
+    this.props.pushHistory(`/employee/edit/${id}`);
   };
   handleDelete = (id) => {
-    // console.log(id);
-    this.props.deleteMaterial(id);
+    this.props.deleteEmployee(id);
   };
+
   render() {
-    const { material, index } = this.props;
+    const { employee, index } = this.props;
 
     return (
       <tr>
         <td>{index + 1}</td>
-        <td>{material.name}</td>
-        <td>{this.convertDate(material.createAt)}</td>
-        <td>{material.quantity}</td>
+        <td>{employee.username}</td>
+        {/* <td>{this.convertDate(employee.createAt)}</td> */}
+        <td>{employee.idRole}</td>
+        <td>{employee.fullname}</td>
+        <td>{employee.phone}</td>
         <td>
           <div className="btn-group">
             <button
-              onClick={() => this.handleEdit(material._id)}
+              onClick={() => this.handleEdit(employee.id)}
               type="button"
               className="btn btn-success"
             >
-              Edit
+              Sửa
             </button>
 
             <button
-              onClick={() => this.handleDelete(material._id)}
+              onClick={() => this.handleDelete(employee.id)}
               type="button"
               className="btn btn-danger"
             >
-              Delete
+              Xóa
             </button>
           </div>
         </td>
@@ -58,4 +61,4 @@ class MaterialRow extends Component {
   }
 }
 
-export default connect(null, { deleteMaterial, pushHistory })(MaterialRow);
+export default connect(null, { deleteEmployee, pushHistory })(ACommentRow);

@@ -22,7 +22,6 @@ class EmployeeEdit extends Component {
     axios
       .get(
         `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/employee/${id}`,
-        // tokenConfig(token)
         this.tokenConfig(this.props.auth.token)
       )
       .then((response) => {
@@ -70,21 +69,12 @@ class EmployeeEdit extends Component {
       idShop: 1,
     };
     this.props.updateEmployee(newEmployee);
-    // axios
-    //   .put(`/api/category/${id}`, newCategory)
-
-    //   .then(response => {
-    //     console.log(response.data);
-    //   })
-    //   .catch(error => {
-    //     console.log(error.response);
-    //   });
     //Quay về trang chính
-    this.props.history.push('/employee');
+    this.props.history.push('/seller/employee');
   };
 
   handleCancel = (e) => {
-    this.props.history.push('/employee');
+    this.props.history.push('/seller/employee');
   };
   render() {
     const { fullname, id, idRole, username, phone } = this.state;
@@ -116,7 +106,7 @@ class EmployeeEdit extends Component {
                 </ol>
               </section>
               {/* Main content */}
-              <section className="content">
+              <section className="content" style={{ width: '165vw', marginTop: '10px' }}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="box box-info">

@@ -1,5 +1,6 @@
 import { takeEvery, put, call, select } from "redux-saga/effects";
 import axios from "axios";
+import { tokenUserConfig } from "../actions/authUserActions";
 import { tokenConfig } from "../actions/authActions";
 import {
   GET_CARTS_BY_IDUSER,
@@ -12,18 +13,16 @@ import {
   CART_UPDATED,
 } from "../actions/types";
 
-import mongoose from "mongoose";
-
 function* fetchCartsByIdUser(params) {
   try {
     const state = yield select(),
       { limit, page, idUser } = params.pages;
-
+    console.log('state: ', state);
     const response = yield call(() =>
       axios
         .get(
           `${process.env.REACT_APP_BACKEND_USER}/api/cart/user/${idUser}?limit=${limit}&page=${page}`,
-          tokenConfig(state)
+          tokenUserConfig(state)
         )
         .catch((er) => console.log(er.response))
     );
@@ -58,7 +57,7 @@ function* addCart(params) {
         axios.post(
           `${process.env.REACT_APP_BACKEND_USER}/api/cart/`,
           params.newCart,
-          tokenConfig(state)
+          tokenUserConfig(state)
         )
     );
 
@@ -76,7 +75,7 @@ function* updateCart(params) {
       axios.put(
         `${process.env.REACT_APP_BACKEND_USER}/api/cart/${params.newCart.id}`,
         params.newCart,
-        tokenConfig(state)
+        tokenUserConfig(state)
       )
     );
     console.log(response.data);
@@ -87,6 +86,7 @@ function* updateCart(params) {
     console.log(error.response);
   }
 }
+
 function* deleteCarts(params) {
   console.log(params);
   const state = yield select();
@@ -94,7 +94,7 @@ function* deleteCarts(params) {
     const response = yield call(() =>
       axios.delete(
         `${process.env.REACT_APP_BACKEND_USER}/api/cart/${params.params.id}`,
-        tokenConfig(state)
+        tokenUserConfig(state)
       )
     );
 

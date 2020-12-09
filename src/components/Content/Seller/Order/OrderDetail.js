@@ -107,7 +107,7 @@ class OrderDetail extends Component {
                   </a>
                 </li>
                 <li>
-                  <a href="/order">Đơn hàng</a>
+                  <a href="/seller/order">Đơn hàng</a>
                 </li>
                 <li>
                   <a href="fake_url">Đơn hàng chi tiết</a>

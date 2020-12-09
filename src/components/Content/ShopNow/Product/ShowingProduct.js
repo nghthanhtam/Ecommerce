@@ -36,7 +36,7 @@ class ShowingProduct extends React.Component {
     return (
       <div className="product-card" >
         <div style={{ height: '335px', }}>
-          <div onClick={() => this.props.history.push({ pathname: `/product-detail/${item.id}`, state: { idShop: item.idShop } })}>
+          <div onClick={() => this.props.history.push({ pathname: `/shopnow//product-detail/idProduct/${item.id}/idShop/${item.idShop}` })}>
             <h1>{item.name}</h1>
             {item.marketPrice - Number(item.price) > 0 && <p>Saved: ${item.marketPrice - Number(item.price)}</p>}
             <img className="product-pic" src={mainPhoto} alt="../img/not-avai.jpg" />

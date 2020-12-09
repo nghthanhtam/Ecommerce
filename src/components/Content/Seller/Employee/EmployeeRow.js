@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { deleteEmployee } from '../../../../state/actions/employeeActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
+
 class EmployeeRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
@@ -19,7 +20,7 @@ class EmployeeRow extends Component {
     return year + '-' + month + '-' + dt;
   };
   handleEdit = (id) => {
-    this.props.pushHistory(`/employee/edit/${id}`);
+    this.props.pushHistory(`/seller/employee/edit/${id}`);
   };
   handleDelete = (id) => {
     this.props.deleteEmployee(id);

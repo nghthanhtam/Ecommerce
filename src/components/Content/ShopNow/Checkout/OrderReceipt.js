@@ -34,7 +34,10 @@ class OrderReceipt extends React.Component {
           <div className="receipt-container">
             <div className="order-res-card">
               <div className="res-infor">
-                <div className="btn-home" onClick={() => this.props.pushHistory('/shopnow')}>Quay lại trang chủ</div>
+                <div style={{ display: 'flex', marginLeft: 'auto' }}>
+                  <div className="btn-home" onClick={() => this.props.pushHistory('/shopnow')}>Quay lại trang chủ</div>
+                  <div className="btn-order-manage" onClick={() => this.props.pushHistory('/sales/order/history')}>Quản lý đơn hàng</div>
+                </div>
                 <h1>Đặt hàng thành công</h1>
                 <p>Cảm ơn! Bạn đã đặt hàng thành công</p>
                 <div className="sumup">
@@ -60,7 +63,7 @@ class OrderReceipt extends React.Component {
                   <div className="res-order-det">
                     <h4>Tổng số lượng </h4>
                     <p>:</p>
-                    <p>3 món</p>
+                    <p>3 sản phẩm</p>
                   </div>
                   <div className="res-order-det">
                     <h4>Ngày đặt hàng </h4>

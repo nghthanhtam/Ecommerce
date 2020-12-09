@@ -1,5 +1,5 @@
 import {
-  GET_ORDERS,
+  GET_ORDERS_BY_SHOP,
   ADD_ORDER,
   DELETE_ORDER,
   UPDATE_ORDER,
@@ -7,14 +7,14 @@ import {
   GET_ORDERDETS_BY_ORDERID
 } from './types';
 
-export const getOrders = (params) => ({
-  type: GET_ORDERS,
+export const getOrdersByShop = (params) => ({
+  type: GET_ORDERS_BY_SHOP,
   pages: params,
 });
 
-export const getUserOrders = (id) => ({
+export const getUserOrders = (params) => ({
   type: GET_USER_ORDERS,
-  id,
+  pages: params,
 });
 
 export const getOrderDets = (id) => ({

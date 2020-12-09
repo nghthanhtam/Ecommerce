@@ -6,7 +6,8 @@ import {
   PRODUCTVARS_RECEIVED,
   PRODUCTVAR_ADDED,
   PRODUCTVAR_UPDATED,
-  PRODUCTVAR_RECEIVED
+  PRODUCTVAR_RECEIVED,
+  GET_PRODUCTVAR_BY_ID
 } from "../actions/types";
 
 const initialState = {
@@ -22,6 +23,7 @@ export default function (state = initialState, action) {
     case GET_PRODUCTVARS:
       return {
         ...state,
+        isLoaded: false
       };
     case PRODUCTVARS_RECEIVED:
       return {
@@ -29,6 +31,11 @@ export default function (state = initialState, action) {
         productVars: action.payload.data.items,
         isLoaded: true,
         totalDocuments: action.payload.data.total,
+      };
+    case GET_PRODUCTVAR_BY_ID:
+      return {
+        ...state,
+        isLoaded: false
       };
     case PRODUCTVAR_RECEIVED:
       return {

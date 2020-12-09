@@ -4,7 +4,7 @@ import { deleteUser } from '../../../../state/actions/userActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
 class UserRow extends Component {
   handleEdit = (id) => {
-    this.props.pushHistory(`/user/edit/${id}`);
+    this.props.pushHistory(`/seller/user/edit/${id}`);
   };
   handleDelete = (id) => {
     // console.log(id);

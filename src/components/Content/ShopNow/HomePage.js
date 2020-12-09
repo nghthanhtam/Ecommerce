@@ -15,6 +15,7 @@ import Keyword from "./Product/Keyword";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Login from "./Auth/Login"
+import RecProduct from './Product/RecProduct'
 
 const mapStateToProps = (state) => ({
   movieCates: state.movieCate.movieCates,
@@ -320,6 +321,7 @@ class HomePage extends React.Component {
                   <Slider
                     style={{
                       width: "94%",
+                      height: '160px'
                     }}
                     {...settingsKW}
                   >
@@ -347,11 +349,12 @@ class HomePage extends React.Component {
                   <Slider
                     style={{
                       width: "94%",
+                      height: '350px'
                     }}
                     {...settingsHis}
                   >
                     {productList.map((item, index) => {
-                      return <Product key={index} />;
+                      return <RecProduct key={index} />;
                     })}
                   </Slider>
                 </div>

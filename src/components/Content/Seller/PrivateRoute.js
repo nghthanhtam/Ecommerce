@@ -19,32 +19,24 @@ export const PrivateRoute = ({
   token,
   ...rest
 }) => (
-  <Route
-    {...rest}
-    render={(props) => {
-      //const userRole = jwt.verify(token, process.env.REACT_APP_JWTSECRET);
-      const userRole = jwt.decode(token);
-      // delete userRole.role.createdAt;
-      // delete userRole.role.deletedAt;
-      // delete userRole.role.isOwner;
-      // delete userRole.role.id;
-      // delete userRole.role.name;
-      // delete userRole.role.idShop;
-      // delete userRole.role.updatedAt;
-      //delete userRole.idShop;
-      let arrayOfRoles = createArrayOfRoles(userRole.role);
+    <Route
+      {...rest}
+      render={(props) => {
+        // const userRole = jwt.decode(token);
+        // console.log("userRole", jwt.decode(token));
+        // let arrayOfRoles = createArrayOfRoles(userRole.role);
 
-      //check if route is restricted by role
-      if (role && !arrayOfRoles.includes(role)) {
-        // role not authorised so redirect to home page
-        return <Redirect to={{ pathname: '/403' }} />;
-      }
+        // //check if route is restricted by role
+        // if (userRole && !arrayOfRoles.includes(userRole)) {
+        //   // userRole not authorised so redirect to home page
+        //   return <Redirect to={{ pathname: '/403' }} />;
+        // }
 
-      // authorised so return component
-      return <Component {...props} />;
-    }}
-  />
-);
+        // // authorised so return component
+        return <Component {...props} />;
+      }}
+    />
+  );
 // connect((state) => {
 //   return {
 //     auth: state.auth,

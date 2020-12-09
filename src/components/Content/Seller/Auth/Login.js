@@ -2,8 +2,13 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { login } from '../../../../state/actions/authActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
-
 import PropTypes from 'prop-types';
+
+const mapStateToProps = (state) => ({
+  error: state.error,
+  history: state.history,
+  isAuthenticated: state.auth.isAuthenticated,
+});
 
 class Login extends Component {
   state = {
@@ -71,13 +76,6 @@ class Login extends Component {
       password,
     };
     this.props.login(user);
-
-    // const { isAuthenticated } = this.props;
-
-    // if (isAuthenticated) {
-    //   //Redirect to main page
-    //   this.props.pushHistory('/');
-    // }
   };
 
   render() {
@@ -158,10 +156,6 @@ class Login extends Component {
     );
   }
 }
-const mapStateToProps = (state) => ({
-  error: state.error,
-  history: state.history,
-  isAuthenticated: state.auth.isAuthenticated,
-});
+
 
 export default connect(mapStateToProps, { login, pushHistory })(Login);

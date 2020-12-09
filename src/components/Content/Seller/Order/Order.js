@@ -4,7 +4,7 @@ import Loader from 'react-loader'
 
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getOrders } from '../../../../state/actions/orderActions';
+import { getOrdersByShop } from '../../../../state/actions/orderActions';
 
 const mapStateToProps = (state) => ({
   orders: state.order.orders,
@@ -29,7 +29,7 @@ class Order extends Component {
   componentDidMount() {
     const { limit, page, query } = this.state;
     const { idShop } = this.props;
-    this.props.getOrders({
+    this.props.getOrdersByShop({
       limit,
       page,
       query,
@@ -252,7 +252,7 @@ class Order extends Component {
                 </a>
               </li>
               <li>
-                <a href="/order">Đơn hàng</a>
+                <a href="/seller/order">Đơn hàng</a>
               </li>
             </ol>
           </section>
@@ -393,10 +393,10 @@ class Order extends Component {
 }
 
 Order.propTypes = {
-  getOrders: PropTypes.func.isRequired,
+  getOrdersByShop: PropTypes.func.isRequired,
   orders: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getOrders })(Order);
+export default connect(mapStateToProps, { getOrdersByShop })(Order);

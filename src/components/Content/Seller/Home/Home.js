@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 import Loader from 'react-loader';
 import './home.css';
 
-import { getEmployees } from '../../../../state/actions/employeeActions';
+import { getOrdersByShop } from '../../../../state/actions/orderActions';
 import OrderRow from '../Order/OrderRow';
 
 const mapStateToProps = (state) => ({
-  employees: state.employee.employees,
-  isLoaded: state.employee.isLoaded,
-  totalDocuments: state.employee.totalDocuments,
+  orders: state.order.orders,
+  isLoaded: state.order.isLoaded,
+  totalDocuments: state.order.totalDocuments,
+  idShop: state.auth.role.idShop
 });
 
 class Home extends Component {
@@ -23,49 +24,22 @@ class Home extends Component {
     query: '',
     start: 1,
     end: 5,
-    employees: [
-      {
-        id: 1,
-        username: 'tamcute',
-        idRole: 1,
-        fullname: 'Thanh Tam Ng',
-        status: 'U',
-      },
-      {
-        id: 2,
-        username: 'trungng',
-        idRole: 1,
-        fullname: 'Tay Trung Ng',
-        status: 'P',
-      },
-      {
-        id: 3,
-        username: 'trungmuoi',
-        idRole: 1,
-        fullname: 'Trung Muoi Ngo',
-        status: 'U',
-      },
-      {
-        id: 4,
-        username: 'donaltrump',
-        idRole: 1,
-        fullname: 'Trump ngo',
-        status: 'A',
-      },
-      {
-        id: 5,
-        username: 'badliar',
-        idRole: 1,
-        fullname: 'Bad Liar',
-        status: 'C',
-      },
-    ],
+    isNextBtnShow: true,
   };
 
   componentDidMount = () => {
     const { limit, page, query } = this.state;
-    this.props.getEmployees({ limit, page, query, idShop: 1 });
+    const { idShop, getOrdersByShop } = this.props
+    getOrdersByShop({ limit, page, query, idShop });
   };
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { totalDocuments, isLoaded } = this.props;
+    if (isLoaded == true && this.state.pages == prevState.pages) {
+      this.getPages();
+    }
+  }
+
   handleOnChange = (e) => {
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
@@ -78,25 +52,25 @@ class Home extends Component {
       }
     });
   };
+
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    let idShop = 1;
-    this.props.getEmployees({ limit, page, query, idShop });
+    const { idShop, getOrdersByShop } = this.props
+    getOrdersByShop({ limit, page, query, idShop });
     this.getPages();
     this.getStartEndDocuments();
   };
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.isLoaded == true && this.state.pages == prevState.pages) {
-      this.getPages();
-    }
-  }
 
   getStartEndDocuments() {
     const { limit, page } = this.state;
     const { totalDocuments } = this.props;
+
+    let pages = Math.floor(totalDocuments / limit),
+      remainder = totalDocuments % limit;
+    if (remainder !== 0) pages += 1;
+
     this.setState({ start: (page - 1) * limit + 1 }, () => {
       let end;
-      console.log(Math.floor(totalDocuments / limit));
       if (Math.floor(totalDocuments / limit) + 1 == page)
         end = (page - 1) * limit + (totalDocuments % limit);
       else end = page * limit;
@@ -105,34 +79,72 @@ class Home extends Component {
   }
 
   handleChoosePage = (e) => {
+    const { totalDocuments, idShop, getOrdersByShops } = this.props;
+    const { limit, page } = this.state;
+    let pages = Math.floor(totalDocuments / limit),
+      remainder = totalDocuments % limit;
+    if (remainder !== 0) pages += 1;
+
+    if (e === -1) {
+      e = page + 1;
+      if (e === pages) this.setState({ isNextBtnShow: false });
+    } else {
+      if (e === pages) this.setState({ isNextBtnShow: false });
+      else this.setState({ isNextBtnShow: true });
+    }
+
     this.setState({ page: e }, () => {
       const { limit, page, query } = this.state;
-      this.props.getEmployees({ limit, page, query, idShop: 1 });
+      let idShop = 1;
+      getOrdersByShops({
+        limit,
+        page,
+        query,
+        idShop
+      });
       this.getStartEndDocuments();
     });
   };
 
   renderPageButtons = () => {
-    const { pages, currentPage } = this.state;
-    return pages.map((eachButton) => (
-      <li
-        key={eachButton.pageNumber}
-        className={
-          currentPage === eachButton.pageNumber
-            ? 'paginae_button active'
-            : 'paginate_button '
-        }
-      >
-        <a
-          className="paga-link"
-          name="currentPage"
-          href="#"
-          onClick={() => this.handleChoosePage(eachButton.pageNumber)}
-        >
-          {eachButton.pageNumber}
-        </a>
-      </li>
-    ));
+    const { pages, page, isNextBtnShow } = this.state;
+    if (pages.length > 1) {
+      return (
+        <>
+          {pages.map((eachButton) => (
+            <li
+              key={eachButton.pageNumber}
+              className={
+                page === eachButton.pageNumber
+                  ? 'paginae_button active'
+                  : 'paginate_button '
+              }
+            >
+              <a
+                className="paga-link"
+                name="page"
+                href="#"
+                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+              >
+                {eachButton.pageNumber}
+              </a>
+            </li>
+          ))}
+          <li className="paginate_button">
+            <a
+              className={
+                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
+              }
+              name="currentPage"
+              href="#"
+              onClick={() => this.handleChoosePage(-1)}
+            >
+              {'>>'}
+            </a>
+          </li>
+        </>
+      );
+    }
   };
 
   getPages = () => {
@@ -153,20 +165,37 @@ class Home extends Component {
       newArray.push({ pageNumber: i + 1 });
     }
 
+    //Nếu totalDocuments > 6 thì pageButtons được chia ra làm 3 nút số đầu - dấu 3 chấm - nút số cuối
+    if (newArray && newArray.length > 6) {
+      newArray = [
+        { pageNumber: 1 },
+        { pageNumber: 2 },
+        { pageNumber: 3 },
+        { pageNumber: '...' },
+        { pageNumber: newArray.length },
+      ];
+    }
+
     this.setState({ pages: newArray });
   };
 
-  renderEmployees = () => {
-    const //{ employees } = this.props,
-      { start, employees } = this.state;
-    return employees.map((each, index) => (
-      <OrderRow
-        history={this.props.history}
-        key={each.id}
-        employee={each}
-        index={index + start - 1}
-      />
-    ));
+  renderOrders = () => {
+    const { orders, isLoaded } = this.props, { start } = this.state;
+    return !isLoaded ? (
+      <tr>
+        <td>
+          <Loader></Loader>
+        </td>
+      </tr>
+    ) : (
+        orders.map((order, index) => (
+          <OrderRow
+            key={order.id}
+            order={order}
+            index={index + start - 1}
+          />
+        ))
+      );
   };
 
   renderSelect = () => {
@@ -191,7 +220,7 @@ class Home extends Component {
 
   render() {
     const { isLoaded, totalDocuments } = this.props;
-    const { limit, page, start, end, query } = this.state;
+    const { start, end, query, isNextBtnShow } = this.state;
     return (
       <Fragment>
         {!isLoaded ? (
@@ -303,9 +332,7 @@ class Home extends Component {
                                 Danh sách đơn hàng cần xử lý
                             </h3>
                             </div>
-                            {/* <div className="col-md-4">
-                        <EmployeeModal />
-                      </div> */}
+
                           </div>
                           {/* /.box-header */}
                           <div className="box-body">
@@ -331,31 +358,7 @@ class Home extends Component {
                                     </label>
                                     </div>
                                   </div>
-                                  <div className="col-sm-6">
-                                    <div
-                                      id="example1_filter"
-                                      className="dataTables_filter"
-                                    >
-                                      <label
-                                        style={{
-                                          float: 'right',
-                                          fontFamily: 'Saira, sans-serif',
-                                        }}
-                                      >
-                                        Tìm kiếm
-                                      <input
-                                          type="search"
-                                          name="query"
-                                          style={{ margin: '0px 5px' }}
-                                          className="form-control input-sm"
-                                          placeholder="Nhập từ khóa...  "
-                                          aria-controls="example1"
-                                          onChange={this.handleOnChange}
-                                          value={this.state.query}
-                                        />
-                                      </label>
-                                    </div>
-                                  </div>
+
                                 </div>
                               </div>
 
@@ -370,48 +373,57 @@ class Home extends Component {
                                         <th style={{ width: '5%' }}>#</th>
                                         <th
                                           style={{
-                                            width: '20%',
-                                            fontFamily: 'Saira, sans-serif',
-                                          }}
-                                        >
-                                          Khách hàng
-                                      </th>
+                                            width: '5%',
+                                            fontFamily: 'Saira, sans-serif'
+                                          }} >
+                                          Mã
+                                        </th>
                                         <th
                                           style={{
                                             width: '15%',
                                             fontFamily: 'Saira, sans-serif',
-                                          }}
-                                        >
-                                          Tổng giá trị
-                                      </th>
+                                          }}>
+                                          Khách hàng
+                                        </th>
 
                                         <th
                                           style={{
-                                            width: '15%',
+                                            width: '5%',
                                             fontFamily: 'Saira, sans-serif',
-                                          }}
-                                        >
-                                          Ngày đặt hàng
-                                      </th>
+                                          }}>
+                                          Số điện thoại
+                                        </th>
                                         <th
                                           style={{
-                                            width: '20%',
+                                            width: '15%',
                                             fontFamily: 'Saira, sans-serif',
-                                          }}
-                                        >
+                                          }}>
+                                          Địa chỉ giao hàng
+                                        </th>
+                                        <th
+                                          style={{
+                                            width: '10%',
+                                            fontFamily: 'Saira, sans-serif',
+                                          }}>
+                                          Tổng giá trị
+                                        </th>
+                                        <th
+                                          style={{
+                                            width: '10%',
+                                            fontFamily: 'Saira, sans-serif',
+                                          }}>
+                                          Ngày đặt
+                                        </th>
+                                        <th
+                                          style={{
+                                            width: '10%',
+                                            fontFamily: 'Saira, sans-serif',
+                                          }}>
                                           Tình trạng
-                                      </th>
-                                        <th
-                                          style={{
-                                            width: '15%',
-                                            fontFamily: 'Saira, sans-serif',
-                                          }}
-                                        >
-                                          Hành động
-                                      </th>
+                                        </th>
                                       </tr>
                                     </thead>
-                                    <tbody>{this.renderEmployees()}</tbody>
+                                    <tbody>{this.renderOrders()}</tbody>
                                     <tfoot></tfoot>
                                   </table>
                                 </div>
@@ -426,7 +438,7 @@ class Home extends Component {
                                   >
                                     Hiển thị{' '}
                                     {query == ''
-                                      ? start + ' đến ' + end + ' trong '
+                                      ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
                                       : ''}{' '}
                                     {totalDocuments} kết quả
                                 </div>
@@ -547,9 +559,9 @@ class Home extends Component {
   }
 }
 Home.propTypes = {
-  getEmployees: PropTypes.func.isRequired,
-  employees: PropTypes.array.isRequired,
+  getOrdersByShop: PropTypes.func.isRequired,
+  orders: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getEmployees })(Home);
+export default connect(mapStateToProps, { getOrdersByShop })(Home);

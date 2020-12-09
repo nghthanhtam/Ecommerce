@@ -6,6 +6,7 @@ import { getCartsByIdUser } from '../../../../state/actions/cartActions'
 
 const mapStateToProps = (state) => ({
   user: state.authUser.user,
+  userToken: state.authUser.token,
   totalCount: state.cart.totalCount,
   isLoaded: state.cart.isLoaded
 });
@@ -35,8 +36,8 @@ class Header extends React.Component {
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
     this.setHeader()
-    const { user, getCartsByIdUser } = this.props
-    getCartsByIdUser({ limit: 1000, page: 1, idUser: user.id })
+    const { getCartsByIdUser, user, userToken } = this.props
+    if (userToken) getCartsByIdUser({ limit: 1000, page: 1, idUser: user.id })
   }
 
   componentWillUnmount() {
@@ -57,13 +58,7 @@ class Header extends React.Component {
         }
       });
       this.setState({ isLogoText: true })
-      // this.setState({
-      //   logo: {
-      //     width: '90px',
-      //     height: '90px',
-      //     transition: '0.75s'
-      //   }
-      // })
+
       this.setState({ hideSearchBar: 'visible' });
     } else {
       this.setState({ header: 'sheader' });
@@ -80,13 +75,7 @@ class Header extends React.Component {
           backgroundColor: 'transparent'
         }
       });
-      // this.setState({
-      //   logo: {
-      //     width: '150px',
-      //     height: '150px',
-      //     transition: '0.75s'
-      //   }
-      // })
+
     }
   }
 
@@ -130,7 +119,7 @@ class Header extends React.Component {
         </div>
         <ul className="row-flex-center">
           <li>
-            <Link className="item" to="/user/laterlist">
+            <Link className="item" to="/shopnow/user/laterlist">
               <div style={itemIcon}>
                 <i className="fa fa-heart"></i>
               </div>
@@ -138,21 +127,21 @@ class Header extends React.Component {
             </Link>
           </li>
           <li>
-            <Link style={cartWrapper} className="item" to="/checkout/cart">
+            <Link style={cartWrapper} className="item" to="/shopnow/checkout/cart">
               <div style={{ color: 'white' }}>Giỏ hàng</div>
               {!totalCount ? <div style={cartInfor}>0</div> : <div style={cartInfor}>{totalCount}</div>}
             </Link>
           </li>
           <li>
             {user ?
-              <Link className="item" to="/user/account">
+              <Link className="item" to="/shopnow/user/account">
                 <div style={itemIcon}>
                   <i className="fa fa-user"></i>
                 </div>
                 <div>Tài khoản</div>
               </Link> :
               <Link onClick={() => this.props.showModal({ show: true, modalName: 'login' })} className="item">
-                <div>Join</div>
+                <div style={{ marginTop: '5px' }}>Join</div>
               </Link>}
           </li>
 

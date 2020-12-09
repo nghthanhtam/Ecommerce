@@ -1,4 +1,3 @@
-import jwt from 'jwt-decode';
 ////Seller PAGE
 import React, { Component, Fragment } from 'react';
 import Header from './components/Content/Seller/Header';
@@ -23,9 +22,9 @@ import Home from './components/Content/Seller/Home/Home';
 
 import { updateAuth } from './state/actions/authActions';
 import { updateAuthUser } from './state/actions/authUserActions';
+import { updateAuthAdmin } from './state/actions/authAdminActions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Loader from 'react-loader';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Role from './components/Content/Seller/Role/Role';
 import RoleEdit from './components/Content/Seller/Role/RoleEdit';
@@ -51,8 +50,14 @@ import AddressBook from './components/Content/ShopNow/User/AddressBook';
 import Review from './components/Content/ShopNow/User/Review';
 import Watchlist from './components/Content/ShopNow/User/Watchlist';
 import Wishlist from './components/Content/ShopNow/User/Wishlist';
-
 import ModalCancel from './components/Content/Modal/ModalCancel'
+
+////ADMIN
+import ALogin from './components/Content/Admin/Auth/ALogin';
+import AHome from './components/Content/Admin/Home/AHome';
+import AProduct from './components/Content/Admin/Product/AProduct';
+import AComment from './components/Content/Admin/Comment/AComment';
+import AQuestion from './components/Content/Admin/Question/AQuestion';
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -62,6 +67,7 @@ const mapStateToProps = (state) => ({
   token: state.auth.token,
   role: state.auth.role,
   userToken: state.authUser.token,
+  adminToken: state.authAdmin.token,
   show: state.modal.show,
   modalName: state.modal.modalName
 });
@@ -78,18 +84,28 @@ const roles = {
   order: 'orderManagement',
   material: 'materialManagement',
   materialReceiptNote: 'materialReceiptNoteManagement',
+  SuperAdmin: 'SuperAdmin'
 };
+
 class CoffeShop extends Component {
   state = {
   };
+
+  componentDidMount() {
+    console.log(this.props.adminToken != null);
+  }
   componentWillMount() {
     //update user và role trong store, vì khi f5 hoặc tắt browser thì store bị xóa, chỉ còn token ở localstorage
-    const { token, userToken, updateAuth, updateAuthUser } = this.props;
+    const { token, userToken, adminToken, updateAuth, updateAuthUser, updateAuthAdmin } = this.props;
     if (token) {
       updateAuth(token);
     }
     if (userToken) {
       updateAuthUser(userToken);
+    }
+    if (adminToken) {
+      console.log('adminToken: ', adminToken);
+      updateAuthAdmin(adminToken);
     }
   }
 
@@ -98,7 +114,7 @@ class CoffeShop extends Component {
   };
 
   render() {
-    const { token, userToken, show, modalName } = this.props;
+    const { token, userToken, adminToken, show, modalName } = this.props;
     return (
       <Fragment>
         {/* {!this.props.isLoaded ? (
@@ -106,6 +122,32 @@ class CoffeShop extends Component {
         ) : ( */}
 
         <Switch>
+          {/* LOGIN */}
+          <Route
+            exact
+            path="/admin/login"
+            render={() => {
+              return adminToken != null ? <Redirect to="/admin" /> : <ALogin />;
+            }} />
+          <Route
+            exact
+            path="/"
+            render={() => {
+              return !token ? (
+                <Redirect to="/login" />
+              ) : (
+                  <Redirect to="/home" />
+                );
+            }} />
+          <Route
+            exact
+            path="/login"
+            render={() => {
+              return !token ? <Login /> : <Redirect to="/home" />;
+            }} />
+          {/* LOGIN */}
+
+
           <Route exact path="/register">
             <Register />
           </Route>
@@ -118,68 +160,144 @@ class CoffeShop extends Component {
           <Route exact path="/product-list">
             <ProductList />
           </Route>
-          <Route path={`/product-list/:topicId`} component={ProductList} />
-          <Route path={`/product-detail/:id`} component={ProductDetail} />
-          {/* <Route exact path="/product-detail">
-            <ProductDetail />
-          </Route> */}
-          <Route exact path="/checkout/cart">
-            <Cart />
-          </Route>
-          <Route exact path="/checkout/payment">
-            <Payment />
-          </Route>
-          <Route exact path="/order-receipt">
-            <OrderReceipt />
-          </Route>
-          <Route exact path="/user/account">
-            <Account />
-          </Route>
-          <Route exact path="/user/laterlist">
-            <LaterList />
-          </Route>
-          <Route exact path="/sales/order/history">
-            <OrderHistory />
-          </Route>
-          <Route exact path="/user/address-book">
-            <AddressBook />
-          </Route>
-          <Route exact path="/user/review">
-            <Review />
-          </Route>
-          <Route exact path="/user/watchlist">
-            <Watchlist />
-          </Route>
-          <Route exact path="/user/wishlist">
-            <Wishlist />
-          </Route>
-
+          <Route path={`/product-list/idMovieCat/:idMovieCat`} component={ProductList} />
+          <Route path={`/product-detail/idProduct/:idProduct/idShop/:idShop`} component={ProductDetail} />
           <Route
             exact
-            path="/"
+            path="/checkout/cart"
             render={() => {
-              return !token ? (
-                <Redirect to="/login" />
-              ) : (
-                  <Redirect to="/home" />
-                );
-            }}
-          />
-
+              return userToken ? <Cart /> : <Redirect to="/shopnow" />;
+            }} />
           <Route
             exact
-            path="/login"
+            path="/checkout/payment"
             render={() => {
-              return !token ? <Login /> : <Redirect to="/home" />;
+              return userToken ? <Payment /> : <Redirect to="/shopnow" />;
+            }} />
+          <Route
+            exact
+            path="/order-receipt"
+            render={() => {
+              return userToken ? <OrderReceipt /> : <Redirect to="/shopnow" />;
+            }} />
+          <Route
+            exact
+            path="/user/account"
+            render={() => {
+              return userToken ? <Account /> : <Redirect to="/shopnow" />;
+            }} />
+          <Route
+            exact
+            path="/sales/order/history"
+            render={() => {
+              return userToken ? <OrderHistory /> : <Redirect to="/shopnow" />;
+            }} />
+          <Route
+            exact
+            path="/user/laterlist"
+            render={() => {
+              return userToken ? <LaterList /> : <Redirect to="/shopnow" />;
+            }} />
+          <Route
+            exact
+            path="/user/address-book"
+            render={() => {
+              return userToken ? <AddressBook /> : <Redirect to="/shopnow" />;
+            }} />
+          <Route
+            exact
+            path="/user/review"
+            render={() => {
+              return userToken ? <Review /> : <Redirect to="/shopnow" />;
+            }} />
+          <Route
+            exact
+            path="/user/watchlist"
+            render={() => {
+              return userToken ? <Watchlist /> : <Redirect to="/shopnow" />;
+            }} />
+          <Route
+            exact
+            path="/user/wishlist"
+            render={() => {
+              return userToken ? <Wishlist /> : <Redirect to="/shopnow" />;
             }} />
 
+
+          {/* ADMIN */}
+          <Route
+            exact
+            path="/admin"
+            render={() => {
+              return adminToken ?
+                <Fragment>
+                  <Header isAdmin={true} />
+                  <Menu isAdmin={true} />
+                  <div className="content-wrapper">
+                    <AHome />
+                  </div>
+                </Fragment> : <Redirect to="/admin/login" />;
+            }} />
+          <PrivateRoute
+            exact
+            path="/admin/employee"
+            render={() => {
+              return adminToken ?
+                <Fragment>
+                  <Header isAdmin={true} />
+                  <Menu isAdmin={true} />
+                  <div className="content-wrapper">
+                    <Employee />
+                  </div>
+                </Fragment> : <Redirect to="/admin/login" />;
+            }} />
+          <Route
+            exact
+            path="/admin/product"
+            render={() => {
+              return adminToken ?
+                <Fragment>
+                  <Header isAdmin={true} />
+                  <Menu isAdmin={true} />
+                  <div className="content-wrapper">
+                    <AProduct />
+                  </div>
+                </Fragment> : <Redirect to="/admin/login" />;
+            }} />
+          <Route
+            exact
+            path="/admin/comment"
+            render={() => {
+              return adminToken ?
+                <Fragment>
+                  <Header isAdmin={true} />
+                  <Menu isAdmin={true} />
+                  <div className="content-wrapper">
+                    <AComment />
+                  </div>
+                </Fragment> : <Redirect to="/admin/login" />;
+            }} />
+          <Route
+            exact
+            path="/admin/question"
+            render={() => {
+              return adminToken ?
+                <Fragment>
+                  <Header isAdmin={true} />
+                  <Menu isAdmin={true} />
+                  <div className="content-wrapper">
+                    <AQuestion />
+                  </div>
+                </Fragment> : <Redirect to="/admin/login" />;
+            }} />
+
+          {/* EMPLOYEE */}
           {token && (
             <Fragment>
               {show && modalName == 'modalCancel' && <ModalCancel />}
               <Fragment>
-                <Header />
-                <Menu />
-
+                <Header isAdmin={false} />
+                <Menu isAdmin={false} />
                 <div className="content-wrapper">
                   <Switch>
                     <Route exact path="/home">
@@ -290,7 +408,6 @@ class CoffeShop extends Component {
                       path="/sale-report"
                       component={SaleReport}
                     ></Route>
-
                     <Route path="*" render={() => <Redirect to="/404" />} />
                   </Switch>
                 </div>
@@ -300,6 +417,7 @@ class CoffeShop extends Component {
           )}
 
           <Route path="*" render={() => <Redirect to="/login" />} />
+          <Route path="*" render={() => <Redirect to="/404" />} />
         </Switch>
         {/* )} */}
       </Fragment>
@@ -314,4 +432,4 @@ Employee.propTypes = {
   user: PropTypes.object,
 };
 
-export default connect(mapStateToProps, { updateAuth, updateAuthUser })(CoffeShop);
+export default connect(mapStateToProps, { updateAuth, updateAuthUser, updateAuthAdmin })(CoffeShop);

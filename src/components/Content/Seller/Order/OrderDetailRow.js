@@ -12,7 +12,7 @@ class OrderRow extends Component {
   };
 
   handleEdit = (id) => {
-    this.props.pushHistory(`/order/edit/${id}`);
+    this.props.pushHistory(`/seller/order/edit/${id}`);
   };
 
   handleDelete = (id) => {

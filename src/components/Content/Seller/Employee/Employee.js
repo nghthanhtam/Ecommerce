@@ -97,10 +97,6 @@ class Employee extends Component {
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
-    console.log(totalDocuments);
-    // if (page === pages || totalDocuments <= 2) {
-    //   this.setState({ isNextBtnShow: false });
-    // }
 
     this.setState({ start: (page - 1) * limit + 1 }, () => {
       let end;
@@ -154,8 +150,6 @@ class Employee extends Component {
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
-
-    console.log(page + ' and ' + pages);
 
     if (e === -1) {
       e = page + 1;
@@ -216,7 +210,7 @@ class Employee extends Component {
             >
               <a
                 className="paga-link"
-                name="currentPage"
+                name="page"
                 href="#"
                 onClick={() => this.handleChoosePage(eachButton.pageNumber)}
               >

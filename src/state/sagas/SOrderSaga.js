@@ -2,7 +2,7 @@ import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { tokenConfig } from '../../state/actions/authActions';
 import {
-  GET_ORDERS,
+  GET_ORDERS_BY_SHOP,
   GET_ORDERDETS_BY_ORDERID,
   ADD_ORDER,
   ORDERS_RECEIVED,
@@ -40,7 +40,7 @@ function* fetchOrderDetsByOrderId(params) {
   }
 }
 
-function* fetchOrders(params) {
+function* fetchOrdersByShop(params) {
   try {
     const state = yield select(),
       { limit, page, idShop } = params.pages;
@@ -80,11 +80,11 @@ function* fetchUserOrders(params) {
 
     yield put({ type: ORDERS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error }
     if (err.status == 401) {
       this.props.history.push({
-        pathname: '/login',
+        pathname: '/shopnow',
       });
     }
   }
@@ -102,6 +102,7 @@ function* addOrder(params) {
         tokenConfig(state)
       )
     );
+    console.log('orderAdded: ', response.data);
     yield put({ type: ORDER_ADDED, payload: response.data });
   } catch (error) {
     console.log(error.response);
@@ -142,7 +143,7 @@ function* deleteOrder(params) {
 
 export default function* sOrderSaga() {
   yield takeEvery(GET_ORDERDETS_BY_ORDERID, fetchOrderDetsByOrderId);
-  yield takeEvery(GET_ORDERS, fetchOrders);
+  yield takeEvery(GET_ORDERS_BY_SHOP, fetchOrdersByShop);
   yield takeEvery(GET_USER_ORDERS, fetchUserOrders);
   yield takeEvery(ADD_ORDER, addOrder);
   yield takeEvery(UPDATE_ORDER, updateOrder);

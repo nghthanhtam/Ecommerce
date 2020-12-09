@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 
-import CoffeShop from './CoffeShop';
+import RSeller from './Routes/RSeller';
+import RAdmin from './Routes/RAdmin';
+import RShopNow from './Routes/RShopNow';
+import ErrorPage from './ErrorPage/ErrorPage';
+import NoPermissionPage from './ErrorPage/NoPermissionPage';
+
 import { loadHistory } from './state/actions/historyActions';
 import { createBrowserHistory } from 'history';
-import { Router } from 'react-router-dom';
+import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import rootSaga from './state/sagas';
 import createSagaMiddleware from 'redux-saga';
 import { createStore, applyMiddleware, compose } from 'redux';
@@ -39,7 +44,14 @@ class App extends Component {
     return (
       <Router history={history}>
         <Provider store={store}>
-          <CoffeShop />
+          {/* <CoffeShop /> */}
+          <Switch>
+            <Route path='/seller' component={RSeller} />
+            <Route path='/admin' component={RAdmin} />
+            <Route path='/shopnow' component={RShopNow} />
+            <Route path="/403" component={NoPermissionPage} />
+            <Route path='*' component={ErrorPage} />
+          </Switch>
         </Provider>
       </Router>
     );

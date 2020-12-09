@@ -107,11 +107,11 @@ class RoleEdit extends Component {
     };
     this.props.updateRole(newRole);
     //Quay về trang chính
-    this.props.history.push('/role');
+    this.props.history.push('/seller/role');
   };
 
   handleCancel = (e) => {
-    this.props.history.push('/role');
+    this.props.history.push('/seller/role');
   };
 
   renderCheckboxes = () => {

@@ -33,7 +33,7 @@ class OrderRow extends Component {
   };
 
   handleEdit = (id) => {
-    this.props.history.push(`/order/edit/${id}`);
+    this.props.history.push(`/seller/order/edit/${id}`);
   };
 
   handleDelete = (id) => {
@@ -42,12 +42,12 @@ class OrderRow extends Component {
 
   render() {
     const { totalPrice, recipient, phone, numberAndStreet, createdAt, status, cancelReason, id } = this.props.order
-    const { statuses, disabledState } = this.state
+    const { statuses } = this.state
 
     return (
       <tr>
         <td>{this.props.index + 1}</td>
-        <td onClick={() => this.props.history.push(`/order/edit/${id}`)}
+        <td onClick={() => this.props.history.push(`/seller/order/edit/${id}`)}
           style={{ color: 'blue', cursor: 'pointer' }}>{id} </td>
         <td>{recipient}</td>
         <td>{phone}</td>

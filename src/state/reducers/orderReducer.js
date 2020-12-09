@@ -1,5 +1,5 @@
 import {
-  GET_ORDERS,
+  GET_ORDERS_BY_SHOP,
   ADD_ORDER,
   ORDER_DELETED,
   ORDERS_RECEIVED,
@@ -18,7 +18,7 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case GET_ORDERS:
+    case GET_ORDERS_BY_SHOP:
       return {
         ...state,
       };

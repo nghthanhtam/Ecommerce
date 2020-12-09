@@ -18,7 +18,7 @@ class RoleRow extends Component {
     return year + '-' + month + '-' + dt;
   };
   handleEdit = (id) => {
-    this.props.pushHistory(`/role/edit/${id}`);
+    this.props.pushHistory(`/seller/role/edit/${id}`);
   };
   handleDelete = (id) => {
     // console.log(id);
