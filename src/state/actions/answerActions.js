@@ -26,7 +26,7 @@ export const updateAnswer = (newAnswer) => ({
   newAnswer: newAnswer,
 });
 
-export const updateAnswerStatus = ({ status, id }) => ({
+export const updateAnswerStatus = ({ status, id, pages }) => ({
   type: UPDATE_ANSWER_STATUS,
-  params: { status, id },
+  params: { status, id, pages },
 });

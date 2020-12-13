@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import Creatable from 'react-select/creatable';
 import { getVariantVals } from '../../../../state/actions/variantValActions';
 
@@ -24,6 +23,7 @@ class ProductModal extends Component {
 
   componentDidMount() {
     this.props.getVariantVals({ limit: 1000, page: 1, query: '', idVariant: 1 })
+
   }
 
   onSubmit = (e) => {
@@ -34,6 +34,7 @@ class ProductModal extends Component {
     //   pname = document.getElementsByName('pname')[0].value,
     let obj = {}, objList = []
 
+    console.log('propValuesList: ', propValuesList);
     for (let i = 0; i < propValuesList.length; i++) {
       obj = { name: { label: '', value: '' }, values: [] }
 
@@ -66,7 +67,11 @@ class ProductModal extends Component {
 
   onSelectChange = (e, { name }) => {
     //neu variant values thay doi
-    const { id, value, __isNew__ } = e
+    let { id, value, __isNew__ } = e
+    if (e.__isNew__) {
+      value = e.label
+      id = e.value
+    }
 
     //them field nhap gia tri khi ng dung nhap den field cuoi cung
     if (name[1] == this.state.propValuesList[Number(name[0])].values.length - 1) {
@@ -98,13 +103,18 @@ class ProductModal extends Component {
   };
 
   onSelectVarChange = (e, { name }) => {
-    console.log(this.state.propValuesList);
+    let { label, value, __isNew__ } = e
+    if (!e.__isNew__) {
+      label = e.name;
+      value = e.id;
+    }
+
     //neu variant thay doi
     this.setState((prepState) => {
       let propValuesList = [...prepState.propValuesList];
       propValuesList.map((p, index) => {
         if (index == name[0]) {
-          p.name = { label: e.name, value: e.id }
+          p.name = { label, value, __isNew__ }
         }
       });
       return {
@@ -130,19 +140,21 @@ class ProductModal extends Component {
       if (variant.id == name) return variant.values
     }
   }
+
   renderValues = (item, index) => {
     return (
       <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
-        <div style={{ marginRight: '11px', width: '178px' }}>
+        <div style={{ marginRight: '11px', width: '165px' }}>
           <Creatable
             key={index}
             placeholder="Thuộc tính..."
             options={this.props.variantVals}
             name={index + "pname"}
             onChange={this.onSelectVarChange}
-            getOptionLabel={(option) => option.name}
+            getOptionLabel={(option) => { return option.__isNew__ ? option.label : option.name }}
             getOptionValue={(option) => option.id}
-            value={this.props.variantVals.filter(option => option.id == item.name.value)}
+            //value={this.props.variantVals.filter(option => option.id == item.name.value)}
+            value={{ name: item.name.label, id: item.name.value }}
           />
         </div>
 

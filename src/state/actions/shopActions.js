@@ -1,8 +1,13 @@
-import { GET_SHOPS, ADD_SHOP, DELETE_SHOP, UPDATE_SHOP } from './types';
+import { GET_SHOPS, ADD_SHOP, DELETE_SHOP, UPDATE_SHOP, GET_SHOP_BY_ID } from './types';
 
 export const getShops = (params) => ({
   type: GET_SHOPS,
   pages: params,
+});
+
+export const getShopById = (id) => ({
+  type: GET_SHOP_BY_ID,
+  id,
 });
 
 export const deleteShop = (id) => ({

@@ -113,7 +113,7 @@ class ARating extends Component {
   };
 
   renderRatings = () => {
-    const { start } = this.state;
+    const { start, limit, page, query } = this.state;
     const { ratings, isLoaded, deleteRating, updateRatingStatus } = this.props;
 
     return !isLoaded ? (
@@ -131,12 +131,14 @@ class ARating extends Component {
             index={index + start - 1}
             deleteItem={deleteRating}
             updateItemStatus={updateRatingStatus}
+            pages={{ limit, page, query }}
           />
         ))
       );
   };
 
   handleChoosePage = (e) => {
+    if (e === '...') return
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),

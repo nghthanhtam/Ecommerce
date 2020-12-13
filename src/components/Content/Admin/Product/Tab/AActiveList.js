@@ -5,7 +5,7 @@ import Loader from 'react-loader';
 
 import { getProductVars } from '../../../../../state/actions/productVarActions';
 import { pushHistory } from '../../../../../state/actions/historyActions';
-import ProductRow from '../ProductRow';
+import ProductVarRow from '../ProductVarRow';
 
 const mapStateToProps = (state) => ({
     productVars: state.productVar.productVars,
@@ -27,7 +27,7 @@ class AActiveList extends React.Component {
 
     componentDidMount() {
         const { limit, page, query } = this.state;
-        this.props.getProductVars({ limit, page, query, getActive: true });
+        this.props.getProductVars({ limit, page, query, arrayStatus: ['active', 'inactive'] });
     }
 
     componentDidUpdate = (prevProps, prevState, snapshot) => {
@@ -48,7 +48,7 @@ class AActiveList extends React.Component {
             </tr>
         ) : (
                 productVars.map((p, index) => (
-                    <ProductRow
+                    <ProductVarRow
                         history={this.props.history}
                         key={index}
                         productVar={p}
@@ -123,12 +123,13 @@ class AActiveList extends React.Component {
 
     rerenderPage = () => {
         const { limit, page, query } = this.state;
-        this.props.getProductVars({ limit, page, query, getActive: true });
+        this.props.getProductVars({ limit, page, query, arrayStatus: ['active', 'inactive'] });
         this.getPages();
         this.getStartEndDocuments();
     };
 
     handleChoosePage = (e) => {
+        if (e === '...') return
         const { limit, page } = this.state;
         let { totalDocuments, productVars } = this.props;
 
@@ -149,7 +150,7 @@ class AActiveList extends React.Component {
 
         this.setState({ page: e }, () => {
             const { limit, page, query } = this.state;
-            this.props.getProductVars({ limit, page, query, getActive: true });
+            this.props.getProductVars({ limit, page, query, arrayStatus: ['active', 'inactive'] });
             this.getStartEndDocuments();
         });
     };

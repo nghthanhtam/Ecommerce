@@ -5,7 +5,7 @@ import Loader from 'react-loader';
 
 import { getProductVars } from '../../../../../state/actions/productVarActions';
 import { pushHistory } from '../../../../../state/actions/historyActions';
-import ProductRow from '../ProductRow';
+import ProductVarRow from '../ProductVarRow';
 
 const mapStateToProps = (state) => ({
     productVars: state.productVar.productVars,
@@ -27,7 +27,7 @@ class APendingList extends React.Component {
 
     componentDidMount() {
         const { limit, page, query } = this.state;
-        this.props.getProductVars({ limit, page, query, getActive: false });
+        this.props.getProductVars({ limit, page, query, arrayStatus: ['pending', 'declined'] });
     }
 
     componentDidUpdate = (prevProps, prevState, snapshot) => {
@@ -48,7 +48,7 @@ class APendingList extends React.Component {
             </tr>
         ) : (
                 productVars.map((p, index) => (
-                    <ProductRow
+                    <ProductVarRow
                         history={this.props.history}
                         key={index}
                         productVar={p}
@@ -133,6 +133,7 @@ class APendingList extends React.Component {
     };
 
     handleChoosePage = (e) => {
+        if (e === '...') return
         const { limit, page } = this.state;
         let { totalDocuments, idShop } = this.props;
 
@@ -149,7 +150,7 @@ class APendingList extends React.Component {
 
         this.setState({ page: e }, () => {
             const { limit, page, query } = this.state;
-            this.props.getProductVarsByIdShop({ limit, page, query, idShop, getActive: false });
+            this.props.getProductVars({ limit, page, query, arrayStatus: ['pending', 'declined'] });
             this.getStartEndDocuments();
         });
     };
@@ -289,7 +290,7 @@ class APendingList extends React.Component {
                                         {query == ''
                                             ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
                                             : ''}{' '}
-                                        {productVars.filter(o => o.status !== 'active').length} kết quả
+                                        {totalDocuments} kết quả
                                     </div>
                                 </div>
                                 <div className="col-sm-7">

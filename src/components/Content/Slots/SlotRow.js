@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 // import { deleteComment, updateCommentStatus } from '../../../../state/actions/commentActions';
 import { pushHistory } from '../../../state/actions/historyActions';
 
-const SlotRow = ({ item, index, deleteItem, updateItemStatus, cate }) => {
+const SlotRow = ({ item, index, deleteItem, updateItemStatus, cate, pages }) => {
   const [statuses, setStatuses] = useState([
     { value: "accepted", label: 'Duyệt' },
     { value: "declined", label: 'Không duyệt' }])
@@ -20,7 +20,7 @@ const SlotRow = ({ item, index, deleteItem, updateItemStatus, cate }) => {
   }
 
   useEffect(() => {
-    console.log(item);
+    //console.log(pages);
   });
 
   return (
@@ -78,8 +78,7 @@ const SlotRow = ({ item, index, deleteItem, updateItemStatus, cate }) => {
             <ul className="dropdown-menu" role="menu">
               {statuses.map((s, index) => (
                 <li key={index} onClick={() => {
-                  updateItemStatus({ id: item.id, status: s.value });
-                  window.location.reload()
+                  updateItemStatus({ id: item.id, status: s.value, pages });
                 }}><a href="javascript:void(0);"> {s.label} </a>
                 </li>
               ))}

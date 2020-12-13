@@ -35,42 +35,43 @@ class ProductRow extends Component {
 
     return (
       <Fragment>
-        {getActive == false && status !== 'active' || getActive == true && status == 'active' ?
-          <tr>
-            <td>{index + 1}</td>
-            <td><img src={Images[0].url} alt="" border='3' height='200px' width='200px' /> {SKU}</td>
-            <td>{name}</td>
-            <td>{SKU}</td>
-            <td >{price}  VND</td>
-            <td>{idShop}</td>
+        {/* {getActive == false && status !== 'active' || getActive == true && status == 'active' ? */}
+        <tr>
+          <td>{index + 1}</td>
+          <td><img src={Images[0].url} alt="" border='3' height='200px' width='200px' /> {SKU}</td>
+          <td>{name}</td>
+          <td>{SKU}</td>
+          <td >{price}  VND</td>
+          <td>{idShop}</td>
 
-            {status == 'active' &&
+          {(status == 'active' || status == 'inactive') &&
+            <td>
+              <div className="btn-group">
+                <button onClick={() => this.props.history.push({ pathname: `/admin/productvar/edit/${id}` })}
+                  type="button" className="btn btn-success">
+                  Sửa
+                  </button>
+              </div>
+            </td>}
+
+          {status == 'pending' &&
+            <>
+              <td style={{ color: 'grey' }}>
+                <i style={{ color: '#52c41a' }} className="fa fa-spinner" aria-hidden="true"></i> Chờ duyệt
+                </td>
               <td>
                 <div className="btn-group">
-                  <button onClick={() => this.props.history.push({ pathname: `/admin/productvar/edit/${id}` })}
-                    type="button" className="btn btn-success">
-                    Sửa
-                  </button>
-                </div>
-              </td>}
-
-            {status == 'pending' &&
-              <>
-                <td style={{ color: 'grey' }}>
-                  <i style={{ color: '#52c41a' }} className="fa fa-spinner" aria-hidden="true"></i> Chờ duyệt
-                </td>
-                <td>
-                  <div className="btn-group">
-                    <button
-                      onClick={() => this.approve()}
-                      type="button"
-                      className="btn btn-success">
-                      Duyệt
+                  <button
+                    onClick={() => this.approve()}
+                    type="button"
+                    className="btn btn-success">
+                    Duyệt
                     </button>
-                  </div>
-                </td>
-              </>}
-          </tr> : null}
+                </div>
+              </td>
+            </>}
+        </tr>
+        {/* : null} */}
       </Fragment>
     );
   }

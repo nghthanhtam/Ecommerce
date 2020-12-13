@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import EmployeeModal from './EmployeeModal';
 import EmployeeRow from './EmployeeRow';
 import { connect } from 'react-redux';
-import { getEmployees } from '../../../../state/actions/employeeActions';
+import { getEmployeesByShop } from '../../../../state/actions/employeeActions';
 import PropTypes from 'prop-types';
 import Loader from 'react-loader';
 
@@ -10,6 +10,7 @@ const mapStateToProps = (state) => ({
   employees: state.employee.employees,
   isLoaded: state.employee.isLoaded,
   totalDocuments: state.employee.totalDocuments,
+  idShop: state.auth.role.idShop
 });
 
 class Employee extends Component {
@@ -28,8 +29,8 @@ class Employee extends Component {
 
   componentDidMount() {
     const { limit, page, query, deletedEmp, activeEmp } = this.state;
-    let idShop = 1;
-    this.props.getEmployees({
+    const { idShop } = this.props
+    this.props.getEmployeesByShop({
       limit,
       page,
       query,
@@ -109,8 +110,8 @@ class Employee extends Component {
 
   rerenderPage = () => {
     const { limit, page, query, deletedEmp, activeEmp } = this.state;
-    let idShop = 1;
-    this.props.getEmployees({
+    const { idShop } = this.props
+    this.props.getEmployeesByShop({
       limit,
       page,
       query,
@@ -145,6 +146,7 @@ class Employee extends Component {
   };
 
   handleChoosePage = (e) => {
+    if (e === '...') return
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
 
@@ -162,8 +164,8 @@ class Employee extends Component {
 
     this.setState({ page: e }, () => {
       const { limit, page, query, deletedEmp, activeEmp } = this.state;
-      let idShop = 1;
-      this.props.getEmployees({
+      const { idShop } = this.props
+      this.props.getEmployeesByShop({
         limit,
         page,
         query,
@@ -238,14 +240,15 @@ class Employee extends Component {
 
   onCheckActiveEmp = (e) => {
     const { activeEmp, limit, page, query, deletedEmp } = this.state;
+    const { idShop } = this.props
     if (e.target.name == 'active') {
       this.setState({ activeEmp: !activeEmp }, () => {
         console.log(activeEmp);
-        this.props.getEmployees({
+        this.props.getEmployeesByShop({
           limit,
           page,
           query,
-          idShop: 1,
+          idShop,
           deletedEmp: this.state.deletedEmp,
           activeEmp: this.state.activeEmp,
         });
@@ -254,11 +257,11 @@ class Employee extends Component {
     else if (e.target.name == 'deleted') {
       this.setState({ deletedEmp: !deletedEmp }, () => {
         console.log(activeEmp);
-        this.props.getEmployees({
+        this.props.getEmployeesByShop({
           limit,
           page,
           query,
-          idShop: 1,
+          idShop,
           deletedEmp: this.state.deletedEmp,
           activeEmp: this.state.activeEmp,
         });
@@ -293,14 +296,12 @@ class Employee extends Component {
           {/* Main content */}
           <section className="content">
             <div className="row">
-              {/* left column */}
               <div className="col-md-12">
                 <div className="box">
                   <div className="box-header" style={{ marginTop: '5px' }}>
                     <div style={{ paddingLeft: '5px' }} className="col-md-8">
                       <h3 className="box-title">Quản lý nhân viên</h3>
                     </div>
-
                     <div className="col-md-4">
                       <EmployeeModal limit={limit} page={page} />
                     </div>
@@ -331,7 +332,7 @@ class Employee extends Component {
                               className="dataTables_filter"
                               style={{ display: 'flex' }}
                             >
-                              <label
+                              <div
                                 style={{
                                   fontWeight: 400,
                                   width: '180px'
@@ -348,8 +349,8 @@ class Employee extends Component {
                                   onChange={this.onCheckActiveEmp}
                                 />
                                 Đang hoạt động
-                              </label>
-                              <label
+                              </div>
+                              <div
                                 style={{
                                   fontWeight: 400,
                                   width: '180px'
@@ -366,8 +367,8 @@ class Employee extends Component {
                                   onChange={this.onCheckActiveEmp}
                                 />
                                 Không hoạt động
-                              </label>
-                              <label>
+                              </div>
+                              <div>
                                 Tìm kiếm
                                 <input
                                   type="search"
@@ -379,7 +380,7 @@ class Employee extends Component {
                                   onChange={this.handleOnChange}
                                   value={query}
                                 />
-                              </label>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -462,10 +463,10 @@ class Employee extends Component {
 }
 
 Employee.propTypes = {
-  getEmployees: PropTypes.func.isRequired,
+  getEmployeesByShop: PropTypes.func.isRequired,
   employees: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getEmployees })(Employee);
+export default connect(mapStateToProps, { getEmployeesByShop })(Employee);

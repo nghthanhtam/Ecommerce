@@ -46,7 +46,7 @@ function* addAnswer(params) {
     const response = yield call(() =>
       axios.post(
         `${process.env.REACT_APP_BACKEND_RATING}/api/answer/`,
-        params.newCmt,
+        params.newAnswer,
         tokenConfig(state)
       )
     );
@@ -54,7 +54,7 @@ function* addAnswer(params) {
     yield put({ type: ANSWER_ADDED, payload: response.data });
     yield put({
       type: GET_ANSWERS,
-      pages: params.newCmt.pages,
+      pages: params.newAnswer.pages,
     });
   } catch (error) {
     console.log({ ...error });
@@ -63,8 +63,8 @@ function* addAnswer(params) {
 
 function* updateAnswerStt(params) {
   const state = yield select(),
-    { id, status } = params.params
-
+    { id, status, pages } = params.params
+  console.log(pages);
   try {
     const response = yield call(() =>
       axios.put(
@@ -74,6 +74,10 @@ function* updateAnswerStt(params) {
       )
     );
     yield put({ type: ANSWER_UPDATED, payload: response.data });
+    yield put({
+      type: GET_ANSWERS,
+      pages,
+    });
   } catch (error) {
     console.log({ ...error });
   }

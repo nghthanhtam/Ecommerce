@@ -73,7 +73,7 @@ class ProductDetail extends React.Component {
     const { idProduct, idShop } = this.props.match.params;
     this.setState({ idProduct })
     this.props.getProductById({ idShop, idProduct })
-    this.props.getRatings({ idProduct, limit: 1000, page: 1 })
+    this.props.getRatingsByProduct({ idProduct, limit: 1000, page: 1 })
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -598,7 +598,6 @@ class ProductDetail extends React.Component {
                     </div>
                   )
                 })}
-
               </div>
             </div>}
         </div>

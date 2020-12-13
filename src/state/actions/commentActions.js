@@ -26,7 +26,7 @@ export const updateComment = (newCmt) => ({
   newCmt: newCmt,
 });
 
-export const updateCommentStatus = ({ status, id }) => ({
+export const updateCommentStatus = ({ status, id, pages }) => ({
   type: UPDATE_COMMENT_STATUS,
-  params: { status, id },
+  params: { status, id, pages },
 });

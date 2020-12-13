@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import Select from "react-select";
+import Loader from 'react-loader';
 import axios from 'axios';
 
 import { pushHistory } from '../../../../state/actions/historyActions';
@@ -13,7 +14,7 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-class ProductVarEdit extends Component {
+class ProductEdit extends Component {
   state = {
     id: '', name: '', SKU: '', marketPrice: 0, price: 0, status: '', Images: [],
     statuses: [{ label: 'Đang chờ duyệt', value: 'pending' },
@@ -123,9 +124,6 @@ class ProductVarEdit extends Component {
 
     return (
       <Fragment>
-        {/* {!id ? (
-          <Loader></Loader>
-        ) : ( */}
         <div>
           <section className="content-header">
             <ol className="breadcrumb" >
@@ -142,7 +140,6 @@ class ProductVarEdit extends Component {
               </li>
             </ol>
           </section>
-          {/* Main content */}
           <section className="content" style={{ width: '165vw', marginTop: '10px' }}>
             <div className="row">
               <div className="col-md-6">
@@ -150,8 +147,6 @@ class ProductVarEdit extends Component {
                   <div className="box-header with-border">
                     <h3 className="box-title">Cập nhật thông tin sản phẩm</h3>
                   </div>
-                  {/* /.box-header */}
-                  {/* form start */}
                   <form
                     role="form"
                     onSubmit={this.handleSubmit}>
@@ -242,10 +237,9 @@ class ProductVarEdit extends Component {
             </div>
           </section>
         </div>
-        {/* )} */}
       </Fragment >
     );
   }
 }
 
-export default connect(mapStateToProps, { pushHistory, updateProductVar, })(ProductVarEdit);
+export default connect(mapStateToProps, { pushHistory, updateProductVar, })(ProductEdit);

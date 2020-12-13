@@ -3,6 +3,7 @@ import {
   ADD_EMPLOYEE,
   DELETE_EMPLOYEE,
   UPDATE_EMPLOYEE,
+  GET_EMPLOYEES_BY_SHOP
 } from './types';
 
 // export const getCategories = (show = 5, page = 1, query) => (
@@ -25,6 +26,11 @@ import {
 // };
 export const getEmployees = (params) => ({
   type: GET_EMPLOYEES,
+  pages: params,
+});
+
+export const getEmployeesByShop = (params) => ({
+  type: GET_EMPLOYEES_BY_SHOP,
   pages: params,
 });
 

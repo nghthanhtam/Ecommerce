@@ -78,6 +78,7 @@ class AHome extends Component {
   }
 
   handleChoosePage = (e) => {
+    if (e === '...') return
     const { totalDocuments, idShop, getOrdersByShops } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),

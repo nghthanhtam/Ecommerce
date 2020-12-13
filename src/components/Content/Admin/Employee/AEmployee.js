@@ -1,17 +1,18 @@
 import React, { Component, Fragment } from 'react';
-import SlotRow from '../../Slots/SlotRow';
+import EmployeeModal from './AEmployeeModal';
+import AEmployeeRow from './AEmployeeRow';
 import { connect } from 'react-redux';
-import { getAnswers, deleteAnswer, updateAnswerStatus } from '../../../../state/actions/answerActions';
+import { getEmployees } from '../../../../state/actions/employeeActions';
 import PropTypes from 'prop-types';
 import Loader from 'react-loader';
 
 const mapStateToProps = (state) => ({
-  answers: state.answer.answers,
-  isLoaded: state.answer.isLoaded,
-  totalDocuments: state.answer.totalDocuments,
+  employees: state.employee.employees,
+  isLoaded: state.employee.isLoaded,
+  totalDocuments: state.employee.totalDocuments,
 });
 
-class AAnswer extends Component {
+class Employee extends Component {
   state = {
     sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
     limit: 5,
@@ -21,15 +22,20 @@ class AAnswer extends Component {
     start: 1,
     end: 5,
     isNextBtnShow: true,
+    activeEmp: true,
+    deletedEmp: false,
   };
 
   componentDidMount() {
-    const { limit, page, query } = this.state;
-    this.props.getAnswers({
+    const { limit, page, query, deletedEmp, activeEmp } = this.state;
+    let idShop = 1;
+    this.props.getEmployees({
       limit,
       page,
       query,
-      status: 'pending'
+      idShop,
+      deletedEmp,
+      activeEmp,
     });
   }
 
@@ -102,19 +108,23 @@ class AAnswer extends Component {
   }
 
   rerenderPage = () => {
-    const { limit, page, query } = this.state;
-    this.props.getAnswers({
+    const { limit, page, query, deletedEmp, activeEmp } = this.state;
+    let idShop = 1;
+    this.props.getEmployees({
       limit,
       page,
       query,
+      idShop,
+      deletedEmp,
+      activeEmp,
     });
     this.getPages();
     this.getStartEndDocuments();
   };
 
-  renderAnswers = () => {
-    const { start, limit, page, query } = this.state;
-    const { answers, isLoaded, deleteAnswer, updateAnswerStatus } = this.props;
+  renderEmployees = () => {
+    const { start, limit, page } = this.state;
+    const { employees, isLoaded } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -123,15 +133,12 @@ class AAnswer extends Component {
         </td>
       </tr>
     ) : (
-        answers.map((answer, index) => (
-          <SlotRow
-            cate='answer'
-            key={answer.id}
-            item={answer}
+        employees.map((eachEmployee, index) => (
+          <AEmployeeRow
+            history={this.props.history}
+            key={eachEmployee.id}
+            employee={eachEmployee}
             index={index + start - 1}
-            deleteItem={deleteAnswer}
-            updateItemStatus={updateAnswerStatus}
-            pages={{ limit, page, query }}
           />
         ))
       );
@@ -141,6 +148,7 @@ class AAnswer extends Component {
     if (e === '...') return
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
+
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
@@ -154,13 +162,15 @@ class AAnswer extends Component {
     }
 
     this.setState({ page: e }, () => {
-      const { limit, page, query, } = this.state;
-      this.props.getAnswers({
+      const { limit, page, query, deletedEmp, activeEmp } = this.state;
+      let idShop = 1;
+      this.props.getEmployees({
         limit,
         page,
         query,
-        isUser: true,
-        status: 'pending'
+        idShop,
+        deletedEmp,
+        activeEmp,
       });
       this.getStartEndDocuments();
     });
@@ -197,7 +207,9 @@ class AAnswer extends Component {
               className={
                 page === eachButton.pageNumber
                   ? 'paginae_button active'
-                  : 'paginate_button '}   >
+                  : 'paginate_button '
+              }
+            >
               <a
                 className="paga-link"
                 name="page"
@@ -214,7 +226,7 @@ class AAnswer extends Component {
                 isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
               }
               name="currentPage"
-              href="javascript:void(0);"
+              href="#"
               onClick={() => this.handleChoosePage(-1)}
             >
               {'>>'}
@@ -225,24 +237,57 @@ class AAnswer extends Component {
     }
   };
 
+  onCheckActiveEmp = (e) => {
+    const { activeEmp, limit, page, query, deletedEmp } = this.state;
+    if (e.target.name == 'active') {
+      this.setState({ activeEmp: !activeEmp }, () => {
+        console.log(activeEmp);
+        this.props.getEmployees({
+          limit,
+          page,
+          query,
+          idShop: 1,
+          deletedEmp: this.state.deletedEmp,
+          activeEmp: this.state.activeEmp,
+        });
+      });
+    }
+    else if (e.target.name == 'deleted') {
+      this.setState({ deletedEmp: !deletedEmp }, () => {
+        console.log(activeEmp);
+        this.props.getEmployees({
+          limit,
+          page,
+          query,
+          idShop: 1,
+          deletedEmp: this.state.deletedEmp,
+          activeEmp: this.state.activeEmp,
+        });
+      });
+    }
+  };
+
   render() {
-    const { start, end, query } = this.state;
+    const { limit, page, start, end, query, activeEmp, deletedEmp } = this.state;
     const { totalDocuments } = this.props;
     return (
       <Fragment>
+        {/* {!isLoaded ? (
+          <Loader></Loader>
+        ) : ( */}
         <Fragment>
           <section className="content-header">
             <h1>
-              Duyệt phản hồi của người dùng
+              Nhân viên
             </h1>
             <ol className="breadcrumb">
               <li>
-                <a href="/admin">
+                <a href="fake_url">
                   <i className="fa fa-dashboard" /> Trang chủ
                 </a>
               </li>
               <li>
-                <a href="/admin/answer">Phản hồi</a>
+                <a href="fake_url">Nhân viên</a>
               </li>
             </ol>
           </section>
@@ -252,6 +297,15 @@ class AAnswer extends Component {
               {/* left column */}
               <div className="col-md-12">
                 <div className="box">
+                  <div className="box-header" style={{ marginTop: '5px' }}>
+                    <div style={{ paddingLeft: '5px' }} className="col-md-8">
+                      <h3 className="box-title">Quản lý nhân viên</h3>
+                    </div>
+
+                    <div className="col-md-4">
+                      <EmployeeModal limit={limit} page={page} />
+                    </div>
+                  </div>
                   {/* /.box-header */}
                   <div className="box-body">
                     <div
@@ -276,13 +330,50 @@ class AAnswer extends Component {
                             <div
                               id="example1_filter"
                               className="dataTables_filter"
-                              style={{ float: 'right' }}
+                              style={{ display: 'flex' }}
                             >
+                              <label
+                                style={{
+                                  fontWeight: 400,
+                                  width: '180px'
+                                }}
+                              >
+                                <input
+                                  style={{
+                                    marginRight: '3px',
+                                  }}
+                                  type="checkbox"
+                                  className="minimal"
+                                  name='active'
+                                  checked={activeEmp}
+                                  onChange={this.onCheckActiveEmp}
+                                />
+                                Đang hoạt động
+                              </label>
+                              <label
+                                style={{
+                                  fontWeight: 400,
+                                  width: '180px'
+                                }}
+                              >
+                                <input
+                                  style={{
+                                    marginRight: '3px',
+                                  }}
+                                  type="checkbox"
+                                  className="minimal"
+                                  name='deleted'
+                                  checked={deletedEmp}
+                                  onChange={this.onCheckActiveEmp}
+                                />
+                                Không hoạt động
+                              </label>
                               <label>
-                                Tìm kiếm{' '}
+                                Tìm kiếm
                                 <input
                                   type="search"
                                   name="query"
+                                  style={{ margin: '0px 0px' }}
                                   className="form-control input-sm"
                                   placeholder="Nhập từ khóa... "
                                   aria-controls="example1"
@@ -304,22 +395,24 @@ class AAnswer extends Component {
                             <thead>
                               <tr>
                                 <th style={{ width: '5%' }}>#</th>
-                                <th style={{ width: '10%' }}>Người phản hồi</th>
-                                <th style={{ width: '25%' }}>Câu hỏi</th>
-                                <th style={{ width: '30%' }}>Nội dung</th>
-                                <th style={{ width: '10%' }}>Ngày viết</th>
+                                <th style={{ width: '15%' }}>Tên tài khoản</th>
+                                <th style={{ width: '10%' }}>Vai trò</th>
+                                <th style={{ width: '20%' }}>Họ tên</th>
+                                <th style={{ width: '15%' }}>Số điện thoại</th>
+                                <th style={{ width: '20%' }}>Hành động</th>
                               </tr>
                             </thead>
 
-                            <tbody>{this.renderAnswers()}</tbody>
+                            <tbody>{this.renderEmployees()}</tbody>
 
                             <tfoot>
                               <tr>
                                 <th>#</th>
-                                <th>Người viết</th>
-                                <th>Câu ngữ cảnh</th>
-                                <th>Nội dung</th>
-                                <th>Ngày viết</th>
+                                <th>Tên tài khoản</th>
+                                <th>Vai trò</th>
+                                <th>Họ tên</th>
+                                <th>Số điện thoại</th>
+                                <th>Hành động</th>
                               </tr>
                             </tfoot>
                           </table>
@@ -363,16 +456,17 @@ class AAnswer extends Component {
           </section>
           {/* /.content */}
         </Fragment>
+        {/* )} */}
       </Fragment>
     );
   }
 }
 
-AAnswer.propTypes = {
-  getAnswers: PropTypes.func.isRequired,
-  answers: PropTypes.array.isRequired,
+Employee.propTypes = {
+  getEmployees: PropTypes.func.isRequired,
+  employees: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getAnswers, deleteAnswer, updateAnswerStatus })(AAnswer);
+export default connect(mapStateToProps, { getEmployees })(Employee);

@@ -38,7 +38,7 @@ export const updateRating = (newRating) => ({
   newRating: newRating,
 });
 
-export const updateRatingStatus = ({ status, id }) => ({
+export const updateRatingStatus = ({ status, id, pages }) => ({
   type: UPDATE_RATING_STATUS,
-  params: { status, id },
+  params: { status, id, pages },
 });

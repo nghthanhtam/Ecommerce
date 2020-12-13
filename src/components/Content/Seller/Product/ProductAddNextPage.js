@@ -10,6 +10,7 @@ import Loading from "../../ShopNow/Loading/Loading"
 const mapStateToProps = (state) => ({
   arrVariants: state.productadd.arrVariants,
   isLoaded: state.product.isLoaded,
+  token: state.auth.token
 });
 
 class ProductAddNextPage extends Component {
@@ -34,7 +35,7 @@ class ProductAddNextPage extends Component {
     const { selectedFiles } = this.state
     const { arrProductVar, arrVariants, product, details, idProduct } = this.props.location
     this.props.history.push({
-      pathname: '/add-product',
+      pathname: '/seller/add-product',
       details: {
         idProduct,
         selectedFiles,
@@ -82,14 +83,16 @@ class ProductAddNextPage extends Component {
 
     const config = {
       headers: {
-        'Content-Type': 'multipart/form-data; charset=utf-8; boundary="another cool boundary";'
-      }
+        'Content-Type': 'multipart/form-data; charset=utf-8; boundary="another cool boundary";',
+        'Authorization': `Bearer ${this.props.token}`
+      },
+
     };
     this.setState({ isTransition: true })
     axios.post(`${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`, formData, config).then((response) => {
       console.log('response product add: ', response);
       if (response) {
-        this.props.history.push('/home')
+        this.props.history.push('/seller')
         this.setState({ isTransition: false })
       }
     }).catch(err => {

@@ -71,7 +71,7 @@ class Menu extends React.Component {
                     </Link>
                     </li>
                     <li>
-                      <Link to="/admin/add-product">
+                      <Link to="/admin/shop">
                         <i className="fa fa-circle-o" /> Nhà bán
                     </Link>
                     </li>

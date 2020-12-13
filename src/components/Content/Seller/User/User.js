@@ -99,11 +99,12 @@ class User extends Component {
         key={eachUser._id}
         user={eachUser}
         index={index}
-        // deleteCategory={this.props.deleteCategory}
+      // deleteCategory={this.props.deleteCategory}
       />
     ));
   };
   handleChoosePage = (e) => {
+    if (e === '...') return
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
       this.props.getUsers(select, currentPage, query);

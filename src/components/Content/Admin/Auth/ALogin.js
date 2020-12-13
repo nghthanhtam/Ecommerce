@@ -77,7 +77,7 @@ class ALogin extends Component {
   render() {
     return (
       <Fragment>
-        <div className={styles.wrapper}> </div>
+        <div className={styles.aloginwrapper}> </div>
         <div className={styles.loginbox}>
           <div className="login-logo">
             <a href="/login" style={{ color: 'white' }}>

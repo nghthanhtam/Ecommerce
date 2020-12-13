@@ -1,17 +1,18 @@
 import React, { Component, Fragment } from 'react';
-import SlotRow from '../../Slots/SlotRow';
+import AShopModal from './AShopModal';
+import AShopRow from './AShopRow';
 import { connect } from 'react-redux';
-import { getQuestions, deleteQuestion, updateQuestionStatus } from '../../../../state/actions/questionActions';
+import { getShops } from '../../../../state/actions/shopActions';
 import PropTypes from 'prop-types';
 import Loader from 'react-loader';
 
 const mapStateToProps = (state) => ({
-  questions: state.question.questions,
-  isLoaded: state.question.isLoaded,
-  totalDocuments: state.question.totalDocuments,
+  shops: state.shop.shops,
+  isLoaded: state.shop.isLoaded,
+  totalDocuments: state.shop.totalDocuments,
 });
 
-class AQuestion extends Component {
+class AShop extends Component {
   state = {
     sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
     limit: 5,
@@ -21,15 +22,16 @@ class AQuestion extends Component {
     start: 1,
     end: 5,
     isNextBtnShow: true,
+    activeEmp: true,
+    deletedEmp: false,
   };
 
   componentDidMount() {
     const { limit, page, query } = this.state;
-    this.props.getQuestions({
+    this.props.getShops({
       limit,
       page,
-      query,
-      status: 'pending'
+      query
     });
   }
 
@@ -103,7 +105,7 @@ class AQuestion extends Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    this.props.getQuestions({
+    this.props.getShops({
       limit,
       page,
       query,
@@ -112,9 +114,9 @@ class AQuestion extends Component {
     this.getStartEndDocuments();
   };
 
-  renderQuestions = () => {
-    const { start, limit, page, query } = this.state;
-    const { questions, isLoaded, deleteQuestion, updateQuestionStatus } = this.props;
+  renderShops = () => {
+    const { start, limit, page } = this.state;
+    const { shops, isLoaded } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -123,15 +125,12 @@ class AQuestion extends Component {
         </td>
       </tr>
     ) : (
-        questions.map((question, index) => (
-          <SlotRow
-            cate='question'
-            key={index}
-            item={question}
+        shops.map((eachShop, index) => (
+          <AShopRow
+            history={this.props.history}
+            key={eachShop.id}
+            shop={eachShop}
             index={index + start - 1}
-            deleteItem={deleteQuestion}
-            updateItemStatus={updateQuestionStatus}
-            pages={{ limit, page, query }}
           />
         ))
       );
@@ -141,6 +140,7 @@ class AQuestion extends Component {
     if (e === '...') return
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
+
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
@@ -154,13 +154,11 @@ class AQuestion extends Component {
     }
 
     this.setState({ page: e }, () => {
-      const { limit, page, query, } = this.state;
-      this.props.getQuestions({
+      const { limit, page, query } = this.state;
+      this.props.getShops({
         limit,
         page,
-        query,
-        isUser: true,
-        status: 'pending'
+        query
       });
       this.getStartEndDocuments();
     });
@@ -195,11 +193,7 @@ class AQuestion extends Component {
             <li
               key={eachButton.pageNumber}
               className={
-                page === eachButton.pageNumber
-                  ? 'paginae_button active'
-                  : 'paginate_button '
-              }
-            >
+                page === eachButton.pageNumber ? 'paginae_button active' : 'paginate_button '}  >
               <a
                 className="paga-link"
                 name="page"
@@ -211,14 +205,10 @@ class AQuestion extends Component {
             </li>
           ))}
           <li className="paginate_button">
-            <a
-              className={
-                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
-              }
+            <a className={isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'}
               name="currentPage"
-              href="javascript:void(0);"
-              onClick={() => this.handleChoosePage(-1)}
-            >
+              href="#"
+              onClick={() => this.handleChoosePage(-1)} >
               {'>>'}
             </a>
           </li>
@@ -227,34 +217,68 @@ class AQuestion extends Component {
     }
   };
 
+  onCheckActiveEmp = (e) => {
+    const { activeEmp, limit, page, query, deletedEmp } = this.state;
+    if (e.target.name == 'active') {
+      this.setState({ activeEmp: !activeEmp }, () => {
+        console.log(activeEmp);
+        this.props.getShops({
+          limit,
+          page,
+          query,
+          idShop: 1,
+          deletedEmp: this.state.deletedEmp,
+          activeEmp: this.state.activeEmp,
+        });
+      });
+    }
+    else if (e.target.name == 'deleted') {
+      this.setState({ deletedEmp: !deletedEmp }, () => {
+        console.log(activeEmp);
+        this.props.getShops({
+          limit,
+          page,
+          query,
+          idShop: 1,
+          deletedEmp: this.state.deletedEmp,
+          activeEmp: this.state.activeEmp,
+        });
+      });
+    }
+  };
+
   render() {
-    const { start, end, query } = this.state;
+    const { limit, page, start, end, query, activeEmp, deletedEmp } = this.state;
     const { totalDocuments } = this.props;
     return (
+
       <Fragment>
         <section className="content-header">
-          <h1>
-            Duyệt câu hỏi người dùng
-            </h1>
-          <ol className="breadcrumb">
+          <h1></h1>
+          <ol className="breadcrumb" style={{ float: 'right' }}>
             <li>
-              <a href="/admin">
+              <a href="fake_url">
                 <i className="fa fa-dashboard" /> Trang chủ
                 </a>
             </li>
             <li>
-              <a href="/admin/question">Câu hỏi</a>
+              <a href="fake_url">Nhân viên</a>
             </li>
           </ol>
         </section>
-        {/* Main content */}
         <section className="content">
           <div className="row">
-            {/* left column */}
             <div className="col-md-12">
               <div className="box">
+                <div className="box-header" style={{ marginTop: '5px' }}>
+                  <div style={{ paddingLeft: '5px' }} className="col-md-8">
+                    <h3 className="box-title">Quản lý nhà bán</h3>
+                  </div>
 
-                {/* /.box-header */}
+                  <div className="col-md-4">
+                    <AShopModal limit={limit} page={page} />
+                  </div>
+                </div>
                 <div className="box-body">
                   <div
                     id="example1_wrapper"
@@ -281,10 +305,11 @@ class AQuestion extends Component {
                             style={{ float: 'right' }}
                           >
                             <label>
-                              Tìm kiếm{' '}
-                              <input
+                              Tìm kiếm
+                                <input
                                 type="search"
                                 name="query"
+                                style={{ margin: '0px 0px' }}
                                 className="form-control input-sm"
                                 placeholder="Nhập từ khóa... "
                                 aria-controls="example1"
@@ -306,22 +331,26 @@ class AQuestion extends Component {
                           <thead>
                             <tr>
                               <th style={{ width: '5%' }}>#</th>
-                              <th style={{ width: '10%' }}>Người hỏi</th>
-                              <th style={{ width: '10%' }}>Sản phẩm</th>
-                              <th style={{ width: '45%' }}>Câu hỏi</th>
-                              <th style={{ width: '10%' }}>Ngày viết</th>
+                              <th style={{ width: '15%' }}>Tên nhà bán</th>
+                              <th style={{ width: '10%' }}>Mã kinh doanh</th>
+                              <th style={{ width: '10%' }}>Thành phố/tỉnh</th>
+                              <th style={{ width: '20%' }}>Đường dẫn</th>
+                              <th style={{ width: '10%' }}>Điện thoại</th>
+                              <th style={{ width: '15%' }}>Hành động</th>
                             </tr>
                           </thead>
 
-                          <tbody>{this.renderQuestions()}</tbody>
+                          <tbody>{this.renderShops()}</tbody>
 
                           <tfoot>
                             <tr>
                               <th>#</th>
-                              <th>Người hỏi</th>
-                              <th>Sản phẩm</th>
-                              <th>Câu hỏi</th>
-                              <th>Ngày viết</th>
+                              <th >Tên nhà bán</th>
+                              <th >Mã kinh doanh</th>
+                              <th >Thành phố/tỉnh</th>
+                              <th >Đường dẫn</th>
+                              <th >Điện thoại</th>
+                              <th >Hành động</th>
                             </tr>
                           </tfoot>
                         </table>
@@ -356,26 +385,22 @@ class AQuestion extends Component {
                       </div>
                     </div>
                   </div>
-                  {/*/.col (left) */}
                 </div>
-                {/* /.row */}
               </div>
             </div>
           </div>
         </section>
-        {/* /.content */}
       </Fragment>
+
     );
   }
 }
 
-AQuestion.propTypes = {
-  getQuestions: PropTypes.func.isRequired,
-  deleteQuestion: PropTypes.func.isRequired,
-  updateQuestionStatus: PropTypes.func.isRequired,
-  questions: PropTypes.array.isRequired,
+AShop.propTypes = {
+  getShops: PropTypes.func.isRequired,
+  shops: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getQuestions, deleteQuestion, updateQuestionStatus })(AQuestion);
+export default connect(mapStateToProps, { getShops })(AShop);

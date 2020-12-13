@@ -10,6 +10,7 @@ class EmployeeEdit extends Component {
     data: {},
     nameObj: { id: 'ID', fullname: 'Họ và tên', username: 'Tên đăng nhập', idRole: 'Vai trò', phone: ' Số điện thoại' }
   };
+
   componentDidMount() {
     const { id } = this.props.match.params;
     const { getFunction, api, token, nameObj, } = this.props
@@ -136,13 +137,13 @@ class EmployeeEdit extends Component {
                             className="btn btn-default"
                           >
                             Cancel
-                        </button>
+                          </button>
                           <button
                             type="submit"
                             className="btn btn-info pull-right"
                           >
                             Save
-                        </button>
+                          </button>
                         </div>
                         {/* /.box-footer */}
                       </form>

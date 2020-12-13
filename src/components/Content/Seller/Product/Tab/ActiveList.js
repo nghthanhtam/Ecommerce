@@ -136,6 +136,7 @@ class ActiveList extends React.Component {
     };
 
     handleChoosePage = (e) => {
+        if (e === '...') return
         const { limit, page } = this.state;
         let { totalDocuments, productVars } = this.props;
 
@@ -186,7 +187,7 @@ class ActiveList extends React.Component {
                     <li className="paginate_button">
                         <a className={isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'}
                             name="currentPage"
-                            href="javascript:void(0);"
+                            href="javascript:;"
                             onClick={() => this.handleChoosePage(-1)}>
                             {'>>'}
                         </a>

@@ -26,7 +26,7 @@ export const updateQuestion = (newQuestion) => ({
   newQuestion: newQuestion,
 });
 
-export const updateQuestionStatus = ({ status, id }) => ({
+export const updateQuestionStatus = ({ status, id, pages }) => ({
   type: UPDATE_QUESTION_STATUS,
-  params: { status, id },
+  params: { status, id, pages },
 });

@@ -1,20 +1,19 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Loader from 'react-loader';
 
-import { getProductVarsByIdShop } from '../../../../../state/actions/productVarActions';
+import { getProducts } from '../../../../../state/actions/productActions';
 import { pushHistory } from '../../../../../state/actions/historyActions';
-import ProductRow from '../ProductRow';
+import ProductInforRow from '../ProductInforRow';
 
 const mapStateToProps = (state) => ({
-    productVars: state.productVar.productVars,
-    isLoaded: state.productVar.isLoaded,
-    idShop: state.auth.role.idShop,
-    totalDocuments: state.productVar.totalDocuments
+    products: state.product.products,
+    isLoaded: state.product.isLoaded,
+    totalDocuments: state.product.totalDocuments
 });
 
-class PendingList extends React.Component {
+class APendingProductInforList extends React.Component {
     state = {
         sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
         limit: 5,
@@ -28,8 +27,7 @@ class PendingList extends React.Component {
 
     componentDidMount() {
         const { limit, page, query } = this.state;
-        const { idShop } = this.props
-        this.props.getProductVarsByIdShop({ limit, page, query, idShop, getActive: false });
+        this.props.getProducts({ limit, page, query, arrayStatus: ['pending'] });
     }
 
     componentDidUpdate = (prevProps, prevState, snapshot) => {
@@ -39,9 +37,9 @@ class PendingList extends React.Component {
         }
     }
 
-    renderProducts = (getActive) => {
-        const { productVars, isLoaded } = this.props;
-        const { start } = this.state;
+    renderProducts = () => {
+        const { products, isLoaded } = this.props;
+        const { start, limit, page, query } = this.state;
         return !isLoaded ? (
             <tr>
                 <td>
@@ -49,13 +47,13 @@ class PendingList extends React.Component {
                 </td>
             </tr>
         ) : (
-                productVars.map((p, index) => (
-                    <ProductRow
+                products.map((p, index) => (
+                    <ProductInforRow
                         history={this.props.history}
                         key={index}
-                        productVar={p}
+                        product={p}
                         index={index + start - 1}
-                        getActive={getActive}
+                        pages={{ limit, page, query }}
                     />
                 ))
             );
@@ -63,7 +61,7 @@ class PendingList extends React.Component {
 
     getPages = () => {
         const { limit, query } = this.state;
-        let { totalDocuments, productVars } = this.props;
+        let { totalDocuments } = this.props;
 
         if (totalDocuments == 0) return;
 
@@ -108,7 +106,7 @@ class PendingList extends React.Component {
 
     getStartEndDocuments() {
         const { limit, page } = this.state;
-        let { totalDocuments, productVars } = this.props;
+        let { totalDocuments } = this.props;
 
         let pages = Math.floor(totalDocuments / limit),
             remainder = totalDocuments % limit;
@@ -128,7 +126,8 @@ class PendingList extends React.Component {
         this.props.getProducts({
             limit,
             page,
-            query
+            query,
+            arrayStatus: ['pending']
         });
         this.getPages();
         this.getStartEndDocuments();
@@ -152,7 +151,7 @@ class PendingList extends React.Component {
 
         this.setState({ page: e }, () => {
             const { limit, page, query } = this.state;
-            this.props.getProductVarsByIdShop({ limit, page, query, idShop, getActive: false });
+            this.props.getProducts({ limit, page, query, arrayStatus: ['pending'] });
             this.getStartEndDocuments();
         });
     };
@@ -192,8 +191,8 @@ class PendingList extends React.Component {
     };
 
     render() {
-        const { limit, page, query, start, end } = this.state
-        const { totalDocuments, idShop, productVars } = this.props
+        const { query, start, end } = this.state
+        const { products, totalDocuments } = this.props
         return (
             <div className="row">
                 <div className="col-md-12">
@@ -256,24 +255,24 @@ class PendingList extends React.Component {
                                         <thead>
                                             <tr>
                                                 <th style={{ width: '5%' }}>#</th>
-                                                <th>Hình ảnh</th>
-                                                <th style={{ width: '20%' }}>Tên sản phẩm</th>
-                                                <th style={{ width: '10%' }}>SKU</th>
-                                                <th style={{ width: '15%' }}>Đơn giá</th>
-                                                <th style={{ width: '15%' }}>Số lượng tồn</th>
-                                                <th style={{ width: '15%' }}>Trạng thái</th>
+                                                <th style={{ width: '15%' }}>Tên sản phẩm</th>
+                                                <th style={{ width: '10%' }}>Thương hiệu</th>
+                                                <th style={{ width: '15%' }}>Tên phim</th>
+                                                <th style={{ width: '10%' }}>Nhà bán</th>
+                                                <th style={{ width: '10%' }}>Tình trạng</th>
+                                                <th style={{ width: '15%' }}>Thao tác</th>
                                             </tr>
                                         </thead>
-                                        <tbody>{this.renderProducts(false)}</tbody>
+                                        <tbody>{this.renderProducts()}</tbody>
                                         <tfoot>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Hình ảnh</th>
                                                 <th>Tên sản phẩm</th>
-                                                <th>SKU</th>
-                                                <th>Đơn giá</th>
-                                                <th>Số lượng tồn</th>
-                                                <th>Trạng thái</th>
+                                                <th>Thương hiệu</th>
+                                                <th>Tên phim</th>
+                                                <th>Nhà bán</th>
+                                                <th>Tình trạng</th>
+                                                <th>Thao tác</th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -288,9 +287,9 @@ class PendingList extends React.Component {
                                         aria-live="polite">
                                         Hiển thị{' '}
                                         {query == ''
-                                            ? start + ' đến ' + end + ' trong '
+                                            ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
                                             : ''}{' '}
-                                        {productVars.filter(o => o.status !== 'active').length} kết quả
+                                        {totalDocuments} kết quả
                                     </div>
                                 </div>
                                 <div className="col-sm-7">
@@ -311,10 +310,10 @@ class PendingList extends React.Component {
     }
 }
 
-PendingList.propTypes = {
-    getProductVarsByIdShop: PropTypes.func.isRequired,
-    productVars: PropTypes.array.isRequired,
+APendingProductInforList.propTypes = {
+    getProducts: PropTypes.func.isRequired,
+    products: PropTypes.array.isRequired,
     isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getProductVarsByIdShop, pushHistory })(PendingList);
+export default connect(mapStateToProps, { getProducts, pushHistory })(APendingProductInforList);

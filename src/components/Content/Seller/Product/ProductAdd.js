@@ -163,6 +163,7 @@ class ProductAdd extends Component {
   }
 
   onChangeProductVar = (e, index, name, variant) => {
+
     let changeProp, val;
     if (!name) { //thay đổi text
       val = e.target.textContent
@@ -178,20 +179,11 @@ class ProductAdd extends Component {
               product.idProduct = this.state.idProduct
               product.idShop = this.props.idShop
             }
-            //const newItem = Object.assign(product);
-            // if (name) { //thay đổi select
-            //   newItem['variants'] = [[], [], []]
-            //   if (!variant.__isNew__) {
-            //     if (!e.__isNew__) newItem['variants'][2].push(e.value)
-            //     else newItem['variants'][1].push({ [variant.value]: e.value })
-            //   } else newItem['variants'][0].push({ [variant.name]: e.value })
-            // }
-            // else newItem[changeProp] = val; //thay đổi text
-            // skuProductList.splice(index, 1); //xoa 1 phan tu o vi tri index
-            // skuProductList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
 
+            console.log('e: ', e);
+            console.log('name: ', name);
             if (name) { //thay đổi select
-              if (!variant.name.__isNew__) {
+              if (!variant.name.__isNew__) { //nếu variant mới
                 if (!e.__isNew__) {
 
                   if (product['variants'][2].length == 0) product['variants'][2].push(e.value)
@@ -258,7 +250,7 @@ class ProductAdd extends Component {
       let query = ''
       query = value
       if (value == '') query = undefined
-      this.props.getProducts({ limit: 50, page: 1, query })
+      this.props.getProducts({ limit: 50, page: 1, query, arrayStatus: ['accepted'] });
     }
 
     if (value !== '') {
@@ -273,10 +265,10 @@ class ProductAdd extends Component {
     //check if required-fields are blank
     if (name && idProductCat && idMovie && skuProductList.length > 0) {
       this.props.history.push({
-        pathname: '/add-product/photos',
+        pathname: '/seller/add-product/photos',
         arrProductVar: skuProductList,
         arrVariants: variantList,
-        product: { idMovie, idProductCat, name, description, brand, details: { idProduct: 1, detail: 'AUTHOR', value: 'Nguyen Nhat Anh' } },
+        product: { idMovie, idProductCat, name, description, brand, status: 'active', details: { idProduct: 1, detail: 'AUTHOR', value: 'Nguyen Nhat Anh' } },
         selectedFiles: this.props.location.details ? this.props.location.details.selectedFiles : null,
         idProduct
       });
@@ -412,23 +404,21 @@ class ProductAdd extends Component {
                           {/* <div>Nếu sản phẩm của bạn không nằm trong danh sách danh mục của chúng tối, 
                       xin vui lòng liên hệ với ShopNow thông qua kênh liên lạc dành riêng cho nhà bán hàng</div> */}
                         </div>
-
+                      </div>
+                      <div className="form-group">
+                        <label>Thương hiệu</label>
+                        <input
+                          className="form-control"
+                          id="exampleInputEmail1"
+                          placeholder="Nhập tên thương hiệu ..."
+                          name='brand'
+                          value={brand}
+                          onChange={this.onChangeProductInfor}
+                        />
                       </div>
                       {idProductCat == 2 || idProductCat == 3 ? (
                         <div className="row-flex">
-                          <div className="form-group" style={{ width: '50%', paddingRight: '20px' }}>
-                            <label htmlFor="exampleInputEmail1">
-                              Thương hiệu
-                            </label>
-                            <input
-                              className="form-control"
-                              id="exampleInputEmail1"
-                              placeholder="Nhập tên thương hiệu ..."
-                              name='brand'
-                              value={brand}
-                              onChange={this.onChangeProductInfor}
-                            />
-                          </div>
+
                           <div className="form-group" style={{ width: '50%' }}>
                             <label htmlFor="exampleInputEmail1">Chất liệu</label>
                             <input

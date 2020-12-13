@@ -1,9 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import ProductRow from './ProductRow';
+import ProductRow from './ProductVarRow';
 import APendingList from './Tab/APendingList'
 import AActiveList from './Tab/AActiveList'
+import AProductInforList from './Tab/AProductInforList'
+import APendingProductInforList from './Tab/APendingProductInforList'
 
 import { getProductVarsByIdShop } from '../../../../state/actions/productVarActions';
 import { showNoti } from '../../../../state/actions/notificationActions';
@@ -15,7 +17,6 @@ const mapStateToProps = (state) => ({
   productVars: state.productVar.productVars,
   isLoaded: state.productVar.isLoaded,
   totalDocuments: state.product.totalDocuments,
-  idShop: state.auth.role.idShop,
   totalDocuments: state.productVar.totalDocuments,
   show: state.modal.show,
   modalName: state.modal.modalName
@@ -30,20 +31,7 @@ class Product extends Component {
     pages: [],
     start: 1,
     end: 5,
-    isNextBtnShow: false,
-    isPriceBoardHidden: true,
-    skuproduct: {
-      index: 0,
-      id: 0,
-      productId: '',
-      name: '',
-      sku: '',
-      marketPrice: 0,
-      price: 0,
-      qty: 0,
-      qtyAdd: 0,
-      status: 1
-    },
+    isNextBtnShow: true,
     block: <AActiveList />
   };
 
@@ -151,6 +139,7 @@ class Product extends Component {
   };
 
   handleChoosePage = (e) => {
+    if (e === '...') return
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),
@@ -209,41 +198,6 @@ class Product extends Component {
     }
   };
 
-  onChange = (e, index) => {
-    this.setState((prepState) => {
-      let productList = [...prepState.productList];
-      let { id, idProduct, idShop, SKU, marketPrice, name, price, qty, qtyAdd, status } = e
-
-      const newItem = {
-        id,
-        index,
-        idProduct,
-        idShop,
-        SKU,
-        marketPrice,
-        name,
-        price,
-        qty: 0,
-        qtyAdd: 0,
-        status
-      };
-      productList.map((pd) => {
-        if (pd.index === index) {
-          productList.splice(index, 1); //xoa 1 phan tu o vi tri index
-          productList.splice(index, 0, newItem); //chen newItem vao vi tri thu index
-        }
-      });
-
-      return {
-        productList,
-      };
-    });
-  };
-
-  onSubmit = () => {
-
-  }
-
   createNotification = () => {
     this.props.showNoti(this.state.notiType);
     this.setState({ notiType: '' });
@@ -255,18 +209,16 @@ class Product extends Component {
 
     if (name == 'pending') this.setState({ block: <APendingList /> })
     else if (name == 'active') this.setState({ block: <AActiveList /> })
+    else if (name == 'infor') this.setState({ block: <AProductInforList /> })
+    else if (name == 'infor-pending') this.setState({ block: <APendingProductInforList /> })
   }
 
   render() {
-    const { isLoaded, products, totalDocuments, show, modalName } = this.props;
-    const { start, end, query, notiType, propValueList, productList, } = this.state;
-
     return (
       <React.Fragment>
         {/* {notiType !== '' ? this.createNotification() : null}
             <NotificationContainer /> */}
 
-        {/* Content Header (Page header) */}
         <section className="content-header">
           <h1> Sản phẩm </h1>
           <ol className="breadcrumb">
@@ -292,6 +244,16 @@ class Product extends Component {
               <li onClick={() => this.onTabClick('pending')}>
                 <a href="#pendinglist" data-toggle="tab">
                   Chờ duyệt
+                </a>
+              </li>
+              <li onClick={() => this.onTabClick('infor-pending')}>
+                <a href="#-pending" data-toggle="tab">
+                  Thông tin sản phẩm chờ duyệt
+                </a>
+              </li>
+              <li onClick={() => this.onTabClick('infor')}>
+                <a href="#infor" data-toggle="tab">
+                  Thông tin sản phẩm đã duyệt
                 </a>
               </li>
             </ul>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { deleteEmployee } from '../../../../state/actions/employeeActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
 
-class EmployeeRow extends Component {
+class AEmployeeRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
@@ -63,4 +63,4 @@ class EmployeeRow extends Component {
   }
 }
 
-export default connect(null, { deleteEmployee, pushHistory })(EmployeeRow);
+export default connect(null, { deleteEmployee, pushHistory })(AEmployeeRow);

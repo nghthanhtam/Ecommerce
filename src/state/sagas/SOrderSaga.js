@@ -1,6 +1,7 @@
 import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { tokenConfig } from '../../state/actions/authActions';
+import { tokenUserConfig } from '../../state/actions/authUserActions';
 import {
   GET_ORDERS_BY_SHOP,
   GET_ORDERDETS_BY_ORDERID,
@@ -74,7 +75,7 @@ function* fetchUserOrders(params) {
       axios
         .get(
           `${process.env.REACT_APP_BACKEND_ORDER}/api/order/user/${idUser}?limit=${limit}&page=${page}`,
-          tokenConfig(state)
+          tokenUserConfig(state)
         )
     );
 

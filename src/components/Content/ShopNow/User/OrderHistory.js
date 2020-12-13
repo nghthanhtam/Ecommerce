@@ -3,7 +3,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../../../../assets/css/user-profile.css";
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import { getUserOrders } from '../../../../state/actions/orderActions'
 import { showModal } from '../../../../state/actions/modalActions'

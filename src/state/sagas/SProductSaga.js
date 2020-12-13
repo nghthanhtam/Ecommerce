@@ -1,6 +1,7 @@
 import { takeEvery, put, call, select } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../actions/authActions";
+import { tokenAdminConfig } from "../actions/authAdminActions";
 import {
   GET_PRODUCTS,
   GET_PRODUCT_BY_ID,
@@ -11,6 +12,7 @@ import {
   DELETE_PRODUCT,
   PRODUCT_DELETED,
   UPDATE_PRODUCT,
+  UPDATE_PRODUCT_STATUS,
   PRODUCT_UPDATED,
   UPDATE_PRODUCTADD,
   PRODUCTADD_UPDATED,
@@ -21,7 +23,6 @@ import mongoose from "mongoose";
 
 function* fetchProductByid(params) {
   try {
-    console.log(params);
     const state = yield select(),
       { idProduct, idShop } = params.params;
     const response = yield call(() =>
@@ -42,12 +43,15 @@ function* fetchProductByid(params) {
 function* fetchProducts(params) {
   try {
     const state = yield select(),
-      { limit, page, query } = params.pages;
-
+      { limit, page, query, arrayStatus } = params.pages;
+    let tempString = '';
+    for (let x = 0; x < arrayStatus.length; x++) {
+      tempString += `&arrayStatus[]=${arrayStatus[x]}`;
+    }
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product?limit=${limit}&page=${page}&query=${query}`,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product?limit=${limit}&page=${page}&query=${query}` + tempString,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -116,6 +120,7 @@ function* updateProduct(params) {
     console.log(error.response);
   }
 }
+
 function* deleteProducts(params) {
   const state = yield select();
   try {
@@ -142,12 +147,35 @@ function* updateProductAdd(params) {
   }
 }
 
+function* updateProductStt(params) {
+  const state = yield select(),
+    { id, status, pages } = params.params
+
+  try {
+    const response = yield call(() =>
+      axios.put(
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${id}/status`,
+        { status },
+        tokenAdminConfig(state)
+      )
+    );
+    yield put({ type: PRODUCT_UPDATED, payload: response.data });
+    yield put({
+      type: GET_PRODUCTS,
+      pages,
+    });
+  } catch (error) {
+    console.log({ ...error });
+  }
+}
+
 export default function* sProductSaga() {
   yield takeEvery(GET_PRODUCT_BY_ID, fetchProductByid);
   yield takeEvery(GET_PRODUCTS, fetchProducts);
   yield takeEvery(GET_PRODUCTS_BY_MOVIECAT, fetchProductsByMovieCate);
   yield takeEvery(ADD_PRODUCT, addProduct);
   yield takeEvery(UPDATE_PRODUCT, updateProduct);
+  yield takeEvery(UPDATE_PRODUCT_STATUS, updateProductStt);
   yield takeEvery(DELETE_PRODUCT, deleteProducts);
   yield takeEvery(UPDATE_PRODUCTADD, updateProductAdd);
 }

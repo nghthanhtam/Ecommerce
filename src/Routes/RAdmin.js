@@ -3,14 +3,13 @@ import React, { Component, Fragment } from 'react';
 import Header from '../components/Content/Seller/Header';
 import Footer from '../components/Content/Seller/Footer';
 import Menu from '../components/Content/Seller/Menu';
-import Employee from '../components/Content/Seller/Employee/Employee';
 import ProductAdd from '../components/Content/Seller/Product/ProductAdd';
 import ProductAddNextPage from '../components/Content/Seller/Product/ProductAddNextPage';
 import ProductVarEdit from '../components/Content/Seller/Product/ProductVarEdit'
 import Product from '../components/Content/Seller/Product/Product';
 import Order from '../components/Content/Seller/Order/Order';
 import OrderDetail from '../components/Content/Seller/Order/OrderDetail';
-import EmployeeEdit from '../components/Content/Seller/Employee/EmployeeEdit';
+
 
 import { updateAuth } from '../state/actions/authActions';
 import { updateAuthUser } from '../state/actions/authUserActions';
@@ -30,15 +29,19 @@ import AComment from '../components/Content/Admin/Comment/AComment';
 import AQuestion from '../components/Content/Admin/Question/AQuestion';
 import AAnswer from '../components/Content/Admin/Answer/AAnswer';
 import ARating from '../components/Content/Admin/Rating/ARating';
+import ModalProductDetails from '../components/Content/Modal/ModalProductDetails'
+import ProductInforEdit from '../components/Content/Admin/Product/ProductInforEdit'
+import Employee from '../components/Content/Admin/Employee/AEmployee';
+import EmployeeEdit from '../components/Content/Admin/Employee/AEmployeeEdit';
+import AShop from '../components/Content/Admin/Shop/AShop';
+import AShopEdit from '../components/Content/Admin/Shop/AShopEdit';
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   isLoading: state.auth.isLoading,
   history: state.history,
   isLoaded: state.auth.isLoaded,
-  token: state.auth.token,
   role: state.auth.role,
-  userToken: state.authUser.token,
   adminToken: state.authAdmin.token,
   show: state.modal.show,
   modalName: state.modal.modalName
@@ -96,7 +99,7 @@ class RAdmin extends Component {
             exact
             path="/"
             render={() => {
-              return !token ? (
+              return !adminToken ? (
                 <Redirect to="/admin/login" />
               ) : (
                   <Redirect to="/admin" />
@@ -106,15 +109,15 @@ class RAdmin extends Component {
             exact
             path="/admin/login"
             render={() => {
-              return !token ? <ALogin /> : <Redirect to="/admin" />;
+              return !adminToken ? <ALogin /> : <Redirect to="/admin" />;
             }} />
           {/* LOGIN */}
-
 
           {/* ADMIN */}
           {adminToken && (
             <Fragment>
               <Fragment>
+                {show && modalName == 'productDetails' && <ModalProductDetails />}
                 <Header isAdmin={true} />
                 <Menu isAdmin={true} />
                 <div className="content-wrapper">
@@ -151,49 +154,70 @@ class RAdmin extends Component {
                       path="/admin/product"
                       component={AProduct}
                       role={roles.product}
-                      token={token}
+                      token={adminToken}
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
                       path="/admin/productvar/edit/:id"
                       component={ProductVarEdit}
                       role={roles.product}
-                      token={token}
+                      token={adminToken}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/admin/product/edit/:id"
+                      component={ProductInforEdit}
+                      role={roles.product}
+                      token={adminToken}
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
                       path="/admin/role"
                       component={Role}
                       role={roles.employee}
-                      token={token}
+                      token={adminToken}
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
                       path="/admin/role/edit/:id"
                       component={RoleEdit}
                       role={roles.role}
-                      token={token}
+                      token={adminToken}
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
                       path="/admin/employee/edit/:id"
                       component={EmployeeEdit}
                       role={roles.employee}
-                      token={token}
+                      token={adminToken}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/admin/shop"
+                      component={AShop}
+                      role={roles.shop}
+                      token={adminToken}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/admin/shop/edit/:id"
+                      component={AShopEdit}
+                      role={roles.shop}
+                      token={adminToken}
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
                       path="/admin/order"
                       component={Order}
                       role={roles.order}
-                      token={token}
+                      token={adminToken}
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
                       path="/admin/order/edit/:id"
                       component={OrderDetail}
                       role={roles.order}
-                      token={token}
+                      token={adminToken}
                     ></PrivateRoute>
                     <Route path="*" render={() => <Redirect to="/404" />} />
                   </Switch>
@@ -202,10 +226,8 @@ class RAdmin extends Component {
               </Fragment>
             </Fragment>
           )}
-
           <Route path="*" render={() => <Redirect to="/admin/login" />} />
         </Switch>
-        {/* )} */}
       </Fragment>
     );
   }

@@ -17,10 +17,12 @@ const mapStateToProps = (state, props) => {
 class ProductVarEdit extends Component {
   state = {
     id: '', name: '', SKU: '', marketPrice: 0, price: 0, status: '', Images: [],
-    statuses: [{ label: 'Đang chờ duyệt', value: 'pending' },
-    { label: 'Đang kinh doanh', value: 'active' },
-    { label: 'Ngừng kinh doanh', value: 'inactive' }],
+    statuses:
+      [{ label: 'Đang chờ duyệt', value: 'pending' },
+      { label: 'Đang kinh doanh', value: 'active' },
+      { label: 'Ngừng kinh doanh', value: 'inactive' }],
   };
+
   componentDidMount() {
     const { id } = this.props.match.params;
     axios

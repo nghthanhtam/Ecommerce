@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { deleteEmployee } from '../../../../state/actions/employeeActions';
+import { deleteShop } from '../../../../state/actions/shopActions';
 import { pushHistory } from '../../../../state/actions/historyActions';
 
-class EmployeeRow extends Component {
+class AShopRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
@@ -11,38 +11,33 @@ class EmployeeRow extends Component {
     let dt = newDate.getDate();
 
     dt = dt < 10 ? `0${dt}` : dt;
-
     month = month < 10 ? `0${month}` : month;
-    // if (month < 10) {
-    //   month = "0" + month;
-    // }
-
     return year + '-' + month + '-' + dt;
   };
 
   handleEdit = (id) => {
-    this.props.pushHistory(`/seller/employee/edit/${id}`);
+    this.props.pushHistory(`/admin/shop/edit/${id}`);
   };
 
   handleDelete = (id) => {
-    this.props.deleteEmployee(id);
+    this.props.deleteShop(id);
   };
 
   render() {
-    const { employee, index } = this.props;
+    const { shop, index } = this.props;
 
     return (
       <tr>
         <td>{index + 1}</td>
-        <td>{employee.username}</td>
-        {/* <td>{this.convertDate(employee.createAt)}</td> */}
-        <td>{employee.idRole}</td>
-        <td>{employee.fullname}</td>
-        <td>{employee.phone}</td>
+        <td>{shop.name}</td>
+        <td>{shop.busLicenseId}</td>
+        <td>{shop.city}</td>
+        <td>{shop.url}</td>
+        <td>{shop.phone}</td>
         <td>
           <div className="btn-group">
             <button
-              onClick={() => this.handleEdit(employee.id)}
+              onClick={() => this.handleEdit(shop.id)}
               type="button"
               className="btn btn-success"
             >
@@ -50,7 +45,7 @@ class EmployeeRow extends Component {
             </button>
 
             <button
-              onClick={() => this.handleDelete(employee.id)}
+              onClick={() => this.handleDelete(shop.id)}
               type="button"
               className="btn btn-danger"
             >
@@ -63,4 +58,4 @@ class EmployeeRow extends Component {
   }
 }
 
-export default connect(null, { deleteEmployee, pushHistory })(EmployeeRow);
+export default connect(null, { deleteShop, pushHistory })(AShopRow);

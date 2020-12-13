@@ -6,13 +6,13 @@ class UserProfile extends React.Component {
 
   state = {
     profileItemList: [
-      { name: "Thông tin khách hàng", link: "/user/account" },
-      { name: "Quản lý đơn hàng", link: "/sales/order/history" },
-      { name: "Sổ địa chỉ", link: "/user/address-book" },
-      { name: "Nhận xét sản phẩm đã mua", link: "/user/review" },
-      { name: "Sản phẩm mua sau", link: "/user/laterlist" },
-      { name: "Sản phẩm yêu thích", link: "/user/wishlist" },
-      { name: "Sản phẩm đã xem", link: "/user/watchlist" },
+      { name: "Thông tin khách hàng", link: "/shopnow/user/account" },
+      { name: "Quản lý đơn hàng", link: "/shopnow/sales/order/history" },
+      { name: "Sổ địa chỉ", link: "/shopnow/user/address-book" },
+      { name: "Nhận xét sản phẩm đã mua", link: "/shopnow/user/review" },
+      { name: "Sản phẩm mua sau", link: "/shopnow/user/laterlist" },
+      { name: "Sản phẩm yêu thích", link: "/shopnow/user/wishlist" },
+      { name: "Sản phẩm đã xem", link: "/shopnow/user/watchlist" },
     ],
   };
 

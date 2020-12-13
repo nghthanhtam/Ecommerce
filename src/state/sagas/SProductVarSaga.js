@@ -39,12 +39,17 @@ function* fetchProductVarByid(params) {
 function* fetchProductVars(params) {
   try {
     const state = yield select(),
-      { limit, page, getActive } = params.pages;
+      { limit, page, arrayStatus } = params.pages;
+
+    let tempString = '';
+    for (let x = 0; x < arrayStatus.length; x++) {
+      tempString += `&arrayStatus[]=${arrayStatus[x]}`;
+    }
 
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar?limit=${limit}&page=${page}&getActive=${getActive}`,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar?limit=${limit}&page=${page}` + tempString,
           tokenAdminConfig(state)
         )
         .catch((er) => console.log(er.response))

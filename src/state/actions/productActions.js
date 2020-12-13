@@ -4,7 +4,8 @@ import {
   DELETE_PRODUCT,
   UPDATE_PRODUCT,
   GET_PRODUCTS_BY_MOVIECAT,
-  GET_PRODUCT_BY_ID
+  GET_PRODUCT_BY_ID,
+  UPDATE_PRODUCT_STATUS
 } from './types';
 
 export const getProducts = (params) => ({
@@ -35,4 +36,9 @@ export const addProduct = (newProduct) => ({
 export const updateProduct = (newProduct) => ({
   type: UPDATE_PRODUCT,
   newProduct: newProduct,
+});
+
+export const updateProductStatus = ({ status, id, pages }) => ({
+  type: UPDATE_PRODUCT_STATUS,
+  params: { status, id, pages },
 });

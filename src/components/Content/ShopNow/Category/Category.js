@@ -20,7 +20,7 @@ class Category extends React.Component {
           <div className="info-cate">
             <h3>{cate.name}</h3>
             <p>{cate.description}</p>
-            <Link to={{ pathname: `./product-list/idMovieCat/${cate.id}` }} className="btn">Xem thêm </Link>
+            <Link to={{ pathname: `./shopnow/product-list/idMovieCat/${cate.id}` }} className="btn">Xem thêm </Link>
           </div>
         </div>
       </div>
