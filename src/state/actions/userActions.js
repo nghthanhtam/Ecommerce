@@ -1,8 +1,13 @@
-import { GET_USERS, ADD_USER, DELETE_USER, GET_USER_BY_ID } from "./types";
+import { GET_USERS, ADD_USER, DELETE_USER, GET_USER_BY_ID, UPDATE_USER } from "./types";
 
 export const getUsers = (params) => ({
   type: GET_USERS,
   pages: params,
+});
+
+export const getUserById = (id) => ({
+  type: GET_USER_BY_ID,
+  id,
 });
 
 export const deleteUser = (id) => ({

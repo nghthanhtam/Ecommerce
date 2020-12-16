@@ -29,50 +29,6 @@ class HomePage extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      categoryList: [
-        {
-          name: "ACTION",
-          description: "You want an Avenger?",
-          picLink: "./img/action-movie.png",
-          color: "cate-pink",
-        },
-        {
-          name: "ROMANCE",
-          description: "Let's head on the 'Titanic'!",
-          picLink: "./img/romance-movie.png",
-          color: "cate-orange",
-        },
-        {
-          name: "HORROR",
-          description: "Annabelle will scare you!",
-          picLink: "./img/horror-movie.png",
-          color: "cate-pastel",
-        },
-        {
-          name: "SCI-FI",
-          description: "Get ready on Interception?",
-          picLink: "./img/scifi-movie.png",
-          color: "cate-pink",
-        },
-        {
-          name: "COMEDY",
-          description: "Laugh with High Kick?",
-          picLink: "./img/comedy-movie.png",
-          color: "cate-orange",
-        },
-        {
-          name: "FAMILY",
-          description: "Others",
-          picLink: "./img/family-movie.png",
-          color: "cate-pastel",
-        },
-        {
-          name: "KIDS",
-          description: "Others",
-          picLink: "./img/stuff.png",
-          color: "cate-pink",
-        },
-      ],
       productList: [1, 2, 3, 4, 5, 6, 7, 8],
       keywords: [
         { color: "kw-blue" },

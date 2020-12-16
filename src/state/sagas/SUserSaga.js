@@ -1,6 +1,7 @@
 import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { tokenConfig } from '../actions/authActions';
+import { tokenAdminConfig } from '../actions/authAdminActions';
 import {
   GET_USERS,
   ADD_USER,
@@ -23,7 +24,7 @@ function* fetchUsers(params) {
       axios
         .get(
           `${process.env.REACT_APP_BACKEND_USER}/api/user?limit=${limit}&page=${page}&query=${query}`,
-          tokenConfig(state)
+          tokenAdminConfig(state)
         )
     );
     yield put({ type: USERS_RECEIVED, payload: response });
@@ -47,14 +48,19 @@ function* fetchUserById(params) {
       axios
         .get(
           `${process.env.REACT_APP_BACKEND_USER}/api/user/${id}`,
-          tokenConfig(state)
+          tokenAdminConfig(state)
         )
     );
 
     yield put({ type: USER_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });
-
+    let err = { ...error }
+    if (err.status == 401) {
+      this.props.history.push({
+        pathname: '/admin/login',
+      });
+    }
   }
 }
 
@@ -96,6 +102,7 @@ function* updateUser(params) {
     console.log(error.response);
   }
 }
+
 function* deleteUser(params) {
   const state = yield select();
   try {

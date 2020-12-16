@@ -26,11 +26,6 @@ class Header extends React.Component {
       backgroundColor: 'transparent'
     },
     isLogoText: false,
-    // logo: {
-    //   width: '150px',
-    //   height: '150px',
-    //   transition: '0.75s',
-    // },
   };
 
   componentDidMount() {
@@ -119,17 +114,17 @@ class Header extends React.Component {
         </div>
         <ul className="row-flex-center">
           <li>
+            <Link style={cartWrapper} className="item" to="/shopnow/checkout/cart">
+              <div style={{ color: 'white' }}>Giỏ hàng</div>
+              {!totalCount ? <div style={cartInfor}>0</div> : <div style={cartInfor}>{totalCount}</div>}
+            </Link>
+          </li>
+          <li>
             <Link className="item" to="/shopnow/user/laterlist">
               <div style={itemIcon}>
                 <i className="fa fa-heart"></i>
               </div>
               <div>Mua sau</div>
-            </Link>
-          </li>
-          <li>
-            <Link style={cartWrapper} className="item" to="/shopnow/checkout/cart">
-              <div style={{ color: 'white' }}>Giỏ hàng</div>
-              {!totalCount ? <div style={cartInfor}>0</div> : <div style={cartInfor}>{totalCount}</div>}
             </Link>
           </li>
           <li>
@@ -146,7 +141,7 @@ class Header extends React.Component {
           </li>
 
           <li>
-            <Link className="item" to="/">
+            <Link className="item" to="/" >
               <div style={itemIcon}>
                 <i className="fa fa-question-circle"></i>
               </div>
@@ -195,7 +190,6 @@ const cartWrapper = {
   justifyContent: 'center',
   alignItems: 'center',
   backgroundColor: '#0d1136',
-  padding: '8px',
   borderRadius: '7px',
 };
 const cartWrapper1 = {

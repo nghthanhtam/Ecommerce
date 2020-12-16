@@ -9,7 +9,6 @@ import historyReducer from './historyReducer';
 import roleReducer from './roleReducer';
 import productReducer from './productReducer';
 import shopReducer from './shopReducer';
-import productaddReducer from './productaddReducer';
 import productVarReducer from './productVarReducer';
 import employeeRoleReducer from './employeeRoleReducer';
 import variantValReducer from './variantValReducer';
@@ -76,5 +75,4 @@ export default combineReducers({
   showNoti: notificationReducer,
   supplier: supplierReducer,
   storagereport: storageReportReducer,
-  productadd: productaddReducer,
 });

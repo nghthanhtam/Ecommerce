@@ -31,11 +31,10 @@ class ProductRow extends Component {
 
   render() {
     const { name, SKU, price, id, status, idShop, Images } = this.props.productVar;
-    const { index, getActive } = this.props
+    const { index } = this.props
 
     return (
       <Fragment>
-        {/* {getActive == false && status !== 'active' || getActive == true && status == 'active' ? */}
         <tr>
           <td>{index + 1}</td>
           <td><img src={Images[0].url} alt="" border='3' height='200px' width='200px' /> {SKU}</td>

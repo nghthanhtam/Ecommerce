@@ -31,10 +31,12 @@ import AAnswer from '../components/Content/Admin/Answer/AAnswer';
 import ARating from '../components/Content/Admin/Rating/ARating';
 import ModalProductDetails from '../components/Content/Modal/ModalProductDetails'
 import ProductInforEdit from '../components/Content/Admin/Product/ProductInforEdit'
-import Employee from '../components/Content/Admin/Employee/AEmployee';
+import AEmployee from '../components/Content/Admin/Employee/AEmployee';
 import EmployeeEdit from '../components/Content/Admin/Employee/AEmployeeEdit';
 import AShop from '../components/Content/Admin/Shop/AShop';
 import AShopEdit from '../components/Content/Admin/Shop/AShopEdit';
+import AUser from '../components/Content/Admin/User/AUser';
+import AUserEdit from '../components/Content/Admin/User/AUserEdit';
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -186,6 +188,13 @@ class RAdmin extends Component {
                     ></PrivateRoute>
                     <PrivateRoute
                       exact
+                      path="/admin/employee/shop/:id"
+                      component={AEmployee}
+                      role={roles.employee}
+                      token={adminToken}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
                       path="/admin/employee/edit/:id"
                       component={EmployeeEdit}
                       role={roles.employee}
@@ -203,6 +212,20 @@ class RAdmin extends Component {
                       path="/admin/shop/edit/:id"
                       component={AShopEdit}
                       role={roles.shop}
+                      token={adminToken}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/admin/user"
+                      component={AUser}
+                      role={roles.user}
+                      token={adminToken}
+                    ></PrivateRoute>
+                    <PrivateRoute
+                      exact
+                      path="/admin/user/edit/:id"
+                      component={AUserEdit}
+                      role={roles.user}
                       token={adminToken}
                     ></PrivateRoute>
                     <PrivateRoute

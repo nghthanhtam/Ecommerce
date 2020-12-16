@@ -4,8 +4,10 @@ import {
   SHOP_DELETED,
   SHOPS_RECEIVED,
   SHOP_ADDED,
+  UPDATE_SHOP,
   SHOP_UPDATED,
-  SHOP_RECEIVED
+  SHOP_RECEIVED,
+  GET_SHOP_BY_ID
 } from '../actions/types';
 
 const initialState = {
@@ -13,6 +15,7 @@ const initialState = {
   shop: {},
   totalDocuments: 0,
   isLoaded: false,
+  isUpdated: false,
 };
 
 export default function (state = initialState, action) {
@@ -21,6 +24,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
       };
+
+    case GET_SHOP_BY_ID:
+      return {
+        ...state,
+        isLoaded: false,
+      };
+
     case SHOPS_RECEIVED:
       return {
         ...state,
@@ -28,17 +38,20 @@ export default function (state = initialState, action) {
         totalDocuments: action.payload.data.total,
         isLoaded: true,
       };
+
     case SHOP_RECEIVED:
       return {
         ...state,
         shop: action.payload.data,
         isLoaded: true,
       };
+
     case ADD_SHOP:
       return {
         ...state,
         isLoaded: false,
       };
+
     case SHOP_ADDED:
       return {
         ...state,
@@ -56,6 +69,13 @@ export default function (state = initialState, action) {
     case SHOP_UPDATED:
       return {
         ...state,
+        isUpdated: true
+      };
+
+    case UPDATE_SHOP:
+      return {
+        ...state,
+        isUpdated: false
       };
 
     default:

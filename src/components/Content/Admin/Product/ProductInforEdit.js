@@ -4,38 +4,43 @@ import Select from "react-select";
 import axios from 'axios';
 
 import { pushHistory } from '../../../../state/actions/historyActions';
-import { updateProductVar } from '../../../../state/actions/productVarActions';
+import { updateProduct } from '../../../../state/actions/productActions';
+import { getProductCates } from '../../../../state/actions/productCateActions';
 
 const mapStateToProps = (state, props) => {
   return {
     history: state.history.history,
-    auth: state.auth,
+    token: state.authAdmin.token,
+    productCates: state.productCate.productCates,
+    isProductCatesLoaded: state.productCate.isLoaded,
   };
 };
 
 class ProductInforEdit extends Component {
   state = {
-    id: '', name: '', SKU: '', marketPrice: 0, price: 0, status: '', Images: [],
-    statuses:
-      [{ label: 'Đang chờ duyệt', value: 'pending' },
-      { label: 'Đang kinh doanh', value: 'active' },
-      { label: 'Ngừng kinh doanh', value: 'inactive' }],
+    id: '', name: '', brand: '', idMovie: 0, idShop: 0, status: '', idProductCat: '', description: '',
+    Details: [],
+    nameObj: {}
   };
 
   componentDidMount() {
     const { id } = this.props.match.params;
+    this.props.getProductCates({ limit: 1000, page: 1, query: '' })
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/${id}`,
-        this.tokenConfig(this.props.auth.token)
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${id}`,
+        this.tokenConfig(this.props.token)
       )
-      .then((response) => {
-        let {
-          id, name, SKU, marketPrice, price, status, Images
-        } = response.data;
-        this.setState({ id, name, SKU, marketPrice, price, status, Images });
+      .then((r) => {
+        let { id, name, brand, idMovie, idProductCat, description, idShop, status, Details } = r.data;
+        this.setState({ id, name, brand, idMovie, idShop, status, idProductCat, description, Details }, () => console.log(Details));
+
+        this.setState({ nameObj: { author: 'Tác giả', publisher: 'Nhà xuất bản', language: 'Ngôn ngữ' } })
+        // if (r.data.ProductCat.name == 'book') this.setState({ nameObj: { author: 'Tác giả', publisher: 'Nhà xuất bản', language: 'Ngôn ngữ' } })
+        // else if (r.data.ProductCat.name == 'clothes') this.setState({ nameObj: { origin: 'Xuất xứ' } })
+
       })
-      .catch((er) => console.log(er.response));
+      .catch((er) => console.log(er));
   }
 
   tokenConfig = (token) => {
@@ -56,198 +61,154 @@ class ProductInforEdit extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  handleDetChange = (e) => {
+    const { value, name } = e.target
+    this.setState((prepState) => {
+      let Details = [...prepState.Details];
+      Details.map(d => {
+        if (d.detail == name) { d.value = value }
+      })
+      return {
+        Details,
+      };
+    });
+  }
+
   handleChangeSelect = (selectedItem, { name }) => {
     this.setState({ [name]: selectedItem.value });
   }
 
-  handleFileSelect = (e) => {
-    const validateFile = (file) => {
-      const validTypes = [
-        'image/jpeg',
-        'image/jpg',
-        'image/png',
-        'image/x-icon',
-      ];
-      if (validTypes.indexOf(file.type) === -1) {
-        return false;
-      }
-      return true;
-    };
-
-    let files = e.target.files
-    if (files.length) {
-      for (let i = 0; i < files.length; i++) {
-        if (validateFile(files[i])) {
-          files[i].filePath = URL.createObjectURL(files[i]);
-          this.setState((prepState) => ({
-            Images: [...prepState.Images, files[i]]
-          }));
-        } else {
-          files[i]['invalid'] = true;
-          this.setState({ errorMessage: 'Định dạng tệp không phù hợp' });
-        }
-      }
-    }
-  }
-
   handleSubmit = (e) => {
-    const { id, name, SKU, marketPrice, price, status } = this.state;
+    const { id, name, brand, idMovie, idProductCat, description, Details, } = this.state;
     e.preventDefault();
-
-    const newProductVar = {
-      id, name, SKU, marketPrice, price, status
+    let details = {}
+    Details.map(d => {
+      details[d.detail] = d.value
+    })
+    console.log(details);
+    const newProduct = {
+      id, name, brand, idMovie, idProductCat, description, details
     };
-    this.props.updateProductVar(newProductVar);
+    this.props.updateProduct(newProduct);
+
     //Quay về trang chính
-    this.props.history.push('/product');
+    this.props.history.push('/admin/product');
   };
 
   handleCancel = (e) => {
-    this.props.history.push('/product');
+    this.props.history.push('/admin/product');
   };
 
-  oncheckboxChange = (id) => {
-    this.setState((prepState) => {
-      let Images = [...prepState.Images];
-      Images.map((image) => {
-        if (image.id == id) image.isMain = true
-        else image.isMain = false
-      })
-      return {
-        Images,
-      };
-    }, () => console.log(this.state.Images));
-  }
-
   render() {
-    const { id, name, SKU, marketPrice, price, status, Images,
-      statuses } = this.state;
-
+    const { id, name, brand, idMovie, idProductCat, description, Details, nameObj } = this.state;
+    const { productCates, isProductCatesLoaded } = this.props
     return (
       <Fragment>
-        {/* {!id ? (
-          <Loader></Loader>
-        ) : ( */}
-        <div>
-          <section className="content-header">
-            <ol className="breadcrumb" >
-              <li>
-                <a href="fake_url">
-                  <i className="fa fa-dashboard" /> Trang chủ
-                  </a>
-              </li>
-              <li>
-                <a href="fake_url">Sản phẩm</a>
-              </li>
-              <li>
-                <a href="fake_url">Chỉnh sửa</a>
-              </li>
-            </ol>
-          </section>
-          {/* Main content */}
-          <section className="content" style={{ width: '165vw', marginTop: '10px' }}>
-            <div className="row">
-              <div className="col-md-6">
-                <div className="box box-info">
-                  <div className="box-header with-border">
-                    <h3 className="box-title">Cập nhật thông tin sản phẩm</h3>
+        {!isProductCatesLoaded ? <div>Loading...</div> :
+          <div>
+            <section className="content-header">
+              <ol className="breadcrumb" >
+                <li>
+                  <a href="/admin/home">
+                    <i className="fa fa-dashboard" /> Trang chủ
+                </a>
+                </li>
+                <li>
+                  <a href="javascript:void(0);">Thông tin sản phẩm</a>
+                </li>
+                <li>
+                  <a href="javascript:void(0);">Chỉnh sửa</a>
+                </li>
+              </ol>
+            </section>
+            {/* Main content */}
+            <section className="content" style={{ width: '165vw', marginTop: '10px' }}>
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="box box-info">
+                    <div className="box-header with-border">
+                      <h3 className="box-title">Cập nhật thông tin sản phẩm</h3>
+                    </div>
+                    {/* /.box-header */}
+                    {/* form start */}
+                    <form role="form" onSubmit={this.handleSubmit}>
+                      <div className="box-body">
+                        <div className="form-group">
+                          <label htmlFor="id">ID</label>
+                          <input className="form-control" name="id" type="number" placeholder="Loading..." className="form-control" value={id} disabled onChange={this.handleChange} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="name">Tên sản phẩm</label>
+                          <input className="form-control" name="name" type="text" placeholder="Loading..." className="form-control" value={name} onChange={this.handleChange} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="brand">Thương  hiệu</label>
+                          <input className="form-control" name="brand" type="text" placeholder="Loading..." className="form-control" value={brand} onChange={this.handleChange} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="idMovie">Tên phim</label>
+                          <input className="form-control" name="idMovie" type="text" placeholder="Loading..." className="form-control" value={idMovie} onChange={this.handleChange} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="idProductCat">Thể loại sản phẩm</label>
+                          <Select
+                            styles={{ menu: provided => ({ ...provided, zIndex: 3000 }) }}
+                            name="idProductCat"
+                            onChange={this.onChangeSelect}
+                            isSearchable={true}
+                            options={productCates}
+                            placeholder="Loading..."
+                            getOptionLabel={(option) => option.description}
+                            getOptionValue={(option) => option.id}
+                            value={productCates.filter(option => option.id === idProductCat)}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="description">Mô tả</label>
+                          <textarea className="form-control" name="description" type="text" placeholder="Loading..." className="form-control" value={description} onChange={this.handleChange} />
+                        </div>
+                        {Details.map(d => {
+                          return (
+                            Object.keys(nameObj).map((item, index) => {
+                              return (
+                                <Fragment key={index}>
+                                  {item == d.detail &&
+                                    (
+                                      <div className="form-group">
+                                        <label htmlFor="idShop">{nameObj[item]}:</label>
+                                        <input className="form-control" name={item} type="text" placeholder="Loading..." className="form-control" value={d.value} onChange={this.handleDetChange} />
+                                      </div>
+                                    )
+                                  }
+                                </Fragment>
+                              )
+                            })
+                          )
+                        })}
+                      </div>
+                      {/* /.box-body */}
+                      <div className="box-footer">
+                        <button
+                          type="button"
+                          onClick={this.handleCancel}
+                          className="btn btn-default">
+                          Hủy
+                        </button>
+                        <button
+                          type="submit"
+                          className="btn btn-info pull-right">
+                          Lưu
+                        </button>
+                      </div>
+                    </form>
                   </div>
-                  {/* /.box-header */}
-                  {/* form start */}
-                  <form
-                    role="form"
-                    onSubmit={this.handleSubmit}>
-                    <div className="box-body">
-                      <div className="form-group">
-                        <label for="id">ID</label>
-                        <input className="form-control" name="id" type="text" placeholder="Loading..." className="form-control" value={id} disabled onChange={this.handleChange} />
-                      </div>
-                      <div className="form-group">
-                        <label for="SKU">SKU</label>
-                        <input className="form-control" name="SKU" type="text" placeholder="Loading..." className="form-control" value={SKU} onChange={this.handleChange} />
-                      </div>
-                      <div className="form-group">
-                        <label for="name">Tên sản phẩm</label>
-                        <input className="form-control" name="name" type="text" placeholder="Loading..." className="form-control" value={name} onChange={this.handleChange} />
-                      </div>
-                      <div className="form-group">
-                        <label for="marketPrice">Giá niêm yết</label>
-                        <input className="form-control" name="marketPrice" type="number" placeholder="Loading..." className="form-control" value={marketPrice} onChange={this.handleChange} />
-                      </div>
-                      <div className="form-group">
-                        <label for="price">Giá bán</label>
-                        <input className="form-control" name="price" type="number" placeholder="Loading..." className="form-control" value={price} onChange={this.handleChange} />
-                      </div>
-                      <div className="form-group">
-                        <label for="price">Tình trạng</label>
-                        <Select
-                          name="status"
-                          onChange={this.handleChangeSelect}
-                          isSearchable={true}
-                          options={statuses}
-                          placeholder="Loading ..."
-                          value={statuses.filter(option => option.value === status)} />
-                      </div>
-                      <div class="form-group">
-                        <label for="exampleInputFile">Hình ảnh</label>
-                        <input type="file" id="exampleInputFile" onChange={this.handleFileSelect} />
-                      </div>
-                      <div className="sku-grid">
-                        {Images.length > 0 &&
-                          Images.map((photo, index) => {
-                            return (
-                              <label
-                                key={index}
-                                htmlFor={photo}
-                                className="skuproduct-card">
-                                <img
-                                  style={{ width: '100%', height: '90%' }}
-                                  className="product-pic"
-                                  src={photo.url}
-                                  alt="sản phẩm"
-                                />
-                                <div className="product-info">
-                                  <input
-                                    className="color-checked"
-                                    type="checkbox"
-                                    checked={photo.isMain}
-                                    onChange={() => this.oncheckboxChange(photo.id)}
-                                  />
-                                </div>
-                              </label>
-                            );
-                          })}
-                        {/* <div className="upload-area">
-                          <i className="fa fa-upload fa-3x" />
-                          <p className="upload-text">Kéo và thả ảnh vào để tải ảnh lên</p>
-                          {errorMessage}
-                        </div> */}
-                      </div>
-                    </div>
-                    {/* /.box-body */}
-                    <div className="box-footer">
-                      <button
-                        type="button"
-                        onClick={this.handleCancel}
-                        className="btn btn-default">
-                        Hủy
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-info pull-right">
-                        Lưu
-                      </button>
-                    </div>
-                  </form>
                 </div>
               </div>
-            </div>
-          </section>
-        </div>
-        {/* )} */}
+            </section>
+          </div>}
       </Fragment >
     );
   }
 }
 
-export default connect(mapStateToProps, { pushHistory, updateProductVar, })(ProductInforEdit);
+export default connect(mapStateToProps, { pushHistory, updateProduct, getProductCates })(ProductInforEdit);

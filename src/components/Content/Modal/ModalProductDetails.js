@@ -20,8 +20,9 @@ class ModalProductDetails extends Component {
     };
 
     componentDidMount() {
+        console.log(this.props)
         const { data, productCateName, brand } = this.props.details
-        if (productCateName == 'book') this.setState({ nameObj: { author: 'Tác giả', publisher: 'Nhà xuất bản' } })
+        if (productCateName == 'book') this.setState({ nameObj: { author: 'Tác giả', publisher: 'Nhà xuất bản', language: 'Ngôn ngữ' } })
         else if (productCateName == 'clothes') this.setState({ nameObj: { origin: 'Xuất xứ' } })
     }
 
@@ -38,26 +39,30 @@ class ModalProductDetails extends Component {
                         <h3 className="login-box-msg">Thông tin sản phẩm </h3>
 
                         <form onSubmit={this.handleSubmit}>
-
                             <div className="box-body">
-                                {Object.keys(data).map((item, index) => {
+                                {data.map(d => {
                                     return (
-                                        <Fragment>
-                                            {nameObj.hasOwnProperty(item) &&
-                                                (
-                                                    <div className='row-flex'>
-                                                        <p style={{ fontWeight: '500', marginRight: '5px' }}>{nameObj[item]} </p>
-                                                        <p> {data[item]}</p>
-                                                    </div>
-                                                )
-                                            }
-                                        </Fragment>
+                                        Object.keys(nameObj).map((item, index) => {
+                                            return (
+                                                <Fragment key={index}>
+                                                    {item == d.detail &&
+                                                        (
+                                                            <div className='row-flex'>
+                                                                <p style={{ fontWeight: '500', marginRight: '5px' }}>{nameObj[item]}: </p>
+                                                                <p>{d.value}</p>
+                                                            </div>
+                                                        )
+                                                    }
+                                                </Fragment>
+                                            )
+                                        })
                                     )
                                 })}
-                                <div className='row-flex'>
+
+                                {/* <div className='row-flex'>
                                     <p style={{ fontWeight: '500', marginRight: '5px' }}>Thương hiệu </p>
                                     <p> {brand}</p>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="row">
                                 {/* /.col */}
@@ -65,7 +70,7 @@ class ModalProductDetails extends Component {
                                     <button
                                         type="submit"
                                         className="btn btn-primary btn-block btn-flat"
-                                        onClick={() => showModal({ show: false })}>
+                                        onClick={() => this.props.showModal({ show: false })}>
                                         Đóng
                                     </button>
                                     {/* <button

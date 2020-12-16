@@ -37,6 +37,7 @@ class Employee extends Component {
       idShop,
       deletedEmp,
       activeEmp,
+      isAdmin: false
     });
   }
 
@@ -118,6 +119,7 @@ class Employee extends Component {
       idShop,
       deletedEmp,
       activeEmp,
+      isAdmin: false
     });
     this.getPages();
     this.getStartEndDocuments();
@@ -172,6 +174,7 @@ class Employee extends Component {
         idShop,
         deletedEmp,
         activeEmp,
+        isAdmin: false
       });
       this.getStartEndDocuments();
     });
@@ -251,6 +254,7 @@ class Employee extends Component {
           idShop,
           deletedEmp: this.state.deletedEmp,
           activeEmp: this.state.activeEmp,
+          isAdmin: false
         });
       });
     }
@@ -264,6 +268,7 @@ class Employee extends Component {
           idShop,
           deletedEmp: this.state.deletedEmp,
           activeEmp: this.state.activeEmp,
+          isAdmin: false
         });
       });
     }

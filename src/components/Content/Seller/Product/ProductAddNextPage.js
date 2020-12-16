@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { addProduct } from '../../../../state/actions/productaddActions'
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './product.css';
@@ -49,7 +48,7 @@ class ProductAddNextPage extends Component {
 
   upload = () => {
     const { arrProductVar, arrVariants, product, idProduct } = this.props.location
-    const { selectedFiles, isTransition } = this.state
+    const { selectedFiles } = this.state
     let validateArrVariants = []
     arrVariants.map(variant => {
       if (!variant.name.__isNew__) {

@@ -49,7 +49,6 @@ class LaterList extends React.Component {
     return (
       <div>
         <Header />
-
         <div
           style={{
             zIndex: 10,
@@ -59,14 +58,12 @@ class LaterList extends React.Component {
           }}
         >
           <div className="nohome-section"></div>
-
           <div
             style={{
               display: "flex",
               justifyContent: "center",
               padding: "20px",
-            }}
-          >
+            }} >
             <UserProfile selectedItem={this.props} />
             <div className="later-order-list">
               {orderList.map((item) => {
@@ -75,7 +72,6 @@ class LaterList extends React.Component {
             </div>
           </div>
         </div>
-
         <Footer />
       </div>
     );

@@ -7,6 +7,10 @@ import {
   PRODUCT_RECEIVED,
   PRODUCT_ADDED,
   PRODUCT_UPDATED,
+  SORT_PRODUCTS,
+  GET_PRODUCTS_BY_IDSHOP,
+  PRODUCTS_SORTED,
+  GET_PRODUCTS_BY_FILTERS
 } from "../actions/types";
 
 const initialState = {
@@ -18,9 +22,63 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case SORT_PRODUCTS:
+      return {
+        ...state,
+        isLoaded: false,
+      };
+
+    case PRODUCTS_SORTED:
+      switch (action.payload) {
+        case 'des':
+          return {
+            ...state,
+            products: state.products.sort((a, b) => parseFloat(parseFloat(b.ProductVars[0].price) - a.ProductVars[0].price)),
+            isLoaded: true,
+            totalDocuments: state.totalDocuments,
+          };
+        case 'asc':
+          return {
+            ...state,
+            products: state.products.sort((a, b) => parseFloat(a.ProductVars[0].price) - parseFloat(b.ProductVars[0].price)),
+            isLoaded: true,
+            totalDocuments: state.totalDocuments,
+          };
+        case 'bestsold':
+          return {
+            ...state,
+            products: action.payload.data.items,
+            isLoaded: true,
+            totalDocuments: action.payload.data.total,
+          };
+        case 'latest':
+          return {
+            ...state,
+            products: state.products.sort((a, b) => parseFloat(a.ProductVars[0].createdAt) - parseFloat(b.ProductVars[0].createdAt)),
+            isLoaded: true,
+            totalDocuments: state.totalDocuments,
+          };
+        default:
+          return {
+            ...state,
+            isLoaded: false,
+          }
+      }
+
+    case GET_PRODUCTS_BY_FILTERS:
+      return {
+        ...state,
+        isLoaded: false,
+      };
     case GET_PRODUCTS:
       return {
         ...state,
+        isLoaded: false,
+      };
+    case GET_PRODUCTS_BY_IDSHOP:
+      return {
+        ...state,
+        isLoaded: false,
       };
     case PRODUCTS_RECEIVED:
       return {

@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import axios from 'axios';
 import Loader from 'react-loader';
 import Select from 'react-select';
 import Slider from 'react-slick';
@@ -24,6 +25,7 @@ const mapStateToProps = (state) => ({
   isProductCatesLoaded: state.productCate.isLoaded,
   isProductLoaded: state.product.isLoaded,
   idShop: state.auth.role.idShop,
+  token: state.auth.token
 });
 
 class ProductAdd extends Component {
@@ -46,7 +48,6 @@ class ProductAdd extends Component {
         selectedFiles: []
       },
     ],
-    productList: [1,],
     requiredName: '',
     requiredMovie: '',
     requiredCate: '',
@@ -58,12 +59,18 @@ class ProductAdd extends Component {
     idProduct: undefined,
     idMovie: 0,
     idProductCat: 0,
+    author: '',
+    publisher: '',
+    language: '',
+    origin: '',
+    publisher: '',
+    language: '',
+    size: ''
   };
 
   componentDidMount() {
     const { getMovies, getProductCates } = this.props
-    const { productUpdate, details } = this.props.location
-    console.log(this.props.location);
+    const { details } = this.props.location
     getMovies({ limit: 1000, page: 1, query: '' });
     getProductCates({ limit: 1000, page: 1, query: '' })
 
@@ -78,17 +85,6 @@ class ProductAdd extends Component {
         name, description, brand, idProduct, idShop, idMovie, idProductCat,
       })
     }
-
-    //productUpdate là data của object prodVar cần edit
-    // if(productUpdate){
-    //   const { name, description, brand, idProduct, idShop, idMovie, idProductCat } = productUpdate.Product
-    //   this.setState({
-    //     arrProductVar,
-    //     skuProductList: arrProductVar,
-    //     variantList: arrVariants,
-    //     name, description, brand, idProduct, idShop, idMovie, idProductCat,
-    //   })
-    // }
   }
 
   onsaveProp = (objList) => {
@@ -163,7 +159,6 @@ class ProductAdd extends Component {
   }
 
   onChangeProductVar = (e, index, name, variant) => {
-
     let changeProp, val;
     if (!name) { //thay đổi text
       val = e.target.textContent
@@ -241,10 +236,11 @@ class ProductAdd extends Component {
 
   onChangeProductInfor = e => {
     if (!e.target) {
-      this.setState({ description: e })
+      this.setState({ description: e }) //description is textarea so its returned value is special
       return
     }
     const { name, value } = e.target
+
     //search for similar products
     if (name == 'name') {
       let query = ''
@@ -260,7 +256,7 @@ class ProductAdd extends Component {
   }
 
   onSubmit = () => {
-    const { idProduct, skuProductList, variantList, idMovie, idProductCat, name, description, brand } = this.state
+    const { idProduct, skuProductList, variantList, idMovie, idProductCat, name, description, brand, author, origin, publisher, language, size } = this.state
 
     //check if required-fields are blank
     if (name && idProductCat && idMovie && skuProductList.length > 0) {
@@ -268,7 +264,7 @@ class ProductAdd extends Component {
         pathname: '/seller/add-product/photos',
         arrProductVar: skuProductList,
         arrVariants: variantList,
-        product: { idMovie, idProductCat, name, description, brand, status: 'active', details: { idProduct: 1, detail: 'AUTHOR', value: 'Nguyen Nhat Anh' } },
+        product: { idMovie, idProductCat, name, description, brand, status: 'active', details: { author, publisher, language, origin, publisher, language, size } },
         selectedFiles: this.props.location.details ? this.props.location.details.selectedFiles : null,
         idProduct
       });
@@ -289,6 +285,31 @@ class ProductAdd extends Component {
   //dùng hàm này để chọn bán sp đã có sẵn
   pickProduct = (idProduct) => {
     this.setState({ idProduct })
+
+    //get available product to sell
+    try {
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${idProduct}`,
+          {
+            headers:
+            {
+              'Content-type': 'application/json',
+              'Authorization': `Bearer ${this.props.token}`
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+          let { name, description, brand, idMovie, idProductCat, id, Details } = response.data;
+          this.setState({ name, description, brand, idMovie, idProductCat, id, });
+          Details.map(d => {
+            this.setState({ [d.detail]: d.value })
+          })
+        })
+    } catch (error) {
+      console.log(error.response);
+    }
   }
 
   render() {
@@ -302,15 +323,21 @@ class ProductAdd extends Component {
       description,
       brand,
       idProductCat,
-      idMovie
+      idMovie,
+      author,
+      publisher,
+      language,
+      size,
+      origin
     } = this.state,
+      { products, movies, productCates, isMovieLoaded, isProductCatesLoaded, isProductLoaded } = this.props,
       settings = {
         infinite: true,
         speed: 800,
         slidesToScroll: 1,
+        slidesToShow: 5,
         className: 'slider',
       };
-    const { products, movies, productCates, isMovieLoaded, isProductCatesLoaded, isProductLoaded } = this.props;
 
     return (
       <Fragment>
@@ -353,22 +380,21 @@ class ProductAdd extends Component {
                           />
                         </div>
                       </div>
+
                       {isProductLoaded && products.length > 0 &&
-                        <div className="form-group" >
+                        <div style={{ margin: '5px 0 25px 0' }}>
                           <label htmlFor="exampleInputEmail1">
                             Sản phẩm có thể trùng
-                        </label>
+                          </label>
                           <div className="duplicate-wrapper">
-                            <div className="similar-wrapper">
-                              <Slider
-                                {...settings}
-                                slidesToShow={products.length <= 5 ? products.length : 5}
-                              >
-                                {products.map((item, index) => {
-                                  return <DuplicateProduct key={index} item={item} arr={movies} pickProduct={this.pickProduct} />;
-                                })}
-                              </Slider>
-                            </div>
+                            <Slider
+                              style={{ width: '103%', height: '280px' }}
+                              {...settings}
+                              slidesToShow={products.length <= 5 ? products.length : 5} >
+                              {products.map((item, index) => {
+                                return <DuplicateProduct key={index} item={item} arr={movies} pickProduct={this.pickProduct} />;
+                              })}
+                            </Slider>
                           </div>
                         </div>}
 
@@ -416,46 +442,89 @@ class ProductAdd extends Component {
                           onChange={this.onChangeProductInfor}
                         />
                       </div>
-                      {idProductCat == 2 || idProductCat == 3 ? (
+                      {idProductCat == 3 && (
+                        <div className="form-group" style={{ width: '50%', paddingRight: '20px' }}>
+                          <label htmlFor="exampleInputEmail1">
+                            Xuất xứ
+                          </label>
+                          <input
+                            className="form-control"
+                            name="origin"
+                            placeholder="Nhập xuất xứ ..."
+                            value={origin}
+                            onChange={this.onChangeProductInfor}
+                          />
+                        </div>
+                      )}
+                      {idProductCat == 2 && (
                         <div className="row-flex">
-
-                          <div className="form-group" style={{ width: '50%' }}>
-                            <label htmlFor="exampleInputEmail1">Chất liệu</label>
+                          <div className="form-group" style={{ width: '50%', paddingRight: '20px' }}  >
+                            <label htmlFor="exampleInputEmail1">
+                              Xuất xứ
+                            </label>
                             <input
                               className="form-control"
-                              id="exampleInputEmail1"
-                              placeholder="Nhập tên chất liệu ..."
+                              name="origin"
+                              placeholder="Nhập xuất xứ ..."
+                              value={origin}
+                              onChange={this.onChangeProductInfor}
+                            />
+                          </div>
+                          <div className="form-group" style={{ width: '50%' }}>
+                            <label htmlFor="exampleInputEmail1">
+                              Kích thước
+                            </label>
+                            <input
+                              className="form-control"
+                              name="size"
+                              placeholder="Nhập kích thước..."
+                              value={size}
+                              onChange={this.onChangeProductInfor}
                             />
                           </div>
                         </div>
-                      ) : null}
-                      {idProductCat == 1 ? (
+                      )}
+
+                      {idProductCat == 1 && (
                         <div className="row-flex">
-                          <div
-                            className="form-group"
-                            style={{ width: '50%', paddingRight: '20px' }}
-                          >
+                          <div className="form-group" style={{ width: '50%', paddingRight: '20px' }}>
                             <label htmlFor="exampleInputEmail1">
                               Tên tác giả
-                        </label>
+                            </label>
                             <input
                               className="form-control"
-                              id="exampleInputEmail1"
+                              name="author"
                               placeholder="Nhập tên tác giả ..."
+                              value={author}
+                              onChange={this.onChangeProductInfor}
+                            />
+                          </div>
+                          <div className="form-group" style={{ width: '50%', paddingRight: '20px' }}>
+                            <label htmlFor="exampleInputEmail1">
+                              Nhà xuất bản
+                            </label>
+                            <input
+                              className="form-control"
+                              name="publisher"
+                              placeholder="Nhập nhà xuất bản ..."
+                              value={publisher}
+                              onChange={this.onChangeProductInfor}
                             />
                           </div>
                           <div className="form-group" style={{ width: '50%' }}>
                             <label htmlFor="exampleInputEmail1">
-                              Nhà xuất bản
-                        </label>
+                              Ngôn ngữ
+                            </label>
                             <input
                               className="form-control"
-                              id="exampleInputEmail1"
-                              placeholder="Nhập nhà xuất bản ..."
+                              placeholder="Nhập ngôn ngữ ..."
+                              name="language"
+                              value={language}
+                              onChange={this.onChangeProductInfor}
                             />
                           </div>
                         </div>
-                      ) : null}
+                      )}
 
                       <div className="form-group">
                         <label>Mô tả sản phẩm </label>

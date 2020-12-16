@@ -5,6 +5,7 @@ import {
   EMPLOYEES_RECEIVED,
   EMPLOYEE_ADDED,
   EMPLOYEE_UPDATED,
+  EMPLOYEE_RECEIVED
 } from '../actions/types';
 
 const initialState = {
@@ -25,6 +26,12 @@ export default function (state = initialState, action) {
         ...state,
         employees: action.payload.data.items,
         totalDocuments: action.payload.data.total,
+        isLoaded: true,
+      };
+    case EMPLOYEE_RECEIVED:
+      return {
+        ...state,
+        employee: action.payload.data,
         isLoaded: true,
       };
     case ADD_EMPLOYEE:

@@ -6,7 +6,8 @@ import 'slick-carousel/slick/slick-theme.css';
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => ({
-  history: state.history.history
+  history: state.history.history,
+  isLoaded: state.product.isLoaded,
 });
 
 class ShowingProduct extends React.Component {
@@ -18,10 +19,14 @@ class ShowingProduct extends React.Component {
     this.setState({ mainPhoto: ele.url })
   }
 
-  componentDidMount() {
-    const { item } = this.props
-    console.log(item);
-    if (item.arrayImage.length > 0) this.setState({ mainPhoto: item.arrayImage[0].url })
+  // componentDidMount() {
+  //   const { item } = this.props
+  //   if (item.arrayImage.length > 0) this.setState({ mainPhoto: item.arrayImage[0].url })
+  // }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { isLoaded, item } = this.props
+    if (prevProps.isLoaded !== isLoaded) console.log('changee');
   }
 
   render() {
@@ -39,7 +44,7 @@ class ShowingProduct extends React.Component {
           <div onClick={() => this.props.history.push({ pathname: `/shopnow/product-detail/idProduct/${item.id}/idShop/${item.idShop}` })}>
             <h1>{item.name}</h1>
             {item.marketPrice - Number(item.price) > 0 && <p>Saved: ${item.marketPrice - Number(item.price)}</p>}
-            <img className="product-pic" src={mainPhoto} alt="../img/not-avai.jpg" />
+            <img className="product-pic" src={mainPhoto ? mainPhoto : item.arrayImage[0].url} alt="../img/not-avai.jpg" />
           </div>
 
           <div style={{ zIndex: 1000 }} >

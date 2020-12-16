@@ -1,20 +1,20 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { addShop } from '../../../../state/actions/shopActions';
+import { addUser } from '../../../../state/actions/userActions';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import styles from '../../../../assets/css/helper.module.css'
 
 const mapStateToProps = (state) => ({
-  shop: state.shop,
+  user: state.user,
 });
 
-const AShopModal = (props) => {
+const AUserModal = (props) => {
 
   const changeName = (event, setFieldValue) => {
     const { name, value } = event.target;
     setFieldValue(name, value);
-    //if shop name changes
+    //if user name changes
     if (name === 'name') {
       let url = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
       url = url.replace(/\s+/g, '-');
@@ -25,23 +25,23 @@ const AShopModal = (props) => {
   return (
     <Formik
       initialValues={{
-        name: '',
-        busLicenseId: '',
-        city: '',
-        url: '',
-        phone: ''
+        username: '',
+        password: '',
+        fullname: '',
+        phone: '',
+        email: '',
       }}
       onSubmit={(values, actions) => {
-        props.addShop(values)
+        props.addUser(values)
       }}
       validationSchema={Yup.object().shape({
-        name: Yup.string()
+        username: Yup.string()
           .max(200, 'Chỉ được phép nhập ít hơn 200 kí tự')
           .required('Bắt buộc nhập'),
-        busLicenseId: Yup.string()
+        password: Yup.string()
           .max(30, 'Chỉ được phép nhập ít hơn 30 kí tự')
           .required('Bắt buộc nhập'),
-        city: Yup.string()
+        fullname: Yup.string()
           .max(30, 'Chỉ được phép nhập ít hơn 30 kí tự')
           .required('Bắt buộc nhập'),
         phone: Yup.string()
@@ -49,7 +49,11 @@ const AShopModal = (props) => {
           .required('Bắt buộc nhập')
           .matches(
             /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
-            'Số điện thoại không hợp lệ')
+            'Số điện thoại không hợp lệ'),
+        email: Yup.string()
+          .max(100, 'Chỉ được phép nhập ít hơn 100 kí tự')
+          .email('Email không hợp lệ')
+          .required('Bắt buộc nhập'),
       })}
     >
       {({ values, touched, errors, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
@@ -62,7 +66,7 @@ const AShopModal = (props) => {
             data-toggle="modal"
             data-target="#exampleModalCenter"
           >
-            Thêm nhà bán mới
+            Thêm khách hàng mới
           </button>
           <div
             className="modal fade"
@@ -78,7 +82,7 @@ const AShopModal = (props) => {
                   <div className="modal-header">
                     <span>
                       <h3 className="modal-title" id="exampleModalLongTitle">
-                        Thêm nhà bán mới
+                        Thêm khách hàng mới
                     </h3>
                     </span>
                     <span>
@@ -94,78 +98,64 @@ const AShopModal = (props) => {
                   </div>
                   <div className="modal-body">
                     <div className="form-group">
-                      <label htmlFor="fullname" className="col-form-label">
-                        Tên nhà bán:
+                      <label htmlFor="username" className="col-form-label">
+                        Tên tài khoản:
                       </label>
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Nhập tên nhà bán..."
-                        name="name"
-                        value={values.name}
+                        placeholder="Nhập tên tài khoản..."
+                        name="username"
+                        value={values.username}
                         onChange={(event) => changeName(event, setFieldValue)}
                         onBlur={handleBlur}
-                        className={errors.name && touched.name
+                        className={errors.username && touched.username
                           ? `${styles.formikinput} ${styles.error}`
                           : styles.formikinput}
                       />
-                      {touched.name && errors.name ? (
-                        <div className={styles.inputfeedback}>{errors.name}</div>
-                      ) : null}
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="username" className="col-form-label">
-                        Mã kinh doanh:
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Nhập mã kinh doanh..."
-                        name="busLicenseId"
-                        value={values.busLicenseId}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={errors.busLicenseId && touched.busLicenseId
-                          ? `${styles.formikinput} ${styles.error}`
-                          : styles.formikinput}
-                      />
-                      {touched.busLicenseId && errors.busLicenseId ? (
-                        <div className={styles.inputfeedback}>{errors.busLicenseId}</div>
+                      {touched.username && errors.username ? (
+                        <div className={styles.inputfeedback}>{errors.username}</div>
                       ) : null}
                     </div>
                     <div className="form-group">
                       <label htmlFor="password" className="col-form-label">
-                        Thành phố/Tỉnh:
+                        Mật khẩu:
                       </label>
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Nhập thành phố..."
-                        name="city"
-                        value={values.city}
+                        placeholder="Nhập mật khẩu mới..."
+                        name="password"
+                        value={values.password}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={errors.city && touched.city
+                        className={errors.password && touched.password
                           ? `${styles.formikinput} ${styles.error}`
                           : styles.formikinput}
                       />
-                      {touched.city && errors.city ? (
-                        <div className={styles.inputfeedback}>{errors.city}</div>
+                      {touched.password && errors.password ? (
+                        <div className={styles.inputfeedback}>{errors.password}</div>
                       ) : null}
                     </div>
                     <div className="form-group">
-                      <label htmlFor="password" className="col-form-label">
-                        Đường dẫn:
+                      <label htmlFor="fullname" className="col-form-label">
+                        Họ tên:
                       </label>
                       <input
                         type="text"
                         className="form-control"
-                        name="url"
-                        value={values.url}
+                        placeholder="Nhập họ tên..."
+                        name="fullname"
+                        value={values.fullname}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        disabled
+                        className={errors.fullname && touched.fullname
+                          ? `${styles.formikinput} ${styles.error}`
+                          : styles.formikinput}
                       />
+                      {touched.fullname && errors.fullname ? (
+                        <div className={styles.inputfeedback}>{errors.fullname}</div>
+                      ) : null}
                     </div>
                     <div className="form-group">
                       <label htmlFor="phone" className="col-form-label">
@@ -188,6 +178,27 @@ const AShopModal = (props) => {
                         <div className={styles.inputfeedback}>{errors.phone}</div>
                       ) : null}
                     </div>
+                    <div className="form-group">
+                      <label htmlFor="email" className="col-form-label">
+                        Email:
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="email"
+                        placeholder="Nhập email..."
+                        name="email"
+                        value={values.email}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={errors.email && touched.email
+                          ? `${styles.formikinput} ${styles.error}`
+                          : styles.formikinput}
+                      />
+                      {touched.email && errors.email ? (
+                        <div className={styles.inputfeedback}>{errors.email}</div>
+                      ) : null}
+                    </div>
                   </div>
                   <div className="modal-footer">
                     <button
@@ -202,7 +213,7 @@ const AShopModal = (props) => {
                       disabled={
                         !errors.name && !errors.busLicenseId && !errors.city && !errors.phone ? false : true
                       } >
-                      Thêm nhân viên
+                      Thêm khách hàng
                   </button>
                   </div>
                 </div>
@@ -216,4 +227,4 @@ const AShopModal = (props) => {
   );
 };
 
-export default connect(mapStateToProps, { addShop })(AShopModal);
+export default connect(mapStateToProps, { addUser })(AUserModal);

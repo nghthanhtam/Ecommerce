@@ -279,9 +279,7 @@ class EmployeeModal extends Component {
                   disabled={
                     !this.state.inputErrors && this.state.name !== ''
                       ? false
-                      : true
-                  }
-                >
+                      : true}   >
                   Thêm nhân viên
                 </button>
               </div>

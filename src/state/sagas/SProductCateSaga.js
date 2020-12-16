@@ -1,6 +1,7 @@
 import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
-import { tokenConfig } from '../actions/authActions';
+import { tokenConfig, } from '../actions/authActions';
+import { noTokenConfig } from '../actions/authUserActions';
 import {
   GET_PRODUCT_CATES,
   ADD_PRODUCT_CATE,
@@ -12,25 +13,23 @@ import {
   PRODUCT_CATE_UPDATED,
 } from '../actions/types';
 
-import mongoose from 'mongoose';
-
 function* fetchProductCates(params) {
   try {
     const state = yield select(),
-      { limit, page, query } = params.pages;
+      { limit, page } = params.pages;
 
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productcat?limit=${limit}&page=${page}&query=${query}`,
-          tokenConfig(state)
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productcat?limit=${limit}&page=${page}`,
+          noTokenConfig(state)
         )
         .catch((er) => console.log(er.response))
     );
 
     yield put({ type: PRODUCT_CATES_RECEIVED, payload: response });
   } catch (error) {
-    console.log(error);
+    console.log({ ...error });
   }
 }
 
@@ -45,10 +44,6 @@ function* addProductCate(params) {
         tokenConfig(state)
       )
     );
-    if (response.data._id instanceof mongoose.Types.ObjectId) {
-      response.data._id = response.data._id.toString();
-    }
-
     yield put({ type: PRODUCT_CATE_ADDED, payload: response.data });
     yield put({
       type: GET_PRODUCT_CATES,

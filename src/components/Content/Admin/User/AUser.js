@@ -1,18 +1,18 @@
 import React, { Component, Fragment } from 'react';
-import AShopModal from './AShopModal';
-import AShopRow from './AShopRow';
+import AUserModal from './AUserModal';
+import AUserRow from './AUserRow';
 import { connect } from 'react-redux';
-import { getShops } from '../../../../state/actions/shopActions';
+import { getUsers } from '../../../../state/actions/userActions';
 import PropTypes from 'prop-types';
 import Loader from 'react-loader';
 
 const mapStateToProps = (state) => ({
-  shops: state.shop.shops,
-  isLoaded: state.shop.isLoaded,
-  totalDocuments: state.shop.totalDocuments,
+  users: state.user.users,
+  isLoaded: state.user.isLoaded,
+  totalDocuments: state.user.totalDocuments,
 });
 
-class AShop extends Component {
+class AUser extends Component {
   state = {
     sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
     limit: 5,
@@ -22,13 +22,11 @@ class AShop extends Component {
     start: 1,
     end: 5,
     isNextBtnShow: true,
-    activeEmp: true,
-    deletedEmp: false,
   };
 
   componentDidMount() {
     const { limit, page, query } = this.state;
-    this.props.getShops({
+    this.props.getUsers({
       limit,
       page,
       query
@@ -105,7 +103,7 @@ class AShop extends Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    this.props.getShops({
+    this.props.getUsers({
       limit,
       page,
       query,
@@ -114,9 +112,9 @@ class AShop extends Component {
     this.getStartEndDocuments();
   };
 
-  renderShops = () => {
+  renderUsers = () => {
     const { start, limit, page } = this.state;
-    const { shops, isLoaded } = this.props;
+    const { users, isLoaded } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -125,11 +123,11 @@ class AShop extends Component {
         </td>
       </tr>
     ) : (
-        shops.map((eachShop, index) => (
-          <AShopRow
+        users.map((eachUser, index) => (
+          <AUserRow
             history={this.props.history}
-            key={eachShop.id}
-            shop={eachShop}
+            key={eachUser.id}
+            user={eachUser}
             index={index + start - 1}
           />
         ))
@@ -155,7 +153,7 @@ class AShop extends Component {
 
     this.setState({ page: e }, () => {
       const { limit, page, query } = this.state;
-      this.props.getShops({
+      this.props.getUsers({
         limit,
         page,
         query
@@ -217,38 +215,8 @@ class AShop extends Component {
     }
   };
 
-  onCheckActiveEmp = (e) => {
-    const { activeEmp, limit, page, query, deletedEmp } = this.state;
-    if (e.target.name == 'active') {
-      this.setState({ activeEmp: !activeEmp }, () => {
-        console.log(activeEmp);
-        this.props.getShops({
-          limit,
-          page,
-          query,
-          idShop: 1,
-          deletedEmp: this.state.deletedEmp,
-          activeEmp: this.state.activeEmp,
-        });
-      });
-    }
-    else if (e.target.name == 'deleted') {
-      this.setState({ deletedEmp: !deletedEmp }, () => {
-        console.log(activeEmp);
-        this.props.getShops({
-          limit,
-          page,
-          query,
-          idShop: 1,
-          deletedEmp: this.state.deletedEmp,
-          activeEmp: this.state.activeEmp,
-        });
-      });
-    }
-  };
-
   render() {
-    const { limit, page, start, end, query, activeEmp, deletedEmp } = this.state;
+    const { limit, page, start, end, query } = this.state;
     const { totalDocuments } = this.props;
     return (
 
@@ -262,7 +230,7 @@ class AShop extends Component {
                 </a>
             </li>
             <li>
-              <a href="/admin/shop">Nhà bán</a>
+              <a href="/admin/user">Khách hàng</a>
             </li>
           </ol>
         </section>
@@ -272,11 +240,11 @@ class AShop extends Component {
               <div className="box">
                 <div className="box-header" style={{ marginTop: '5px' }}>
                   <div style={{ paddingLeft: '5px' }} className="col-md-8">
-                    <h3 className="box-title">Quản lý nhà bán</h3>
+                    <h3 className="box-title">Quản lý khách hàng</h3>
                   </div>
 
                   <div className="col-md-4">
-                    <AShopModal limit={limit} page={page} />
+                    <AUserModal limit={limit} page={page} />
                   </div>
                 </div>
                 <div className="box-body">
@@ -331,26 +299,24 @@ class AShop extends Component {
                           <thead>
                             <tr>
                               <th style={{ width: '5%' }}>#</th>
-                              <th style={{ width: '15%' }}>Tên nhà bán</th>
-                              <th style={{ width: '5%' }}>Mã kinh doanh</th>
-                              <th style={{ width: '15%' }}>Thành phố/tỉnh</th>
-                              <th style={{ width: '20%' }}>Đường dẫn</th>
+                              <th style={{ width: '15%' }}>Tên tài khoản</th>
+                              <th style={{ width: '20%' }}>Họ tên</th>
                               <th style={{ width: '5%' }}>Điện thoại</th>
-                              <th style={{ width: '25%' }}>Thao tác</th>
+                              <th style={{ width: '10%' }}>Email</th>
+                              <th style={{ width: '15%' }}>Thao tác</th>
                             </tr>
                           </thead>
 
-                          <tbody>{this.renderShops()}</tbody>
+                          <tbody>{this.renderUsers()}</tbody>
 
                           <tfoot>
                             <tr>
                               <th>#</th>
-                              <th >Tên nhà bán</th>
-                              <th >Mã kinh doanh</th>
-                              <th >Thành phố/tỉnh</th>
-                              <th >Đường dẫn</th>
-                              <th >Điện thoại</th>
-                              <th >Hành động</th>
+                              <th>Tên tài khoản</th>
+                              <th>Họ tên</th>
+                              <th>Điện thoại</th>
+                              <th>Email</th>
+                              <th>Thao tác</th>
                             </tr>
                           </tfoot>
                         </table>
@@ -396,11 +362,11 @@ class AShop extends Component {
   }
 }
 
-AShop.propTypes = {
-  getShops: PropTypes.func.isRequired,
-  shops: PropTypes.array.isRequired,
+AUser.propTypes = {
+  getUsers: PropTypes.func.isRequired,
+  users: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getShops })(AShop);
+export default connect(mapStateToProps, { getUsers })(AUser);

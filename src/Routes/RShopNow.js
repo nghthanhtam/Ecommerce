@@ -30,6 +30,7 @@ import Review from '../components/Content/ShopNow/User/Review';
 import Watchlist from '../components/Content/ShopNow/User/Watchlist';
 import Wishlist from '../components/Content/ShopNow/User/Wishlist';
 import ModalCancel from '../components/Content/Modal/ModalCancel'
+import Shop from '../components/Content/ShopNow/Shop/Shop';
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -161,6 +162,7 @@ class RShopNow extends Component {
             render={() => {
               return userToken ? <Wishlist /> : <Redirect to="/shopnow" />;
             }} />
+          <Route path={`/shopnow/shop/:idShop`} component={Shop} />
         </Switch>
       </Fragment>
     );

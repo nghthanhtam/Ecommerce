@@ -5,8 +5,9 @@ import "../../../../assets/css/user-profile.css";
 
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-
 import UserProfile from "./UserProfile";
+
+import { addAddress, updateAddress, getAddresses } from '../../../../state/actions/addressActions';
 
 class AddressBook extends React.Component {
   constructor(props) {
@@ -19,13 +20,17 @@ class AddressBook extends React.Component {
     };
     this.handleScroll = this.handleScroll.bind(this);
   }
+
   componentDidMount() {
     window.addEventListener("scroll", this.handleScroll);
+    const { getAddresses } = this.props
+    //getAddresses({ limit: 1000, page:1, })
   }
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this.handleScroll);
   }
+
   handleScroll = () => {
     if (window.scrollY > 10) {
       this.setState({ header: "header1" });
@@ -100,4 +105,5 @@ class AddressBook extends React.Component {
   }
 }
 
-export default AddressBook;
+export default AddressBook
+//export default connect(mapStateToProps, { showModal, getCities, getDistricts, getWards, addAddress, updateAddress })(AddressBook);

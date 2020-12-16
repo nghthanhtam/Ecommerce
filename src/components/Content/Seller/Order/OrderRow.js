@@ -41,28 +41,23 @@ class OrderRow extends Component {
   };
 
   render() {
-    const { totalPrice, recipient, phone, numberAndStreet, createdAt, status, cancelReason, id } = this.props.order
+    const { totalPrice, recipient, phone, numberAndStreet, createdAt, status, cancelReason, id, Ward, District, City } = this.props.order
     const { statuses } = this.state
 
     return (
       <tr>
-        <td>{this.props.index + 1}</td>
         <td onClick={() => this.props.history.push(`/seller/order/edit/${id}`)}
-          style={{ color: 'blue', cursor: 'pointer' }}>{id} </td>
+          style={{ color: 'blue', cursor: 'pointer' }}>#{id}
+        </td>
         <td>{recipient}</td>
         <td>{phone}</td>
-        <td>{numberAndStreet}</td>
+        <td>{numberAndStreet + ', ' + Ward.ward + ', ' + District.district + ', ' + City.city}</td>
         <td>{totalPrice}</td>
         <td>{this.convertDate(createdAt)}</td>
         <td >{status == 'pending' ? 'Đang xử lý' : (status == 'in transit' ? 'Đang giao hàng' : (status == 'delivered' ? 'Đã nhận hàng' : (status == 'received' ? 'Đã tiếp nhận' : 'Đã hủy')))}</td>
         <td>{cancelReason}</td>
 
         <td>
-          {/* <div className="btn-group">
-            <button onClick={() => this.handleEdit(id)} type="button" className="btn btn-default">
-              Xem chi tiết
-            </button>
-          </div> */}
           {status !== 'canceled' && status !== 'delivered' &&
             <div className="btn-group">
               <button type="button" className="btn btn-info">Duyệt</button>

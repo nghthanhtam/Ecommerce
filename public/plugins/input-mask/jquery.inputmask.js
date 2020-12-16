@@ -11,8 +11,8 @@
         //helper functions    
         function isInputEventSupported(eventName) {
             var el = document.createElement('input'),
-            eventName = 'on' + eventName,
-            isSupported = (eventName in el);
+                eventName = 'on' + eventName,
+                isSupported = (eventName in el);
             if (!isSupported) {
                 el.setAttribute(eventName, 'return;');
                 isSupported = typeof el[eventName] == 'function';
@@ -513,7 +513,7 @@
             }
 
             function clearBuffer(buffer, start, end, stripNomasks) {
-                for (var i = start, maskL = getMaskLength() ; i < end && i < maskL; i++) {
+                for (var i = start, maskL = getMaskLength(); i < end && i < maskL; i++) {
                     if (stripNomasks === true) {
                         if (!isMask(i))
                             setBufferElement(buffer, i, "");
@@ -791,7 +791,7 @@
                 var buffer = getActiveBuffer();
                 if (maskJumps !== false) //jumping over nonmask position
                     while (!isMask(start) && start - 1 >= 0) start--;
-                for (var i = start; i < end && i < getMaskLength() ; i++) {
+                for (var i = start; i < end && i < getMaskLength(); i++) {
                     if (isMask(i)) {
                         setReTargetPlaceHolder(buffer, i);
                         var j = seekNext(i);
@@ -825,7 +825,7 @@
             function shiftR(start, end, c) {
                 var buffer = getActiveBuffer();
                 if (getBufferElement(buffer, start, true) != getPlaceHolder(start)) {
-                    for (var i = seekPrevious(end) ; i > start && i >= 0; i--) {
+                    for (var i = seekPrevious(end); i > start && i >= 0; i--) {
                         if (isMask(i)) {
                             var j = seekPrevious(i);
                             var t = getBufferElement(buffer, j);

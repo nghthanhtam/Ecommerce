@@ -128,6 +128,14 @@
   grid-column-gap: 12px;
   grid-row-gap: 12px;
 }
+.productcat-grid {
+  display: inline-grid;
+  flex-direction: row;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 1px;
+  grid-row-gap: 2px;
+  margin-top: 10px;
+}
 .grid-home {
   display: inline-grid;
   flex-direction: row;
@@ -432,7 +440,7 @@
 /* PRODUCT LIST */
 .title-filter {
   font-weight: 700;
-  font-size: 17px;
+  font-size: 14px;
   height: 5px;
   text-transform: uppercase;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
@@ -456,8 +464,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-top: -5px;
-  margin-bottom: 5px;
+  margin: 10px 0 10px 0;
 }
 .btn-go:hover {
   width: 60px;
@@ -503,8 +510,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 30px;
-  padding: 20px;
+  width: 100px;
+  padding: 10px;
   margin: 3px;
   background-color: #ecedef;
   border: none;
@@ -517,9 +524,6 @@
   justify-content: center;
   align-items: center;
   border: none;
-  height: 30px;
-  padding: 20px;
-  margin: 3px;
   background-color: #3571a7;
   color: white;
 }
@@ -587,14 +591,18 @@
   padding: 10px;
 }
 .ava-reply {
-  border-radius: 18px;
+  border-radius: 25px;
   width: 38px;
-  height: 38px;
+  height: 35px;
   background-color: rgb(236, 235, 235);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 20px;
+}
+.ava-reply img {
+  width: 100%;
+  height: 100%;
 }
 .cmt-wrapper {
   display: flex;
@@ -607,4 +615,61 @@
   width: 115px;
   height: 38px;
   margin: 5px 5px 5px 0;
+}
+.shop-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 15px;
+  color: #0d1136;
+  width: 240px;
+  height: 280px;
+  background-color: white;
+  padding: 10px;
+}
+.shop-profile img {
+  width: 100%;
+  height: 100%;
+}
+.shop-pic {
+  width: 150px;
+  height: 150px;
+  justify-content: center;
+}
+.shop-name {
+  display: flex;
+  margin-right: auto;
+  align-items: center;
+  justify-content: center;
+}
+.shop-infor {
+  display: flex;
+  flex-direction: column;
+  margin-right: auto;
+  padding: 5px;
+}
+.star-wrapper {
+  margin: 10px 0px 0px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+}
+.criteria {
+  display: inline-flex;
+  flex-direction: row;
+  /* width: 100px; */
+  padding: 5px;
+  background-color: #3571a7;
+  color: white;
+}
+.criteria span {
+  margin-top: -8px;
+  cursor: pointer;
+}
+.cri-name {
+  width: 100%;
+  margin-right: 5px;
 }

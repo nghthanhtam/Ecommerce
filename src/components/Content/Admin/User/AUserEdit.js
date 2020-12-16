@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { pushHistory } from '../../../../state/actions/historyActions';
-import { updateEmployee, getEmployeeById } from '../../../../state/actions/employeeActions';
+import { updateUser, getUserById } from '../../../../state/actions/userActions';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import styles from '../../../../assets/css/helper.module.css'
@@ -11,27 +11,27 @@ const mapStateToProps = (state, props) => {
   return {
     history: state.history.history,
     auth: state.auth,
-    isLoaded: state.employee.isLoaded,
-    isUpdated: state.employee.isUpdated,
-    employee: state.employee.employee
+    isLoaded: state.user.isLoaded,
+    isUpdated: state.user.isUpdated,
+    user: state.user.user
   };
 };
 
-const AEmployeeEdit = (props) => {
+const AUserEdit = (props) => {
   const history = useHistory()
   useEffect(() => {
-    const { match, getEmployeeById } = props
-    getEmployeeById(match.params.id)
+    const { match, getUserById } = props
+    getUserById(match.params.id)
   }, [props.match.params.id]);
 
   useEffect(() => {
-    if (props.isUpdated) history.push('/admin/employee')
+    if (props.isUpdated) history.push('/admin/user')
   }, [props.isUpdated]);
 
   const changeName = (event, setFieldValue) => {
     const { name, value } = event.target;
     setFieldValue(name, value);
-    //if employee name changes
+    //if user name changes
     if (name === 'name') {
       let url = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
       url = url.replace(/\s+/g, '-');
@@ -42,9 +42,9 @@ const AEmployeeEdit = (props) => {
   return (
     !props.isLoaded ? <div>Loading...</div> :
       <Formik
-        initialValues={props.employee}
+        initialValues={props.user}
         onSubmit={(values, actions) => {
-          props.updateEmployee(values)
+          props.updateUser(values)
         }}
         validationSchema={Yup.object().shape({
           name: Yup.string()
@@ -68,7 +68,7 @@ const AEmployeeEdit = (props) => {
           <Fragment>
             <section className="content-header">
               <h1>
-                Nhân viên
+                Nhà bán
                 {/* <small>Preview</small> */}
               </h1>
               <ol className="breadcrumb">
@@ -78,7 +78,7 @@ const AEmployeeEdit = (props) => {
                   </a>
                 </li>
                 <li>
-                  <a href="/admin/employee">Nhân viên</a>
+                  <a href="/admin/user">Nhà bán</a>
                 </li>
                 <li>
                   <a href="javascript:void(0);">Chỉnh sửa</a>
@@ -91,7 +91,7 @@ const AEmployeeEdit = (props) => {
                   <div className="box box-info">
                     <form className="form-horizontal" onSubmit={handleSubmit}>
                       <div className="box-body">
-                        <label className={styles.formiklabel} htmlFor="firstName"> Tên Nhân viên</label>
+                        <label className={styles.formiklabel} htmlFor="firstName"> Tên nhà bán</label>
                         <input
                           id="name"
                           name="name"
@@ -167,7 +167,7 @@ const AEmployeeEdit = (props) => {
                         <button
                           type="button"
                           className="btn btn-default"
-                          onClick={() => { props.history.push('/admin/employee') }}
+                          onClick={() => { props.history.push('/admin/user') }}
                         >
                           Hủy
                         </button>
@@ -190,6 +190,6 @@ const AEmployeeEdit = (props) => {
 
 export default connect(mapStateToProps, {
   pushHistory,
-  updateEmployee,
-  getEmployeeById
-})(AEmployeeEdit);
+  updateUser,
+  getUserById
+})(AUserEdit);

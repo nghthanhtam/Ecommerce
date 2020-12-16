@@ -6,7 +6,7 @@ import {
   ADD_USER,
   USER_ADDED,
   USER_DELETED,
-  USER_UPDATED
+  USER_UPDATED,
 
 } from "../actions/types";
 
@@ -22,6 +22,11 @@ export default function (state = initialState, action) {
     case GET_USERS:
       return {
         ...state,
+      };
+    case GET_USER_BY_ID:
+      return {
+        ...state,
+        isLoaded: false
       };
     case USERS_RECEIVED:
       return {

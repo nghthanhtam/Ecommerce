@@ -1,12 +1,24 @@
 import {
   GET_PRODUCTS,
+  GET_PRODUCTS_BY_IDSHOP,
   ADD_PRODUCT,
   DELETE_PRODUCT,
   UPDATE_PRODUCT,
-  GET_PRODUCTS_BY_MOVIECAT,
   GET_PRODUCT_BY_ID,
-  UPDATE_PRODUCT_STATUS
+  UPDATE_PRODUCT_STATUS,
+  SORT_PRODUCTS,
+  GET_PRODUCTS_BY_FILTERS
 } from './types';
+
+export const sortProducts = (sortField) => ({
+  type: SORT_PRODUCTS,
+  sortField
+});
+
+export const getProductsByIdShop = (params) => ({
+  type: GET_PRODUCTS_BY_IDSHOP,
+  pages: params,
+});
 
 export const getProducts = (params) => ({
   type: GET_PRODUCTS,
@@ -18,8 +30,8 @@ export const getProductById = (params) => ({
   params
 });
 
-export const getProductsByMovieCate = (params) => ({
-  type: GET_PRODUCTS_BY_MOVIECAT,
+export const getProductsByFilters = (params) => ({
+  type: GET_PRODUCTS_BY_FILTERS,
   pages: params,
 });
 

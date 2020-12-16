@@ -2,10 +2,11 @@ import React, { Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { pushHistory } from '../../../../state/actions/historyActions';
 import { updateShop, getShopById } from '../../../../state/actions/shopActions';
-
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import styles from './helper.module.css'
+import styles from '../../../../assets/css/helper.module.css'
+import { useHistory } from 'react-router-dom'
+
 // class AShopEdit extends Component {
 //   state = {
 //     name: '',
@@ -217,15 +218,21 @@ const mapStateToProps = (state, props) => {
     history: state.history.history,
     auth: state.auth,
     isLoaded: state.shop.isLoaded,
+    isUpdated: state.shop.isUpdated,
     shop: state.shop.shop
   };
 };
 
 const AShopEdit = (props) => {
+  const history = useHistory()
   useEffect(() => {
     const { match, getShopById } = props
     getShopById(match.params.id)
   }, [props.match.params.id]);
+
+  useEffect(() => {
+    if (props.isUpdated) history.push('/admin/shop')
+  }, [props.isUpdated]);
 
   const changeName = (event, setFieldValue) => {
     const { name, value } = event.target;
@@ -243,8 +250,7 @@ const AShopEdit = (props) => {
       <Formik
         initialValues={props.shop}
         onSubmit={(values, actions) => {
-          props.updateShop(JSON.stringify(values, null, 2))
-          //actions.setSubmitting(false);
+          props.updateShop(values)
         }}
         validationSchema={Yup.object().shape({
           name: Yup.string()
@@ -366,14 +372,16 @@ const AShopEdit = (props) => {
                       <div className="box-footer">
                         <button
                           type="button"
-                          className="btn btn-default">
+                          className="btn btn-default"
+                          onClick={() => { props.history.push('/admin/shop') }}
+                        >
                           Hủy
-                      </button>
+                        </button>
                         <button
                           type="submit"
                           className="btn btn-info pull-right" >
                           Lưu
-                      </button>
+                        </button>
                       </div>
                     </form>
                   </div>
@@ -383,10 +391,7 @@ const AShopEdit = (props) => {
           </Fragment>
         )}
       </Formik>
-
   );
-
-
 };
 
 export default connect(mapStateToProps, {

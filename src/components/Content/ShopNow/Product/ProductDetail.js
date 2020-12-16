@@ -74,6 +74,27 @@ class ProductDetail extends React.Component {
     this.setState({ idProduct })
     this.props.getProductById({ idShop, idProduct })
     this.props.getRatingsByProduct({ idProduct, limit: 1000, page: 1 })
+    //get products list in the same movie
+    // try {
+    //   axios
+    //     .get(
+    //       `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/search/filter?limit=${limit}&page=${page}&idMovie=${idMovie}`,
+    //       { headers: { 'Content-type': 'application/json' }, }
+    //     )
+    //     .then((response) => {
+    //       let {
+    //         fullname,
+    //         idRole,
+    //         identityCard,
+    //         phone,
+    //         username,
+    //         id,
+    //       } = response.data;
+    //       this.setState({ fullname, idRole, identityCard, phone, username, id });
+    //     })
+    // } catch (error) {
+    //   console.log(error.response);
+    // }
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -317,9 +338,10 @@ class ProductDetail extends React.Component {
                   <div className="img-slider" >
                     <Slider style={{ width: '100%', height: '320px' }} {...smallSettings}>
                       {product.images.map((item, index) => {
-                        return <div className='small-photo' onClick={() => this.setState({ bigPhoto: item.url })}>
-                          <img src={item.url} alt="product" />
-                        </div>
+                        return (
+                          <div key={index} className='small-photo' onClick={() => this.setState({ bigPhoto: item.url })}>
+                            <img src={item.url} alt="product" />
+                          </div>)
                       })}
                     </Slider>
                   </div>
@@ -414,7 +436,7 @@ class ProductDetail extends React.Component {
                     <div className="label-prodet">Tên nhà bán:</div>
                     <div> {product.shop.name}</div>
                     <div className="link">
-                      <Link to="/shop">Ghé thăm</Link>
+                      <div onClick={() => this.props.history.push(`/shopnow/shop/${product.shop.id}`)}>Ghé thăm</div>
                     </div>
 
                     <div className="link" onClick={() => { showModal({ show: true, modalName: 'modalShopList' }) }}>Thay đổi nhà bán</div>
@@ -440,7 +462,7 @@ class ProductDetail extends React.Component {
               <div className="recommend-wrapper" >
                 <h3 style={{ marginLeft: 'auto' }} className="recommend-pane">NHỮNG SẢN PHẨM KHÁC CÙNG PHIM</h3>
                 <div className="sliderwrapper" >
-                  <Slider style={{ width: '107%', height: '300px' }} {...settings}>
+                  <Slider style={{ width: '107%', height: '380px' }} {...settings}>
                     {productList.map((item, index) => {
                       return <RecProduct key={index} />;
                     })}
@@ -452,7 +474,7 @@ class ProductDetail extends React.Component {
                   NHỮNG SẢN PHẨM KHÁC TƯƠNG TỰ
                 </h3>
                 <div className="sliderwrapper">
-                  <Slider style={{ width: '107%', height: '300px' }}  {...settings} >
+                  <Slider style={{ width: '107%', height: '380px' }}  {...settings} >
                     {productList.map(() => {
                       return <RecProduct />;
                     })}

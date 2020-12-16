@@ -52,7 +52,7 @@ class Menu extends React.Component {
                 </li>
 
                 <li className="treeview">
-                  <a href="fake_url">
+                  <a href="javascript:void(0);">
                     <i className="fa fa-th" />
                     <span>Quản lý người dùng</span>
                     <span className="pull-right-container">
@@ -60,13 +60,13 @@ class Menu extends React.Component {
                     </span>
                   </a>
                   <ul className="treeview-menu">
-                    <li>
+                    {/* <li>
                       <Link to="/admin/employee">
                         <i className="fa fa-circle-o" /> Nhân viên
-                    </Link>
-                    </li>
+                      </Link>
+                    </li> */}
                     <li>
-                      <Link to="/admin/add-product">
+                      <Link to="/admin/user">
                         <i className="fa fa-circle-o" /> Khách hàng
                     </Link>
                     </li>
@@ -79,7 +79,7 @@ class Menu extends React.Component {
                 </li>
 
                 <li className="treeview">
-                  <a href="fake_url">
+                  <a href="javascript:void(0);">
                     <i className="fa fa-th" />
                     <span>Quản lý bài viết</span>
                     <span className="pull-right-container">
@@ -166,7 +166,7 @@ class Menu extends React.Component {
                   </Link>
                 </li>
                 <li className="treeview">
-                  <a href="fake_url">
+                  <a href="/seller/product">
                     <i className="fa fa-th" />
                     <span>Sản phẩm</span>
                     <span className="pull-right-container">

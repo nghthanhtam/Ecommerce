@@ -34,3 +34,15 @@ export const tokenUserConfig = (getState) => {
 
   return config;
 };
+
+export const noTokenConfig = (getState) => {
+  //Get token from local storage
+  const token = getState.authUser.token;
+
+  const config = {
+    headers: {
+      'Content-type': 'application/json',
+    },
+  };
+  return config;
+}

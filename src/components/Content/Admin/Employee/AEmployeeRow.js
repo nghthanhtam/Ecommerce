@@ -11,17 +11,12 @@ class AEmployeeRow extends Component {
     let dt = newDate.getDate();
 
     dt = dt < 10 ? `0${dt}` : dt;
-
     month = month < 10 ? `0${month}` : month;
-    // if (month < 10) {
-    //   month = "0" + month;
-    // }
-
     return year + '-' + month + '-' + dt;
   };
 
   handleEdit = (id) => {
-    this.props.pushHistory(`/seller/employee/edit/${id}`);
+    this.props.pushHistory(`/admin/employee/edit/${id}`);
   };
 
   handleDelete = (id) => {
@@ -35,7 +30,6 @@ class AEmployeeRow extends Component {
       <tr>
         <td>{index + 1}</td>
         <td>{employee.username}</td>
-        {/* <td>{this.convertDate(employee.createAt)}</td> */}
         <td>{employee.idRole}</td>
         <td>{employee.fullname}</td>
         <td>{employee.phone}</td>
@@ -56,6 +50,7 @@ class AEmployeeRow extends Component {
             >
               Xóa
             </button>
+
           </div>
         </td>
       </tr>

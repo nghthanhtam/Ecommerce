@@ -11,7 +11,6 @@ import {
   UPDATE_EMPROLE,
   EMPROLE_UPDATED,
 } from '../actions/types';
-
 import mongoose from 'mongoose';
 
 function* fetchEmpRoles(params) {

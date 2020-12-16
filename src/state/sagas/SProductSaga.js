@@ -1,10 +1,14 @@
-import { takeEvery, put, call, select } from "redux-saga/effects";
+import { takeEvery, put, call, select, delay } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../actions/authActions";
 import { tokenAdminConfig } from "../actions/authAdminActions";
+import { noTokenConfig } from "../actions/authUserActions";
 import {
   GET_PRODUCTS,
   GET_PRODUCT_BY_ID,
+  GET_PRODUCTS_BY_IDSHOP,
+  SORT_PRODUCTS,
+  PRODUCTS_SORTED,
   ADD_PRODUCT,
   PRODUCT_RECEIVED,
   PRODUCTS_RECEIVED,
@@ -14,14 +18,20 @@ import {
   UPDATE_PRODUCT,
   UPDATE_PRODUCT_STATUS,
   PRODUCT_UPDATED,
-  UPDATE_PRODUCTADD,
-  PRODUCTADD_UPDATED,
-  GET_PRODUCTS_BY_MOVIECAT
+  GET_PRODUCTS_BY_FILTERS
 } from "../actions/types";
 
-import mongoose from "mongoose";
+function* sortProducts(params) {
+  try {
+    const { sortField } = params;
+    yield delay(1000)
+    yield put({ type: PRODUCTS_SORTED, payload: sortField });
+  } catch (error) {
+    console.log({ ...error });
+  }
+}
 
-function* fetchProductByid(params) {
+function* fetchProductById(params) {
   try {
     const state = yield select(),
       { idProduct, idShop } = params.params;
@@ -29,12 +39,35 @@ function* fetchProductByid(params) {
       axios
         .get(
           `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${idProduct}/shop/${idShop}`,
-          tokenConfig(state)
+          noTokenConfig(state)
         )
         .catch((er) => console.log(er.response))
     );
     console.log(response);
     yield put({ type: PRODUCT_RECEIVED, payload: response });
+  } catch (error) {
+    console.log({ ...error });
+  }
+}
+
+function* fetchProductsByIdShop(params) {
+  try {
+    const state = yield select(),
+      { limit, page, query, idShop, arrayStatus } = params.pages;
+    let tempString = '';
+    for (let x = 0; x < arrayStatus.length; x++) {
+      tempString += `&arrayStatus[]=${arrayStatus[x]}`;
+    }
+    const response = yield call(() =>
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/shop/${idShop}?limit=${limit}&page=${page}&query=${query}` + tempString,
+          tokenConfig(state)
+        )
+        .catch((er) => console.log(er.response))
+    );
+
+    yield put({ type: PRODUCTS_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });
   }
@@ -48,6 +81,7 @@ function* fetchProducts(params) {
     for (let x = 0; x < arrayStatus.length; x++) {
       tempString += `&arrayStatus[]=${arrayStatus[x]}`;
     }
+
     const response = yield call(() =>
       axios
         .get(
@@ -63,15 +97,19 @@ function* fetchProducts(params) {
   }
 }
 
-function* fetchProductsByMovieCate(params) {
+function* fetchProductsByFilters(params) {
   try {
     const state = yield select(),
-      { limit, page, idCategory } = params.pages;
+      { limit, page, arrayFilter } = params.pages;
+    let filters = '';
+    for (let x = 0; x < arrayFilter.length; x++) {
+      filters += `&` + arrayFilter[x].name + `=${arrayFilter[x].value}`;
+    }
 
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/moviecat/${idCategory}?limit=${limit}&page=${page}`,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/search/filter?limit=${limit}&page=${page}` + filters,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -94,9 +132,6 @@ function* addProduct(params) {
           tokenConfig(state)
         )
     );
-    if (response.data._id instanceof mongoose.Types.ObjectId) {
-      response.data._id = response.data._id.toString();
-    }
 
     yield put({ type: PRODUCT_ADDED, payload: response.data });
   } catch (error) {
@@ -106,18 +141,19 @@ function* addProduct(params) {
 
 function* updateProduct(params) {
   const state = yield select();
+
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${params.newProduct._id}`,
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${params.newProduct.id}`,
         params.newProduct,
-        tokenConfig(state)
+        tokenAdminConfig(state)
       )
     );
 
     yield put({ type: PRODUCT_UPDATED, payload: response.data });
   } catch (error) {
-    console.log(error.response);
+    console.log({ ...error });
   }
 }
 
@@ -127,7 +163,7 @@ function* deleteProducts(params) {
     const response = yield call(() =>
       axios.delete(
         `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${params.id}`,
-        tokenConfig(state)
+        tokenAdminConfig(state)
       )
     );
 
@@ -137,15 +173,14 @@ function* deleteProducts(params) {
   }
 }
 
-function* updateProductAdd(params) {
-  try {
-    const { arrVariants } = params.params
-    console.log('sagaArrVariants: ', arrVariants);
-    yield put({ type: PRODUCTADD_UPDATED, payload: arrVariants });
-  } catch (error) {
-    console.log(error.response);
-  }
-}
+// function* updateProductAdd(params) {
+//   try {
+//     const { arrVariants } = params.params
+//     yield put({ type: PRODUCTADD_UPDATED, payload: arrVariants });
+//   } catch (error) {
+//     console.log({...error});
+//   }
+// }
 
 function* updateProductStt(params) {
   const state = yield select(),
@@ -170,12 +205,13 @@ function* updateProductStt(params) {
 }
 
 export default function* sProductSaga() {
-  yield takeEvery(GET_PRODUCT_BY_ID, fetchProductByid);
+  yield takeEvery(SORT_PRODUCTS, sortProducts)
+  yield takeEvery(GET_PRODUCT_BY_ID, fetchProductById);
+  yield takeEvery(GET_PRODUCTS_BY_IDSHOP, fetchProductsByIdShop);
   yield takeEvery(GET_PRODUCTS, fetchProducts);
-  yield takeEvery(GET_PRODUCTS_BY_MOVIECAT, fetchProductsByMovieCate);
+  yield takeEvery(GET_PRODUCTS_BY_FILTERS, fetchProductsByFilters);
   yield takeEvery(ADD_PRODUCT, addProduct);
   yield takeEvery(UPDATE_PRODUCT, updateProduct);
   yield takeEvery(UPDATE_PRODUCT_STATUS, updateProductStt);
   yield takeEvery(DELETE_PRODUCT, deleteProducts);
-  yield takeEvery(UPDATE_PRODUCTADD, updateProductAdd);
 }

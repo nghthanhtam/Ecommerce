@@ -319,9 +319,8 @@ class Order extends Component {
                           >
                             <thead>
                               <tr>
-                                <th style={{ width: '3%' }}>#</th>
                                 <th style={{ width: '10%' }}>Mã đơn hàng</th>
-                                <th style={{ width: '15%' }}>Người nhận</th>
+                                <th style={{ width: '10%' }}>Người nhận</th>
                                 <th style={{ width: '10%' }}>Số điện thoại</th>
                                 <th style={{ width: '15%' }}>Địa chỉ</th>
                                 <th style={{ width: '10%' }}>Tổng cộng</th>
@@ -335,7 +334,6 @@ class Order extends Component {
 
                             <tfoot>
                               <tr>
-                                <th>#</th>
                                 <th>Mã đơn hàng</th>
                                 <th>Người nhận</th>
                                 <th>Số điện thoại</th>
