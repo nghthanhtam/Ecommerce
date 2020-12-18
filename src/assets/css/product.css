@@ -363,7 +363,8 @@
   max-height: 80%;
 }
 .col-flex {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
 }
 .reply-wrapper {
   display: inline-block;

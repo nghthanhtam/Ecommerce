@@ -1,6 +1,19 @@
-.shoplist-infor {
-  padding-right: 20px;
+.shoplist-infor,
+.voucher-infor {
   flex: 1;
+}
+.voucher-infor p {
+  margin-bottom: auto;
+  font-size: 13px;
+  color: grey;
+}
+.voucher-infor h2 {
+  margin-top: auto;
+  font-weight: 600;
+  font-size: 17px;
+}
+.voucher-infor h4 {
+  margin-top: auto;
 }
 .shoplist-infor p {
   margin-top: -15px;
@@ -13,4 +26,51 @@
   align-items: center;
   flex: 1;
   padding-bottom: 10px;
+}
+.voucher-wrapper {
+  border-left: 3px solid #3571a7;
+  border-top: 2px solid #f7f7f7;
+  border-right: 2px solid #f7f7f7;
+  border-bottom: 2px solid #f7f7f7;
+  padding: 8px;
+  margin-bottom: 5px;
+}
+.voucher-tag {
+  border-left: 3px solid #3571a7;
+  border-top: 2px solid #f7f7f7;
+  border-right: 2px solid #f7f7f7;
+  border-bottom: 2px solid #f7f7f7;
+  padding: 8px 8px 0 8px;
+  width: 107%;
+  margin-top: 10px;
+}
+.voucher-tag .info-det {
+  margin: 0;
+  padding: 0;
+}
+.infor-voucher {
+  display: flex;
+  align-items: center;
+}
+.promo-modal {
+  background: #fff;
+  padding: 10px;
+  border-top: 0;
+  color: #666;
+}
+.info-det {
+  margin-top: 10px;
+}
+.more-infor {
+  color: #3571a7;
+  width: 15px;
+  height: 15px;
+  border-radius: 10px;
+  border: 1px solid #3571a7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  font-size: 12px;
+  cursor: pointer;
 }

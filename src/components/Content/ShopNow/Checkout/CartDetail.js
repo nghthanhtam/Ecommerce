@@ -15,9 +15,11 @@ class CartDetail extends React.Component {
     let discount = ((item.marketPrice - item.price) / item.marketPrice) * 100
     return Math.ceil(discount * Math.pow(10, 2)) / Math.pow(10, 2)
   }
-  onChange = () => {
 
+  componentDidMount() {
+    //console.log(this.props.item);
   }
+
   render() {
     const { item, cItem, deleteCartItem, amountChange } = this.props
     return (
@@ -51,7 +53,7 @@ class CartDetail extends React.Component {
           }}
         >
           <div className='minus-btn'
-            onClick={() => amountChange(item.amount - 1, item.id)}>
+            onClick={() => amountChange(item.amount - 1, item.idCart, item.id)}>
             <i className="fa fa-minus"></i>
           </div>
           <input
@@ -65,7 +67,7 @@ class CartDetail extends React.Component {
             onChange={this.onChange}
           />
           <div className='plus-btn'
-            onClick={() => amountChange(item.amount + 1, item.id)}
+            onClick={() => amountChange(item.amount + 1, item.idCart, item.id)}
           >
             <i className="fa fa-plus"></i>
           </div>

@@ -30,6 +30,10 @@ const mapStateToProps = (state) => ({
 
 class ProductAdd extends Component {
   state = {
+    //searching similar products
+    typing: false,
+    typingTimeout: 0,
+
     selectedFiles: [],
     errorMessage: '',
     variantList: [],
@@ -243,10 +247,8 @@ class ProductAdd extends Component {
 
     //search for similar products
     if (name == 'name') {
-      let query = ''
-      query = value
-      if (value == '') query = undefined
-      this.props.getProducts({ limit: 50, page: 1, query, arrayStatus: ['accepted'] });
+      if (value == '') value = undefined
+      this.props.getProducts({ limit: 50, page: 1, query: value, arrayStatus: ['accepted'] });
     }
 
     if (value !== '') {

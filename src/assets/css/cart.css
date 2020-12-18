@@ -133,7 +133,7 @@
   flex-direction: column;
   justify-content: center;
   align-content: center;
-  padding: 20px 40px 20px 20px;
+  padding: 20px 35px 20px 15px;
   background-color: white;
   margin: 10px;
   height: 100%;
@@ -148,14 +148,23 @@
   font-size: 26px;
   margin-left: auto;
   font-weight: 500;
-  color: #0d1136;
+  color: red;
 }
 .checkout {
-  margin-top: 20px;
+  margin-top: 10px;
   display: flex;
-  width: 100%;
+  width: 108%;
 }
-
+.temp-total {
+  display: flex;
+  width: 108%;
+  margin-top: 30px;
+}
+.temp-total-val {
+  font-size: 20px;
+  margin-left: auto;
+  font-weight: 500;
+}
 /* PAYMENT */
 .address-container {
   display: flex;
@@ -387,4 +396,17 @@
 .plus-btn:hover {
   cursor: pointer;
   background-color: #d6d6d6;
+}
+.promo-list {
+  color: #3571a7;
+  cursor: pointer;
+  margin-left: 5px;
+  font-weight: 500;
+}
+.promo-wrapper {
+  display: flex;
+  margin-top: 10px;
+}
+.temp-total {
+  margin-right: auto;
 }

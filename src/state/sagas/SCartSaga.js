@@ -17,7 +17,7 @@ function* fetchCartsByIdUser(params) {
   try {
     const state = yield select(),
       { limit, page, idUser } = params.pages;
-    console.log('state: ', state);
+
     const response = yield call(() =>
       axios
         .get(
@@ -29,7 +29,7 @@ function* fetchCartsByIdUser(params) {
 
     //get total
     let total = 0
-    response.data.map(cart => {
+    response.data.shops.map(cart => {
       cart.productVars.map(item => {
         total += Number(item.price) * item.amount
       })
@@ -37,15 +37,22 @@ function* fetchCartsByIdUser(params) {
 
     //get totalCount
     let totalCount = 0
-    response.data.map(cart => {
+    response.data.shops.map(cart => {
       cart.productVars.map(item => {
         totalCount += 1
       })
     })
 
-    yield put({ type: CARTS_RECEIVED, payload: { items: response.data, total, totalCount } });
+    yield put({
+      type: CARTS_RECEIVED, payload: {
+        items: response.data.shops,
+        promotions: response.data.promotions,
+        total,
+        totalCount
+      }
+    });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -70,6 +77,7 @@ function* addCart(params) {
 
 function* updateCart(params) {
   const state = yield select();
+  console.log(params);
   try {
     const response = yield call(() =>
       axios.put(
@@ -78,7 +86,6 @@ function* updateCart(params) {
         tokenUserConfig(state)
       )
     );
-    console.log(response.data);
     yield put({ type: CART_UPDATED, payload: response.data });
     yield put({ type: GET_CARTS_BY_IDUSER, pages: { limit: 10000, page: 1, idUser: params.newCart.idUser } })
 

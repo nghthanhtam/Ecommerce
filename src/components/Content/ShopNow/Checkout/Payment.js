@@ -80,28 +80,29 @@ class Payment extends React.Component {
 
   submit = (e) => {
     e.preventDefault();
-    const { idPaymentMethod, idCity, idDistrict, idWard, numberAndStreet, fullname, phone, saleOffPercentage, recipient } = this.state;
-    const { user, carts, addOrder } = this.props
-    let newOrder = {}, arrOrders = []
+    const { idPaymentMethod, idCity, idDistrict, idWard, numberAndStreet, phone, recipient } = this.state;
+    const { user, carts, addOrder, idPromotion } = this.props
+    let newOrder = {}, arrayOfProductVar = []
+    newOrder = {
+      idPromotion,
+      idPaymentMethod,
+      idUser: user.id,
+      idCity, idDistrict, idWard,
+      numberAndStreet,
+      recipient,
+      phone,
+      arrayOfProductVar: []
+    };
     carts.map((c) => {
-      newOrder = {
-        idUser: user.id,
-        idShop: c.productVars[0].idShop,
-        idPaymentMethod,
-        idCity, idDistrict, idWard,
-        numberAndStreet,
-        fullname,
-        phone,
-        recipient,
-        saleOffPercentage: 1,
-        arrayOfProductVar: c.productVars
-      };
-      arrOrders.push(newOrder)
+      c.map(({ amount, id }) => {
+        arrayOfProductVar.push({ amount, id })
+      })
     })
-    console.log(arrOrders);
+    newOrder.arrayOfProductVar = arrayOfProductVar
+    console.log(newOrder);
 
     this.setState({ isTransition: true })
-    addOrder(arrOrders);
+    addOrder(newOrder);
   }
 
   render() {

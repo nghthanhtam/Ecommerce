@@ -27,9 +27,9 @@ export const deleteOrder = (id) => ({
   id: id,
 });
 
-export const addOrder = (arrOrders) => ({
+export const addOrder = (newOrder) => ({
   type: ADD_ORDER,
-  arrOrders: arrOrders,
+  newOrder,
 });
 
 export const updateOrder = (newOrder) => ({

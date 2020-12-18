@@ -21,27 +21,6 @@ class ModalShopList extends Component {
         inputErrors: false,
     };
 
-    validateCancelReason = (fullname) => {
-        return !new RegExp(
-            /[^a-z0-9A-Z_-_ ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽếềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]/u
-        ).test(fullname);
-    };
-
-    handleChange = (e) => {
-        const { name, value } = e.target;
-        let msg = '';
-
-        //Validation
-        let isPassed = true
-        isPassed = this.validateCancelReason(value)
-        const inputErrors = isPassed ? false : true;
-        if (!isPassed)
-            msg = 'Bạn chỉ được nhập chữ cái, số và gạch dưới';
-
-        if (value === '') msg = '';
-        this.setState({ [name]: value, msg, inputErrors });
-    };
-
     handleSubmit = (e) => {
         e.preventDefault();
         const { details, showModal, updateOrder } = this.props

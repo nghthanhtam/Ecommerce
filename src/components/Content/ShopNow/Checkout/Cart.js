@@ -7,52 +7,55 @@ import "slick-carousel/slick/slick-theme.css";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import Loader from 'react-loader';
-import CartDetail from "./CartDetail";
+
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { pushHistory } from '../../../../state/actions/historyActions';
 import { getCartsByIdUser } from '../../../../state/actions/cartActions';
 import { deleteCart } from '../../../../state/actions/cartActions';
 import { updateCart } from '../../../../state/actions/cartActions';
+import { showModal } from '../../../../state/actions/modalActions';
+
+import CartDetail from "./CartDetail";
+import ModalPromotions from "../../Modal/ModalPromotions"
 
 const mapStateToProps = (state) => ({
+  history: state.history.history,
   carts: state.cart.carts,
+  promotions: state.cart.promotions,
   total: state.cart.total,
   isLoaded: state.cart.isLoaded,
-  user: state.authUser.user
+  user: state.authUser.user,
+  show: state.modal.show,
+  modalName: state.modal.modalName
 });
 
 class Cart extends React.Component {
   state = {
-    total: 0
+    total: 0,
+    selectedPromo: '',
+    idPromo: ''
   };
 
-  // getTotal = () => {
-  //   console.log(carts);
-  //   let total = 0
-  //   if (carts.length > 0) {
-  //     carts.map(item => {
-  //       item.productVars.map(p => {
-  //         total += Number(p.price) * p.amount
-  //       })
-  //     })
-  //   }
-  //   return total
-  // }
+  convertTotal = (total) => {
+    let totalWithDisCount = total
+    if (this.state.selectedPromo !== '') totalWithDisCount = total - this.state.selectedPromo.discountAmount
+    return totalWithDisCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  }
 
   componentDidMount() {
     const { getCartsByIdUser, user } = this.props
     getCartsByIdUser({ limit: 1000, page: 1, idUser: user.id })
   }
 
-  amountChange = (valChanged, productVarid) => {
+  amountChange = (valChanged, idCart, idProductVar) => {
+    console.log("idCart: ", idCart)
     if (valChanged == 0) return
     const { carts, updateCart, user } = this.props
     for (let i in carts) {
       for (let j in carts[i].productVars) {
-        if (carts[i].productVars[j].id == productVarid) {
-          console.log(productVarid);
-          updateCart({ id: productVarid, amount: valChanged, idUser: user.id })
+        if (carts[i].productVars[j].id == idProductVar) {
+          updateCart({ id: idCart, amount: valChanged, idUser: user.id })
           break;
         }
       }
@@ -66,12 +69,34 @@ class Cart extends React.Component {
 
   checkout = () => { };
 
+  pickPromo = (selectedPromo) => {
+    console.log(selectedPromo)
+    this.setState({ selectedPromo })
+  }
+
+  convertDate = (date) => {
+    const newDate = new Date(date);
+    let year = newDate.getFullYear();
+    let month = newDate.getMonth() + 1;
+    let dt = newDate.getDate();
+
+    dt = dt < 10 ? `0${dt}` : dt;
+    month = month < 10 ? `0${month}` : month;
+    return year + '-' + month + '-' + dt;
+  };
+
+  showMoreInfor = (idPromo) => {
+    if (this.state.idPromo !== '') this.setState({ idPromo: '' })
+    else this.setState({ idPromo })
+  }
+
   render() {
-    const { } = this.state;
-    const { carts, total, isLoaded } = this.props
+    const { selectedPromo, idPromo } = this.state;
+    const { carts, total, isLoaded, show, modalName, promotions } = this.props
     return (
       <div>
         <Header />
+        {show && modalName == 'modalPromotions' && <ModalPromotions />}
         <div
           style={{
             zIndex: 10,
@@ -102,17 +127,45 @@ class Cart extends React.Component {
                     <p>Không có sản phẩm nào trong giỏ hàng của bạn</p>
                   </div>}
 
-
                 <div className="center-col-flex">
+
                   <p className="promo-title">Mã giảm giá</p>
                   <div className="ui action input">
                     <input type="text" placeholder="Nhập ở đây..." />
                     <button className="ui button">Áp dụng</button>
                   </div>
+                  <div className="promo-wrapper" onClick={() => { this.props.showModal({ show: true, details: { promotions, pickPromo: this.pickPromo }, modalName: 'modalPromotions' }) }}>
+                    <i style={{ color: '#3571a7' }} className="fa fa-gift"></i>
+                    <div className="promo-list">Chọn mã giảm giá </div>
+                  </div>
+
+                  {selectedPromo !== '' &&
+                    <div className='voucher-tag'>
+                      <div className="col-flex">
+                        <div className="infor-voucher">
+                          <div className="voucher-infor">
+                            <h2>{selectedPromo.couponCode} </h2>
+                            <p>Đến {this.convertDate(selectedPromo.timeEnd)}</p>
+                          </div>
+                          <div className="more-infor" onClick={() => this.showMoreInfor(selectedPromo.id)}>i</div>
+                          <button className="btn btn-default" onClick={() => this.setState({ selectedPromo: '' })} >
+                            Bỏ chọn
+                          </button>
+                        </div>
+                        {idPromo !== '' && <div className="info-det">{selectedPromo.name}</div>}
+                      </div>
+                    </div>}
+
+                  {selectedPromo !== '' &&
+                    <div className="temp-total">
+                      <div> Giảm giá</div>
+                      <div className="temp-total-val"> -{selectedPromo.discountAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}đ</div>
+                    </div>}
                   <div className="checkout">
                     <p> Thành tiền</p>
-                    {isLoaded && <p className="total"> {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}đ</p>}
+                    {isLoaded && <p className="total"> {this.convertTotal(total)}đ</p>}
                   </div>
+
                   <Button
                     style={{
                       color: "white",
@@ -120,13 +173,12 @@ class Cart extends React.Component {
                       width: "108%",
                       marginTop: "20px"
                     }}
-                    onClick={() => this.props.pushHistory('/checkout/payment')}>
+                    onClick={() => this.props.history.push({ pathname: '/shopnow/checkout/payment', idPromotion: selectedPromo != '' ? selectedPromo.id : null })}>
                     Tiến hành đặt hàng
-                </Button>
-                </div>`
-          </div>
+                  </Button>
+                </div>
+              </div>
             </div>}
-
         </div>
         <Footer />
       </div >
@@ -140,4 +192,4 @@ Cart.propTypes = {
   updateCart: PropTypes.func.isRequired,
   carts: PropTypes.array.isRequired,
 };
-export default connect(mapStateToProps, { pushHistory, getCartsByIdUser, deleteCart, updateCart })(Cart);
+export default connect(mapStateToProps, { pushHistory, getCartsByIdUser, deleteCart, updateCart, showModal })(Cart);

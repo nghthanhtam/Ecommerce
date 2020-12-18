@@ -93,13 +93,13 @@ function* fetchUserOrders(params) {
 
 function* addOrder(params) {
   const state = yield select();
-  const { arrOrders } = params
+  const { newOrder } = params
   console.log(params);
   try {
     const response = yield call(() =>
       axios.post(
         `${process.env.REACT_APP_BACKEND_ORDER}/api/order/`,
-        { arrOrders },
+        newOrder,
         tokenConfig(state)
       )
     );
