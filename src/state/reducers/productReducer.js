@@ -9,6 +9,7 @@ import {
   PRODUCT_UPDATED,
   SORT_PRODUCTS,
   GET_PRODUCTS_BY_IDSHOP,
+  GET_PRODUCT_BY_ID,
   PRODUCTS_SORTED,
   GET_PRODUCTS_BY_FILTERS
 } from "../actions/types";
@@ -64,6 +65,12 @@ export default function (state = initialState, action) {
             isLoaded: false,
           }
       }
+
+    case GET_PRODUCT_BY_ID:
+      return {
+        ...state,
+        isProductLoaded: false,
+      };
 
     case GET_PRODUCTS_BY_FILTERS:
       return {

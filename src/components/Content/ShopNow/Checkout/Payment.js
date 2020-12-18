@@ -55,14 +55,22 @@ class Payment extends React.Component {
 
   componentDidMount() {
     const { getAddresses, getPayments, user } = this.props
-    getAddresses({ limit: 1000, page: 1, idUser: user.id })
+    getAddresses({ limit: 1000, page: 1, idUser: user.id, type: 'user' })
     getPayments({ limit: 1000, page: 1 })
+    console.log(this.props.history.location.selectedPromo);
   }
 
   componentDidUpdate() {
     if (this.props.isAdded) {
-      setTimeout(() => this.props.history.push('/order-receipt'), 1500)
+      setTimeout(() => this.props.history.push('/shopnow/order-receipt'), 1200)
     }
+  }
+
+  convertTotal = (total) => {
+    const { selectedPromo } = this.props.history.location
+    let totalWithDisCount = total
+    if (selectedPromo !== '') totalWithDisCount = total - selectedPromo.discountAmount
+    return totalWithDisCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   }
 
   addressChkboxChange = (item) => {
@@ -81,10 +89,10 @@ class Payment extends React.Component {
   submit = (e) => {
     e.preventDefault();
     const { idPaymentMethod, idCity, idDistrict, idWard, numberAndStreet, phone, recipient } = this.state;
-    const { user, carts, addOrder, idPromotion } = this.props
+    const { user, carts, addOrder, } = this.props
     let newOrder = {}, arrayOfProductVar = []
     newOrder = {
-      idPromotion,
+      idPromotion: this.props.history.location.selectedPromo.id,
       idPaymentMethod,
       idUser: user.id,
       idCity, idDistrict, idWard,
@@ -94,7 +102,7 @@ class Payment extends React.Component {
       arrayOfProductVar: []
     };
     carts.map((c) => {
-      c.map(({ amount, id }) => {
+      c.productVars.map(({ amount, id }) => {
         arrayOfProductVar.push({ amount, id })
       })
     })
@@ -108,6 +116,7 @@ class Payment extends React.Component {
   render() {
     const { isCardHidden, idAddress, isTransition } = this.state;
     const { isLoaded, addresses, payments, carts, total, totalCount, show, modalName, showModal } = this.props;
+    const { selectedPromo } = this.props.history.location
     return (
       <Fragment>
         {isTransition && <Loading />}
@@ -168,23 +177,6 @@ class Payment extends React.Component {
                     )
                   })}
                 </div>
-                {/* <RadioGroup
-                  aria-label="payment"
-                  onChange={(e) => this.paymentChkboxChange(e)}
-                >
-                  <FormControlLabel
-                    color="default"
-                    value="cash"
-                    control={<Radio color="default" />}
-                    label="Thanh toán bằng tiền mặt"
-                  />
-                  <FormControlLabel
-                    color="default"
-                    value="card"
-                    control={<Radio color="default" />}
-                    label="Thanh toán bằng thẻ quốc tế"
-                  />
-                </RadioGroup> */}
                 {isCardHidden ? null : (
                   <div>
                     <div className="pm-card">
@@ -230,7 +222,7 @@ class Payment extends React.Component {
                       <div key={index} className="pm-order">
                         <div className="pm-orderdet">
                           <h5>{p.amount}x</h5>
-                          <Link to={{ pathname: "/product-detail", productDet: {} }}>
+                          <Link to={{ pathname: `/shopnow/product-detail/idProduct/${p.Product.id}/idShop/${p.idShop}` }}>
                             {p.name}
                           </Link>
                         </div>
@@ -240,9 +232,14 @@ class Payment extends React.Component {
                   }))
                 })}
 
+                {selectedPromo &&
+                  <div className="temp-total">
+                    <div> Giảm giá</div>
+                    <div className="temp-total-val"> -{selectedPromo.discountAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}đ</div>
+                  </div>}
                 <div className="checkout">
-                  <h4> Thành tiền</h4>
-                  <p className="total"> {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}đ</p>
+                  <p> Thành tiền </p>
+                  <p className="total"> {this.convertTotal(total)}đ</p>
                 </div>
                 <Button
                   style={{

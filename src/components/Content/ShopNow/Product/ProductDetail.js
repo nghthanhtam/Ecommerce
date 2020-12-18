@@ -20,6 +20,7 @@ import { getProductById } from '../../../../state/actions/productActions';
 import { getProductVarById } from '../../../../state/actions/productVarActions';
 import { showModal } from '../../../../state/actions/modalActions';
 import { addRating, getRatingsByProduct } from '../../../../state/actions/ratingActions';
+import { addComment } from '../../../../state/actions/commentActions';
 import { addCart } from '../../../../state/actions/cartActions';
 
 const mapStateToProps = (state) => ({
@@ -31,7 +32,9 @@ const mapStateToProps = (state) => ({
   isProVarLoaded: state.productVar.isLoaded,
   productVar: state.productVar.productVar,
   ratings: state.rating.ratings,
-  isRatingLoaded: state.rating.isLoaded
+  isRatingLoaded: state.rating.isLoaded,
+  totalDocuments: state.rating.totalDocuments,
+  tokenUser: state.authUser.token
 });
 
 class ProductDetail extends React.Component {
@@ -42,16 +45,16 @@ class ProductDetail extends React.Component {
     isTransition: false,
     title: '',
     review: '',
+    content: '',
     idProduct: '',
-    selectedProductVar: {},
+    selectedProductVar: '',
     selectedFiles: [],
     rate: '',
-    amount: 0,
-    price: '',
-    marketPrice: '',
+    amount: 1,
     variants: [],
     bigPhoto: '',
-    errorMsg: ''
+    errorMsg: '',
+    nameObj: ''
   };
 
   tokenConfig = (token) => {
@@ -98,11 +101,28 @@ class ProductDetail extends React.Component {
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-    if (this.state.bigPhoto == '' && this.props.isLoaded) {
-      this.setState({ bigPhoto: this.props.product.images[0].url })
+    const { nameObj, bigPhoto, selectedProductVar } = this.state
+    const { product, isProVarLoaded, isLoaded, getProductVarById } = this.props
+    if (bigPhoto == '' && isLoaded) {
+      this.setState({ bigPhoto: product.images[0].url })
     }
-    if (!this.props.isProVarLoaded && this.props.isLoaded) {
-      this.props.getProductVarById(this.props.product.productVars[0].id)
+    if (!isProVarLoaded && isLoaded) {
+      getProductVarById(product.productVars[0].id)
+      if (product.product.idProductCat == 1 && nameObj == '') {//book
+        this.setState({ nameObj: { author: 'Tác giả', publisher: 'Nhà xuất bản', language: 'Ngôn ngữ' } })
+      } else if (product.product.idProductCat == 3 && nameObj == '') {//clothes
+        this.setState({ nameObj: { origin: 'Xuất xứ' } })
+      }
+    }
+    if (!prevProps.isLoaded && isLoaded) {
+      this.setState(prevState => ({
+        selectedProductVar: {                   // object that we want to update
+          ...prevState.selectedProductVar,    // keep all other key-value pairs
+          status: 'active',       // update the value of specific key
+          price: product.productVars[0].price,
+          marketPrice: product.productVars[0].marketPrice,
+        }
+      }))
     }
   }
 
@@ -144,7 +164,8 @@ class ProductDetail extends React.Component {
 
         const config = {
           headers: {
-            'Content-Type': 'multipart/form-data; charset=utf-8; boundary="another cool boundary";'
+            'Content-Type': 'multipart/form-data; charset=utf-8; boundary="another cool boundary";',
+            'Authorization': `Bearer ${this.props.tokenUser}`
           }
         };
 
@@ -173,7 +194,16 @@ class ProductDetail extends React.Component {
   sendRating = () => {
     const { title, review, idProduct, selectedFiles, rate } = this.state
     const { user } = this.props
-    this.props.addRating({ idUser: user.id, idProduct, title, review, rate, arrImages: selectedFiles })
+    this.props.addRating({ idUser: user.id, idProduct, title, review, rate, arrImages: selectedFiles, type: 'user' })
+    this.setState({ title: '', review: '', selectedFiles: [], rate: '' })
+  }
+
+  sendCmt = (idRating) => {
+    console.log('abcc');
+    const { content, idProduct } = this.state
+    const { user } = this.props
+    this.props.addComment({ idUser: user.id, idRating, content, idProduct, type: 'user' })
+    this.setState({ content: '' })
   }
 
   handleVariants = (item) => {
@@ -225,20 +255,20 @@ class ProductDetail extends React.Component {
           }
 
           if (productVars.length == 1) {
-            this.setState({ selectedProductVar: productVars[0] })
+            this.setState({ selectedProductVar: productVars[0] }, () => {
+              console.log('selectedProductVar: ', this.state.selectedProductVar);
 
+            })
             //set big photo
             //set price for productVar
             let images = [...this.props.product.images], bigPhotoArr
             bigPhotoArr = images.filter(i => i.ProductVar.id == productVars[0].id && i.isMain == true)
-            this.setState({ bigPhoto: bigPhotoArr[0].url, price: productVars[0].price })
+            this.setState({ bigPhoto: bigPhotoArr[0].url, })
 
           } else {
             let selectedVariantsText = '';
-            console.log('oldVariants: ', oldVariants);
             for (let i in oldVariants) {
               let arr, name
-
               //get name cho variant vừa dc chọn nhưng ko match với các variants đã dc chọn trc đó
               let variants = [...this.props.product.variants]
               arr = variants.filter(o => { return o.id == oldVariants[i].idVariant });
@@ -246,7 +276,7 @@ class ProductDetail extends React.Component {
               selectedVariantsText = ' - ' + name
 
             }
-            this.setState({ errorMsg: 'Sản phẩm' + selectedVariantsText + ' không có ' + unknownVariantText })
+            // this.setState({ errorMsg: 'Sản phẩm' + selectedVariantsText + ' không có ' + unknownVariantText })
           }
 
         }
@@ -283,8 +313,8 @@ class ProductDetail extends React.Component {
   };
 
   render() {
-    const { productList, replyBoxHidden, selectedFiles, isTransition, rate, amount, price, marketPrice, variants, bigPhoto, errorMsg } = this.state;
-    const { showModal, show, modalName, isLoaded, product, isProVarLoaded, productVar, ratings, isRatingLoaded } = this.props
+    const { nameObj, selectedProductVar, productList, replyBoxHidden, selectedFiles, isTransition, rate, amount, variants, bigPhoto, errorMsg } = this.state;
+    const { showModal, show, modalName, isLoaded, product, isProVarLoaded, productVar, ratings, isRatingLoaded, totalDocuments } = this.props
     const settings = {
       infinite: true,
       speed: 800,
@@ -303,7 +333,6 @@ class ProductDetail extends React.Component {
     const smallSettings = {
       infinite: true,
       speed: 800,
-      slidesToShow: 3,
       slidesToScroll: 1,
       className: 'slider',
     };
@@ -336,7 +365,7 @@ class ProductDetail extends React.Component {
                     </Slider>
                   </div>
                   <div className="img-slider" >
-                    <Slider style={{ width: '100%', height: '320px' }} {...smallSettings}>
+                    <Slider style={{ width: '80%', height: '100%' }} {...smallSettings} slidesToShow={product.images.length < 3 ? product.images.length : 3}>
                       {product.images.map((item, index) => {
                         return (
                           <div key={index} className='small-photo' onClick={() => this.setState({ bigPhoto: item.url })}>
@@ -350,29 +379,32 @@ class ProductDetail extends React.Component {
                   <h1>{product.product.name}</h1>
                   <div className="availibity">
                     <div>Tình trạng:</div>
-                    <div>Đang kinh doanh</div>
+                    {selectedProductVar != '' && selectedProductVar.status == 'active' ? <div>Đang kinh doanh</div> : <div>Ngừng kinh doanh</div>}
                   </div>
-                  <div style={{ display: 'flex' }}>
-                    <div>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star-half-o"></i>
-                    </div>
-                    <div>(1 đánh giá) | </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {product.product.averageRating !== 0 &&
+                      <div style={{ width: '155px', padding: 0, marginLeft: '-10px' }}>
+                        <Rating
+                          name="size-small"
+                          precision={0.5}
+                          value={product.product.averageRating}
+                          size="small"
+                          readOnly />
+                      </div>}
+                    <div>({totalDocuments} đánh giá) | </div>
                     <div className="add-your-review">Thêm đánh giá của bạn</div>
                   </div>
 
-
                   <div className="price">
                     <div>
-                      {price == '' && isProVarLoaded && (<h2> {this.convertPrice(productVar.price)}đ</h2>)}
-                      {price !== '' && <h2>{this.convertPrice(price)}đ</h2>}
+                      {/* {price == '' && isProVarLoaded && (<h2> {this.convertPrice(productVar.price)}đ</h2>)}
+                      {price !== '' && <h2>{this.convertPrice(price)}đ</h2>} */}
+                      {selectedProductVar && selectedProductVar.price !== '' ? <h2>{this.convertPrice(selectedProductVar.price)}đ</h2> : <h2>0đ</h2>}
                     </div>
                     <div>
-                      {marketPrice == '' && isProVarLoaded && <h4>{this.convertPrice(productVar.marketPrice)}đ</h4>}
-                      {marketPrice !== '' && <h4>{this.convertPrice(marketPrice)}đ</h4>}
+                      {/* {marketPrice == '' && isProVarLoaded && <h4>{this.convertPrice(productVar.marketPrice)}đ</h4>}
+                      {marketPrice !== '' && <h4>{this.convertPrice(marketPrice)}đ</h4>} */}
+                      {selectedProductVar && selectedProductVar.marketPrice !== '' ? <h4>{this.convertPrice(selectedProductVar.marketPrice)}đ</h4> : <h4>0đ</h4>}
                     </div>
                   </div>
 
@@ -427,18 +459,17 @@ class ProductDetail extends React.Component {
                         <i className="fa fa-plus"></i>
                       </div>
                     </div>
-                    <div className="cart-btn" onClick={this.addToCart}>
-                      <i className="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
-                    </div>
+                    {selectedProductVar !== '' && selectedProductVar.status == 'active' &&
+                      <div className="cart-btn" onClick={this.addToCart}>
+                        <i className="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
+                    </div>}
                   </div>
 
                   <div style={{ display: 'flex' }}>
-                    <div className="label-prodet">Tên nhà bán:</div>
-                    <div> {product.shop.name}</div>
-                    <div className="link">
-                      <div onClick={() => this.props.history.push(`/shopnow/shop/${product.shop.id}`)}>Ghé thăm</div>
+                    <div className="label-prodet" >
+                      Tên nhà bán:
+                      <span className="link-shop" onClick={() => this.props.history.push(`/shopnow/shop/${product.shop.id}`)}>{product.shop.name}</span>
                     </div>
-
                     <div className="link" onClick={() => { showModal({ show: true, modalName: 'modalShopList' }) }}>Thay đổi nhà bán</div>
                   </div>
                   <div style={{ display: 'flex' }}>
@@ -446,16 +477,24 @@ class ProductDetail extends React.Component {
                     <div> {product.product.Movie.name}</div>
                   </div>
                   <div className="voucher-list">
-                    <h5>NHẬP MÃ KHUYẾN MÃI ĐỂ ĐƯỢC GIẢM GIÁ:</h5>
-                    <p>
-                      Nhập <span>SHOP50</span> được giảm 50.000đ trên tổng hóa đơn
-                    </p>
-                    <p>
-                      Nhập <span>SHOP20</span> được giảm 20.000đ trên tổng hóa đơn
-                    </p>
-                    <p>
-                      Nhập <span>SHOP10</span> được giảm 10.000đ trên tổng hóa đơn
-                    </p>
+                    <h5> THÔNG TIN THÊM:</h5>
+                    {product.product.Details.map(d => {
+                      return (
+                        Object.keys(nameObj).map((item, index) => {
+                          return (
+                            <Fragment key={index}>
+                              {item == d.detail &&
+                                (
+                                  <p>
+                                    {nameObj[item]}: <span>{d.value}</span>
+                                  </p>
+                                )
+                              }
+                            </Fragment>
+                          )
+                        })
+                      )
+                    })}
                   </div>
                 </div>
               </div>
@@ -496,52 +535,54 @@ class ProductDetail extends React.Component {
                     <div>(5 nhận xét)</div>
                   </div>
 
-                  <div className="myreview-wrapper">
-                    <p style={{ fontWeight: '500', fontSize: '16px' }}> Đánh giá của bạn </p>
-                    <div className="review">
-                      <Rating
-                        name="simple-controlled"
-                        value={rate}
-                        size={10}
-                        onChange={(value) => this.setState({ rate: value })}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label style={{ fontWeight: '500', fontSize: '16px' }} for="exampleInputEmail1">Tiêu đề nhận xét</label>
-                      <input onChange={this.handleChange} type="text" className="form-control" name='title' />
-                    </div>
-                    <div className="form-group">
-                      <label style={{ fontWeight: '500', fontSize: '16px', marginBottom: '12px' }}>Nhận xét của bạn</label>
-                      <textarea onChange={this.handleChange} name='review' className="form-control" placeholder="Viết nhận xét tại đây" style={{ height: '120px' }} ></textarea>
-                    </div>
-                    <div className="form-group">
-                      <p style={{ fontWeight: '500', fontSize: '16px', margin: '10px 0 0 0' }}>Tải ảnh lên</p>
-                      <input type="file" id="exampleInputFile" onChange={this.handleFileSelect} />
-                    </div>
-                    <div className="sku-grid">
-                      {selectedFiles && selectedFiles.map((item, index) => {
-                        return (
-                          <label key={index} htmlFor={item} className="rating-image">
-                            <img
-                              className="rating-pic"
-                              src={item.url}
-                              alt="product"
-                            />
-                          </label>
-                        );
-                      })}
-                    </div>
-                    <div className="row-flex">
-                      <Button variant="contained" style={{ backgroundColor: '#3571a7', color: 'white', width: '115px' }}
-                        onClick={this.sendRating} >
-                        Gửi
-                      </Button>
-                    </div>
-                  </div>
+                  {!this.props.tokenUser ? <div>Bạn cần đăng nhập để đánh giá</div> :
+                    <div className="myreview-wrapper">
+                      <p style={{ fontWeight: '500', fontSize: '16px' }}> Đánh giá của bạn </p>
+                      <div className="review">
+                        <Rating
+                          name="simple-controlled"
+                          value={rate}
+                          size={10}
+                          onChange={(value) => this.setState({ rate: value })}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label style={{ fontWeight: '500', fontSize: '16px' }} for="exampleInputEmail1">Tiêu đề nhận xét</label>
+                        <input onChange={this.handleChange} type="text" className="form-control" name='title' />
+                      </div>
+                      <div className="form-group">
+                        <label style={{ fontWeight: '500', fontSize: '16px', marginBottom: '12px' }}>Nhận xét của bạn</label>
+                        <textarea onChange={this.handleChange} name='review' className="form-control" placeholder="Viết nhận xét tại đây" style={{ height: '120px' }} ></textarea>
+                      </div>
+                      <div className="form-group">
+                        <p style={{ fontWeight: '500', fontSize: '16px', margin: '10px 0 0 0' }}>Tải ảnh lên</p>
+                        <input type="file" id="exampleInputFile" onChange={this.handleFileSelect} />
+                      </div>
+                      <div className="sku-grid">
+                        {selectedFiles && selectedFiles.map((item, index) => {
+                          return (
+                            <label key={index} htmlFor={item} className="rating-image">
+                              <img
+                                className="rating-pic"
+                                src={item.url}
+                                alt="product"
+                              />
+                            </label>
+                          );
+                        })}
+                      </div>
+                      <div className="row-flex">
+                        <Button variant="contained" style={{ backgroundColor: '#3571a7', color: 'white', width: '115px' }}
+                          onClick={this.sendRating} >
+                          Gửi
+                        </Button>
+                      </div>
+                    </div>}
                 </div>
 
                 {isRatingLoaded && ratings.map((rating, index) => {
                   return (
+                    rating.status == 'accepted' &&
                     <div className="mes-detail" key={index}>
                       <div className="ava">
                         <img src="./img/ava.png" alt="ava" />
@@ -580,9 +621,10 @@ class ProductDetail extends React.Component {
                         </div>
                         {replyBoxHidden ? (
                           <div style={{ width: '100%' }}>
-                            <textarea className="reply-box"></textarea>
+                            <textarea onChange={this.handleChange} name="content" className="reply-box"></textarea>
                             <div className="row-flex">
                               <Button
+                                onClick={() => this.sendCmt(rating.id)}
                                 className="send-btn"
                                 style={{ background: '#3571a7', color: 'white', width: '115px', height: '38px', margin: '5px 5px 5px 0' }}>
                                 Gửi
@@ -605,7 +647,7 @@ class ProductDetail extends React.Component {
                         {rating.Comments.map((cmt, cindex) => {
                           return (
                             <Fragment>
-                              {cmt.idRating == rating.id && <div className="reply-answer" key={cindex}>
+                              {cmt.idRating == rating.id && cmt.status == 'accepted' && <div className="reply-answer" key={cindex}>
                                 <p> {cmt.content}  </p>
                                 <div className='cmt-wrapper'>
                                   <div className="ava-reply">
@@ -630,4 +672,4 @@ class ProductDetail extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { getProductById, getProductVarById, showModal, addRating, getRatingsByProduct, addCart })(ProductDetail);
+export default connect(mapStateToProps, { getProductById, getProductVarById, showModal, addRating, addComment, getRatingsByProduct, addCart })(ProductDetail);

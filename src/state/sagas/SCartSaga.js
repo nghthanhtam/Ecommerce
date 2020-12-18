@@ -27,26 +27,28 @@ function* fetchCartsByIdUser(params) {
         .catch((er) => console.log(er.response))
     );
 
-    //get total
-    let total = 0
-    response.data.shops.map(cart => {
-      cart.productVars.map(item => {
-        total += Number(item.price) * item.amount
+    let total = 0, totalCount = 0
+    const res = response.data
+    if (res.shops) {
+      //get total
+      res.shops.map(cart => {
+        cart.productVars.map(item => {
+          total += Number(item.price) * item.amount
+        })
       })
-    })
 
-    //get totalCount
-    let totalCount = 0
-    response.data.shops.map(cart => {
-      cart.productVars.map(item => {
-        totalCount += 1
+      //get totalCount
+      res.shops.map(cart => {
+        cart.productVars.map(item => {
+          totalCount += 1
+        })
       })
-    })
+    }
 
     yield put({
       type: CARTS_RECEIVED, payload: {
-        items: response.data.shops,
-        promotions: response.data.promotions,
+        items: res.shops ? res.shops : [],
+        promotions: res.promotions,
         total,
         totalCount
       }

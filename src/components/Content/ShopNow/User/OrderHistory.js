@@ -59,6 +59,18 @@ class OrderHistory extends React.Component {
     this.setState({ selectedOrderId })
   }
 
+  cancel = (item) => {
+    let msg = ''
+    if (item.Purchase.Orders.length > 1) {
+      msg = "Đơn hàng này được giao cùng với " + Number(item.Purchase.Orders.length - 1) + " đơn hàng khác. Cả " + item.Purchase.Orders.length + " đơn hàng sẽ được hủy cùng nhau."
+    }
+    this.props.showModal({
+      show: true,
+      modalName: 'modalCancel',
+      details: { order: item, msg }
+    })
+  }
+
   render() {
     const { selectedOrderId } = this.state;
     const { orders, isLoaded, show, modalName } = this.props;
@@ -185,7 +197,7 @@ class OrderHistory extends React.Component {
                       </div>
                     </div>
                     {item.status !== 'canceled' &&
-                      <button onClick={() => this.props.showModal({ show: true, modalName: 'modalCancel', details: { order: item } })}
+                      <button onClick={() => this.cancel(item)}
                         type="button" className="btn btn-block btn-default">Hủy đơn hàng</button>
                     }
                   </>

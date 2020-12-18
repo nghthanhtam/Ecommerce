@@ -2,6 +2,7 @@ import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { tokenConfig } from '../actions/authActions';
 import { tokenAdminConfig } from '../actions/authAdminActions';
+import { tokenUserConfig } from '../actions/authUserActions';
 import {
   GET_COMMENTS,
   ADD_COMMENT,
@@ -11,7 +12,8 @@ import {
   COMMENT_DELETED,
   UPDATE_COMMENT,
   COMMENT_UPDATED,
-  UPDATE_COMMENT_STATUS
+  UPDATE_COMMENT_STATUS,
+  GET_RATINGS_BY_PRODUCT
 } from '../actions/types';
 
 function* fetchComments(params) {
@@ -47,14 +49,14 @@ function* addComment(params) {
       axios.post(
         `${process.env.REACT_APP_BACKEND_RATING}/api/comment/`,
         params.newCmt,
-        tokenConfig(state)
+        params.newCmt.type == 'user' ? tokenUserConfig(state) : tokenAdminConfig(state)
       )
     );
 
     yield put({ type: COMMENT_ADDED, payload: response.data });
     yield put({
-      type: GET_COMMENTS,
-      pages: params.newCmt.pages,
+      type: GET_RATINGS_BY_PRODUCT,
+      pages: { limit: 1000, page: 1, idProduct: params.newCmt.idProduct },
     });
   } catch (error) {
     console.log({ ...error });

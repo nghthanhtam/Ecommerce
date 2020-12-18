@@ -78,6 +78,7 @@ class AddressAdd extends Component {
                         fullname, phone, idCity, idDistrict, idWard, numberAndStreet
                     } = response.data;
                     this.setState({ fullname, phone, idCity, idDistrict, idWard, numberAndStreet });
+                    console.log('abc');
                     getDistricts({ limit: 1000, page: 1, idCity })
                     getWards({ limit: 1000, page: 1, idDistrict })
                 })
@@ -98,6 +99,9 @@ class AddressAdd extends Component {
     handleChange = (e) => {
         const { name, value } = e.target;
         let msg = '';
+
+        if (name == 'idCity') this.props.getDistricts({ limit: 1000, page: 1, idCity: value })
+        if (name == 'idDistrict') this.props.getWards({ limit: 1000, page: 1, idDistrict: value })
 
         //Validation
         let isPassed = true
@@ -124,7 +128,9 @@ class AddressAdd extends Component {
             newAddress.id = details.id
             updateAddress(newAddress);
         }
-        else addAddress(newAddress)
+        else {
+            addAddress(newAddress)
+        }
         showModal({ show: false })
     };
 
@@ -138,7 +144,7 @@ class AddressAdd extends Component {
                         ×
                     </button>
                     <div className="login-box-body">
-                        <p className="login-box-msg">Thêm địa chỉ giao hàng mới</p>
+                        <h3 className="login-box-msg">Thêm địa chỉ giao hàng mới</h3>
                         {this.state.msg ? (
                             <div className="alert alert-danger alert-dismissible">
                                 <button type="button" className="close" data-dismiss="alert" aria-hidden="true"

@@ -168,7 +168,9 @@
 .card1 .infor {
   width: 50%;
 }
-
+.image {
+  height: 100vh;
+}
 .infor {
   display: flex;
   flex-direction: column;
@@ -197,6 +199,11 @@
 .link {
   color: #3571a7;
   text-decoration: underline;
+  margin-left: 5px;
+  cursor: pointer;
+}
+.link-shop {
+  color: #3571a7;
   margin-left: 5px;
   cursor: pointer;
 }
@@ -280,6 +287,9 @@
   position: relative;
   transition: 0.5s;
   border-radius: 8px;
+}
+.big-photo img {
+  height: 100%;
 }
 .small-photo {
   width: 100px;

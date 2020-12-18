@@ -5,16 +5,23 @@ import {
   RATINGS_RECEIVED,
   RATING_ADDED,
   RATING_UPDATED,
+  GET_RATINGS_BY_PRODUCT
 } from '../actions/types';
 
 const initialState = {
   ratings: [],
   totalDocuments: 0,
+  averageRating: 0,
   isLoaded: false,
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case GET_RATINGS_BY_PRODUCT:
+      return {
+        ...state,
+        isLoaded: false,
+      };
     case GET_RATINGS:
       return {
         ...state,

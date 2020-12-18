@@ -130,7 +130,7 @@ class Cart extends React.Component {
                 <div className="center-col-flex">
 
                   <p className="promo-title">Mã giảm giá</p>
-                  <div className="ui action input">
+                  <div className="ui action input" style={{ width: '100%' }}>
                     <input type="text" placeholder="Nhập ở đây..." />
                     <button className="ui button">Áp dụng</button>
                   </div>
@@ -157,11 +157,11 @@ class Cart extends React.Component {
                     </div>}
 
                   {selectedPromo !== '' &&
-                    <div className="temp-total">
+                    <div className="temp-total" style={{ width: '108%' }}>
                       <div> Giảm giá</div>
                       <div className="temp-total-val"> -{selectedPromo.discountAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}đ</div>
                     </div>}
-                  <div className="checkout">
+                  <div className="checkout" style={{ width: '108%' }}>
                     <p> Thành tiền</p>
                     {isLoaded && <p className="total"> {this.convertTotal(total)}đ</p>}
                   </div>
@@ -173,7 +173,7 @@ class Cart extends React.Component {
                       width: "108%",
                       marginTop: "20px"
                     }}
-                    onClick={() => this.props.history.push({ pathname: '/shopnow/checkout/payment', idPromotion: selectedPromo != '' ? selectedPromo.id : null })}>
+                    onClick={() => this.props.history.push({ pathname: '/shopnow/checkout/payment', selectedPromo: selectedPromo != '' ? selectedPromo : null })}>
                     Tiến hành đặt hàng
                   </Button>
                 </div>

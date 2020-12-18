@@ -70,7 +70,7 @@ function* fetchUserOrders(params) {
   try {
     const state = yield select(),
       { limit, page, idUser } = params.pages;
-
+    console.log(params);
     const response = yield call(() =>
       axios
         .get(
@@ -100,11 +100,11 @@ function* addOrder(params) {
       axios.post(
         `${process.env.REACT_APP_BACKEND_ORDER}/api/order/`,
         newOrder,
-        tokenConfig(state)
+        tokenUserConfig(state)
       )
     );
-    console.log('orderAdded: ', response.data);
-    yield put({ type: ORDER_ADDED, payload: response.data });
+    console.log('orderAdded: ', response);
+    yield put({ type: ORDER_ADDED, payload: response });
   } catch (error) {
     console.log(error.response);
   }
@@ -112,20 +112,23 @@ function* addOrder(params) {
 
 function* updateOrder(params) {
   const state = yield select();
+  const { id, status, cancelReason, type } = params.newOrder
+  console.log(params.newOrder);
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_ORDER}/api/order/${params.newOrder.id}/status`,
-        params.newOrder,
-        tokenConfig(state)
+        `${process.env.REACT_APP_BACKEND_ORDER}/api/order/${id}/status`,
+        { status, cancelReason },
+        type == 'user' ? tokenUserConfig(state) : tokenConfig(state)
       )
     );
 
     yield put({ type: ORDER_UPDATED, payload: response.data });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
+
 function* deleteOrder(params) {
   const state = yield select();
   try {

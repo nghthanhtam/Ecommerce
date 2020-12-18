@@ -49,15 +49,17 @@ class ModalCancel extends Component {
             const newOrder = details.order
             newOrder.status = 'canceled'
             newOrder.cancelReason = cancelReason
+            newOrder.type = 'user'
+            newOrder.id = details.order.id
             updateOrder(newOrder);
             showModal({ show: false })
-            window.location.reload()
+            //window.location.reload()
         }
     };
 
     render() {
         const { cancelReason, inputErrors } = this.state
-        const { showModal } = this.props
+        const { showModal, details } = this.props
         return (
             <div className='modal-wrapper'>
                 <div style={{ background: '#fff', padding: '20px 20px 20px 20px', transition: 'opacity 0.5s linear' }} className="login-box">
@@ -66,7 +68,7 @@ class ModalCancel extends Component {
                     </button>
                     <div className="login-box-body">
                         <h3 className="login-box-msg">Lý do hủy đơn hàng </h3>
-                        <p>Mã giảm giá có thể áp dụng cho đơn hàng khác</p>
+                        <p>{details.msg}</p>
                         {this.state.msg ? (
                             <div className="alert alert-danger alert-dismissible">
                                 <button type="button" className="close" data-dismiss="alert" aria-hidden="true"

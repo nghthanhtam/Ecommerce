@@ -2,6 +2,7 @@ import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { tokenConfig } from '../actions/authActions';
 import { tokenAdminConfig } from '../actions/authAdminActions';
+import { tokenUserConfig } from '../actions/authUserActions';
 import {
   GET_RATINGS,
   ADD_RATING,
@@ -61,13 +62,13 @@ function* addRating(params) {
       axios.post(
         `${process.env.REACT_APP_BACKEND_RATING}/api/rating/`,
         params.newRating,
-        tokenConfig(state)
+        params.newRating.type == 'user' ? tokenUserConfig(state) : tokenAdminConfig(state)
       )
     );
 
     yield put({ type: RATING_ADDED, payload: response.data });
     yield put({
-      type: GET_RATINGS,
+      type: GET_RATINGS_BY_PRODUCT,
       pages: { limit: 1000, page: 1, idProduct: params.newRating.idProduct },
     });
   } catch (error) {

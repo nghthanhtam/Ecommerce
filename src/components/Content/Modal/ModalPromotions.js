@@ -51,7 +51,7 @@ class ModalPromotions extends Component {
         const { idPromo } = this.state
         return (
             <div className='modal-wrapper'>
-                <div style={{ background: '#fff', padding: '20px 5px 20px 5px', transition: 'opacity 0.5s linear' }} className="login-box">
+                <div style={{ background: '#fff', padding: '20px 5px 20px 5px', width: '400px' }} className="login-box">
                     <button onClick={() => this.props.showModal({ show: false })} style={{ float: 'right', marginTop: '-10px' }} type="button" className="close" data-dismiss="alert" aria-hidden="true">
                         ×
                     </button>
@@ -74,9 +74,13 @@ class ModalPromotions extends Component {
                                             <p>Hạn sử dụng {this.convertDate(p.timeEnd)}</p>
                                         </div>
                                         <div className="more-infor" onClick={() => this.showMoreInfor(p.id)}>i</div>
-                                        <button className="btn btn-default" onClick={() => this.pickPromo(p)}>
+                                        {p.isValid ? <button className="btn btn-default" onClick={() => this.pickPromo(p)}>
                                             Chọn
                                         </button>
+                                            :
+                                            <button className="btn btn-default" disabled style={{ color: 'orange' }}>
+                                                Chưa thỏa điều kiện
+                                        </button>}
                                     </div>
                                     {idPromo !== '' && idPromo == p.id && <div className="info-det">{p.name}</div>}
                                 </div>

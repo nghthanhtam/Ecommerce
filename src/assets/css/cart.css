@@ -14,6 +14,14 @@
     transform: rotateY(0);
   }
 }
+.modal-wrapper {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  transition: 0.75s linear;
+  z-index: 1000;
+}
 .cart-container {
   padding-top: 30px;
   display: flex;
@@ -153,12 +161,12 @@
 .checkout {
   margin-top: 10px;
   display: flex;
-  width: 108%;
+  width: 100%;
 }
 .temp-total {
-  display: flex;
-  width: 108%;
   margin-top: 30px;
+  display: flex;
+  width: 100%;
 }
 .temp-total-val {
   font-size: 20px;
@@ -209,12 +217,12 @@
   border-bottom: 1px solid #ccc;
   padding-bottom: 20px;
   padding-top: 20px;
-  width: 345px;
+  width: 100%;
 }
 .pm-orderdet {
   display: flex;
   flex-direction: row;
-  width: 200px;
+  width: 100%;
 }
 .pm-orderdet h5 {
   margin-right: 5px;

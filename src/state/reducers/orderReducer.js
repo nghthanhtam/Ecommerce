@@ -14,6 +14,7 @@ const initialState = {
   isLoaded: false,
   isOrderDetsLoaded: false,
   isAdded: false,
+  ordersAdded: []
 };
 
 export default function (state = initialState, action) {
@@ -39,11 +40,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isAdded: false,
+        ordersAdded: []
       };
     case ORDER_ADDED:
       return {
         ...state,
         isAdded: true,
+        ordersAdded: action.payload.data
       };
 
     case ORDER_DELETED:

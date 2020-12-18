@@ -1,6 +1,8 @@
 import { takeEvery, put, call, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { tokenConfig } from '../actions/authActions';
+import { tokenUserConfig } from '../actions/authUserActions';
+import { tokenAdminConfig } from '../actions/authAdminActions';
 import {
   GET_ADDRESSES,
   ADD_ADDRESS,
@@ -15,13 +17,13 @@ import {
 function* fetchAddresses(params) {
   try {
     const state = yield select(),
-      { limit, page, idUser } = params.pages;
+      { limit, page, idUser, type } = params.pages;
 
     const response = yield call(() =>
       axios
         .get(
           `${process.env.REACT_APP_BACKEND_USER}/api/address/user/${idUser}?limit=${limit}&page=${page}`,
-          tokenConfig(state)
+          type == 'user' ? tokenUserConfig(state) : (type == 'admin' ? tokenAdminConfig(state) : tokenUserConfig(state))
         )
     );
     console.log(response);
@@ -39,20 +41,20 @@ function* fetchAddresses(params) {
 
 function* addAddress(params) {
   const state = yield select();
-
+  console.log(params);
   try {
     const response = yield call(() =>
       axios.post(
         `${process.env.REACT_APP_BACKEND_USER}/api/address/`,
         params.newAddress,
-        tokenConfig(state)
+        tokenUserConfig(state)
       )
     );
 
     yield put({ type: ADDRESS_ADDED, payload: response.data });
     yield put({
       type: GET_ADDRESSES,
-      pages: params.newAddress.pages,
+      pages: { page: 1, limit: 1000, idUser: params.newAddress.idUser },
     });
   } catch (error) {
     console.log(error.response);
@@ -66,7 +68,7 @@ function* updateAddress(params) {
       axios.put(
         `${process.env.REACT_APP_BACKEND_USER}/api/address/${params.newAddress.id}`,
         params.newAddress,
-        tokenConfig(state)
+        tokenUserConfig(state)
       )
     );
 
