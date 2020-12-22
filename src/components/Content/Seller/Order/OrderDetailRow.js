@@ -28,7 +28,7 @@ class OrderRow extends Component {
         <td>{orderDet.SKU}</td>
         <td><img src={orderDet.Images[0].url} alt="hình ảnh" border='4' height='100' width='80' /></td>
         <td>{orderDet.name}</td>
-        <td>{this.convertPrice(orderDet.priceWhenBuy)}</td>
+        <td>{this.convertPrice(orderDet.price)}</td>
         <td>{orderDet.quantity}</td>
       </tr>
     );

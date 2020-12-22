@@ -65,7 +65,7 @@ function* addComment(params) {
 
 function* updateCommentStt(params) {
   const state = yield select(),
-    { id, status } = params.params
+    { id, status, pages } = params.params
 
   try {
     const response = yield call(() =>
@@ -76,6 +76,7 @@ function* updateCommentStt(params) {
       )
     );
     yield put({ type: COMMENT_UPDATED, payload: response.data });
+    yield put({ type: GET_COMMENTS, pages });
   } catch (error) {
     console.log({ ...error });
   }

@@ -91,7 +91,7 @@ class OrderDetail extends Component {
 
   render() {
     const { isOrderDetsLoaded, order } = this.props
-
+    const { totalAmount } = this.props.location
     return (
       <Fragment>
         {isOrderDetsLoaded &&
@@ -122,7 +122,7 @@ class OrderDetail extends Component {
                   <div className="box">
                     <div className="box-header" style={{ marginTop: '5px' }}>
                       <div style={{ paddingLeft: '5px' }} className="col-md-8">
-                        <h3 className="box-title">Tổng tiền: {this.convertPrice(order.totalPrice)}đ </h3>
+                        <h3 className="box-title">Tổng tiền: {this.convertPrice(totalAmount)}đ </h3>
                       </div>
 
                       {/* <div className="col-md-4">

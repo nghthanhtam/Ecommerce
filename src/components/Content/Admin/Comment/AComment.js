@@ -131,7 +131,7 @@ class AComment extends Component {
             index={index + start - 1}
             deleteItem={deleteComment}
             updateItemStatus={updateCommentStatus}
-            pages={{ limit, page, query }}
+            pages={{ limit, page, query, status: 'pending' }}
           />
         ))
       );

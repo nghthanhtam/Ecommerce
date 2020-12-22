@@ -60,7 +60,7 @@ class Watchlist extends React.Component {
               padding: "20px",
             }}
           >
-            <UserProfile selectedItem={this.props} />
+            <UserProfile selectedLink="/shopnow/user/watchlist" />
 
             <div className="acc-container">
               <div className="row-flex">

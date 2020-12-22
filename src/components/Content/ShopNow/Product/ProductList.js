@@ -1,21 +1,17 @@
-import React, { Fragment } from 'react';
-import Loader from 'react-loader'
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import '../../../../assets/css/product.css';
-import axios from 'axios';
-import Rating from '@material-ui/lab/Rating';
+import React, { Fragment } from "react";
+import Loader from "react-loader";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "../../../../assets/css/product.css";
+import Rating from "@material-ui/lab/Rating";
+import ShowingProduct from "./ShowingProduct";
+import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
 
-import ShowingProduct from './ShowingProduct';
-import Header from '../Header/Header';
-import Footer from '../Footer/Footer';
-import RecProduct from './RecProduct'
-
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { getProductsByFilters } from '../../../../state/actions/productActions'
-import { getProductCates } from '../../../../state/actions/productCateActions'
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { getProductsByFilters } from "../../../../state/actions/productActions";
+import { getProductCates } from "../../../../state/actions/productCateActions";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
@@ -23,19 +19,19 @@ const mapStateToProps = (state) => ({
   productCates: state.productCate.productCates,
   isLoaded: state.product.isLoaded,
   isProCateLoaded: state.productCate.isLoaded,
-  totalDocuments: state.product.totalDocuments
+  totalDocuments: state.product.totalDocuments,
 });
 
 class ProductList extends React.Component {
   state = {
     productList: [1, 2, 3, 4, 5, 6, 7],
     skeletonList: [1, 2, 3, 4],
-    header: 'header',
-    picLink: './img/blue.png',
-    section: 'section-blue',
+    header: "header",
+    picLink: "./img/blue.png",
+    section: "section-blue",
     left: 0,
 
-    idMovieCat: '',
+    idMovieCat: "",
     limit: 8,
     page: 1,
     start: 1,
@@ -44,24 +40,27 @@ class ProductList extends React.Component {
     isNextBtnShow: true,
 
     arrayFilter: [],
-    maxRange: '',
-    minRange: '',
-    idProductCategory: '',
-  }
+    maxRange: "",
+    minRange: "",
+    idProductCategory: "",
+  };
 
   componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
-    const { getProductsByFilters, getProductCates } = this.props
-    const { limit, page } = this.state
+    window.addEventListener("scroll", this.handleScroll);
+    const { getProductsByFilters, getProductCates } = this.props;
+    const { limit, page } = this.state;
 
     //get productlist by movieCate
     if (this.props.match) {
-      const { idMovieCat } = this.props.match.params
+      const { idMovieCat } = this.props.match.params;
 
-      this.setState({ idMovieCat })
-      getProductsByFilters({ limit, page, arrayFilter: [{ name: 'idCategory', value: idMovieCat }] })
-      getProductCates({ limit: 1000, page: 1 })
-
+      this.setState({ idMovieCat });
+      getProductsByFilters({
+        limit,
+        page,
+        arrayFilter: [{ name: "idCategory", value: idMovieCat }],
+      });
+      getProductCates({ limit: 1000, page: 1 });
     }
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -72,7 +71,7 @@ class ProductList extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener("scroll", this.handleScroll);
   }
 
   getStartEndDocuments() {
@@ -94,7 +93,11 @@ class ProductList extends React.Component {
 
   rerenderPage = () => {
     const { limit, page, idMovieCat } = this.state;
-    this.props.getProductsByFilters({ limit, page, arrayFilter: [{ name: 'idCategory', value: idMovieCat }] })
+    this.props.getProductsByFilters({
+      limit,
+      page,
+      arrayFilter: [{ name: "idCategory", value: idMovieCat }],
+    });
     this.getPages();
     this.getStartEndDocuments();
   };
@@ -119,7 +122,7 @@ class ProductList extends React.Component {
         { pageNumber: 1 },
         { pageNumber: 2 },
         { pageNumber: 3 },
-        { pageNumber: '...' },
+        { pageNumber: "..." },
         { pageNumber: newArray.length },
       ];
     }
@@ -129,7 +132,7 @@ class ProductList extends React.Component {
   handleOnChange = (e) => {
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === 'query') {
+      if (e.target.name === "query") {
         this.setState({ page: 1 }, () => {
           this.rerenderPage();
         });
@@ -141,30 +144,30 @@ class ProductList extends React.Component {
 
   handleScroll = () => {
     if (window.scrollY > 10) {
-      this.setState({ header: 'header1' });
+      this.setState({ header: "header1" });
     } else {
-      this.setState({ header: 'header' });
+      this.setState({ header: "header" });
     }
     this.setState({
-      left: (-window.scrollY * 0.5).toString() + 'px',
+      left: (-window.scrollY * 0.5).toString() + "px",
     });
   };
 
   changePic = (e) => {
-    if (e.target.alt === 'blue') {
-      this.setState({ picLink: './img/blue.png' });
-      this.setState({ section: 'section-blue' });
-    } else if (e.target.alt === 'red') {
-      this.setState({ picLink: './img/red.png' });
-      this.setState({ section: 'section-red' });
+    if (e.target.alt === "blue") {
+      this.setState({ picLink: "./img/blue.png" });
+      this.setState({ section: "section-blue" });
+    } else if (e.target.alt === "red") {
+      this.setState({ picLink: "./img/red.png" });
+      this.setState({ section: "section-red" });
     } else {
-      this.setState({ picLink: './img/black.png' });
-      this.setState({ section: 'section-black' });
+      this.setState({ picLink: "./img/black.png" });
+      this.setState({ section: "section-black" });
     }
   };
 
   handleChoosePage = (e) => {
-    if (e === '...') return
+    if (e === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),
@@ -181,8 +184,12 @@ class ProductList extends React.Component {
 
     this.setState({ page: e }, () => {
       const { limit, page, idMovieCat } = this.state;
-      const { getProductsByFilters } = this.props
-      getProductsByFilters({ limit, page, arrayFilter: [{ name: 'idCategory', value: idMovieCat }] })
+      const { getProductsByFilters } = this.props;
+      getProductsByFilters({
+        limit,
+        page,
+        arrayFilter: [{ name: "idCategory", value: idMovieCat }],
+      });
       this.getStartEndDocuments();
     });
   };
@@ -197,13 +204,16 @@ class ProductList extends React.Component {
               key={eachButton.pageNumber}
               className={
                 page === eachButton.pageNumber
-                  ? 'paginae_button active'
-                  : 'paginate_button'}>
+                  ? "paginae_button active"
+                  : "paginate_button"
+              }
+            >
               <a
                 className="paga-link"
                 name="currentPage"
                 href="#"
-                onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
+                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+              >
                 {eachButton.pageNumber}
               </a>
             </li>
@@ -211,13 +221,13 @@ class ProductList extends React.Component {
           <li className="paginate_button">
             <a
               className={
-                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
+                isNextBtnShow === true ? "paga-link" : "paga-link_hidden"
               }
               name="currentPage"
               href="#"
               onClick={() => this.handleChoosePage(-1)}
             >
-              {'>>'}
+              {">>"}
             </a>
           </li>
         </>
@@ -226,89 +236,113 @@ class ProductList extends React.Component {
   };
 
   onChangeFilter = (e) => {
-    const { name, value } = e.target
-    this.setState({ [name]: value })
-  }
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  };
 
   filterProducts = (filterCate, star, productCate) => {
-    const { maxRange, minRange, idProductCategory, limit, page } = this.state
-    let arrayFilter = [...this.state.arrayFilter]
+    const { maxRange, minRange, idProductCategory, limit, page } = this.state;
+    let arrayFilter = [...this.state.arrayFilter];
 
     //if (idProductCategory == '') arrayFilter.push({ name: 'idProductCategory', value: idProductCategory, description: productCate.description })
 
-    if (filterCate == 'idProductCategory' || filterCate == 'rating') {
-      if (arrayFilter.some(e => e.name === filterCate)) {
-        arrayFilter.map(f => {
+    if (filterCate == "idProductCategory" || filterCate == "rating") {
+      if (arrayFilter.some((e) => e.name === filterCate)) {
+        arrayFilter.map((f) => {
           if (f.name == filterCate) {
-            f['value'] = star ? star : productCate.id
-            f['description'] = star ? star + ' sao' : productCate.description
+            f["value"] = star ? star : productCate.id;
+            f["description"] = star ? star + " sao" : productCate.description;
           }
-        })
+        });
       } else {
         arrayFilter.push({
           name: filterCate,
           value: star ? star : productCate.id,
-          description: star ? star + ' sao' : productCate.description
-        })
+          description: star ? star + " sao" : productCate.description,
+        });
       }
-
-    } else if (filterCate == 'price') {
+    } else if (filterCate == "price") {
       //check nếu minRange đã dc chọn, thay bằng cái mới
-      if (arrayFilter.some(e => e.name === 'minRange')) {
-        arrayFilter.map(f => {
-          if (f.name == 'minRange') f['value'] = minRange
-        })
+      if (arrayFilter.some((e) => e.name === "minRange")) {
+        arrayFilter.map((f) => {
+          if (f.name == "minRange") f["value"] = minRange;
+        });
       } else {
-        if (minRange !== '') arrayFilter.push({ name: 'minRange', value: minRange })
+        if (minRange !== "")
+          arrayFilter.push({ name: "minRange", value: minRange });
       }
 
       //check nếu maxRange đã dc chọn, thay bằng cái mới
-      if (arrayFilter.some(e => e.name === 'maxRange')) {
-        arrayFilter.map(f => {
-          if (f.name == 'maxRange') f['value'] = maxRange
-        })
+      if (arrayFilter.some((e) => e.name === "maxRange")) {
+        arrayFilter.map((f) => {
+          if (f.name == "maxRange") f["value"] = maxRange;
+        });
       } else {
-        if (maxRange !== '') arrayFilter.push({ name: 'maxRange', value: maxRange })
+        if (maxRange !== "")
+          arrayFilter.push({ name: "maxRange", value: maxRange });
       }
     }
     if (arrayFilter.length > 0) {
-      this.setState({ arrayFilter })
-      this.props.getProductsByFilters({ limit, page, arrayFilter })
+      this.setState({ arrayFilter });
+      this.props.getProductsByFilters({ limit, page, arrayFilter });
     }
-  }
+  };
 
   renderCritName = (filter) => {
-    if (filter.name == 'idProductCategory' || filter.name == 'rating') return filter.description
-    if (filter.name == 'minRange') { return '> ' + filter.value }
-    if (filter.name == 'maxRange') return '< ' + filter.value
-  }
+    if (filter.name == "idProductCategory" || filter.name == "rating")
+      return filter.description;
+    if (filter.name == "minRange") {
+      return "> " + filter.value;
+    }
+    if (filter.name == "maxRange") return "< " + filter.value;
+  };
 
-  clearFilter = f => {
-    const { limit, page } = this.state
+  clearFilter = (f) => {
+    const { limit, page } = this.state;
     this.setState(
       (state) => {
         let arrayFilter = [...state.arrayFilter];
-        arrayFilter.map(item => {
+        arrayFilter.map((item) => {
           if (f.name == item.name) {
-            item.value = ''
+            item.value = "";
           }
-        })
+        });
         return {
           arrayFilter,
         };
-      }, () => this.props.getProductsByFilters({ limit, page, arrayFilter: this.state.arrayFilter }),
+      },
+      () =>
+        this.props.getProductsByFilters({
+          limit,
+          page,
+          arrayFilter: this.state.arrayFilter,
+        })
     );
-  }
+  };
 
   render() {
-    const { skeletonList, productList, start, end, minRange, maxRange, arrayFilter } = this.state;
-    const { products, isLoaded, isProCateLoaded, productCates, totalDocuments } = this.props
+    const {
+      skeletonList,
+      productList,
+      start,
+      end,
+      minRange,
+      maxRange,
+      arrayFilter,
+    } = this.state;
+    const {
+      products,
+      isLoaded,
+      isProCateLoaded,
+      productCates,
+      totalDocuments,
+    } = this.props;
     const settings = {
       infinite: true,
       speed: 800,
       slidesToShow: 5,
       slidesToScroll: 4,
-      className: 'slider',
+      className: "slider",
     };
     return (
       <div>
@@ -316,16 +350,22 @@ class ProductList extends React.Component {
         <div
           style={{
             zIndex: 10,
-            marginBottom: '300px',
-            position: 'relative',
-            backgroundColor: '#f7f7f7'
+            marginBottom: "300px",
+            position: "relative",
+            backgroundColor: "#f7f7f7",
           }}
         >
-          {isLoaded && isProCateLoaded ?
+          {isLoaded && isProCateLoaded ? (
             <Fragment>
               <div className="nohome-section" />
               <div className="container1">
-                <div style={{ display: 'flex', padding: '40px', justifyContent: 'center' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    padding: "40px",
+                    justifyContent: "center",
+                  }}
+                >
                   <div className="filter-list">
                     <div className="ui action input">
                       <input type="text" placeholder="Search..." />
@@ -351,18 +391,20 @@ class ProductList extends React.Component {
                     <h3 className="title-filter">ĐÁNH GIÁ</h3>
                     {[5, 4, 3].map((star, index) => {
                       return (
-                        <div key={index} className="star-wrapper" onClick={() => this.filterProducts('rating', star)}>
+                        <div
+                          key={index}
+                          className="star-wrapper"
+                          onClick={() => this.filterProducts("rating", star)}
+                        >
                           <Rating
                             name="size-small"
                             value={star}
                             size="small"
                             readOnly
                           />
-                          <div style={{ marginLeft: '5px' }}>
-                            Từ {star} sao
-                          </div>
+                          <div style={{ marginLeft: "5px" }}>Từ {star} sao</div>
                         </div>
-                      )
+                      );
                     })}
 
                     <h3 className="title-filter">GIÁ TIỀN</h3>
@@ -377,19 +419,19 @@ class ProductList extends React.Component {
                       />
                       <div
                         style={{
-                          width: '5px',
-                          borderTop: '2px solid #c8c8c8',
-                          margin: '5px',
+                          width: "5px",
+                          borderTop: "2px solid #c8c8c8",
+                          margin: "5px",
                         }}
                       ></div>
                       <input
                         style={{
-                          borderRadius: '5px',
-                          border: '1px solid #ccc',
-                          padding: '12px',
-                          width: '90px',
-                          height: '10px',
-                          boxSizing: 'border-box',
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          padding: "12px",
+                          width: "90px",
+                          height: "10px",
+                          boxSizing: "border-box",
                         }}
                         type="number"
                         name="maxRange"
@@ -401,17 +443,17 @@ class ProductList extends React.Component {
 
                     <div
                       className="btn-go"
-                      onClick={() => this.filterProducts('price')}
+                      onClick={() => this.filterProducts("price")}
                       style={{
-                        width: '60px',
-                        height: '30px',
-                        border: '1px solid #ccc',
-                        textDecoration: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
+                        width: "60px",
+                        height: "30px",
+                        border: "1px solid #ccc",
+                        textDecoration: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
                       }}
                     >
                       Chọn
@@ -426,7 +468,21 @@ class ProductList extends React.Component {
                     <h2 className="title-filter">LOẠI SẢN PHẨM</h2>
                     <div className="productcat-grid">
                       {productCates.map((item, index) => {
-                        return <button key={index} onClick={() => this.filterProducts('idProductCategory', null, item)} className="tag">{item.description}</button>
+                        return (
+                          <button
+                            key={index}
+                            onClick={() =>
+                              this.filterProducts(
+                                "idProductCategory",
+                                null,
+                                item
+                              )
+                            }
+                            className="tag"
+                          >
+                            {item.description}
+                          </button>
+                        );
                       })}
                     </div>
 
@@ -448,31 +504,46 @@ class ProductList extends React.Component {
                         <button className="tag">Novel</button>
                       </div>
                     </div> */}
-
                   </div>
                   <div className="column-flex">
-                    {arrayFilter.length > 0 &&
+                    {arrayFilter.length > 0 && (
                       <>
                         Tiêu chí đang chọn:
                         <div className="row-flex">
                           {arrayFilter.map((f, index) => {
                             return (
-                              <div key={index} style={{ padding: '10px 10px 10px 0' }}>
-                                {f.value !== '' &&
+                              <div
+                                key={index}
+                                style={{ padding: "10px 10px 10px 0" }}
+                              >
+                                {f.value !== "" && (
                                   <div className="criteria">
-                                    <div className="cri-name">{this.renderCritName(f)} </div>
-                                    <span onClick={() => this.clearFilter(f)} aria-hidden="true">×</span>
-                                  </div>}
+                                    <div className="cri-name">
+                                      {this.renderCritName(f)}{" "}
+                                    </div>
+                                    <span
+                                      onClick={() => this.clearFilter(f)}
+                                      aria-hidden="true"
+                                    >
+                                      ×
+                                    </span>
+                                  </div>
+                                )}
                               </div>
-                            )
+                            );
                           })}
                         </div>
-                      </>}
+                      </>
+                    )}
 
                     <div className="filter-pane">
-                      <div>Hiển thị từ{' '} {start}  đến {totalDocuments < end ? totalDocuments : end} trong  {totalDocuments} kết quả</div>
+                      <div>
+                        Hiển thị từ {start} đến{" "}
+                        {totalDocuments < end ? totalDocuments : end} trong{" "}
+                        {totalDocuments} kết quả
+                      </div>
                       <div className="row-flex-center">
-                        <div style={{ marginRight: '10px' }}>Sort By</div>
+                        <div style={{ marginRight: "10px" }}>Sort By</div>
                         <div>
                           <select className="ui dropdown">
                             <option value="des">Giá giảm dần</option>
@@ -484,20 +555,29 @@ class ProductList extends React.Component {
                     </div>
                     <div>
                       <div className="list-wrapper">
-                        <div className="grid" >
-                          {isLoaded && products.length > 0 && products.map((item, index) => {
-                            return <ShowingProduct key={index} item={item} />;
-                          })}
+                        <div className="grid">
+                          {isLoaded &&
+                            products.length > 0 &&
+                            products.map((item, index) => {
+                              return <ShowingProduct key={index} item={item} />;
+                            })}
                         </div>
-                        {(!isLoaded || (isLoaded && products.length == 0)) &&
-                          <div className="grid" style={{ width: '900px' }}>
+                        {(!isLoaded || (isLoaded && products.length == 0)) && (
+                          <div className="grid" style={{ width: "900px" }}>
                             <p>Không tìm thấy sản phẩm nào</p>
-                          </div>}
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <div className="col-sm-7"
-                      style={{ width: '100%', display: 'flex', padding: 0 }}>
-                      <div style={{ marginLeft: 'auto' }} className="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                    <div
+                      className="col-sm-7"
+                      style={{ width: "100%", display: "flex", padding: 0 }}
+                    >
+                      <div
+                        style={{ marginLeft: "auto" }}
+                        className="dataTables_paginate paging_simple_numbers"
+                        id="example1_paginate"
+                      >
                         <ul className="pagination">
                           {this.renderPageButtons()}
                         </ul>
@@ -506,12 +586,13 @@ class ProductList extends React.Component {
                   </div>
                 </div>
               </div>
-            </Fragment> : <Loader />}
-
+            </Fragment>
+          ) : (
+            <Loader />
+          )}
         </div>
         <Footer />
-      </div >
-
+      </div>
     );
   }
 }
@@ -524,4 +605,7 @@ ProductList.propTypes = {
   productCates: PropTypes.array.isRequired,
 };
 
-export default connect(mapStateToProps, { getProductsByFilters, getProductCates })(ProductList);
+export default connect(mapStateToProps, {
+  getProductsByFilters,
+  getProductCates,
+})(ProductList);

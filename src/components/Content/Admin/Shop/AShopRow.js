@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { deleteShop } from '../../../../state/actions/shopActions';
-import { pushHistory } from '../../../../state/actions/historyActions';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { deleteShop } from "../../../../state/actions/shopActions";
+import { pushHistory } from "../../../../state/actions/historyActions";
 
 class AShopRow extends Component {
   convertDate = (date) => {
@@ -12,7 +12,7 @@ class AShopRow extends Component {
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return year + '-' + month + '-' + dt;
+    return dt + "/" + month + "/" + year;
   };
 
   handleEdit = (id) => {
@@ -25,7 +25,7 @@ class AShopRow extends Component {
 
   handleEmpDetails = (id) => {
     this.props.pushHistory(`/admin/employee/shop/${id}`);
-  }
+  };
 
   render() {
     const { shop, index } = this.props;

@@ -63,8 +63,9 @@ class LaterList extends React.Component {
               display: "flex",
               justifyContent: "center",
               padding: "20px",
-            }} >
-            <UserProfile selectedItem={this.props} />
+            }}
+          >
+            <UserProfile selectedLink="/shopnow/user/laterlist" />
             <div className="later-order-list">
               {orderList.map((item) => {
                 return <LaterListDetail key={item._id} />;

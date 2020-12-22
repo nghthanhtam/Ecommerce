@@ -131,7 +131,7 @@ class ARating extends Component {
             index={index + start - 1}
             deleteItem={deleteRating}
             updateItemStatus={updateRatingStatus}
-            pages={{ limit, page, query }}
+            pages={{ limit, page, query, status: 'pending' }}
           />
         ))
       );

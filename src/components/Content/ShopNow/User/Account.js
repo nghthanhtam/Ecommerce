@@ -43,7 +43,7 @@ class Account extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-  }
+  };
 
   render() {
     return (
@@ -63,10 +63,10 @@ class Account extends React.Component {
             style={{
               display: "flex",
               justifyContent: "center",
-              padding: "20px"
-            }}>
-
-            <UserProfile selectedItem={this.props} />
+              padding: "20px",
+            }}
+          >
+            <UserProfile selectedLink="/shopnow/user/account" />
 
             <div className="acc-container">
               <form
@@ -78,13 +78,23 @@ class Account extends React.Component {
                   <label style={{ fontWeight: "400", fontSize: "15px" }}>
                     Họ tên
                   </label>
-                  <input required type="text" name="fullname" placeholder="Họ tên" />
+                  <input
+                    required
+                    type="text"
+                    name="fullname"
+                    placeholder="Họ tên"
+                  />
                 </div>
                 <div className="field">
                   <label style={{ fontWeight: "400", fontSize: "15px" }}>
                     Họ tên
                   </label>
-                  <input required type="text" name="username" placeholder="Tài khoản đăng nhập" />
+                  <input
+                    required
+                    type="text"
+                    name="username"
+                    placeholder="Tài khoản đăng nhập"
+                  />
                 </div>
                 <div className="field">
                   <label style={{ fontWeight: "400", fontSize: "15px" }}>
@@ -111,9 +121,14 @@ class Account extends React.Component {
                 </div> */}
 
                 <button
-                  style={{ backgroundColor: "#3571a7", color: "white", fontWeight: "400" }}
+                  style={{
+                    backgroundColor: "#3571a7",
+                    color: "white",
+                    fontWeight: "400",
+                  }}
                   className="ui button"
-                  type="submit">
+                  type="submit"
+                >
                   Cập nhật
                 </button>
               </form>

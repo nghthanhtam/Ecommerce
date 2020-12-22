@@ -7,10 +7,7 @@ export default function Footer() {
         <div className="shop">SHOP</div>
         <div className="now">NOW</div>
       </div>
-      <div className="description">
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry's standard dummy text
-      </div>
+      <div className="description">Like ShopNow để nhận ưu đãi mỗi ngày</div>
       <div className="social">
         <div>
           <i className="fa fa-facebook"></i>

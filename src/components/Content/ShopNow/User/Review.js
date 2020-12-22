@@ -60,9 +60,9 @@ class Account extends React.Component {
               padding: "20px",
             }}
           >
-            <UserProfile selectedItem={this.props} />
+            <UserProfile selectedLink="/shopnow/user/review" />
 
-            <div className="acc-container">
+            <div className="review-container">
               <div className="row-flex">
                 <div className="grid-review">
                   {productList.map((item, index) => {

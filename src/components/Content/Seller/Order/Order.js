@@ -1,10 +1,10 @@
-import React, { Component, Fragment } from 'react';
-import OrderRow from './OrderRow';
-import Loader from 'react-loader'
+import React, { Component, Fragment } from "react";
+import OrderRow from "./OrderRow";
+import Loader from "react-loader";
 
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { getOrdersByShop } from '../../../../state/actions/orderActions';
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { getOrdersByShop } from "../../../../state/actions/orderActions";
 
 const mapStateToProps = (state) => ({
   orders: state.order.orders,
@@ -20,7 +20,7 @@ class Order extends Component {
     limit: 5,
     page: 1,
     pages: [],
-    query: '',
+    query: "",
     start: 1,
     end: 5,
     isNextBtnShow: true,
@@ -67,8 +67,8 @@ class Order extends Component {
     const { totalDocuments } = this.props;
     if (totalDocuments == 0) return;
 
-    let newQuery = '';
-    if (query === '') newQuery = 'undefined';
+    let newQuery = "";
+    if (query === "") newQuery = "undefined";
     else newQuery = query;
 
     let pages = Math.floor(totalDocuments / limit);
@@ -86,7 +86,7 @@ class Order extends Component {
         { pageNumber: 1 },
         { pageNumber: 2 },
         { pageNumber: 3 },
-        { pageNumber: '...' },
+        { pageNumber: "..." },
         { pageNumber: newArray.length },
       ];
     }
@@ -96,7 +96,7 @@ class Order extends Component {
   handleOnChange = (e) => {
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === 'query') {
+      if (e.target.name === "query") {
         this.setState({ page: 1 }, () => {
           this.rerenderPage();
         });
@@ -122,8 +122,8 @@ class Order extends Component {
   };
 
   renderOrders = () => {
-    const { start, limit, page } = this.state;
-    const { orders, isLoaded } = this.props;
+    const { limit, page, query } = this.state;
+    const { orders, isLoaded, idShop } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -132,26 +132,26 @@ class Order extends Component {
         </td>
       </tr>
     ) : (
-        orders.map((eachOrder, index) => (
-          <OrderRow
-            history={this.props.history}
-            key={eachOrder.id}
-            order={eachOrder}
-            index={index + start - 1}
-          />
-        ))
-      );
+      orders.map((eachOrder, index) => (
+        <OrderRow
+          history={this.props.history}
+          key={eachOrder.id}
+          order={eachOrder}
+          pages={{ limit, page, query, idShop }}
+        />
+      ))
+    );
   };
 
   handleChoosePage = (e) => {
-    if (e === '...') return
+    if (e === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
 
-    console.log(page + ' and ' + pages);
+    console.log(page + " and " + pages);
 
     if (e === -1) {
       e = page + 1;
@@ -168,7 +168,7 @@ class Order extends Component {
         limit,
         page,
         query,
-        idShop
+        idShop,
       });
       this.getStartEndDocuments();
     });
@@ -181,7 +181,7 @@ class Order extends Component {
         onChange={this.handleOnChange}
         name="limit"
         aria-controls="example1"
-        style={{ margin: '0px 5px' }}
+        style={{ margin: "0px 5px" }}
         className="form-control input-sm"
         value={limit}
       >
@@ -204,8 +204,8 @@ class Order extends Component {
               key={eachButton.pageNumber}
               className={
                 page === eachButton.pageNumber
-                  ? 'paginae_button active'
-                  : 'paginate_button '
+                  ? "paginae_button active"
+                  : "paginate_button "
               }
             >
               <a
@@ -221,13 +221,13 @@ class Order extends Component {
           <li className="paginate_button">
             <a
               className={
-                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
+                isNextBtnShow === true ? "paga-link" : "paga-link_hidden"
               }
               name="currentPage"
               href="#"
               onClick={() => this.handleChoosePage(-1)}
             >
-              {'>>'}
+              {">>"}
             </a>
           </li>
         </>
@@ -236,16 +236,13 @@ class Order extends Component {
   };
 
   render() {
-    const { limit, page, start, end, query, } = this.state;
+    const { limit, page, start, end, query } = this.state;
     const { totalDocuments } = this.props;
     return (
       <Fragment>
-
         <Fragment>
           <section className="content-header">
-            <h1>
-              Đơn hàng
-            </h1>
+            <h1>Đơn hàng</h1>
             <ol className="breadcrumb">
               <li>
                 <a href="/home">
@@ -263,8 +260,8 @@ class Order extends Component {
               {/* left column */}
               <div className="col-md-12">
                 <div className="box">
-                  <div className="box-header" style={{ marginTop: '5px' }}>
-                    <div style={{ paddingLeft: '5px' }} className="col-md-8">
+                  <div className="box-header" style={{ marginTop: "5px" }}>
+                    <div style={{ paddingLeft: "5px" }} className="col-md-8">
                       <h3 className="box-title">Quản lý đơn hàng</h3>
                     </div>
 
@@ -319,14 +316,15 @@ class Order extends Component {
                           >
                             <thead>
                               <tr>
-                                <th style={{ width: '10%' }}>Mã đơn hàng</th>
-                                <th style={{ width: '10%' }}>Người nhận</th>
-                                <th style={{ width: '10%' }}>Số điện thoại</th>
-                                <th style={{ width: '15%' }}>Địa chỉ</th>
-                                <th style={{ width: '10%' }}>Tổng cộng</th>
-                                <th style={{ width: '10%' }}>Ngày đặt</th>
-                                <th style={{ width: '10%' }}>Tình trạng</th>
-                                <th style={{ width: '10%' }}>Lý do hủy</th>
+                                <th style={{ width: "10%" }}>Mã đơn hàng</th>
+                                <th style={{ width: "10%" }}>Người nhận</th>
+                                <th style={{ width: "10%" }}>Số điện thoại</th>
+                                <th style={{ width: "15%" }}>Địa chỉ</th>
+                                <th style={{ width: "10%" }}>Tổng cộng</th>
+                                <th style={{ width: "10%" }}>Ngày đặt</th>
+                                <th style={{ width: "12%" }}>Tình trạng</th>
+                                <th style={{ width: "10%" }}>Lý do hủy</th>
+                                <th style={{ width: "10%" }}>Thao tác</th>
                               </tr>
                             </thead>
 
@@ -355,20 +353,24 @@ class Order extends Component {
                             role="status"
                             aria-live="polite"
                           >
-                            Hiển thị{' '}
-                            {query == ''
-                              ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
-                              : ''}{' '}
+                            Hiển thị{" "}
+                            {query == ""
+                              ? start +
+                                " đến " +
+                                (totalDocuments < end ? totalDocuments : end) +
+                                " trong "
+                              : ""}{" "}
                             {totalDocuments} kết quả
                           </div>
                         </div>
                         <div className="col-sm-7">
                           <div
                             className="dataTables_paginate paging_simple_numbers"
-                            id="example1_paginate">
+                            id="example1_paginate"
+                          >
                             <ul
                               className="pagination"
-                              style={{ float: 'right' }}
+                              style={{ float: "right" }}
                             >
                               {this.renderPageButtons()}
                             </ul>

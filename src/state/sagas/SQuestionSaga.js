@@ -95,7 +95,7 @@ function* deleteQuestion(params) {
 
 function* updateQuestionStt(params) {
   const state = yield select(),
-    { id, status } = params.params
+    { id, status, pages } = params.params
 
   try {
     const response = yield call(() =>
@@ -106,6 +106,7 @@ function* updateQuestionStt(params) {
       )
     );
     yield put({ type: QUESTION_UPDATED, payload: response.data });
+    yield put({ type: GET_QUESTIONS, pages });
   } catch (error) {
     console.log({ ...error });
   }

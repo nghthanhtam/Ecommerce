@@ -1,54 +1,61 @@
 import {
-  GET_PRODUCTS,
-  ADD_PRODUCT,
-  DELETE_PRODUCT,
-  PRODUCT_DELETED,
-  PRODUCTS_RECEIVED,
-  PRODUCT_ADDED,
-  PRODUCT_UPDATED,
+  GET_PAYSLIPS,
+  ADD_PAYSLIP,
+  DELETE_PAYSLIP,
+  PAYSLIP_DELETED,
+  PAYSLIPS_RECEIVED,
+  PAYSLIP_ADDED,
+  PAYSLIP_UPDATED,
+  UPDATE_PAYSLIP,
 } from "../actions/types";
 
 const initialState = {
-  products: [],
+  payslips: [],
   isLoaded: false,
+  isUpdated: false,
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case GET_PRODUCTS:
+    case GET_PAYSLIPS:
       return {
         ...state,
         isLoaded: true,
       };
-    case PRODUCTS_RECEIVED:
-      return { ...state, products: action.payload.data, isLoaded: true };
-    case PRODUCT_ADDED:
+    case PAYSLIPS_RECEIVED:
+      return { ...state, payslips: action.payload.data, isLoaded: true };
+    case PAYSLIP_ADDED:
       return {
         ...state,
-        products: [action.payload, ...state.products],
+        payslips: [action.payload, ...state.payslips],
         isLoaded: true,
       };
-    case DELETE_PRODUCT:
+    case DELETE_PAYSLIP:
       return {
         ...state,
       };
-    case PRODUCT_DELETED:
+    case PAYSLIP_DELETED:
       return {
         ...state,
-        products: state.products.filter(
-          (product) => product._id !== action.payload._id
+        payslips: state.payslips.filter(
+          (payslip) => payslip._id !== action.payload._id
         ),
       };
-    case ADD_PRODUCT:
+    case ADD_PAYSLIP:
       return {
         ...state,
-        //products: [action.payload, ...state.products],
+        //payslips: [action.payload, ...state.payslips],
         isLoaded: false,
       };
-
-    case PRODUCT_UPDATED:
+    case UPDATE_PAYSLIP:
       return {
         ...state,
+        isUpdated: false,
+      };
+    case PAYSLIP_UPDATED:
+      return {
+        ...state,
+        isUpdated: true,
       };
 
     default:

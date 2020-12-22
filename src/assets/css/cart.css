@@ -14,14 +14,6 @@
     transform: rotateY(0);
   }
 }
-.modal-wrapper {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  transition: 0.75s linear;
-  z-index: 1000;
-}
 .cart-container {
   padding-top: 30px;
   display: flex;

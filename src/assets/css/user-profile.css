@@ -18,7 +18,7 @@
   flex-direction: column;
   background-color: white;
 
-  width: 22%;
+  width: 22.5%;
   padding: 20px;
   height: 500px;
   margin-top: 10px;
@@ -217,4 +217,12 @@
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-column-gap: 4px;
   grid-row-gap: 8px;
+}
+.review-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background-color: white;
+  width: 900px;
+  margin: 10px 0 0 10px;
 }

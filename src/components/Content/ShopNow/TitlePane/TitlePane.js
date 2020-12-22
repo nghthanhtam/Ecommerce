@@ -19,11 +19,11 @@ class TitlePane extends React.Component {
           </div>
           <div className="line"></div>
         </div>
-        {!isNotShop ? (
+        {/* {!isNotShop ? (
           <Link to="./product-list" className="text">
             Shop Now
           </Link>
-        ) : null}
+        ) : null} */}
       </div>
     );
   }

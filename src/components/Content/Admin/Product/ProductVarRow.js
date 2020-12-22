@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import { deleteProduct } from '../../../../state/actions/productActions';
-import { updateProductVarStatus } from '../../../../state/actions/productVarActions';
-import { showModal } from '../../../../state/actions/modalActions';
-import { pushHistory } from '../../../../state/actions/historyActions';
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import { deleteProduct } from "../../../../state/actions/productActions";
+import { updateProductVarStatus } from "../../../../state/actions/productVarActions";
+import { showModal } from "../../../../state/actions/modalActions";
+import { pushHistory } from "../../../../state/actions/historyActions";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
@@ -17,58 +17,92 @@ class ProductRow extends Component {
     let dt = newDate.getDate();
 
     dt = dt < 10 ? `0${dt}` : dt;
-
     month = month < 10 ? `0${month}` : month;
-
-    return year + '-' + month + '-' + dt;
+    return year + "-" + month + "-" + dt;
   };
 
   approve = () => {
     const { productVar } = this.props;
-    productVar.status = 'active'
-    this.props.updateProductVarStatus(productVar)
+    productVar.status = "active";
+    this.props.updateProductVarStatus(productVar);
+  };
+
+  convertPrice = (value) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   render() {
-    const { name, SKU, price, id, status, idShop, Images } = this.props.productVar;
-    const { index } = this.props
+    const {
+      name,
+      SKU,
+      price,
+      id,
+      status,
+      idShop,
+      Images,
+    } = this.props.productVar;
+    const { index } = this.props;
 
     return (
       <Fragment>
         <tr>
           <td>{index + 1}</td>
-          <td><img src={Images[0].url} alt="" border='3' height='200px' width='200px' /> {SKU}</td>
+          <td>
+            <img
+              src={Images[0].url}
+              alt=""
+              border="3"
+              height="200px"
+              width="200px"
+            />{" "}
+            {SKU}
+          </td>
           <td>{name}</td>
           <td>{SKU}</td>
-          <td >{price}  VND</td>
+          <td>{this.convertPrice(price)} VND</td>
           <td>{idShop}</td>
 
-          {(status == 'active' || status == 'inactive') &&
+          {(status == "active" || status == "inactive") && (
             <td>
               <div className="btn-group">
-                <button onClick={() => this.props.history.push({ pathname: `/admin/productvar/edit/${id}` })}
-                  type="button" className="btn btn-success">
+                <button
+                  onClick={() =>
+                    this.props.history.push({
+                      pathname: `/admin/productvar/edit/${id}`,
+                    })
+                  }
+                  type="button"
+                  className="btn btn-success"
+                >
                   Sửa
-                  </button>
+                </button>
               </div>
-            </td>}
+            </td>
+          )}
 
-          {status == 'pending' &&
+          {status == "pending" && (
             <>
-              <td style={{ color: 'grey' }}>
-                <i style={{ color: '#52c41a' }} className="fa fa-spinner" aria-hidden="true"></i> Chờ duyệt
-                </td>
+              <td style={{ color: "grey" }}>
+                <i
+                  style={{ color: "#52c41a" }}
+                  className="fa fa-spinner"
+                  aria-hidden="true"
+                ></i>{" "}
+                Chờ duyệt
+              </td>
               <td>
                 <div className="btn-group">
                   <button
                     onClick={() => this.approve()}
                     type="button"
-                    className="btn btn-success">
+                    className="btn btn-success"
+                  >
                     Duyệt
-                    </button>
+                  </button>
                 </div>
               </td>
-            </>}
+            </>
+          )}
         </tr>
         {/* : null} */}
       </Fragment>
@@ -76,4 +110,9 @@ class ProductRow extends Component {
   }
 }
 
-export default connect(mapStateToProps, { deleteProduct, pushHistory, updateProductVarStatus, showModal })(ProductRow);
+export default connect(mapStateToProps, {
+  deleteProduct,
+  pushHistory,
+  updateProductVarStatus,
+  showModal,
+})(ProductRow);

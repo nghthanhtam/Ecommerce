@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { updateOrder } from '../../../../state/actions/orderActions';
-import { showModal } from '../../../../state/actions/modalActions';
-import './order.css'
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { updateOrder } from "../../../../state/actions/orderActions";
+import { showModal } from "../../../../state/actions/modalActions";
+import "./order.css";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
@@ -11,13 +11,13 @@ const mapStateToProps = (state) => ({
 class OrderRow extends Component {
   state = {
     statuses: [
-      { value: "received", label: 'Đã tiếp nhận' },
-      { value: "in transit", label: 'Đang giao hàng' },
-      { value: "delivered", label: 'Đã nhận hàng' },
-      { value: "canceled", label: 'Đã hủy' },
+      { value: "received", label: "Đã tiếp nhận" },
+      { value: "in transit", label: "Đang giao hàng" },
+      { value: "delivered", label: "Đã nhận hàng" },
+      { value: "canceled", label: "Hủy đơn" },
     ],
-    disabledState: ''
-  }
+    disabledState: "",
+  };
 
   convertDate = (date) => {
     const newDate = new Date(date);
@@ -29,7 +29,7 @@ class OrderRow extends Component {
 
     month = month < 10 ? `0${month}` : month;
 
-    return year + '-' + month + '-' + dt;
+    return year + "-" + month + "-" + dt;
   };
 
   handleEdit = (id) => {
@@ -40,44 +40,117 @@ class OrderRow extends Component {
     this.props.deleteEmployee(id);
   };
 
+  handleAction = (e, item) => {
+    const { status, id } = this.props.order;
+    if (
+      (status == "in transit" && item.value == "received") ||
+      status == item.value
+    )
+      e.stopPropagation();
+    else {
+      if (item.value == "status") {
+        this.props.showModal({
+          show: true,
+          modalName: "modalCancel",
+          details: { pages: this.props.pages },
+        });
+      }
+
+      this.props.updateOrder({
+        id,
+        status: item.value,
+        pages: this.props.pages,
+      });
+    }
+  };
+
   render() {
-    const { totalPrice, recipient, phone, numberAndStreet, createdAt, status, cancelReason, id, Ward, District, City } = this.props.order
-    const { statuses } = this.state
+    const {
+      totalAmount,
+      Purchase,
+      createdAt,
+      status,
+      cancelReason,
+      id,
+      Ward,
+      District,
+      City,
+    } = this.props.order;
+    const { statuses } = this.state;
 
     return (
       <tr>
-        <td onClick={() => this.props.history.push(`/seller/order/edit/${id}`)}
-          style={{ color: 'blue', cursor: 'pointer' }}>#{id}
+        <td
+          onClick={() =>
+            this.props.history.push({
+              pathname: `/seller/order/edit/${id}`,
+              totalAmount,
+            })
+          }
+          style={{ color: "blue", cursor: "pointer" }}
+        >
+          #{id}
         </td>
-        <td>{recipient}</td>
-        <td>{phone}</td>
-        <td>{numberAndStreet + ', ' + Ward.ward + ', ' + District.district + ', ' + City.city}</td>
-        <td>{totalPrice}</td>
+        <td>{Purchase.recipient}</td>
+        <td>{Purchase.phone}</td>
+        <td>
+          {Purchase.numberAndStreet +
+            ", " +
+            Ward.ward +
+            ", " +
+            District.district +
+            ", " +
+            City.city}
+        </td>
+        <td>{totalAmount}</td>
         <td>{this.convertDate(createdAt)}</td>
-        <td >{status == 'pending' ? 'Đang xử lý' : (status == 'in transit' ? 'Đang giao hàng' : (status == 'delivered' ? 'Đã nhận hàng' : (status == 'received' ? 'Đã tiếp nhận' : 'Đã hủy')))}</td>
+        <td>
+          {status == "pending"
+            ? "Đang xử lý"
+            : status == "in transit"
+            ? "Đang giao hàng"
+            : status == "delivered"
+            ? "Đã nhận hàng"
+            : status == "received"
+            ? "Đã tiếp nhận"
+            : "Đã hủy"}
+        </td>
         <td>{cancelReason}</td>
 
         <td>
-          {status !== 'canceled' && status !== 'delivered' &&
+          {status !== "canceled" && status !== "delivered" && (
             <div className="btn-group">
-              <button type="button" className="btn btn-info">Duyệt</button>
-              <button type="button" className="btn btn-info dropdown-toggle" data-toggle="dropdown">
+              <button type="button" className="btn btn-info">
+                Duyệt
+              </button>
+              <button
+                type="button"
+                className="btn btn-info dropdown-toggle"
+                data-toggle="dropdown"
+              >
                 <span className="caret"></span>
                 <span className="sr-only">Toggle Dropdown</span>
               </button>
               <ul className="dropdown-menu" role="menu">
                 {statuses.map((item, index) => (
-                  <li key={index} className={(status == 'in transit' && item.value == 'recieved')
-                    || (status !== 'pending' && item.value == 'canceled') || (status == item.value) ? 'disabled-link' : ''}
-                    onClick={() => {
-                      this.props.updateOrder({ id, status: item.value });
-                      window.location.reload()
-                    }}><a href="#"> {item.label} </a></li>
+                  <li
+                    key={index}
+                    className={
+                      (status == "in transit" && item.value == "received") ||
+                      status == item.value
+                        ? "disabled-link"
+                        : ""
+                    }
+                    onClick={(e) => this.handleAction(e, item)}
+                  >
+                    <a href="javascript:void(0);"> {item.label} </a>
+                  </li>
                 ))}
               </ul>
-            </div>}
+            </div>
+          )}
         </td>
-      </tr >
+      </tr>
     );
   }
 }

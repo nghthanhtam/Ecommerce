@@ -1,26 +1,26 @@
 import {
-  GET_PRODUCTS,
-  ADD_PRODUCT,
-  DELETE_PRODUCT,
-  UPDATE_PRODUCT,
+  GET_PAYSLIPS,
+  ADD_PAYSLIP,
+  DELETE_PAYSLIP,
+  UPDATE_PAYSLIP,
 } from "./types";
 
-export const getProducts = (params) => ({
-  type: GET_PRODUCTS,
+export const getPayslips = (params) => ({
+  type: GET_PAYSLIPS,
   pages: params,
 });
 
-export const deleteProduct = (id) => ({
-  type: DELETE_PRODUCT,
-  id: id,
+export const deletePayslip = (id) => ({
+  type: DELETE_PAYSLIP,
+  id,
 });
 
-export const addProduct = (newProduct) => ({
-  type: ADD_PRODUCT,
-  newProduct: newProduct,
+export const addPayslip = (newPayslip) => ({
+  type: ADD_PAYSLIP,
+  newPayslip,
 });
 
-export const updateProduct = (newProduct) => ({
-  type: UPDATE_PRODUCT,
-  newProduct: newProduct,
+export const updatePayslip = (newPayslip) => ({
+  type: UPDATE_PAYSLIP,
+  newPayslip,
 });

@@ -1,41 +1,37 @@
-import { combineReducers } from 'redux';
-import employeeReducer from './employeeReducer';
-import movieReducer from './movieReducer';
-import productCateReducer from './productCateReducer';
-import errorReducer from './errorReducer';
-import authReducer from './authReducer';
-import authUserReducer from './authUserReducer';
-import historyReducer from './historyReducer';
-import roleReducer from './roleReducer';
-import productReducer from './productReducer';
-import shopReducer from './shopReducer';
-import productVarReducer from './productVarReducer';
-import employeeRoleReducer from './employeeRoleReducer';
-import variantValReducer from './variantValReducer';
-import movieCateReducer from './movieCateReducer';
-import modalReducer from './modalReducer';
-import addressReducer from './addressReducer';
-import paymentReducer from './paymentReducer';
-import orderReducer from './orderReducer';
-import userReducer from './userReducer';
-import ratingReducer from './ratingReducer';
-import commentReducer from './commentReducer';
-import answerReducer from './answerReducer';
-
-import memberReducer from './memberReducer';
-import invoiceReducer from './invoiceReducer';
-import payslipReducer from './payslipReducer';
-import materialReducer from './materialReducer';
-import notificationReducer from './notificationReducer';
-import supplierReducer from './supplierReducer';
-import storageReportReducer from './storageReportReducer';
-import invoicedetReducer from './invoicedetReducer';
-import cartReducer from './cartReducer';
-import cityReducer from './cityReducer';
-import districtReducer from './districtReducer';
-import wardReducer from './wardReducer';
-import authAdminReducer from './authAdminReducer'
-import questionReducer from './questionReducer'
+import { combineReducers } from "redux";
+import employeeReducer from "./employeeReducer";
+import movieReducer from "./movieReducer";
+import productCateReducer from "./productCateReducer";
+import errorReducer from "./errorReducer";
+import authReducer from "./authReducer";
+import authUserReducer from "./authUserReducer";
+import historyReducer from "./historyReducer";
+import roleReducer from "./roleReducer";
+import productReducer from "./productReducer";
+import shopReducer from "./shopReducer";
+import productVarReducer from "./productVarReducer";
+import employeeRoleReducer from "./employeeRoleReducer";
+import variantValReducer from "./variantValReducer";
+import movieCateReducer from "./movieCateReducer";
+import modalReducer from "./modalReducer";
+import addressReducer from "./addressReducer";
+import paymentReducer from "./paymentReducer";
+import orderReducer from "./orderReducer";
+import userReducer from "./userReducer";
+import ratingReducer from "./ratingReducer";
+import commentReducer from "./commentReducer";
+import answerReducer from "./answerReducer";
+import stockHisReducer from "./stockHistoryReducer";
+import memberReducer from "./memberReducer";
+import cartReducer from "./cartReducer";
+import cityReducer from "./cityReducer";
+import districtReducer from "./districtReducer";
+import wardReducer from "./wardReducer";
+import authAdminReducer from "./authAdminReducer";
+import questionReducer from "./questionReducer";
+import payslipReducer from "./payslipReducer";
+import promotionReducer from "./promotionReducer";
+import promotionTypeReducer from "./promotionTypeReducer";
 
 export default combineReducers({
   employee: employeeReducer,
@@ -67,12 +63,8 @@ export default combineReducers({
   comment: commentReducer,
   question: questionReducer,
   answer: answerReducer,
-
-  invoice: invoiceReducer,
-  invoicedet: invoicedetReducer,
+  stockHis: stockHisReducer,
   payslip: payslipReducer,
-  material: materialReducer,
-  showNoti: notificationReducer,
-  supplier: supplierReducer,
-  storagereport: storageReportReducer,
+  promotion: promotionReducer,
+  promotionType: promotionTypeReducer,
 });

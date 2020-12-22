@@ -58,6 +58,13 @@
   border-top: 0;
   color: #666;
 }
+.stock-modal {
+  margin: 0;
+  background: #fff;
+  padding: 0;
+  border-top: 0;
+  color: #666;
+}
 .info-det {
   margin-top: 10px;
 }
@@ -73,4 +80,20 @@
   margin-right: 10px;
   font-size: 12px;
   cursor: pointer;
+}
+.modal-wrapper {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  transition: 0.75s linear;
+  z-index: 1000;
+}
+.modal-wrapper1 {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  transition: 0.75s linear;
+  z-index: 1001;
 }

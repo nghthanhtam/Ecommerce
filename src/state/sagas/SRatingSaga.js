@@ -78,7 +78,7 @@ function* addRating(params) {
 
 function* updateRatingStt(params) {
   const state = yield select(),
-    { id, status } = params.params
+    { id, status, pages } = params.params
 
   try {
     const response = yield call(() =>
@@ -89,6 +89,7 @@ function* updateRatingStt(params) {
       )
     );
     yield put({ type: RATING_UPDATED, payload: response.data });
+    yield put({ type: GET_RATINGS, pages });
   } catch (error) {
     console.log({ ...error });
   }

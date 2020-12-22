@@ -74,10 +74,7 @@ function* updateAnswerStt(params) {
       )
     );
     yield put({ type: ANSWER_UPDATED, payload: response.data });
-    yield put({
-      type: GET_ANSWERS,
-      pages,
-    });
+    yield put({ type: GET_ANSWERS, pages });
   } catch (error) {
     console.log({ ...error });
   }

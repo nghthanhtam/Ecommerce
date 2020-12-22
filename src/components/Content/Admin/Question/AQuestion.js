@@ -131,7 +131,7 @@ class AQuestion extends Component {
             index={index + start - 1}
             deleteItem={deleteQuestion}
             updateItemStatus={updateQuestionStatus}
-            pages={{ limit, page, query }}
+            pages={{ limit, page, query, status: 'pending' }}
           />
         ))
       );

@@ -1,9 +1,13 @@
-import React, { Component, Fragment } from 'react';
-import SlotRow from '../../Slots/SlotRow';
-import { connect } from 'react-redux';
-import { getAnswers, deleteAnswer, updateAnswerStatus } from '../../../../state/actions/answerActions';
-import PropTypes from 'prop-types';
-import Loader from 'react-loader';
+import React, { Component, Fragment } from "react";
+import SlotRow from "../../Slots/SlotRow";
+import { connect } from "react-redux";
+import {
+  getAnswers,
+  deleteAnswer,
+  updateAnswerStatus,
+} from "../../../../state/actions/answerActions";
+import PropTypes from "prop-types";
+import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
   answers: state.answer.answers,
@@ -17,7 +21,7 @@ class AAnswer extends Component {
     limit: 5,
     page: 1,
     pages: [],
-    query: '',
+    query: "",
     start: 1,
     end: 5,
     isNextBtnShow: true,
@@ -29,13 +33,13 @@ class AAnswer extends Component {
       limit,
       page,
       query,
-      status: 'pending'
+      status: "pending",
     });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { isLoaded } = this.props;
-    if (isLoaded == true && this.state.pages == prevState.pages) {
+    if (isLoaded === true && this.state.pages === prevState.pages) {
       this.getPages();
     }
   }
@@ -43,10 +47,10 @@ class AAnswer extends Component {
   getPages = () => {
     const { limit, query } = this.state;
     const { totalDocuments } = this.props;
-    if (totalDocuments == 0) return;
+    if (totalDocuments === 0) return;
 
-    let newQuery = '';
-    if (query === '') newQuery = 'undefined';
+    let newQuery = "";
+    if (query === "") newQuery = "undefined";
     else newQuery = query;
 
     let pages = Math.floor(totalDocuments / limit);
@@ -64,7 +68,7 @@ class AAnswer extends Component {
         { pageNumber: 1 },
         { pageNumber: 2 },
         { pageNumber: 3 },
-        { pageNumber: '...' },
+        { pageNumber: "..." },
         { pageNumber: newArray.length },
       ];
     }
@@ -74,7 +78,7 @@ class AAnswer extends Component {
   handleOnChange = (e) => {
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === 'query') {
+      if (e.target.name === "query") {
         this.setState({ page: 1 }, () => {
           this.rerenderPage();
         });
@@ -123,22 +127,22 @@ class AAnswer extends Component {
         </td>
       </tr>
     ) : (
-        answers.map((answer, index) => (
-          <SlotRow
-            cate='answer'
-            key={answer.id}
-            item={answer}
-            index={index + start - 1}
-            deleteItem={deleteAnswer}
-            updateItemStatus={updateAnswerStatus}
-            pages={{ limit, page, query }}
-          />
-        ))
-      );
+      answers.map((answer, index) => (
+        <SlotRow
+          cate="answer"
+          key={answer.id}
+          item={answer}
+          index={index + start - 1}
+          deleteItem={deleteAnswer}
+          updateItemStatus={updateAnswerStatus}
+          pages={{ limit, page, query, status: "pending" }}
+        />
+      ))
+    );
   };
 
   handleChoosePage = (e) => {
-    if (e === '...') return
+    if (e === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),
@@ -154,13 +158,13 @@ class AAnswer extends Component {
     }
 
     this.setState({ page: e }, () => {
-      const { limit, page, query, } = this.state;
+      const { limit, page, query } = this.state;
       this.props.getAnswers({
         limit,
         page,
         query,
         isUser: true,
-        status: 'pending'
+        status: "pending",
       });
       this.getStartEndDocuments();
     });
@@ -173,7 +177,7 @@ class AAnswer extends Component {
         onChange={this.handleOnChange}
         name="limit"
         aria-controls="example1"
-        style={{ margin: '0px 5px' }}
+        style={{ margin: "0px 5px" }}
         className="form-control input-sm"
         value={limit}
       >
@@ -196,8 +200,10 @@ class AAnswer extends Component {
               key={eachButton.pageNumber}
               className={
                 page === eachButton.pageNumber
-                  ? 'paginae_button active'
-                  : 'paginate_button '}   >
+                  ? "paginae_button active"
+                  : "paginate_button "
+              }
+            >
               <a
                 className="paga-link"
                 name="page"
@@ -211,13 +217,13 @@ class AAnswer extends Component {
           <li className="paginate_button">
             <a
               className={
-                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
+                isNextBtnShow === true ? "paga-link" : "paga-link_hidden"
               }
               name="currentPage"
               href="javascript:void(0);"
               onClick={() => this.handleChoosePage(-1)}
             >
-              {'>>'}
+              {">>"}
             </a>
           </li>
         </>
@@ -232,9 +238,7 @@ class AAnswer extends Component {
       <Fragment>
         <Fragment>
           <section className="content-header">
-            <h1>
-              Duyệt phản hồi của người dùng
-            </h1>
+            <h1>Duyệt phản hồi của người dùng</h1>
             <ol className="breadcrumb">
               <li>
                 <a href="/admin">
@@ -276,10 +280,10 @@ class AAnswer extends Component {
                             <div
                               id="example1_filter"
                               className="dataTables_filter"
-                              style={{ float: 'right' }}
+                              style={{ float: "right" }}
                             >
                               <label>
-                                Tìm kiếm{' '}
+                                Tìm kiếm{" "}
                                 <input
                                   type="search"
                                   name="query"
@@ -303,11 +307,11 @@ class AAnswer extends Component {
                           >
                             <thead>
                               <tr>
-                                <th style={{ width: '5%' }}>#</th>
-                                <th style={{ width: '10%' }}>Người phản hồi</th>
-                                <th style={{ width: '25%' }}>Câu hỏi</th>
-                                <th style={{ width: '30%' }}>Nội dung</th>
-                                <th style={{ width: '10%' }}>Ngày viết</th>
+                                <th style={{ width: "5%" }}>#</th>
+                                <th style={{ width: "10%" }}>Người phản hồi</th>
+                                <th style={{ width: "25%" }}>Câu hỏi</th>
+                                <th style={{ width: "30%" }}>Nội dung</th>
+                                <th style={{ width: "10%" }}>Ngày viết</th>
                               </tr>
                             </thead>
 
@@ -333,20 +337,24 @@ class AAnswer extends Component {
                             role="status"
                             aria-live="polite"
                           >
-                            Hiển thị{' '}
-                            {query == ''
-                              ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
-                              : ''}{' '}
+                            Hiển thị{" "}
+                            {query == ""
+                              ? start +
+                                " đến " +
+                                (totalDocuments < end ? totalDocuments : end) +
+                                " trong "
+                              : ""}{" "}
                             {totalDocuments} kết quả
                           </div>
                         </div>
                         <div className="col-sm-7">
                           <div
                             className="dataTables_paginate paging_simple_numbers"
-                            id="example1_paginate">
+                            id="example1_paginate"
+                          >
                             <ul
                               className="pagination"
-                              style={{ float: 'right' }}
+                              style={{ float: "right" }}
                             >
                               {this.renderPageButtons()}
                             </ul>
@@ -375,4 +383,8 @@ AAnswer.propTypes = {
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getAnswers, deleteAnswer, updateAnswerStatus })(AAnswer);
+export default connect(mapStateToProps, {
+  getAnswers,
+  deleteAnswer,
+  updateAnswerStatus,
+})(AAnswer);

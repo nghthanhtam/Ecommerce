@@ -7,7 +7,11 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import UserProfile from "./UserProfile";
 
-import { addAddress, updateAddress, getAddresses } from '../../../../state/actions/addressActions';
+import {
+  addAddress,
+  updateAddress,
+  getAddresses,
+} from "../../../../state/actions/addressActions";
 
 class AddressBook extends React.Component {
   constructor(props) {
@@ -23,7 +27,7 @@ class AddressBook extends React.Component {
 
   componentDidMount() {
     window.addEventListener("scroll", this.handleScroll);
-    const { getAddresses } = this.props
+    const { getAddresses } = this.props;
     //getAddresses({ limit: 1000, page:1, })
   }
 
@@ -63,7 +67,7 @@ class AddressBook extends React.Component {
               padding: "20px",
             }}
           >
-            <UserProfile selectedItem={this.props} />
+            <UserProfile selectedLink="/shopnow/user/address-book" />
 
             <div className="acc-container">
               <div className="edit-text">+ Thêm địa chỉ</div>
@@ -105,5 +109,5 @@ class AddressBook extends React.Component {
   }
 }
 
-export default AddressBook
+export default AddressBook;
 //export default connect(mapStateToProps, { showModal, getCities, getDistricts, getWards, addAddress, updateAddress })(AddressBook);

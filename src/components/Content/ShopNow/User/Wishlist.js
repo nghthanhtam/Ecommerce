@@ -67,7 +67,7 @@ class Wishlist extends React.Component {
               padding: "20px",
             }}
           >
-            <UserProfile selectedItem={this.props} />
+            <UserProfile selectedLink="/shopnow/user/wishlist" />
             <div className="later-order-list">
               {orderList.map((item) => {
                 return <LaterListDetail key={item._id} />;

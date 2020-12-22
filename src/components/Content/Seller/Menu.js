@@ -1,16 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
 const mapStateToProps = (state) => ({
   employee: state.auth.employee,
-  admin: state.authAdmin.admin
+  admin: state.authAdmin.admin,
 });
 
 class Menu extends React.Component {
-
   render() {
-    const { employee, admin, isAdmin } = this.props
+    const { employee, admin, isAdmin } = this.props;
     return (
       <div>
         {/* Left side column. contains the logo and sidebar */}
@@ -32,7 +31,7 @@ class Menu extends React.Component {
               </div>
             </div>
 
-            {isAdmin ?
+            {isAdmin ? (
               <ul className="sidebar-menu" data-widget="tree">
                 <li className="header">MAIN NAVIGATION</li>
                 <li>
@@ -42,7 +41,8 @@ class Menu extends React.Component {
                 </li>
                 <li>
                   <Link to="/admin/order">
-                    <i className="fa fa-cart-arrow-down" /> <span>Đơn hàng</span>
+                    <i className="fa fa-cart-arrow-down" />{" "}
+                    <span>Đơn hàng</span>
                   </Link>
                 </li>
                 <li>
@@ -50,7 +50,11 @@ class Menu extends React.Component {
                     <i className="fa fa-circle-o" /> <span>Sản phẩm</span>
                   </Link>
                 </li>
-
+                <li>
+                  <Link to="/admin/promotion">
+                    <i className="fa fa-gift" /> <span>Mã giảm giá</span>
+                  </Link>
+                </li>
                 <li className="treeview">
                   <a href="javascript:void(0);">
                     <i className="fa fa-th" />
@@ -68,12 +72,12 @@ class Menu extends React.Component {
                     <li>
                       <Link to="/admin/user">
                         <i className="fa fa-circle-o" /> Khách hàng
-                    </Link>
+                      </Link>
                     </li>
                     <li>
                       <Link to="/admin/shop">
                         <i className="fa fa-circle-o" /> Nhà bán
-                    </Link>
+                      </Link>
                     </li>
                   </ul>
                 </li>
@@ -89,7 +93,8 @@ class Menu extends React.Component {
                   <ul className="treeview-menu">
                     <li>
                       <Link to="/admin/rating">
-                        <i className="fa fa-question" />Nhật xét
+                        <i className="fa fa-question" />
+                        Nhật xét
                       </Link>
                     </li>
                     <li>
@@ -130,12 +135,12 @@ class Menu extends React.Component {
                     <li>
                       <Link to="/admin/sale-report">
                         <i className="fa fa-circle-o" /> Thống kê doanh thu
-                    </Link>
+                      </Link>
                     </li>
                     <li>
                       <Link to="/admin/warehouse-report">
                         <i className="fa fa-circle-o" /> Thống kê tồn kho
-                    </Link>
+                      </Link>
                     </li>
                   </ul>
                 </li>
@@ -149,10 +154,8 @@ class Menu extends React.Component {
                     </span>
                   </a>
                 </li>
-              </ul> :
-
-
-
+              </ul>
+            ) : (
               <ul className="sidebar-menu" data-widget="tree">
                 <li className="header">MAIN NAVIGATION</li>
                 <li>
@@ -162,7 +165,8 @@ class Menu extends React.Component {
                 </li>
                 <li>
                   <Link to="/seller/order">
-                    <i className="fa fa-cart-arrow-down" /> <span>Đơn hàng</span>
+                    <i className="fa fa-cart-arrow-down" />{" "}
+                    <span>Đơn hàng</span>
                   </Link>
                 </li>
                 <li className="treeview">
@@ -213,12 +217,12 @@ class Menu extends React.Component {
                     <li>
                       <Link to="/seller/sale-report">
                         <i className="fa fa-circle-o" /> Thống kê doanh thu
-                    </Link>
+                      </Link>
                     </li>
                     <li>
                       <Link to="/seller/warehouse-report">
                         <i className="fa fa-circle-o" /> Thống kê tồn kho
-                    </Link>
+                      </Link>
                     </li>
                   </ul>
                 </li>
@@ -238,9 +242,9 @@ class Menu extends React.Component {
                     </span>
                   </a>
                 </li>
-              </ul>}
+              </ul>
+            )}
           </section>
-
         </aside>
       </div>
     );
