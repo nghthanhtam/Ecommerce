@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import styles from "../../../../assets/css/helper.module.css";
 import { useHistory } from "react-router-dom";
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   return {
     history: state.history.history,
     auth: state.auth,

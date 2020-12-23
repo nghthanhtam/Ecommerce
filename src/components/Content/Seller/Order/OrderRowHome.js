@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { showModal } from "../../../../state/actions/modalActions";
-import { updateOrder } from "../../../../state/actions/orderActions";
 import "./order.css";
 
 const mapStateToProps = (state) => ({
@@ -26,10 +25,8 @@ class OrderRow extends Component {
     let dt = newDate.getDate();
 
     dt = dt < 10 ? `0${dt}` : dt;
-
     month = month < 10 ? `0${month}` : month;
-
-    return dt + "-" + month + "-" + year;
+    return year + "-" + month + "-" + dt;
   };
 
   handleEdit = (id) => {
@@ -48,19 +45,19 @@ class OrderRow extends Component {
     )
       e.stopPropagation();
     else {
-      if (item.value == "canceled") {
+      if (item.value == "status") {
         this.props.showModal({
           show: true,
           modalName: "modalCancel",
           details: { pages: this.props.pages },
         });
-      } else {
-        this.props.updateOrder({
-          id,
-          status: item.value,
-          pages: this.props.pages,
-        });
       }
+
+      this.props.updateOrder({
+        id,
+        status: item.value,
+        pages: this.props.pages,
+      });
     }
   };
 
@@ -68,11 +65,8 @@ class OrderRow extends Component {
     const {
       totalAmount,
       Purchase,
-      createdAt,
       status,
-      cancelReason,
       id,
-      shippingFee,
       Ward,
       District,
       City,
@@ -104,8 +98,6 @@ class OrderRow extends Component {
             City.city}
         </td>
         <td>{totalAmount}</td>
-        <td>{this.convertDate(createdAt)}</td>
-        <td>{shippingFee}</td>
         <td>
           {status == "pending"
             ? "Đang xử lý"
@@ -117,11 +109,10 @@ class OrderRow extends Component {
             ? "Đã tiếp nhận"
             : "Đã hủy"}
         </td>
-        <td>{cancelReason}</td>
-        {status == "delivered" || status == "canceled" ? null : (
+        {status == "received" || status == "canceled" ? null : (
           <td>
             {status !== "canceled" && status !== "delivered" && (
-              <div className="btn-group" style={{ display: "flex" }}>
+              <div className="btn-group">
                 <button type="button" className="btn btn-info">
                   Duyệt
                 </button>
@@ -139,8 +130,7 @@ class OrderRow extends Component {
                       key={index}
                       className={
                         (status == "in transit" && item.value == "received") ||
-                        status == item.value ||
-                        (status !== "pending" && item.value == "canceled")
+                        status == item.value
                           ? "disabled-link"
                           : ""
                       }
@@ -149,22 +139,6 @@ class OrderRow extends Component {
                       <a href="javascript:void(0);"> {item.label} </a>
                     </li>
                   ))}
-                  <li
-                    onClick={(e) =>
-                      this.props.showModal({
-                        show: true,
-                        modalName: "modalShippingFee",
-                        details: {
-                          id,
-                          type: "seller",
-                          createdAt,
-                          pages: this.props.pages,
-                        },
-                      })
-                    }
-                  >
-                    <a href="javascript:void(0);"> Cập nhật phí vận chuyển </a>
-                  </li>
                 </ul>
               </div>
             )}
@@ -175,4 +149,4 @@ class OrderRow extends Component {
   }
 }
 
-export default connect(mapStateToProps, { showModal, updateOrder })(OrderRow);
+export default connect(mapStateToProps, { showModal })(OrderRow);

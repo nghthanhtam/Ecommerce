@@ -4,17 +4,18 @@ import {
   USER_RECEIVED,
   USERS_RECEIVED,
   ADD_USER,
+  UPDATE_USER,
   USER_ADDED,
   USER_DELETED,
   USER_UPDATED,
-
 } from "../actions/types";
 
 const initialState = {
   users: [],
   totalDocuments: 0,
   isLoaded: false,
-  user: {}
+  isUpdated: false,
+  user: {},
 };
 
 export default function (state = initialState, action) {
@@ -26,7 +27,8 @@ export default function (state = initialState, action) {
     case GET_USER_BY_ID:
       return {
         ...state,
-        isLoaded: false
+        isLoaded: false,
+        isUpdated: false,
       };
     case USERS_RECEIVED:
       return {
@@ -55,14 +57,17 @@ export default function (state = initialState, action) {
     case USER_DELETED:
       return {
         ...state,
-        users: state.users.filter(
-          (user) => user.id !== action.payload.id
-        ),
+        users: state.users.filter((user) => user.id !== action.payload.id),
       };
-
+    case UPDATE_USER:
+      return {
+        ...state,
+        isUpdated: false,
+      };
     case USER_UPDATED:
       return {
         ...state,
+        isUpdated: true,
       };
 
     default:

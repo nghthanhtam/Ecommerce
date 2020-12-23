@@ -2,33 +2,42 @@ import React from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../../../../assets/css/user-profile.css";
-
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
-import UserProfile from "./UserProfile";
-
+import { connect } from "react-redux";
 import {
   addAddress,
   updateAddress,
   getAddresses,
 } from "../../../../state/actions/addressActions";
+import { showModal } from "../../../../state/actions/modalActions";
+
+import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
+import UserProfile from "./UserProfile";
+import ModalAddressAdd from "../../Modal/ModalAddressAdd";
+
+const mapStateToProps = (state, props) => {
+  return {
+    history: state.history.history,
+    show: state.modal.show,
+    modalName: state.modal.modalName,
+    user: state.authUser.user,
+    isLoaded: state.address.isLoaded,
+    addresses: state.address.addresses,
+  };
+};
 
 class AddressBook extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {
-      header: "header",
-      picLink: "./img/blue.png",
-      section: "section-blue",
-      left: 0,
-    };
-    this.handleScroll = this.handleScroll.bind(this);
-  }
+  state = {
+    header: "header",
+    picLink: "./img/blue.png",
+    section: "section-blue",
+    left: 0,
+  };
 
   componentDidMount() {
     window.addEventListener("scroll", this.handleScroll);
-    const { getAddresses } = this.props;
-    //getAddresses({ limit: 1000, page:1, })
+    const { getAddresses, user } = this.props;
+    getAddresses({ limit: 1000, page: 1, idUser: user.id, type: "user" });
   }
 
   componentWillUnmount() {
@@ -47,10 +56,13 @@ class AddressBook extends React.Component {
   };
 
   render() {
+    const { show, modalName, showModal, addresses } = this.props;
     return (
       <div>
         <Header />
-
+        {show && (modalName == "addressAdd" || modalName == "addressEdit") && (
+          <ModalAddressAdd />
+        )}
         <div
           style={{
             zIndex: 10,
@@ -70,35 +82,52 @@ class AddressBook extends React.Component {
             <UserProfile selectedLink="/shopnow/user/address-book" />
 
             <div className="acc-container">
-              <div className="edit-text">+ Thêm địa chỉ</div>
-              <div className="address-det">
-                <div className="address-box">
-                  <p className="add-name">Nguyễn Huỳnh Thanh Tâm</p>
-                  <div className="add">
-                    <p className="add1">Địa chỉ:</p>
-                    <p>679 Lê Đức Thọ, P15, Gò Vấp , TPHCM</p>
-                  </div>
-                  <div className="row-flex">
-                    <p className="tel1">Điện thoại:</p>
-                    <p>0778895138</p>
-                  </div>
-                </div>
-                <div className="edit-text">Chỉnh sửa</div>
+              <div
+                className="edit-text"
+                onClick={() =>
+                  showModal({ show: true, modalName: "addressAdd" })
+                }
+              >
+                + Thêm địa chỉ
               </div>
-              <div className="address-det">
-                <div className="address-box">
-                  <p className="add-name">Nguyễn Huỳnh Thanh Tâm</p>
-                  <div className="add">
-                    <p className="add1">Địa chỉ:</p>
-                    <p>679 Lê Đức Thọ, P15, Gò Vấp , TPHCM</p>
+              {addresses.map((item, index) => {
+                return (
+                  <div key={index} className="address-det">
+                    <div className="address-box">
+                      <p className="add-name">{item.fullname}</p>
+                      <div className="add">
+                        <p className="add1">Địa chỉ:</p>
+                        <p>
+                          {" "}
+                          {item.numberAndStreet +
+                            ", " +
+                            item.Ward.ward +
+                            ", " +
+                            item.District.district +
+                            ", " +
+                            item.City.city}
+                        </p>
+                      </div>
+                      <div className="row-flex">
+                        <p className="tel1">Điện thoại:</p>
+                        <p>{item.phone}</p>
+                      </div>
+                    </div>
+                    <div
+                      className="edit-text"
+                      onClick={() =>
+                        showModal({
+                          show: true,
+                          modalName: "addressEdit",
+                          details: { id: item.id },
+                        })
+                      }
+                    >
+                      Chỉnh sửa
+                    </div>
                   </div>
-                  <div className="row-flex">
-                    <p className="tel1">Điện thoại:</p>
-                    <p>0778895138</p>
-                  </div>
-                </div>
-                <div className="edit-text">Chỉnh sửa</div>
-              </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -109,5 +138,12 @@ class AddressBook extends React.Component {
   }
 }
 
-export default AddressBook;
-//export default connect(mapStateToProps, { showModal, getCities, getDistricts, getWards, addAddress, updateAddress })(AddressBook);
+export default connect(mapStateToProps, {
+  showModal,
+  addAddress,
+  updateAddress,
+  getAddresses,
+})(AddressBook);
+// getCities,
+//   getDistricts,
+//   getWards,

@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import notifyReducer from "react-redux-notify";
 import employeeReducer from "./employeeReducer";
 import movieReducer from "./movieReducer";
 import productCateReducer from "./productCateReducer";
@@ -32,8 +33,10 @@ import questionReducer from "./questionReducer";
 import payslipReducer from "./payslipReducer";
 import promotionReducer from "./promotionReducer";
 import promotionTypeReducer from "./promotionTypeReducer";
+import laterListReducer from "./laterListReducer ";
 
 export default combineReducers({
+  notifications: notifyReducer,
   employee: employeeReducer,
   emprole: employeeRoleReducer,
   error: errorReducer,
@@ -67,4 +70,5 @@ export default combineReducers({
   payslip: payslipReducer,
   promotion: promotionReducer,
   promotionType: promotionTypeReducer,
+  laterList: laterListReducer,
 });

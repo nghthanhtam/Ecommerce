@@ -32,13 +32,13 @@ class StockHistoryRow extends Component {
   };
 
   render() {
-    const { stockHis, index, pages } = this.props;
+    const { stockHis, index } = this.props;
 
     return (
       <tr>
         <td>{index + 1}</td>
         <td>{stockHis.amount}</td>
-        <td>{stockHis.total}</td>
+        <td>{stockHis.price}</td>
         <td>{stockHis.idEmployee}</td>
         <td>
           <div className="btn-group">

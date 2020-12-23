@@ -4,8 +4,9 @@ import {
   DELETE_ORDER,
   UPDATE_ORDER,
   GET_USER_ORDERS,
-  GET_ORDERDETS_BY_ORDERID
-} from './types';
+  GET_ORDERDETS_BY_ORDERID,
+  UPDATE_SHIPPINGFEE,
+} from "./types";
 
 export const getOrdersByShop = (params) => ({
   type: GET_ORDERS_BY_SHOP,
@@ -32,7 +33,12 @@ export const addOrder = (newOrder) => ({
   newOrder,
 });
 
+export const updateShippingFee = (newOrder) => ({
+  type: UPDATE_SHIPPINGFEE,
+  newOrder,
+});
+
 export const updateOrder = (newOrder) => ({
   type: UPDATE_ORDER,
-  newOrder: newOrder,
+  newOrder,
 });

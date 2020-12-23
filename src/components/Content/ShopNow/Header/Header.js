@@ -21,7 +21,7 @@ class Header extends React.Component {
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: "#0d1136",
-      padding: "8px",
+      padding: "7px",
       borderRadius: "7px",
       backgroundColor: "transparent",
     },
@@ -40,7 +40,7 @@ class Header extends React.Component {
   }
 
   setHeader = () => {
-    if (window.scrollY > 20) {
+    if (window.scrollY > 10) {
       this.setState({ header: "header1" });
       this.setState({
         cartWrapper: {
@@ -144,11 +144,11 @@ class Header extends React.Component {
           </li>
           <li>
             {user ? (
-              <Link className="item" to="/shopnow/user/account">
+              <Link className="item-acc" to="/shopnow/user/account">
                 <div style={itemIcon}>
                   <i className="fa fa-user"></i>
                 </div>
-                <div>Tài khoản</div>
+                <div>{user.username}</div>
               </Link>
             ) : (
               <div
@@ -157,7 +157,10 @@ class Header extends React.Component {
                 }
                 className="item"
               >
-                <div style={{ marginTop: "5px" }}>Join</div>
+                <div style={itemIcon}>
+                  <i className="fa fa-user"></i>
+                </div>
+                <div>Join</div>
               </div>
             )}
           </li>
@@ -191,7 +194,7 @@ const searchInput = {
 };
 const itemIcon = {
   width: "28px",
-  height: "28px",
+  // height: "28px",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -208,22 +211,6 @@ const cartInfor = {
   justifyContent: "center",
   alignItems: "center",
   fontSize: "13px",
-};
-const cartWrapper = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  backgroundColor: "#0d1136",
-  borderRadius: "7px",
-};
-const cartWrapper1 = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  backgroundColor: "#0d1136",
-  padding: "8px",
-  borderRadius: "7px",
-  backgroundColor: "transparent",
 };
 const logo = {
   width: "150px",

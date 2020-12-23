@@ -6,6 +6,7 @@ import "./home.css";
 
 import { getOrdersByShop } from "../../../../state/actions/orderActions";
 import OrderRow from "../Order/OrderRow";
+import OrderRowHome from "../Order/OrderRowHome";
 
 const mapStateToProps = (state) => ({
   orders: state.order.orders,
@@ -191,7 +192,7 @@ class Home extends Component {
       </tr>
     ) : (
       orders.map((order, index) => (
-        <OrderRow key={order.id} order={order} index={index + start - 1} />
+        <OrderRowHome key={index} order={order} index={index + start - 1} />
       ))
     );
   };
@@ -413,27 +414,11 @@ class Home extends Component {
                                           fontFamily: "Saira, sans-serif",
                                         }}
                                       >
-                                        Ngày đặt
-                                      </th>
-                                      <th
-                                        style={{
-                                          width: "10%",
-                                          fontFamily: "Saira, sans-serif",
-                                        }}
-                                      >
                                         Tình trạng
                                       </th>
                                       <th
                                         style={{
                                           width: "10%",
-                                          fontFamily: "Saira, sans-serif",
-                                        }}
-                                      >
-                                        Lý do hủy
-                                      </th>
-                                      <th
-                                        style={{
-                                          width: "5%",
                                           fontFamily: "Saira, sans-serif",
                                         }}
                                       >

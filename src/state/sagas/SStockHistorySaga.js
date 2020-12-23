@@ -96,6 +96,10 @@ function* updateStockHistory(params) {
     );
 
     yield put({ type: STOCK_HISTORY_UPDATED, payload: response.data });
+    yield put({
+      type: GET_STOCK_HISTORIES_BY_PRODUCTVAR,
+      pages: params.newItem.pages,
+    });
   } catch (error) {
     console.log(error.response);
   }

@@ -1,145 +1,227 @@
-import React from "react";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import React, { useEffect, useState, Fragment } from "react";
 import "../../../../assets/css/user-profile.css";
-
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-
 import UserProfile from "./UserProfile";
+import styles from "../../../../assets/css/helper.module.css";
+import { connect } from "react-redux";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { getUserById, updateUser } from "../../../../state/actions/userActions";
 
-class Account extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {
-      profileItemList: [
-        { name: "Thông tin khách hàng" },
-        { name: "Sản phẩm mua sau", link: "/user/later-list" },
-      ],
-      header: "header",
-      picLink: "./img/blue.png",
-      section: "section-blue",
-      left: 0,
-    };
-    this.handleScroll = this.handleScroll.bind(this);
-  }
-  componentDidMount() {
-    window.addEventListener("scroll", this.handleScroll);
-  }
+const mapStateToProps = (state, props) => {
+  return {
+    history: state.history.history,
+    id: state.authUser.user.id,
+    isLoaded: state.user.isLoaded,
+    isUpdated: state.user.isUpdated,
+    user: state.user.user,
+  };
+};
 
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
-  }
-  handleScroll = () => {
-    if (window.scrollY > 10) {
-      this.setState({ header: "header1" });
-    } else {
-      this.setState({ header: "header" });
+const Account = (props) => {
+  const [disabled, setDisabled] = useState(true);
+  const [isShow, setShow] = useState(false);
+
+  useEffect(() => {
+    props.getUserById({ id: props.id, type: "user" });
+  }, [props.user.id]);
+  useEffect(() => {
+    if (!disabled) document.getElementById("username").focus();
+  }, [disabled]);
+  useEffect(() => {
+    if (props.isUpdated) {
+      setDisabled(true);
+      setShow(false);
     }
-    this.setState({
-      left: (-window.scrollY * 0.5).toString() + "px",
-    });
-  };
+  }, [props.isUpdated]);
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
-  render() {
-    return (
-      <div>
-        <Header />
-
-        <div
-          style={{
-            zIndex: 10,
-            marginBottom: "300px",
-            position: "relative",
-            backgroundColor: "#f7f7f7",
-          }}
-        >
-          <div className="nohome-section"></div>
+  return !props.isLoaded ? (
+    <div>Loading...</div>
+  ) : (
+    <Formik
+      initialValues={props.user}
+      onSubmit={(values, actions) => {
+        if (!(values == props.user)) {
+          values.type = "user";
+          console.log(values);
+          props.updateUser(values);
+        }
+      }}
+      validationSchema={Yup.object().shape({
+        username: Yup.string()
+          .max(100, "Chỉ được phép nhập ít hơn 100 kí tự")
+          .required("Bắt buộc nhập"),
+        fullname: Yup.string()
+          .max(200, "Chỉ được phép nhập ít hơn 200 kí tự")
+          .required("Bắt buộc nhập"),
+        phone: Yup.string()
+          .max(11, "Chỉ được phép nhập ít hơn 11 kí tự")
+          .required("Bắt buộc nhập")
+          .matches(
+            /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
+            "Số điện thoại không hợp lệ"
+          ),
+        email: Yup.string()
+          .max(200, "Chỉ được phép nhập ít hơn 200 kí tự")
+          .email("Email không hợp lệ")
+          .required("Bắt buộc nhập"),
+      })}
+    >
+      {({
+        values,
+        touched,
+        errors,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+      }) => (
+        <div>
+          <Header />
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              padding: "20px",
+              zIndex: 10,
+              marginBottom: "300px",
+              position: "relative",
+              backgroundColor: "#f7f7f7",
             }}
           >
-            <UserProfile selectedLink="/shopnow/user/account" />
+            <div className="nohome-section"></div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "20px",
+              }}
+            >
+              <UserProfile selectedLink="/shopnow/user/account" />
 
-            <div className="acc-container">
-              <form
-                style={{ fontFamily: "Poppins, sans-serif", color: "#0d1136" }}
-                className="ui form"
-                onSubmit={this.handleSubmit}
-              >
-                <div className="field">
-                  <label style={{ fontWeight: "400", fontSize: "15px" }}>
-                    Họ tên
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    name="fullname"
-                    placeholder="Họ tên"
-                  />
-                </div>
-                <div className="field">
-                  <label style={{ fontWeight: "400", fontSize: "15px" }}>
-                    Họ tên
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    name="username"
-                    placeholder="Tài khoản đăng nhập"
-                  />
-                </div>
-                <div className="field">
-                  <label style={{ fontWeight: "400", fontSize: "15px" }}>
-                    Số điện thoại
-                  </label>
-                  <input type="text" name="phone" placeholder="Số điện thoại" />
-                </div>
-                <div className="field">
-                  <label style={{ fontWeight: "400", fontSize: "15px" }}>
-                    Email
-                  </label>
-                  <input type="text" name="email" placeholder="Email" />
-                </div>
-                {/* <div className="field">
-                  <label style={{ fontWeight: "400", fontSize: "15px" }}>
-                    Giới tính
-                  </label>
-                  <div>
-                    <select className="ui dropdown">
-                      <option value="1">Nam</option>
-                      <option value="0">Nứ</option>
-                    </select>
+              <form className="acc-container" onSubmit={handleSubmit}>
+                <label className={styles.formiklabel} htmlFor="username">
+                  {" "}
+                  Tên đăng nhập
+                </label>
+                <input
+                  disabled={disabled}
+                  id="username"
+                  name="username"
+                  type="text"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.username}
+                  className={
+                    errors.username && touched.username
+                      ? `${styles.formikinput} ${styles.error}`
+                      : styles.formikinput
+                  }
+                />
+                {touched.username && errors.username ? (
+                  <div className={styles.inputfeedback}>{errors.username}</div>
+                ) : null}
+                <label className={styles.formiklabel} htmlFor="fullname">
+                  {" "}
+                  Họ tên
+                </label>
+                <input
+                  disabled={disabled}
+                  name="fullname"
+                  type="text"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.fullname}
+                  className={
+                    errors.fullname && touched.fullname
+                      ? `${styles.formikinput} ${styles.error}`
+                      : styles.formikinput
+                  }
+                />
+                {touched.fullname && errors.fullname ? (
+                  <div className={styles.inputfeedback}>{errors.fullname}</div>
+                ) : null}
+                <label className={styles.formiklabel} htmlFor="phone">
+                  {" "}
+                  Số điện thoại liên lạc
+                </label>
+                <input
+                  disabled={disabled}
+                  name="phone"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.phone}
+                  className={
+                    errors.phone && touched.phone
+                      ? `${styles.formikinput} ${styles.error}`
+                      : styles.formikinput
+                  }
+                />
+                {touched.phone && errors.phone ? (
+                  <div className={styles.inputfeedback}>{errors.phone}</div>
+                ) : null}
+                <label className={styles.formiklabel} htmlFor="email">
+                  {" "}
+                  Email
+                </label>
+                <input
+                  disabled={disabled}
+                  name="email"
+                  type="email"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.email}
+                  className={
+                    errors.email && touched.email
+                      ? `${styles.formikinput} ${styles.error}`
+                      : styles.formikinput
+                  }
+                />
+                {touched.email && errors.email ? (
+                  <div className={styles.inputfeedback}>{errors.email}</div>
+                ) : null}
+
+                {isShow ? (
+                  <div
+                    className="box-footer"
+                    style={{ display: "flex", marginTop: "25px", padding: 0 }}
+                  >
+                    <div
+                      className="cancel-btn"
+                      onClick={() => {
+                        setDisabled(true);
+                        setShow(!isShow);
+                      }}
+                    >
+                      Hủy
+                    </div>
+                    <button
+                      type="submit"
+                      className="btn btn-info pull-left"
+                      style={{ height: "38px", backgroundColor: "#3571a7" }}
+                    >
+                      Cập nhật
+                    </button>
                   </div>
-                </div> */}
-
-                <button
-                  style={{
-                    backgroundColor: "#3571a7",
-                    color: "white",
-                    fontWeight: "400",
-                  }}
-                  className="ui button"
-                  type="submit"
-                >
-                  Cập nhật
-                </button>
+                ) : (
+                  <div className="box-footer">
+                    <button
+                      tye="button"
+                      className="edit-btn"
+                      onClick={() => {
+                        setDisabled(false);
+                        setShow(!isShow);
+                      }}
+                    >
+                      Chỉnh sửa
+                    </button>
+                  </div>
+                )}
               </form>
             </div>
           </div>
+          <Footer />
         </div>
+      )}
+    </Formik>
+  );
+};
 
-        <Footer />
-      </div>
-    );
-  }
-}
-
-export default Account;
+export default connect(mapStateToProps, { getUserById, updateUser })(Account);

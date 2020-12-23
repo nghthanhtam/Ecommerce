@@ -282,11 +282,12 @@ class ModalStockHistory extends Component {
                     show: true,
                     modalName: "modalUpdateQty",
                     details: {
-                      idProductVar: details.idProductVar,
                       pages: {
                         page,
                         limit,
-                        idProductVar: details.idProductVar,
+                        idProductVar: details.idProductVar
+                          ? details.idProductVar
+                          : details.pages.idProductVar,
                       },
                     },
                   });

@@ -31,6 +31,7 @@ import sStockHistorySaga from "./SStockHistorySaga";
 import sPayslipSaga from "./SPayslipSaga";
 import sPromotionSaga from "./SPromotionSaga";
 import sPromotionTypeSaga from "./SPromotionTypeSaga";
+import sLaterListSaga from "./SLaterListSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -66,6 +67,7 @@ export default function* rootSaga() {
     sPayslipSaga(),
     sPromotionSaga(),
     sPromotionTypeSaga(),
+    sLaterListSaga(),
   ]);
 }
 

@@ -2,6 +2,7 @@ import { takeEvery, put, call, select } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../../state/actions/authActions";
 import { tokenUserConfig } from "../../state/actions/authUserActions";
+import { tokenAdminConfig } from "../../state/actions/authAdminActions";
 import {
   GET_ORDERS_BY_SHOP,
   GET_ORDERDETS_BY_ORDERID,
@@ -14,6 +15,8 @@ import {
   ORDER_UPDATED,
   GET_USER_ORDERS,
   ORDER_DETS_RECEIVED,
+  UPDATE_SHIPPINGFEE,
+  GET_ORDERS,
 } from "../actions/types";
 
 function* fetchOrderDetsByOrderId(params) {
@@ -43,11 +46,11 @@ function* fetchOrderDetsByOrderId(params) {
 function* fetchOrdersByShop(params) {
   try {
     const state = yield select(),
-      { limit, page, idShop } = params.pages;
+      { limit, page, idShop, done } = params.pages;
     console.log(params.pages);
     const response = yield call(() =>
       axios.get(
-        `${process.env.REACT_APP_BACKEND_ORDER}/api/order/shop/${idShop}?limit=${limit}&page=${page}`,
+        `${process.env.REACT_APP_BACKEND_ORDER}/api/order/shop/${idShop}?limit=${limit}&page=${page}&done=${done}`,
         tokenConfig(state)
       )
     );
@@ -136,6 +139,34 @@ function* updateOrder(params) {
   }
 }
 
+function* updateShippingFee(params) {
+  const state = yield select();
+  const { type, pages, id } = params.newOrder;
+  console.log(params.newOrder);
+  try {
+    const response = yield call(() =>
+      axios.put(
+        `${process.env.REACT_APP_BACKEND_ORDER}/api/order/${id}/shippingInfo`,
+        params.newOrder,
+        type == "admin" ? tokenAdminConfig(state) : tokenConfig(state)
+      )
+    );
+
+    yield put({ type: ORDER_UPDATED, payload: response.data });
+    type == "admin"
+      ? yield put({
+          type: GET_ORDERS,
+          pages,
+        })
+      : yield put({
+          type: GET_ORDERS_BY_SHOP,
+          pages,
+        });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function* deleteOrder(params) {
   const state = yield select();
   try {
@@ -158,5 +189,6 @@ export default function* sOrderSaga() {
   yield takeEvery(GET_USER_ORDERS, fetchUserOrders);
   yield takeEvery(ADD_ORDER, addOrder);
   yield takeEvery(UPDATE_ORDER, updateOrder);
+  yield takeEvery(UPDATE_SHIPPINGFEE, updateShippingFee);
   yield takeEvery(DELETE_ORDER, deleteOrder);
 }

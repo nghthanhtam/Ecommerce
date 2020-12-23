@@ -12,7 +12,7 @@ class UserProfile extends React.Component {
       { name: "Sổ địa chỉ", link: "/shopnow/user/address-book" },
       { name: "Nhận xét sản phẩm đã mua", link: "/shopnow/user/review" },
       { name: "Sản phẩm mua sau", link: "/shopnow/user/laterlist" },
-      { name: "Sản phẩm yêu thích", link: "/shopnow/user/wishlist" },
+      // { name: "Sản phẩm yêu thích", link: "/shopnow/user/wishlist" },
       { name: "Sản phẩm đã xem", link: "/shopnow/user/watchlist" },
     ],
   };

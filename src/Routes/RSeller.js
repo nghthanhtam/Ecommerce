@@ -32,6 +32,7 @@ import Role from "../components/Content/Seller/Role/Role";
 import RoleEdit from "../components/Content/Seller/Role/RoleEdit";
 import { PrivateRoute } from "../components/Content/Seller/PrivateRoute";
 import ModalCancel from "../components/Content/Modal/ModalCancel";
+import ModalShippingFee from "../components/Content/Modal/ModalShippingFee";
 import ModalUpdateQty from "../components/Content/Modal/ModalUpdateQty";
 
 const mapStateToProps = (state) => ({
@@ -115,6 +116,7 @@ class RSeller extends Component {
           {token && (
             <Fragment>
               {show && modalName == "modalCancel" && <ModalCancel />}
+              {show && modalName == "modalShippingFee" && <ModalShippingFee />}
               {(modalName == "modalStockHis" ||
                 modalName == "modalUpdateQty") && <ModalStockHistory />}
               {show && modalName == "modalUpdateQty" && <ModalUpdateQty />}

@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { connect } from 'react-redux';
-import { addRole } from '../../../../state/actions/roleActions';
-const mongoose = require('mongoose');
+import { connect } from "react-redux";
+import { addRole } from "../../../../state/actions/roleActions";
+const mongoose = require("mongoose");
 
 const initialState = {
-  name: '',
-  _id: '',
+  name: "",
+  _id: "",
   memberManagement: false,
   productManagement: false,
   employeeManagement: false,
@@ -17,7 +17,7 @@ const initialState = {
   materialManagement: false,
   materialReceiptNoteManagement: false,
   roleManagement: false,
-  msg: '',
+  msg: "",
   inputErrors: false,
   checkboxErrors: false,
 };
@@ -27,18 +27,18 @@ class RoleModal extends Component {
 
   onChange = (e) => {
     const target = e.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
 
-    let msg = '';
+    let msg = "";
 
     //Validation
     let isPassed = false;
-    if (name === 'name') isPassed = this.validateName(value);
+    if (name === "name") isPassed = this.validateName(value);
     const inputErrors = isPassed ? false : true;
     if (!isPassed)
       msg =
-        'Name of role can only contain only letters, numbers, underscores and spaces';
+        "Name of role can only contain only letters, numbers, underscores and spaces";
 
     this.setState({ [name]: value, msg, inputErrors });
   };
@@ -47,7 +47,7 @@ class RoleModal extends Component {
     return new RegExp(/^[a-zA-Z0-9_-_ ]*$/).test(name);
   };
   validateCheckbox() {
-    let checkboxes = document.getElementsByClassName('activityCheckbox'); // puts all your checkboxes in a variable
+    let checkboxes = document.getElementsByClassName("activityCheckbox"); // puts all your checkboxes in a variable
 
     // if a checkbox is checked, function ends and returns true. If all checkboxes have been iterated through (which means they are all unchecked), returns false.
     for (let i = 0; i < checkboxes.length; i++) {
@@ -97,7 +97,7 @@ class RoleModal extends Component {
 
     this.setState({ ...initialState });
     // Close modal
-    document.getElementById('triggerButton').click();
+    document.getElementById("triggerButton").click();
 
     //Toggle
 
@@ -109,8 +109,8 @@ class RoleModal extends Component {
 
   renderCheckboxes = () => {
     return (
-      <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <div>
             <label>
               <input
@@ -170,7 +170,7 @@ class RoleModal extends Component {
             </label>
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <div>
             <label>
               <input
@@ -239,13 +239,13 @@ class RoleModal extends Component {
         <button
           type="button"
           id="triggerButton"
-          style={{ float: 'right' }}
+          style={{ float: "right" }}
           className="btn btn-primary"
           data-toggle="modal"
           data-target="#exampleModalCenter"
           onClick={this.handleOnClick}
         >
-          Add new role
+          Tạo quyền mới
         </button>
         {/* Modal */}
         <div
@@ -320,7 +320,7 @@ class RoleModal extends Component {
                   onClick={this.onSubmit}
                   className="btn btn-primary"
                   disabled={
-                    !this.state.inputErrors && this.state.name !== ''
+                    !this.state.inputErrors && this.state.name !== ""
                       ? false
                       : true
                   }

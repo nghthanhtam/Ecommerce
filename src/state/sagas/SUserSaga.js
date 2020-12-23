@@ -1,7 +1,8 @@
-import { takeEvery, put, call, select } from 'redux-saga/effects';
-import axios from 'axios';
-import { tokenConfig } from '../actions/authActions';
-import { tokenAdminConfig } from '../actions/authAdminActions';
+import { takeEvery, put, call, select } from "redux-saga/effects";
+import axios from "axios";
+import { tokenConfig } from "../actions/authActions";
+import { tokenUserConfig } from "../actions/authUserActions";
+import { tokenAdminConfig } from "../actions/authAdminActions";
 import {
   GET_USERS,
   ADD_USER,
@@ -13,7 +14,7 @@ import {
   UPDATE_USER,
   USER_UPDATED,
   GET_USER_BY_ID,
-} from '../actions/types';
+} from "../actions/types";
 
 function* fetchUsers(params) {
   try {
@@ -21,19 +22,18 @@ function* fetchUsers(params) {
       { limit, page, query } = params.pages;
 
     const response = yield call(() =>
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_USER}/api/user?limit=${limit}&page=${page}&query=${query}`,
-          tokenAdminConfig(state)
-        )
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_USER}/api/user?limit=${limit}&page=${page}&query=${query}`,
+        tokenAdminConfig(state)
+      )
     );
     yield put({ type: USERS_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });
-    let err = { ...error }
+    let err = { ...error };
     if (err.status == 401) {
       this.props.history.push({
-        pathname: '/login',
+        pathname: "/login",
       });
     }
   }
@@ -42,25 +42,18 @@ function* fetchUsers(params) {
 function* fetchUserById(params) {
   try {
     const state = yield select(),
-      { id } = params.pages;
+      { id, type } = params.params;
 
     const response = yield call(() =>
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_USER}/api/user/${id}`,
-          tokenAdminConfig(state)
-        )
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_USER}/api/user/${id}`,
+        type == "user" ? tokenUserConfig(state) : tokenAdminConfig(state)
+      )
     );
 
     yield put({ type: USER_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
-    let err = { ...error }
-    if (err.status == 401) {
-      this.props.history.push({
-        pathname: '/admin/login',
-      });
-    }
+    console.log(error);
   }
 }
 
@@ -88,18 +81,19 @@ function* addUser(params) {
 
 function* updateUser(params) {
   const state = yield select();
+  const { newUser } = params;
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_USER}/api/user/${params.newUser.id}`,
-        params.newUser,
-        tokenConfig(state)
+        `${process.env.REACT_APP_BACKEND_USER}/api/user/${newUser.id}`,
+        newUser,
+        newUser.type == "user" ? tokenUserConfig(state) : tokenConfig(state)
       )
     );
 
     yield put({ type: USER_UPDATED, payload: response.data });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
 

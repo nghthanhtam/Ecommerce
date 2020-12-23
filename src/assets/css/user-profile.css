@@ -17,8 +17,7 @@
   display: flex;
   flex-direction: column;
   background-color: white;
-
-  width: 22.5%;
+  width: 310px;
   padding: 20px;
   height: 500px;
   margin-top: 10px;
@@ -45,11 +44,12 @@
   width: 100%;
   height: 40px;
   color: #3571a7;
+  font-weight: 500;
   background-color: #f5f5f5;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 17px;
+  font-size: 16px;
   padding: 10px;
   margin-bottom: 15px;
 }

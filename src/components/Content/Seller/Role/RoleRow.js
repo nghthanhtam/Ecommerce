@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { deleteRole } from '../../../../state/actions/roleActions';
-import { pushHistory } from '../../../../state/actions/historyActions';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { deleteRole } from "../../../../state/actions/roleActions";
+import { pushHistory } from "../../../../state/actions/historyActions";
+
 class RoleRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
@@ -9,22 +10,24 @@ class RoleRow extends Component {
     let month = newDate.getMonth() + 1;
     let dt = newDate.getDate();
     if (dt < 10) {
-      dt = '0' + dt;
+      dt = "0" + dt;
     }
     if (month < 10) {
-      month = '0' + month;
+      month = "0" + month;
     }
 
-    return year + '-' + month + '-' + dt;
+    return dt + "-" + month + "-" + year;
   };
+
   handleEdit = (id) => {
     this.props.pushHistory(`/seller/role/edit/${id}`);
   };
+
   handleDelete = (id) => {
     // console.log(id);
-
     this.props.deleteRole(id);
   };
+
   render() {
     const { role, index } = this.props;
 
@@ -32,8 +35,7 @@ class RoleRow extends Component {
       <tr>
         <td>{index + 1}</td>
         <td>{role.name}</td>
-        <td>{this.convertDate(role.createAt)}</td>
-        <td>Uknown</td>
+        <td>Unknown</td>
         <td>
           <div className="btn-group">
             <button
@@ -41,7 +43,7 @@ class RoleRow extends Component {
               type="button"
               className="btn btn-success"
             >
-              Edit
+              Chỉnh sửa
             </button>
 
             <button
@@ -49,7 +51,7 @@ class RoleRow extends Component {
               type="button"
               className="btn btn-danger"
             >
-              Delete
+              Xóa
             </button>
           </div>
         </td>

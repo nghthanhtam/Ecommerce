@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
 import { showModal } from "../../../state/actions/modalActions";
-import { addStockHis } from "../../../state/actions/stockHistoryActions";
+import {
+  addStockHis,
+  updateStockHis,
+} from "../../../state/actions/stockHistoryActions";
 
 const mapStateToProps = (state) => ({
   employee: state.auth.employee,
@@ -55,19 +58,34 @@ class ModalUpdateQty extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    const { amount, price, total, idEmployee } = this.state;
-    const { employee, details, addStockHis, showModal } = this.props;
+    const { amount, price } = this.state;
+    const {
+      employee,
+      details,
+      addStockHis,
+      updateStockHis,
+      showModal,
+    } = this.props;
     let newItem = {};
     newItem = {
       amount,
       price,
       idEmployee: employee.id,
-      idProductVar: details.idProductVar,
+      idProductVar: details.pages.idProductVar,
       pages: details.pages,
     };
+    if (details.id) {
+      newItem.id = details.id;
+      updateStockHis(newItem);
+    } else {
+      addStockHis(newItem);
+    }
 
-    addStockHis(newItem);
-    showModal({ show: false, modalName: "modalStockHis" });
+    showModal({
+      show: false,
+      modalName: "modalStockHis",
+      details: details.pages,
+    });
   };
 
   render() {
@@ -195,6 +213,7 @@ class ModalUpdateQty extends Component {
                   this.props.showModal({
                     show: false,
                     modalName: "modalStockHis",
+                    details: { pages: details.pages },
                   })
                 }
               >
@@ -220,6 +239,8 @@ class ModalUpdateQty extends Component {
   }
 }
 
-export default connect(mapStateToProps, { showModal, addStockHis })(
-  ModalUpdateQty
-);
+export default connect(mapStateToProps, {
+  showModal,
+  addStockHis,
+  updateStockHis,
+})(ModalUpdateQty);

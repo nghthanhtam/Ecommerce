@@ -10,13 +10,25 @@ import { getMovieCates } from "../../../state/actions/movieCateActions";
 import { showModal } from "../../../state/actions/modalActions";
 import Category from "./Category/Category";
 import TitlePane from "./TitlePane/TitlePane";
-import Product from "./Product/Product";
 import Keyword from "./Product/Keyword";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import ShowingProduct from "./Product/ShowingProduct";
 import { getProductsByFilters } from "../../../state/actions/productActions";
 import RecProduct from "./Product/RecProduct";
+import {
+  createNotification,
+  NOTIFICATION_TYPE_SUCCESS,
+} from "react-redux-notify";
+import { Notify } from "react-redux-notify";
+
+const mySuccessNotification = {
+  message: "Dữ liệu cập nhật thành công!",
+  type: NOTIFICATION_TYPE_SUCCESS,
+  duration: 2000,
+  canDismiss: true,
+  icon: <i className="fa fa-check" />,
+};
 
 const mapStateToProps = (state) => ({
   movieCates: state.movieCate.movieCates,
@@ -80,8 +92,8 @@ class HomePage extends React.Component {
   }
 
   componentDidUpdate() {
-    const { isAuthenticated, showModal } = this.props;
-    if (isAuthenticated) showModal({ show: false });
+    const { isAuthenticated, showModal, show } = this.props;
+    if (isAuthenticated && show) showModal({ show: false });
   }
 
   changePic = (e) => {
@@ -96,7 +108,10 @@ class HomePage extends React.Component {
       this.setState({ section: "section-black" });
     }
   };
-
+  handleClick() {
+    const { createNotification } = this.props;
+    createNotification(mySuccessNotification);
+  }
   render() {
     const { productList, keywords } = this.state;
     const {
@@ -105,6 +120,7 @@ class HomePage extends React.Component {
       products,
       isProductsLoaded,
     } = this.props;
+
     const settings = {
       dots: true,
       infinite: true,
@@ -130,6 +146,9 @@ class HomePage extends React.Component {
 
     return (
       <Fragment>
+        <div>
+          <Notify position="BottomRight" />
+        </div>
         <Header />
         {isLoadedMovieCate ? (
           <Fragment>
@@ -159,9 +178,13 @@ class HomePage extends React.Component {
                           với những vật dụng mang màu sắc của nhân vật phim ảnh
                           mà bạn yêu thích.
                         </p>
-                        <Link className="item" to="/">
+                        <div
+                          className="item"
+                          to="/"
+                          onClick={() => this.handleClick(this)}
+                        >
                           Tham quan các cửa hàng
-                        </Link>
+                        </div>
                       </div>
                       <div className="imgBox">
                         <img src={this.state.picLink} alt="blue" />
@@ -383,34 +406,9 @@ HomePage.propTypes = {
   movieCates: PropTypes.array.isRequired,
 };
 
-const ModalContainer = (
-  <div
-    style={{
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100vw",
-      height: "100vh",
-      background: "rgba(0, 0, 0, 0.5)",
-    }}
-  />
-);
-
-const Modal = (
-  <div
-    style={{
-      background: "#fff",
-      position: "absolute",
-      top: "50px",
-      right: "calc(50% - 100px)",
-      border: "1px solid #000",
-      padding: "20px",
-      minHeight: "200px",
-    }}
-  />
-);
 export default connect(mapStateToProps, {
   getMovieCates,
   showModal,
   getProductsByFilters,
+  createNotification,
 })(HomePage);

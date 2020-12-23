@@ -3,13 +3,13 @@ import "font-awesome/css/font-awesome.min.css";
 import "../../../../assets/css/cart.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Redirect } from 'react-router-dom';
+import { Redirect } from "react-router-dom";
 
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 
-import { connect } from 'react-redux';
-import { pushHistory } from '../../../../state/actions/historyActions';
+import { connect } from "react-redux";
+import { pushHistory } from "../../../../state/actions/historyActions";
 
 const mapStateToProps = (state) => ({
   ordersAdded: state.order.ordersAdded,
@@ -30,46 +30,66 @@ class OrderReceipt extends React.Component {
     this.setState({ replyBoxHidden: !replyBoxHidden });
   };
 
-  getTotalEachShop = o => {
-    let total = 0
-    o.orderDets.map(od => {
-      total += od.price * od.quantity
-    })
-    return total
-  }
+  getTotalEachShop = (o) => {
+    let total = 0;
+    o.orderDets.map((od) => {
+      total += od.price * od.quantity;
+    });
+    return total;
+  };
 
   getTotal = () => {
-    let total = 0
-    this.props.ordersAdded.map(o => {
-      o.orderDets.map(od => {
-        total += od.quantity * od.price
-      })
-    })
-    return total
-  }
+    let total = 0;
+    this.props.ordersAdded.map((o) => {
+      o.orderDets.map((od) => {
+        total += od.quantity * od.price;
+      });
+    });
+    return total;
+  };
 
   render() {
-    const { ordersAdded } = this.props
+    const { ordersAdded } = this.props;
     return (
       <Fragment>
-        {this.props.ordersAdded.length == 0 ? <Redirect to="/shopnow" /> :
-          <div >
+        {this.props.ordersAdded.length == 0 ? (
+          <Redirect to="/shopnow" />
+        ) : (
+          <div>
             {/* <Header /> */}
-            <div style={{ zIndex: 10, marginBottom: "300px", position: "relative", backgroundColor: "#f7f7f7" }}>
-
+            <div
+              style={{
+                zIndex: 10,
+                marginBottom: "300px",
+                position: "relative",
+                backgroundColor: "#f7f7f7",
+              }}
+            >
               <div className="nohome-section"></div>
               <div className="receipt-container">
                 <div className="order-res-card">
                   <div className="res-infor">
-                    <div style={{ display: 'flex', marginLeft: 'auto' }}>
-                      <div className="btn-home" onClick={() => this.props.pushHistory('/shopnow')}>Quay lại trang chủ</div>
-                      <div className="btn-order-manage" onClick={() => this.props.pushHistory('/shopnow/sales/order/history')}>Quản lý đơn hàng</div>
+                    <div style={{ display: "flex", marginLeft: "auto" }}>
+                      <div
+                        className="btn-home"
+                        onClick={() => this.props.pushHistory("/shopnow")}
+                      >
+                        Quay lại trang chủ
+                      </div>
+                      <div
+                        className="btn-order-manage"
+                        onClick={() =>
+                          this.props.pushHistory("/shopnow/sales/order/history")
+                        }
+                      >
+                        Quản lý đơn hàng
+                      </div>
                     </div>
                     <h1>Đặt hàng thành công</h1>
                     <p>Cảm ơn! Bạn đã đặt hàng thành công</p>
-                    {ordersAdded.map(o => {
+                    {ordersAdded.map((o, index) => {
                       return (
-                        <div className="sumup">
+                        <div key={index} className="sumup">
                           <div className="res-order">
                             <h4>Mã đơn hàng</h4>
                             <p>#{o.id}</p>
@@ -87,7 +107,7 @@ class OrderReceipt extends React.Component {
                             <p>19/12/2020</p>
                           </div>
                         </div>
-                      )
+                      );
                     })}
 
                     {/* <div className="res-infor-det">
@@ -133,9 +153,8 @@ class OrderReceipt extends React.Component {
             </div>
             <Footer />
           </div>
-        }
+        )}
       </Fragment>
-
     );
   }
 }
