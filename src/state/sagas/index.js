@@ -1,6 +1,5 @@
 import { all, call } from "redux-saga/effects";
 import sEmployeeSaga from "./SEmployeeSaga";
-import sEmpRoleSaga from "./SEmployeeRoleSaga";
 import sAuthSaga from "./SAuthSaga";
 import sCartSaga from "./SCartSaga";
 import sHistorySaga from "./HistorySaga";
@@ -32,6 +31,7 @@ import sPayslipSaga from "./SPayslipSaga";
 import sPromotionSaga from "./SPromotionSaga";
 import sPromotionTypeSaga from "./SPromotionTypeSaga";
 import sLaterListSaga from "./SLaterListSaga";
+import sPermissionSaga from "./SPermissionSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -50,7 +50,6 @@ export default function* rootSaga() {
     sRoleSaga(),
     sInvoiceSaga(),
     sShopSaga(),
-    sEmpRoleSaga(),
     sAddressSaga(),
     sPaymentSaga(),
     sOrderSaga(),
@@ -68,6 +67,7 @@ export default function* rootSaga() {
     sPromotionSaga(),
     sPromotionTypeSaga(),
     sLaterListSaga(),
+    sPermissionSaga(),
   ]);
 }
 

@@ -11,7 +11,6 @@ import roleReducer from "./roleReducer";
 import productReducer from "./productReducer";
 import shopReducer from "./shopReducer";
 import productVarReducer from "./productVarReducer";
-import employeeRoleReducer from "./employeeRoleReducer";
 import variantValReducer from "./variantValReducer";
 import movieCateReducer from "./movieCateReducer";
 import modalReducer from "./modalReducer";
@@ -34,11 +33,12 @@ import payslipReducer from "./payslipReducer";
 import promotionReducer from "./promotionReducer";
 import promotionTypeReducer from "./promotionTypeReducer";
 import laterListReducer from "./laterListReducer ";
+import permissionReducer from "./permissionReducer";
+import purchaseReducer from "./purchaseReducer";
 
 export default combineReducers({
   notifications: notifyReducer,
   employee: employeeReducer,
-  emprole: employeeRoleReducer,
   error: errorReducer,
   auth: authReducer,
   authUser: authUserReducer,
@@ -71,4 +71,6 @@ export default combineReducers({
   promotion: promotionReducer,
   promotionType: promotionTypeReducer,
   laterList: laterListReducer,
+  permission: permissionReducer,
+  purchase: purchaseReducer,
 });

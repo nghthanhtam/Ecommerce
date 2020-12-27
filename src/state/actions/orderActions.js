@@ -1,12 +1,18 @@
 import {
   GET_ORDERS_BY_SHOP,
   ADD_ORDER,
+  GET_ORDERS,
   DELETE_ORDER,
   UPDATE_ORDER,
   GET_USER_ORDERS,
   GET_ORDERDETS_BY_ORDERID,
   UPDATE_SHIPPINGFEE,
 } from "./types";
+
+export const getOrders = (params) => ({
+  type: GET_ORDERS,
+  pages: params,
+});
 
 export const getOrdersByShop = (params) => ({
   type: GET_ORDERS_BY_SHOP,

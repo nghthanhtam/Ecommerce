@@ -377,7 +377,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 48px;
+  /* margin-right: 48px; */
 }
 .ava img {
   max-width: 80%;
@@ -411,6 +411,10 @@
   box-sizing: border-box;
   padding: 10px;
   border: 1px solid #ccc;
+}
+.reply-date {
+  font-size: 12px;
+  color: grey;
 }
 .comments {
   font-size: 18px;
@@ -625,7 +629,7 @@
 }
 .reply-answer {
   border-left: 2px solid rgb(211, 211, 211);
-  padding: 10px;
+  padding-left: 5px;
 }
 .ava-reply {
   border-radius: 25px;
@@ -709,4 +713,10 @@
 .cri-name {
   width: 100%;
   margin-right: 5px;
+}
+.ava-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 48px;
 }

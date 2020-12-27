@@ -1,7 +1,7 @@
-import { takeEvery, put, call, select } from 'redux-saga/effects';
-import axios from 'axios';
-import { tokenConfig } from '../actions/authActions';
-import { tokenAdminConfig } from '../actions/authAdminActions';
+import { takeEvery, put, call, select } from "redux-saga/effects";
+import axios from "axios";
+import { tokenConfig } from "../actions/authActions";
+import { tokenAdminConfig } from "../actions/authAdminActions";
 import {
   GET_QUESTIONS,
   ADD_QUESTION,
@@ -11,8 +11,9 @@ import {
   QUESTION_DELETED,
   UPDATE_QUESTION,
   QUESTION_UPDATED,
-  UPDATE_QUESTION_STATUS
-} from '../actions/types';
+  UPDATE_QUESTION_STATUS,
+  GET_QUESTIONS_BY_PRODUCT,
+} from "../actions/types";
 
 function* fetchQuestions(params) {
   try {
@@ -20,22 +21,38 @@ function* fetchQuestions(params) {
       { limit, page, query, status } = params.pages;
 
     const response = yield call(() =>
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_RATING}/api/question?limit=${limit}&page=${page}&query=${query}&status=${status}`,
-          tokenConfig(state)
-        )
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_RATING}/api/question?limit=${limit}&page=${page}&query=${query}&status=${status}`,
+        tokenConfig(state)
+      )
     );
 
     yield put({ type: QUESTIONS_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });
-    let err = { ...error }
+    let err = { ...error };
     if (err.status == 401) {
       this.props.history.push({
-        pathname: '/admin/login',
+        pathname: "/admin/login",
       });
     }
+  }
+}
+
+function* fetchQuestionsByProduct(params) {
+  try {
+    const state = yield select(),
+      { limit, page, idProduct } = params.pages;
+
+    const response = yield call(() =>
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_RATING}/api/question/product/${idProduct}?limit=${limit}&page=${page}`,
+        tokenConfig(state)
+      )
+    );
+    yield put({ type: QUESTIONS_RECEIVED, payload: response });
+  } catch (error) {
+    console.log({ ...error });
   }
 }
 
@@ -95,7 +112,7 @@ function* deleteQuestion(params) {
 
 function* updateQuestionStt(params) {
   const state = yield select(),
-    { id, status, pages } = params.params
+    { id, status, pages } = params.params;
 
   try {
     const response = yield call(() =>
@@ -113,6 +130,7 @@ function* updateQuestionStt(params) {
 }
 
 export default function* sQuestionSaga() {
+  yield takeEvery(GET_QUESTIONS_BY_PRODUCT, fetchQuestionsByProduct);
   yield takeEvery(GET_QUESTIONS, fetchQuestions);
   yield takeEvery(ADD_QUESTION, addQuestion);
   yield takeEvery(UPDATE_QUESTION, updateQuestion);

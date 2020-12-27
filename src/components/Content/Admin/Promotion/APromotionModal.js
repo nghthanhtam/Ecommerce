@@ -18,20 +18,22 @@ const APromotionModal = (props) => {
   }, []);
 
   const handleChangeSelect = (selectedItem, setFieldValue) => {
-    setFieldValue("idPromotionType", selectedItem.value);
+    setFieldValue("idPromotionType", selectedItem.id);
   };
 
   return (
     <Formik
       initialValues={{
         name: "",
-        busLicenseId: "",
-        city: "",
-        url: "",
-        phone: "",
+        couponCode: "",
+        timeStart: "",
+        timeEnd: "",
+        minAmount: 0,
+        maxDiscount: 0,
+        percentage: 0,
       }}
       onSubmit={(values, actions) => {
-        values = { ...values, idPromotionType: 1, pages: props.pages };
+        values = { ...values, pages: props.pages };
         props.addPromotion(values);
         document.getElementById("triggerButton").click();
       }}
@@ -44,9 +46,9 @@ const APromotionModal = (props) => {
         couponCode: Yup.string().required("Bắt buộc nhập"),
         timeStart: Yup.string().required("Bắt buộc nhập"),
         timeEnd: Yup.string().required("Bắt buộc nhập"),
-        minAmount: Yup.string().required("Bắt buộc nhập"),
-        maxDiscount: Yup.string().required("Bắt buộc nhập"),
-        percentage: Yup.string().required("Bắt buộc nhập"),
+        minAmount: Yup.number().required("Bắt buộc nhập"),
+        maxDiscount: Yup.number().required("Bắt buộc nhập"),
+        percentage: Yup.number().required("Bắt buộc nhập"),
       })}
     >
       {({
@@ -118,7 +120,9 @@ const APromotionModal = (props) => {
                           getOptionValue={(option) => option.id}
                           placeholder="Chọn loại mã giảm giá"
                           onBlur={handleBlur}
-                          value={values.idPromotionType}
+                          value={props.promotionTypes.filter(
+                            (option) => option.id === values.idPromotionType
+                          )}
                           className={
                             errors.idPromotionType && touched.idPromotionType
                               ? `${styles.formikinput} ${styles.error}`

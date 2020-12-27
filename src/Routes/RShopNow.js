@@ -6,9 +6,6 @@ import { updateAuthAdmin } from "../state/actions/authAdminActions";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Route, Switch, Redirect } from "react-router-dom";
-import Role from "../components/Content/Seller/Role/Role";
-import RoleEdit from "../components/Content/Seller/Role/RoleEdit";
-import { PrivateRoute } from "../components/Content/Seller/PrivateRoute";
 
 //SHOPNOW
 import HomePage from "../components/Content/ShopNow/HomePage";
@@ -17,19 +14,15 @@ import ProductDetail from "../components/Content/ShopNow/Product/ProductDetail";
 import Register from "../components/Content/ShopNow/Register/Register";
 import RegisterSuccess from "../components/Content/ShopNow/Register/RegisterSuccess";
 import Cart from "../components/Content/ShopNow/Checkout/Cart";
-import CartDetail from "../components/Content/ShopNow/Checkout/CartDetail";
 import Payment from "../components/Content/ShopNow/Checkout/Payment";
 import OrderReceipt from "../components/Content/ShopNow/Checkout/OrderReceipt";
-import UserProfile from "../components/Content/ShopNow/User/UserProfile";
 import Account from "../components/Content/ShopNow/User/Account";
 import LaterList from "../components/Content/ShopNow/User/LaterList";
-import LaterListDetail from "../components/Content/ShopNow/User/LaterListDetail";
 import OrderHistory from "../components/Content/ShopNow/User/OrderHistory";
 import AddressBook from "../components/Content/ShopNow/User/AddressBook";
 import Review from "../components/Content/ShopNow/User/Review";
 import Watchlist from "../components/Content/ShopNow/User/Watchlist";
 import Wishlist from "../components/Content/ShopNow/User/Wishlist";
-import ModalCancel from "../components/Content/Modal/ModalCancel";
 import Shop from "../components/Content/ShopNow/Shop/Shop";
 import Login from "../components/Content/ShopNow/Auth/Login";
 

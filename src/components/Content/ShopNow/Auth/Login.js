@@ -33,7 +33,7 @@ class Login extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { error } = this.props;
+    const { error, isAuthenticated, showModal } = this.props;
     if (error !== prevProps.error) {
       // Check for register error
       if (error.id === "LOGIN_FAIL") {
@@ -42,6 +42,7 @@ class Login extends Component {
         this.setState({ msg: null });
       }
     }
+    if (isAuthenticated) showModal({ show: "false" });
   }
 
   validateUsername(username) {
@@ -79,13 +80,6 @@ class Login extends Component {
       password,
     };
     this.props.login(user);
-
-    const { isAuthenticated } = this.props;
-
-    if (isAuthenticated) {
-      //Redirect to homepage
-      this.props.pushHistory("/shopnow");
-    }
   };
 
   render() {

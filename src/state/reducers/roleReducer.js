@@ -2,16 +2,22 @@ import {
   GET_ROLES,
   ADD_ROLE,
   DELETE_ROLE,
-  ROLES_ADDED,
+  UPDATE_ROLE,
+  ROLE_ADDED,
   ROLE_DELETED,
   ROLES_RECEIVED,
   ROLE_UPDATED,
+  ROLE_RECEIVED,
+  GET_ROLE_BY_ID,
 } from "../actions/types";
 
 const initialState = {
   roles: [],
-
+  rolePermissions: [],
+  role: {},
+  totalDocuments: 0,
   isLoaded: false,
+  isUpdated: false,
 };
 
 export default function (state = initialState, action) {
@@ -19,35 +25,55 @@ export default function (state = initialState, action) {
     case GET_ROLES:
       return {
         ...state,
-        //roles: action.payload,
-        isLoaded: true,
+        isUpdated: false,
+        isLoaded: false,
+      };
+    case GET_ROLE_BY_ID:
+      return {
+        ...state,
+        isUpdated: false,
+        isLoaded: false,
       };
     case ROLES_RECEIVED:
-      return { ...state, roles: action.payload.data, isLoaded: true };
-    case DELETE_ROLE:
       return {
         ...state,
+        roles: action.payload.data.items,
+        totalDocuments: action.payload.data.total,
+        isLoaded: true,
       };
-    case ROLE_DELETED:
+    case ROLE_RECEIVED:
       return {
         ...state,
-        roles: state.roles.filter((r) => r._id !== action.payload._id),
+        role: action.payload.data,
+        isLoaded: true,
+        rolePermissions: action.payload.data.RolePermissions.map(
+          ({ idPermission }) => idPermission
+        ),
       };
     case ADD_ROLE:
       return {
         ...state,
-        //roles: [action.payload, ...state.roles],
         isLoaded: false,
       };
-    case ROLES_ADDED:
+    case ROLE_ADDED:
       return {
         ...state,
-        roles: [action.payload, ...state.roles],
         isLoaded: true,
+      };
+    case ROLE_DELETED:
+      return {
+        ...state,
+        roles: state.roles.filter((role) => role.id !== action.payload.id),
+      };
+    case UPDATE_ROLE:
+      return {
+        ...state,
+        isUpdated: false,
       };
     case ROLE_UPDATED:
       return {
         ...state,
+        isUpdated: true,
       };
     default:
       return state;

@@ -1,7 +1,7 @@
-import { takeEvery, put, call, select } from 'redux-saga/effects';
-import axios from 'axios';
-import { tokenConfig } from '../actions/authActions';
-import { tokenAdminConfig } from '../actions/authAdminActions';
+import { takeEvery, put, call, select } from "redux-saga/effects";
+import axios from "axios";
+import { tokenUserConfig } from "../actions/authUserActions";
+import { tokenAdminConfig } from "../actions/authAdminActions";
 import {
   GET_ANSWERS,
   ADD_ANSWER,
@@ -11,8 +11,9 @@ import {
   ANSWER_DELETED,
   UPDATE_ANSWER,
   ANSWER_UPDATED,
-  UPDATE_ANSWER_STATUS
-} from '../actions/types';
+  UPDATE_ANSWER_STATUS,
+  GET_QUESTIONS_BY_PRODUCT,
+} from "../actions/types";
 
 function* fetchAnswers(params) {
   try {
@@ -20,42 +21,38 @@ function* fetchAnswers(params) {
       { limit, page, query, status } = params.pages;
 
     const response = yield call(() =>
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_RATING}/api/answer?limit=${limit}&page=${page}&query=${query}&status=${status}`,
-          tokenAdminConfig(state)
-        )
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_RATING}/api/answer?limit=${limit}&page=${page}&query=${query}&status=${status}`,
+        tokenAdminConfig(state)
+      )
     );
 
     yield put({ type: ANSWERS_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });
-    let err = { ...error }
+    let err = { ...error };
     if (err.status == 401) {
       this.props.history.push({
-        pathname: '/admin/login',
+        pathname: "/admin/login",
       });
     }
   }
 }
 
 function* addAnswer(params) {
-  const state = yield select();
+  const state = yield select(),
+    { type, idProduct } = params.newAnswer;
 
   try {
     const response = yield call(() =>
       axios.post(
         `${process.env.REACT_APP_BACKEND_RATING}/api/answer/`,
         params.newAnswer,
-        tokenConfig(state)
+        type == "user" ? tokenUserConfig(state) : tokenAdminConfig(state)
       )
     );
 
     yield put({ type: ANSWER_ADDED, payload: response.data });
-    yield put({
-      type: GET_ANSWERS,
-      pages: params.newAnswer.pages,
-    });
   } catch (error) {
     console.log({ ...error });
   }
@@ -63,7 +60,7 @@ function* addAnswer(params) {
 
 function* updateAnswerStt(params) {
   const state = yield select(),
-    { id, status, pages } = params.params
+    { id, status, pages } = params.params;
   console.log(pages);
   try {
     const response = yield call(() =>

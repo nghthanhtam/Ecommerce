@@ -5,7 +5,8 @@ import {
   QUESTIONS_RECEIVED,
   QUESTION_ADDED,
   QUESTION_UPDATED,
-} from '../actions/types';
+  GET_QUESTIONS_BY_PRODUCT,
+} from "../actions/types";
 
 const initialState = {
   questions: [],
@@ -18,6 +19,11 @@ export default function (state = initialState, action) {
     case GET_QUESTIONS:
       return {
         ...state,
+      };
+    case GET_QUESTIONS_BY_PRODUCT:
+      return {
+        ...state,
+        isLoaded: false,
       };
     case QUESTIONS_RECEIVED:
       return {

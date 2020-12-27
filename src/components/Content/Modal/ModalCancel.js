@@ -41,15 +41,14 @@ class ModalCancel extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { details, showModal, updateOrder, user, idShop } = this.props;
+    const { details, showModal, updateOrder, user } = this.props;
     const { cancelReason } = this.state;
-
     if (details) {
       const newOrder = {
         ...details.order,
         status: "canceled",
         cancelReason: cancelReason,
-        type: "user",
+        type: details.type,
         id: details.order.id,
         idUser: user.id,
         pages: details.pages ? details.pages : {},

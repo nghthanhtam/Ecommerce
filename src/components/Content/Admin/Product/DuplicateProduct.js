@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 class DuplicateProduct extends React.Component {
   constructor(props) {
@@ -10,14 +10,17 @@ class DuplicateProduct extends React.Component {
     console.log(this.props.item);
   }
   render() {
-    const { id, name, brand, filePath, price } = this.props.item;
+    const { id, name, brand } = this.props.item;
     return (
       <div className="duplicate-card">
         <h1>{name}</h1>
         <p>{brand}</p>
         <img className="product-pic" src="../img/blue.png" alt="product" />
         <div className="duplicate-info">
-          <div onClick={() => this.props.pickProduct(id)} className="duplicate-btn">
+          <div
+            onClick={() => this.props.pickProduct(id)}
+            className="duplicate-btn"
+          >
             Bán sản phẩm này
           </div>
         </div>

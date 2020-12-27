@@ -5,8 +5,8 @@ import {
   RATINGS_RECEIVED,
   RATING_ADDED,
   RATING_UPDATED,
-  GET_RATINGS_BY_PRODUCT
-} from '../actions/types';
+  GET_RATINGS_BY_PRODUCT,
+} from "../actions/types";
 
 const initialState = {
   ratings: [],
@@ -32,6 +32,7 @@ export default function (state = initialState, action) {
         ...state,
         ratings: action.payload.data.items,
         totalDocuments: action.payload.data.total,
+        averageRating: action.payload.data.averageRating,
         isLoaded: true,
       };
     case ADD_RATING:

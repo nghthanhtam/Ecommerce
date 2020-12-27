@@ -5,11 +5,12 @@ import { connect } from "react-redux";
 const mapStateToProps = (state) => ({
   employee: state.auth.employee,
   admin: state.authAdmin.admin,
+  permissions: state.auth.permissions,
 });
 
 class Menu extends React.Component {
   render() {
-    const { employee, admin, isAdmin } = this.props;
+    const { employee, admin, isAdmin, permissions } = this.props;
     return (
       <div>
         {/* Left side column. contains the logo and sidebar */}
@@ -163,6 +164,7 @@ class Menu extends React.Component {
                     <i className="fa fa-home" /> <span>Trang chủ</span>
                   </Link>
                 </li>
+
                 <li>
                   <Link to="/seller/order">
                     <i className="fa fa-cart-arrow-down" />{" "}
@@ -191,20 +193,32 @@ class Menu extends React.Component {
                     </li>
                   </ul>
                 </li>
-                <li>
-                  <Link to="/seller/employee">
-                    <i className="fa fa-users" /> <span>Quản lý nhân viên</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/seller/role">
-                    <i className="fa fa-users" />{" "}
-                    <span>Phân quyền nhân viên</span>
-                    {/* <span className="pull-right-container">
+                {permissions.includes("getPayslips") && (
+                  <li>
+                    <Link to="/seller/payslip">
+                      <i className="fa fa-credit-card" /> <span>Phiếu chi</span>
+                    </Link>
+                  </li>
+                )}
+                {permissions.includes("getEmployees") && (
+                  <li>
+                    <Link to="/seller/employee">
+                      <i className="fa fa-users" />{" "}
+                      <span>Quản lý nhân viên</span>
+                    </Link>
+                  </li>
+                )}
+                {permissions.includes("getRoles") && (
+                  <li>
+                    <Link to="/seller/role">
+                      <i className="fa fa-users" />
+                      <span>Phân quyền nhân viên</span>
+                      {/* <span className="pull-right-container">
                     <small className="label pull-right bg-green">new</small>
                   </span> */}
-                  </Link>
-                </li>
+                    </Link>
+                  </li>
+                )}
                 <li className="treeview">
                   <a href="#">
                     <i className="fa fa-pie-chart" />
@@ -214,14 +228,17 @@ class Menu extends React.Component {
                     </span>
                   </a>
                   <ul className="treeview-menu">
-                    <li>
-                      <Link to="/seller/sale-report">
-                        <i className="fa fa-circle-o" /> Thống kê doanh thu
-                      </Link>
-                    </li>
+                    {permissions.includes("getGrossRevenue") && (
+                      <li>
+                        <Link to="/seller/sale-report">
+                          <i className="fa fa-circle-o" /> Thống kê doanh thu
+                        </Link>
+                      </li>
+                    )}
+
                     <li>
                       <Link to="/seller/warehouse-report">
-                        <i className="fa fa-circle-o" /> Thống kê tồn kho
+                        <i className="fa fa-circle-o" /> Thống kê lợi nhuận
                       </Link>
                     </li>
                   </ul>

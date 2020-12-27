@@ -1,63 +1,71 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { addShop } from '../../../../state/actions/shopActions';
-import * as Yup from 'yup';
-import { Formik } from 'formik';
-import styles from '../../../../assets/css/helper.module.css'
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { addShop } from "../../../../state/actions/shopActions";
+import * as Yup from "yup";
+import { Formik } from "formik";
+import styles from "../../../../assets/css/helper.module.css";
 
 const mapStateToProps = (state) => ({
   shop: state.shop,
 });
 
 const AShopModal = (props) => {
-
   const changeName = (event, setFieldValue) => {
     const { name, value } = event.target;
     setFieldValue(name, value);
     //if shop name changes
-    if (name === 'name') {
-      let url = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      url = url.replace(/\s+/g, '-');
-      setFieldValue('url', url);
+    if (name === "name") {
+      let url = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      url = url.replace(/\s+/g, "-");
+      setFieldValue("url", url);
     }
-  }
+  };
 
   return (
     <Formik
       initialValues={{
-        name: '',
-        busLicenseId: '',
-        city: '',
-        url: '',
-        phone: ''
+        name: "",
+        busLicenseId: "",
+        city: "",
+        url: "",
+        phone: "",
       }}
       onSubmit={(values, actions) => {
-        props.addShop(values)
+        props.addShop(values);
       }}
       validationSchema={Yup.object().shape({
         name: Yup.string()
-          .max(200, 'Chỉ được phép nhập ít hơn 200 kí tự')
-          .required('Bắt buộc nhập'),
+          .max(200, "Chỉ được phép nhập ít hơn 200 kí tự")
+          .required("Bắt buộc nhập"),
         busLicenseId: Yup.string()
-          .max(30, 'Chỉ được phép nhập ít hơn 30 kí tự')
-          .required('Bắt buộc nhập'),
+          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
+          .required("Bắt buộc nhập"),
         city: Yup.string()
-          .max(30, 'Chỉ được phép nhập ít hơn 30 kí tự')
-          .required('Bắt buộc nhập'),
+          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
+          .required("Bắt buộc nhập"),
         phone: Yup.string()
-          .max(30, 'Chỉ được phép nhập ít hơn 30 kí tự')
-          .required('Bắt buộc nhập')
+          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
+          .required("Bắt buộc nhập")
           .matches(
             /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
-            'Số điện thoại không hợp lệ')
+            "Số điện thoại không hợp lệ"
+          ),
       })}
     >
-      {({ values, touched, errors, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
+      {({
+        values,
+        touched,
+        errors,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+        setFieldValue,
+      }) => (
         <React.Fragment>
           <button
             type="button"
             id="triggerButton"
-            style={{ float: 'right' }}
+            style={{ float: "right" }}
             className="btn btn-primary"
             data-toggle="modal"
             data-target="#exampleModalCenter"
@@ -79,7 +87,7 @@ const AShopModal = (props) => {
                     <span>
                       <h3 className="modal-title" id="exampleModalLongTitle">
                         Thêm nhà bán mới
-                    </h3>
+                      </h3>
                     </span>
                     <span>
                       <button
@@ -105,12 +113,16 @@ const AShopModal = (props) => {
                         value={values.name}
                         onChange={(event) => changeName(event, setFieldValue)}
                         onBlur={handleBlur}
-                        className={errors.name && touched.name
-                          ? `${styles.formikinput} ${styles.error}`
-                          : styles.formikinput}
+                        className={
+                          errors.name && touched.name
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
                       />
                       {touched.name && errors.name ? (
-                        <div className={styles.inputfeedback}>{errors.name}</div>
+                        <div className={styles.inputfeedback}>
+                          {errors.name}
+                        </div>
                       ) : null}
                     </div>
                     <div className="form-group">
@@ -125,12 +137,16 @@ const AShopModal = (props) => {
                         value={values.busLicenseId}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={errors.busLicenseId && touched.busLicenseId
-                          ? `${styles.formikinput} ${styles.error}`
-                          : styles.formikinput}
+                        className={
+                          errors.busLicenseId && touched.busLicenseId
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
                       />
                       {touched.busLicenseId && errors.busLicenseId ? (
-                        <div className={styles.inputfeedback}>{errors.busLicenseId}</div>
+                        <div className={styles.inputfeedback}>
+                          {errors.busLicenseId}
+                        </div>
                       ) : null}
                     </div>
                     <div className="form-group">
@@ -145,12 +161,16 @@ const AShopModal = (props) => {
                         value={values.city}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={errors.city && touched.city
-                          ? `${styles.formikinput} ${styles.error}`
-                          : styles.formikinput}
+                        className={
+                          errors.city && touched.city
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
                       />
                       {touched.city && errors.city ? (
-                        <div className={styles.inputfeedback}>{errors.city}</div>
+                        <div className={styles.inputfeedback}>
+                          {errors.city}
+                        </div>
                       ) : null}
                     </div>
                     <div className="form-group">
@@ -180,12 +200,16 @@ const AShopModal = (props) => {
                         value={values.phone}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={errors.phone && touched.phone
-                          ? `${styles.formikinput} ${styles.error}`
-                          : styles.formikinput}
+                        className={
+                          errors.phone && touched.phone
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
                       />
                       {touched.phone && errors.phone ? (
-                        <div className={styles.inputfeedback}>{errors.phone}</div>
+                        <div className={styles.inputfeedback}>
+                          {errors.phone}
+                        </div>
                       ) : null}
                     </div>
                   </div>
@@ -193,21 +217,27 @@ const AShopModal = (props) => {
                     <button
                       type="button"
                       className="btn btn-secondary"
-                      data-dismiss="modal">
+                      data-dismiss="modal"
+                    >
                       Close
                     </button>
                     <button
                       type="submit"
                       className="btn btn-primary"
                       disabled={
-                        !errors.name && !errors.busLicenseId && !errors.city && !errors.phone ? false : true
-                      } >
-                      Thêm nhân viên
-                  </button>
+                        !errors.name &&
+                        !errors.busLicenseId &&
+                        !errors.city &&
+                        !errors.phone
+                          ? false
+                          : true
+                      }
+                    >
+                      Thêm nhà bán
+                    </button>
                   </div>
                 </div>
               </form>
-
             </div>
           </div>
         </React.Fragment>

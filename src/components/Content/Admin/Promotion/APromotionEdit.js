@@ -37,7 +37,7 @@ const APromotionEdit = (props) => {
   useEffect(() => {
     if (props.isUpdated) {
       history.push("/admin/promotion");
-      props.getPromotionTypes({ limit: 1000, page: 1 });
+      //props.getPromotionTypes({ limit: 1000, page: 1 });
     }
   }, [props.isUpdated]);
 
@@ -51,7 +51,7 @@ const APromotionEdit = (props) => {
     <Formik
       initialValues={props.promotion}
       onSubmit={(values, actions) => {
-        values = { ...values, idPromotionType: 1, pages: props.pages };
+        values = { ...values, pages: props.pages };
         props.updatePromotion(values);
       }}
       validationSchema={Yup.object().shape({
@@ -124,7 +124,6 @@ const APromotionEdit = (props) => {
                         getOptionValue={(option) => option.id}
                         placeholder="Loading..."
                         onBlur={handleBlur}
-                        // value={values.idPromotionType}
                         value={props.promotionTypes.filter(
                           (option) => option.id === values.idPromotionType
                         )}

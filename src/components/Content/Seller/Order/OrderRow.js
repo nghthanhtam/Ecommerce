@@ -52,7 +52,11 @@ class OrderRow extends Component {
         this.props.showModal({
           show: true,
           modalName: "modalCancel",
-          details: { pages: this.props.pages },
+          details: {
+            pages: this.props.pages,
+            order: this.props.order,
+            type: "seller",
+          },
         });
       } else {
         this.props.updateOrder({

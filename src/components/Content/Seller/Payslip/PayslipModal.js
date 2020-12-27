@@ -1,55 +1,70 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { addPayslip } from "../../../../state/actions/payslipActions";
 import * as Yup from "yup";
+import axios from "axios";
+import Select from "react-select";
 import { Formik } from "formik";
 import styles from "../../../../assets/css/helper.module.css";
 
 const mapStateToProps = (state) => ({
-  payslip: state.payslip,
+  token: state.auth.token,
+  employee: state.auth.employee,
+  idShop: state.auth.role.idShop,
 });
 
-const APayslipModal = (props) => {
-  const changeName = (event, setFieldValue) => {
-    const { name, value } = event.target;
-    setFieldValue(name, value);
-    //if payslip name changes
-    if (name === "name") {
-      let url = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      url = url.replace(/\s+/g, "-");
-      setFieldValue("url", url);
-    }
+const PayslipModal = (props) => {
+  const [costtypes, setCostTypes] = useState([]);
+  useEffect(() => {
+    axios
+      .get(
+        `${
+          process.env.REACT_APP_BACKEND_PRODUCT
+        }/api/costtype?limit=${1000}&page=${1}`,
+        {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${props.token}`,
+          },
+        }
+      )
+      .then((res) => {
+        setCostTypes(res.data.items);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const handleChangeSelect = (selectedItem, setFieldValue) => {
+    setFieldValue("idCostType", selectedItem.id);
   };
 
   return (
     <Formik
       initialValues={{
-        name: "",
-        busLicenseId: "",
-        city: "",
-        url: "",
-        phone: "",
+        title: "",
+        totalAmount: 0,
       }}
       onSubmit={(values, actions) => {
+        console.log(values);
+        values = {
+          ...values,
+          idEmployee: props.employee.id,
+          idShop: props.idShop,
+          pages: props.pages,
+        };
+
         props.addPayslip(values);
+        document.getElementById("triggerButton").click();
       }}
       validationSchema={Yup.object().shape({
-        name: Yup.string()
-          .max(200, "Chỉ được phép nhập ít hơn 200 kí tự")
+        // idCostType: Yup.string().required("Bắt buộc nhập"),
+        title: Yup.string()
+          .min(3, "Tiêu đề phải dài hơn 3 kí tự")
+          .max(100, "Chỉ được phép nhập ít hơn 200 kí tự")
           .required("Bắt buộc nhập"),
-        busLicenseId: Yup.string()
-          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
-          .required("Bắt buộc nhập"),
-        city: Yup.string()
-          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
-          .required("Bắt buộc nhập"),
-        phone: Yup.string()
-          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
-          .required("Bắt buộc nhập")
-          .matches(
-            /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
-            "Số điện thoại không hợp lệ"
-          ),
+        totalAmount: Yup.number().required("Bắt buộc nhập"),
       })}
     >
       {({
@@ -70,7 +85,7 @@ const APayslipModal = (props) => {
             data-toggle="modal"
             data-target="#exampleModalCenter"
           >
-            Thêm nhà bán mới
+            Thêm phiếu chi mới
           </button>
           <div
             className="modal fade"
@@ -86,7 +101,7 @@ const APayslipModal = (props) => {
                   <div className="modal-header">
                     <span>
                       <h3 className="modal-title" id="exampleModalLongTitle">
-                        Thêm nhà bán mới
+                        Thêm Phiếu chi mới
                       </h3>
                     </span>
                     <span>
@@ -102,113 +117,78 @@ const APayslipModal = (props) => {
                   </div>
                   <div className="modal-body">
                     <div className="form-group">
-                      <label htmlFor="fullname" className="col-form-label">
-                        Tên nhà bán:
+                      <label htmlFor="idCostType" className="col-form-label">
+                        Loại Phiếu chi:
                       </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Nhập tên nhà bán..."
-                        name="name"
-                        value={values.name}
-                        onChange={(event) => changeName(event, setFieldValue)}
+                      <Select
+                        name="idCostType"
+                        onChange={(e) => handleChangeSelect(e, setFieldValue)}
+                        isSearchable={true}
+                        options={costtypes}
+                        getOptionLabel={(option) => option.name}
+                        getOptionValue={(option) => option.id}
+                        placeholder="Chọn loại mã giảm giá"
                         onBlur={handleBlur}
+                        value={costtypes.filter(
+                          (option) => option.id === values.idCostType
+                        )}
                         className={
-                          errors.name && touched.name
+                          errors.idCostType && touched.idCostType
                             ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
+                            : ""
                         }
                       />
-                      {touched.name && errors.name ? (
+                      {touched.idCostType && errors.idCostType ? (
                         <div className={styles.inputfeedback}>
-                          {errors.name}
+                          {errors.idCostType}
                         </div>
                       ) : null}
                     </div>
                     <div className="form-group">
-                      <label htmlFor="username" className="col-form-label">
-                        Mã kinh doanh:
+                      <label htmlFor="title" className="col-form-label">
+                        Tiêu đề:
                       </label>
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Nhập mã kinh doanh..."
-                        name="busLicenseId"
-                        value={values.busLicenseId}
+                        placeholder="Nhập mô tả..."
+                        name="title"
+                        value={values.title}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         className={
-                          errors.busLicenseId && touched.busLicenseId
+                          errors.title && touched.title
                             ? `${styles.formikinput} ${styles.error}`
                             : styles.formikinput
                         }
                       />
-                      {touched.busLicenseId && errors.busLicenseId ? (
+                      {touched.title && errors.title ? (
                         <div className={styles.inputfeedback}>
-                          {errors.busLicenseId}
+                          {errors.title}
                         </div>
                       ) : null}
                     </div>
                     <div className="form-group">
-                      <label htmlFor="password" className="col-form-label">
-                        Thành phố/Tỉnh:
+                      <label htmlFor="totalAmount" className="col-form-label">
+                        Tổng chi phí:
                       </label>
                       <input
-                        type="text"
+                        type="number"
                         className="form-control"
-                        placeholder="Nhập thành phố..."
-                        name="city"
-                        value={values.city}
+                        placeholder="Nhập mã giảm giá..."
+                        name="totalAmount"
+                        value={values.totalAmount}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         className={
-                          errors.city && touched.city
+                          errors.totalAmount && touched.totalAmount
                             ? `${styles.formikinput} ${styles.error}`
                             : styles.formikinput
                         }
                       />
-                      {touched.city && errors.city ? (
+                      {touched.totalAmount && errors.totalAmount ? (
                         <div className={styles.inputfeedback}>
-                          {errors.city}
-                        </div>
-                      ) : null}
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="password" className="col-form-label">
-                        Đường dẫn:
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="url"
-                        value={values.url}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        disabled
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="phone" className="col-form-label">
-                        Số điện thoại:
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="phone"
-                        placeholder="Nhập số điện thoại..."
-                        name="phone"
-                        value={values.phone}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                          errors.phone && touched.phone
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.phone && errors.phone ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.phone}
+                          {errors.totalAmount}
                         </div>
                       ) : null}
                     </div>
@@ -219,21 +199,16 @@ const APayslipModal = (props) => {
                       className="btn btn-secondary"
                       data-dismiss="modal"
                     >
-                      Close
+                      Đóng
                     </button>
                     <button
                       type="submit"
                       className="btn btn-primary"
                       disabled={
-                        !errors.name &&
-                        !errors.busLicenseId &&
-                        !errors.city &&
-                        !errors.phone
-                          ? false
-                          : true
+                        !errors.title && !errors.totalAmount ? false : true
                       }
                     >
-                      Thêm nhân viên
+                      Thêm phiếu chi
                     </button>
                   </div>
                 </div>
@@ -246,4 +221,4 @@ const APayslipModal = (props) => {
   );
 };
 
-export default connect(mapStateToProps, { addPayslip })(APayslipModal);
+export default connect(mapStateToProps, { addPayslip })(PayslipModal);

@@ -35,11 +35,11 @@ class RoleRow extends Component {
       <tr>
         <td>{index + 1}</td>
         <td>{role.name}</td>
-        <td>Unknown</td>
+        <td>{this.convertDate(role.createdAt)}</td>
         <td>
           <div className="btn-group">
             <button
-              onClick={() => this.handleEdit(role._id)}
+              onClick={() => this.handleEdit(role.id)}
               type="button"
               className="btn btn-success"
             >
@@ -47,7 +47,7 @@ class RoleRow extends Component {
             </button>
 
             <button
-              onClick={() => this.handleDelete(role._id)}
+              onClick={() => this.handleDelete(role.id)}
               type="button"
               className="btn btn-danger"
             >

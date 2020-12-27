@@ -1,7 +1,6 @@
 import React, { Fragment, Component } from "react";
 import { connect } from "react-redux";
 import Select from "react-select";
-import Loader from "react-loader";
 import axios from "axios";
 
 import { pushHistory } from "../../../../state/actions/historyActions";

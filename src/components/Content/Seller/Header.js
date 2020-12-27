@@ -1,20 +1,19 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import { logout } from '../../../state/actions/authActions';
-import { pushHistory } from '../../../state/actions/historyActions';
-import { showModal } from '../../../state/actions/modalActions';
-import PropTypes from 'prop-types';
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import { logout } from "../../../state/actions/authActions";
+import { pushHistory } from "../../../state/actions/historyActions";
+import { showModal } from "../../../state/actions/modalActions";
+import PropTypes from "prop-types";
 
 const mapStateToProps = (state) => ({
   history: state.history,
   employee: state.auth.employee,
-  admin: state.authAdmin.admin
+  admin: state.authAdmin.admin,
 });
 
 class Header extends Component {
   componentDidMount() {
-    document.body.className = 'hold-transition skin-blue fixed sidebar-mini';
-    console.log(this.props);
+    document.body.className = "hold-transition skin-blue fixed sidebar-mini";
   }
 
   static propTypes = {
@@ -25,25 +24,25 @@ class Header extends Component {
   handleLogout = (e) => {
     e.preventDefault();
     this.props.logout();
-    this.props.pushHistory('/seller/login');
-    this.props.showModal({ show: false })
+    this.props.pushHistory("/seller/login");
+    this.props.showModal({ show: false });
   };
 
   render() {
     const { employee, admin, isAdmin } = this.props;
     return (
       <div>
-        <header className="main-header" >
+        <header className="main-header">
           {/* Logo */}
           <a href="index2.html" className="logo">
             {/* mini logo for sidebar mini 50x50 pixels */}
             <span className="logo-mini">
               <b>A</b>LT
-          </span>
+            </span>
             {/* logo for regular state and mobile devices */}
             <span className="logo-lg">
-              <b>Admin</b>ShopNow
-          </span>
+              {isAdmin ? <b>Admin</b> : <b>Nhà bán</b>}
+            </span>
           </a>
           {/* Header Navbar: style can be found in header.less */}
           <nav className="navbar navbar-static-top">
@@ -56,10 +55,8 @@ class Header extends Component {
             >
               <span className="sr-only">Toggle navigation</span>
             </a>
-            {/* Navbar Right Menu */}
             <div className="navbar-custom-menu">
               <ul className="nav navbar-nav">
-                {/* User Account: style can be found in dropdown.less */}
                 <li className="dropdown user user-menu">
                   <a
                     href="fake_url"
@@ -71,7 +68,9 @@ class Header extends Component {
                       className="user-image"
                       alt="User"
                     />
-                    <span className="hidden-xs">{isAdmin ? admin.username : employee.username}</span>
+                    <span className="hidden-xs">
+                      {isAdmin ? admin.username : employee.username}
+                    </span>
                   </a>
                   <ul className="dropdown-menu">
                     {/* User image */}
@@ -83,7 +82,7 @@ class Header extends Component {
                       />
                       <p>
                         Alexander Pierce - Web Developer
-                      <small>Member since Nov. 2012</small>
+                        <small>Member since Nov. 2012</small>
                       </p>
                     </li>
                     {/* Menu Body */}
@@ -106,7 +105,7 @@ class Header extends Component {
                       <div className="pull-left">
                         <a href="fake_url" className="btn btn-default btn-flat">
                           Profile
-                      </a>
+                        </a>
                       </div>
                       <div className="pull-right">
                         <button
@@ -114,7 +113,7 @@ class Header extends Component {
                           className="btn btn-default btn-flat"
                         >
                           Sign out
-                      </button>
+                        </button>
                       </div>
                     </li>
                   </ul>
@@ -134,5 +133,6 @@ class Header extends Component {
   }
 }
 
-export default connect(mapStateToProps, { logout, pushHistory, showModal })(Header);
-
+export default connect(mapStateToProps, { logout, pushHistory, showModal })(
+  Header
+);

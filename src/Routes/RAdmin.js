@@ -9,8 +9,8 @@ import Header from "../components/Content/Seller/Header";
 import Footer from "../components/Content/Seller/Footer";
 import Menu from "../components/Content/Seller/Menu";
 import ProductVarEdit from "../components/Content/Seller/Product/ProductVarEdit";
-import Order from "../components/Content/Seller/Order/Order";
-import OrderDetail from "../components/Content/Seller/Order/OrderDetail";
+import Order from "../components/Content/Admin/Order/AOrder";
+import OrderDetail from "../components/Content/Admin/Order/AOrderDetail";
 import APromotion from "../components/Content/Admin/Promotion/APromotion";
 import APromotionEdit from "../components/Content/Admin/Promotion/APromotionEdit";
 import PropTypes from "prop-types";
@@ -26,6 +26,7 @@ import AQuestion from "../components/Content/Admin/Question/AQuestion";
 import AAnswer from "../components/Content/Admin/Answer/AAnswer";
 import ARating from "../components/Content/Admin/Rating/ARating";
 import ModalProductDetails from "../components/Content/Modal/ModalProductDetails";
+import ModalCancel from "../components/Content/Modal/ModalCancel";
 import ProductInforEdit from "../components/Content/Admin/Product/ProductInforEdit";
 import AEmployee from "../components/Content/Admin/Employee/AEmployee";
 import EmployeeEdit from "../components/Content/Admin/Employee/AEmployeeEdit";
@@ -33,6 +34,7 @@ import AShop from "../components/Content/Admin/Shop/AShop";
 import AShopEdit from "../components/Content/Admin/Shop/AShopEdit";
 import AUser from "../components/Content/Admin/User/AUser";
 import AUserEdit from "../components/Content/Admin/User/AUserEdit";
+import AOrderWarning from "../components/Content/Admin/Order/AOrderWarning";
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -41,6 +43,8 @@ const mapStateToProps = (state) => ({
   isLoaded: state.auth.isLoaded,
   role: state.auth.role,
   adminToken: state.authAdmin.token,
+  token: state.auth.token,
+  userToken: state.authUser.token,
   show: state.modal.show,
   modalName: state.modal.modalName,
 });
@@ -80,6 +84,9 @@ class RAdmin extends Component {
     }
     if (token) {
       updateAuth(token);
+    }
+    if (userToken) {
+      updateAuthUser(userToken);
     }
   }
 
@@ -123,151 +130,155 @@ class RAdmin extends Component {
           {/* ADMIN */}
           {adminToken && (
             <Fragment>
-              <Fragment>
-                {show && modalName == "productDetails" && (
-                  <ModalProductDetails />
-                )}
-                <Header isAdmin={true} />
-                <Menu isAdmin={true} />
-                <div className="content-wrapper">
-                  <Switch>
-                    <Route exact path="/admin">
-                      <AHome />
-                    </Route>
-                    <PrivateRoute
-                      exact
-                      path="/admin/comment"
-                      component={AComment}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/question"
-                      component={AQuestion}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/answer"
-                      component={AAnswer}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/rating"
-                      component={ARating}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/product"
-                      component={AProduct}
-                      role={roles.product}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/promotion"
-                      component={APromotion}
-                      role={roles.promotion}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/promotion/edit"
-                      component={APromotionEdit}
-                      role={roles.promotion}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/productvar/edit/:id"
-                      component={ProductVarEdit}
-                      role={roles.product}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/product/edit/:id"
-                      component={ProductInforEdit}
-                      role={roles.product}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/role"
-                      component={Role}
-                      role={roles.employee}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/role/edit/:id"
-                      component={RoleEdit}
-                      role={roles.role}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/employee/shop/:id"
-                      component={AEmployee}
-                      role={roles.employee}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/employee/edit/:id"
-                      component={EmployeeEdit}
-                      role={roles.employee}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/shop"
-                      component={AShop}
-                      role={roles.shop}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/shop/edit/:id"
-                      component={AShopEdit}
-                      role={roles.shop}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/user"
-                      component={AUser}
-                      role={roles.user}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/user/edit/:id"
-                      component={AUserEdit}
-                      role={roles.user}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/order"
-                      component={Order}
-                      role={roles.order}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <PrivateRoute
-                      exact
-                      path="/admin/order/edit/:id"
-                      component={OrderDetail}
-                      role={roles.order}
-                      token={adminToken}
-                    ></PrivateRoute>
-                    <Route path="*" render={() => <Redirect to="/404" />} />
-                  </Switch>
-                </div>
-                <Footer />
-              </Fragment>
+              {show && modalName == "modalCancel" && <ModalCancel />}
+              {show && modalName == "productDetails" && <ModalProductDetails />}
+              <Header isAdmin={true} />
+              <Menu isAdmin={true} />
+              <div className="content-wrapper">
+                <Switch>
+                  <Route exact path="/admin">
+                    <AHome />
+                  </Route>
+                  <PrivateRoute
+                    exact
+                    path="/admin/comment"
+                    component={AComment}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/question"
+                    component={AQuestion}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/answer"
+                    component={AAnswer}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/rating"
+                    component={ARating}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/product"
+                    component={AProduct}
+                    role={roles.product}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/promotion"
+                    component={APromotion}
+                    role={roles.promotion}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/promotion/edit"
+                    component={APromotionEdit}
+                    role={roles.promotion}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/productvar/edit/:id"
+                    component={ProductVarEdit}
+                    role={roles.product}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/product/edit/:id"
+                    component={ProductInforEdit}
+                    role={roles.product}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/role"
+                    component={Role}
+                    role={roles.employee}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/role/edit/:id"
+                    component={RoleEdit}
+                    role={roles.role}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/employee/shop/:id"
+                    component={AEmployee}
+                    role={roles.employee}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/employee/edit/:id"
+                    component={EmployeeEdit}
+                    role={roles.employee}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/shop"
+                    component={AShop}
+                    role={roles.shop}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/shop/edit/:id"
+                    component={AShopEdit}
+                    role={roles.shop}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/user"
+                    component={AUser}
+                    role={roles.user}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/user/edit/:id"
+                    component={AUserEdit}
+                    role={roles.user}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/order"
+                    component={Order}
+                    role={roles.order}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/order/warningorder"
+                    component={AOrderWarning}
+                    role={roles.order}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/order/warningdetails/:id"
+                    component={OrderDetail}
+                    role={roles.order}
+                    token={adminToken}
+                  ></PrivateRoute>
+                  <Route path="*" render={() => <Redirect to="/404" />} />
+                </Switch>
+              </div>
+              <Footer />
             </Fragment>
           )}
           <Route path="*" render={() => <Redirect to="/admin/login" />} />

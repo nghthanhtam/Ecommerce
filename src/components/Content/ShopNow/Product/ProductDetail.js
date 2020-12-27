@@ -24,6 +24,11 @@ import {
   getRatingsByProduct,
 } from "../../../../state/actions/ratingActions";
 import { addComment } from "../../../../state/actions/commentActions";
+import {
+  addQuestion,
+  getQuestionsByProduct,
+} from "../../../../state/actions/questionActions";
+import { addAnswer } from "../../../../state/actions/answerActions";
 import { addCart } from "../../../../state/actions/cartActions";
 
 const mapStateToProps = (state) => ({
@@ -35,10 +40,13 @@ const mapStateToProps = (state) => ({
   isProVarLoaded: state.productVar.isLoaded,
   productVar: state.productVar.productVar,
   ratings: state.rating.ratings,
-  isRatingLoaded: state.rating.isLoaded,
-  totalDocuments: state.rating.totalDocuments,
+  isRatingsLoaded: state.rating.isLoaded,
+  isQuestionsLoaded: state.question.isLoaded,
+  questions: state.question.questions,
+  totalRating: state.rating.totalDocuments,
   tokenUser: state.authUser.token,
   isAuthenticated: state.authUser.isAuthenticated,
+  averageRating: state.rating.averageRating,
 });
 
 class ProductDetail extends React.Component {
@@ -50,11 +58,13 @@ class ProductDetail extends React.Component {
   state = {
     productList: [1, 2, 3, 4, 5, 6, 7, 8],
     replyBoxHidden: false,
+    answerBoxHidden: false,
     selectedFiles: [],
     isTransition: false,
     title: "",
     review: "",
     content: "",
+    question: "",
     idProduct: "",
     selectedProductVar: "",
     selectedFiles: [],
@@ -85,6 +95,7 @@ class ProductDetail extends React.Component {
     this.setState({ idProduct });
     this.props.getProductById({ idShop, idProduct });
     this.props.getRatingsByProduct({ idProduct, limit: 1000, page: 1 });
+    this.props.getQuestionsByProduct({ idProduct, limit: 1000, page: 1 });
 
     //get products list in the same movie
     // try {
@@ -119,7 +130,7 @@ class ProductDetail extends React.Component {
       isAuthenticated,
       showModal,
     } = this.props;
-    if (isAuthenticated) showModal({ show: false });
+    // if (isAuthenticated && isShow) showModal({ show: false });
     if (bigPhoto == "" && isLoaded) {
       this.setState({ bigPhoto: product.images[0].url });
     }
@@ -156,7 +167,10 @@ class ProductDetail extends React.Component {
     let { replyBoxHidden } = this.state;
     this.setState({ replyBoxHidden: !replyBoxHidden });
   };
-
+  answerClick = () => {
+    let { answerBoxHidden } = this.state;
+    this.setState({ answerBoxHidden: !answerBoxHidden });
+  };
   handleChange = (e) => {
     const { name, value } = e.target;
     this.setState({ [name]: value });
@@ -224,6 +238,20 @@ class ProductDetail extends React.Component {
     }
   };
 
+  sendQuestion = () => {
+    console.log("avadf");
+    const { question, idProduct } = this.state;
+    const { user, addQuestion } = this.props;
+    addQuestion({
+      idUser: user.id,
+      idProduct,
+      question,
+      type: "user",
+    });
+    this.setState({ question: "" });
+    this.setState({ replyBoxHidden: false });
+  };
+
   sendRating = () => {
     const { title, review, idProduct, selectedFiles, rate } = this.state;
     const { user } = this.props;
@@ -237,6 +265,20 @@ class ProductDetail extends React.Component {
       type: "user",
     });
     this.setState({ title: "", review: "", selectedFiles: [], rate: "" });
+  };
+
+  sendAnswer = (idQuestion) => {
+    const { answer, idProduct } = this.state;
+    const { user } = this.props;
+    this.props.addAnswer({
+      idUser: user.id,
+      idQuestion,
+      answer,
+      idProduct,
+      type: "user",
+    });
+    this.setState({ answer: "" });
+    this.setState({ answerBoxHidden: false });
   };
 
   sendCmt = (idRating) => {
@@ -375,7 +417,7 @@ class ProductDetail extends React.Component {
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return year + "-" + month + "-" + dt;
+    return dt + "/" + month + "/" + year;
   };
 
   render() {
@@ -384,9 +426,14 @@ class ProductDetail extends React.Component {
       selectedProductVar,
       productList,
       replyBoxHidden,
+      answerBoxHidden,
       selectedFiles,
       isTransition,
       rate,
+      question,
+      answer,
+      review,
+      content,
       amount,
       variants,
       bigPhoto,
@@ -399,9 +446,12 @@ class ProductDetail extends React.Component {
       isLoaded,
       product,
       ratings,
-      isRatingLoaded,
-      totalDocuments,
+      isRatingsLoaded,
+      totalRating,
       tokenUser,
+      averageRating,
+      questions,
+      isQuestionsLoaded,
     } = this.props;
     const settings = {
       infinite: true,
@@ -495,7 +545,7 @@ class ProductDetail extends React.Component {
                     )}
                   </div>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    {product.product.averageRating !== 0 && (
+                    {isRatingsLoaded && (
                       <div
                         style={{
                           width: "155px",
@@ -506,13 +556,13 @@ class ProductDetail extends React.Component {
                         <Rating
                           name="size-small"
                           precision={0.5}
-                          value={product.product.averageRating}
+                          value={averageRating}
                           size="small"
                           readOnly
                         />
                       </div>
                     )}
-                    <div>({totalDocuments} đánh giá) | </div>
+                    <div>({totalRating} đánh giá) | </div>
                     <div
                       className="add-your-review"
                       onClick={() => {
@@ -703,22 +753,169 @@ class ProductDetail extends React.Component {
                 </div>
               </div>
 
-              {/* <h3 className="recommend-pane">Đánh giá</h3> */}
               <div className="mes-wrapper">
-                {tokenUser && (
+                {tokenUser && isQuestionsLoaded && (
+                  <div
+                    className="row-flex"
+                    style={{ borderBottom: "1px solid #d1d1d1" }}
+                  >
+                    <div className="myreview-wrapper">
+                      <div className="form-group">
+                        <label
+                          style={{
+                            fontWeight: "500",
+                            fontSize: "16px",
+                            marginBottom: "12px",
+                          }}
+                        >
+                          Câu hỏi của bạn
+                        </label>
+                        <textarea
+                          onChange={this.handleChange}
+                          name="question"
+                          className="form-control"
+                          placeholder="Đặt câu hỏi tại đây..."
+                          value={question}
+                          style={{ height: "120px" }}
+                        ></textarea>
+                      </div>
+                      <div className="row-flex">
+                        <Button
+                          variant="contained"
+                          style={{
+                            backgroundColor: "#3571a7",
+                            color: "white",
+                            width: "115px",
+                          }}
+                          onClick={this.sendQuestion}
+                        >
+                          Gửi
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {questions.map((question, index) => {
+                  return (
+                    question.status == "accepted" && (
+                      <div className="mes-detail" key={index}>
+                        <div className="ava-wrapper">
+                          <div className="ava">
+                            <img src="./img/ava.png" alt="ava" />
+                          </div>
+                          <div>{question.User.username}</div>
+                        </div>
+                        <div className="reply-wrapper">
+                          <div className="comments">{question.question}</div>
+
+                          {question.Answers.map((answer, aindex) => {
+                            return (
+                              <Fragment key={aindex}>
+                                {answer.status == "accepted" && (
+                                  <>
+                                    <div>{answer.answer}</div>
+                                    <div className="reply-date">
+                                      {answer.idUser} đă trả lời -{" "}
+                                      {this.convertDate(question.createdAt)}
+                                    </div>
+                                  </>
+                                )}
+                              </Fragment>
+                            );
+                          })}
+
+                          <div
+                            className="reply-btn"
+                            onClick={() => this.answerClick()}
+                          >
+                            Trả lời
+                          </div>
+                          {answerBoxHidden ? (
+                            <div style={{ width: "100%" }}>
+                              <textarea
+                                onChange={this.handleChange}
+                                name="answer"
+                                value={answer}
+                                className="reply-box"
+                              ></textarea>
+                              <div className="row-flex">
+                                <Button
+                                  onClick={() => this.sendAnswer(question.id)}
+                                  className="send-btn"
+                                  style={{
+                                    background: "#3571a7",
+                                    color: "white",
+                                    width: "115px",
+                                    height: "38px",
+                                    margin: "5px 5px 5px 0",
+                                  }}
+                                >
+                                  Gửi
+                                </Button>
+                                <Button
+                                  style={{
+                                    background: "#fff",
+                                    color: "#000",
+                                    width: "115px",
+                                    height: "38px",
+                                    margin: "5px 5px 5px 0",
+                                    border: "1px solid #ccc",
+                                  }}
+                                  onClick={() => this.replyClick()}
+                                >
+                                  Hủy bỏ
+                                </Button>
+                              </div>
+                            </div>
+                          ) : null}
+                          {question.Answers.map((answer, aindex) => {
+                            return (
+                              <div style={{ marginBottom: "10px" }}>
+                                <Fragment key={aindex}>
+                                  {answer.idQuestion == answer.id &&
+                                    answer.status == "accepted" && (
+                                      <div className="reply-answer">
+                                        <p> {answer.answer} </p>
+                                        <div className="cmt-wrapper">
+                                          <div className="ava-reply">
+                                            <img
+                                              src="./img/ava.png"
+                                              alt="ava"
+                                            />
+                                          </div>
+                                          <div className="reply-date">
+                                            {this.convertDate(answer.createdAt)}
+                                          </div>
+                                        </div>
+                                        <div>{answer.User.username}</div>
+                                      </div>
+                                    )}
+                                </Fragment>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )
+                  );
+                })}
+              </div>
+              <div className="mes-wrapper">
+                {tokenUser && isRatingsLoaded && (
                   <div
                     className="row-flex"
                     style={{ borderBottom: "1px solid #d1d1d1" }}
                   >
                     <div className="review-wrapper">
                       <p>ĐÁNH GIÁ</p>
-                      <div className="review-score">4/5</div>
+                      <div className="review-score">{averageRating}/5</div>
                       <Rating
                         precision={0.5}
                         name="simple-controlled"
                         value={5}
                       />
-                      <div>(5 nhận xét)</div>
+                      <div>({totalRating} nhận xét)</div>
                     </div>
 
                     <div className="myreview-wrapper">
@@ -765,7 +962,8 @@ class ProductDetail extends React.Component {
                           onChange={this.handleChange}
                           name="review"
                           className="form-control"
-                          placeholder="Viết nhận xét tại đây"
+                          placeholder="Viết nhận xét tại đây..."
+                          value={review}
                           style={{ height: "120px" }}
                         ></textarea>
                       </div>
@@ -820,123 +1018,122 @@ class ProductDetail extends React.Component {
                   </div>
                 )}
 
-                {isRatingLoaded &&
-                  ratings.map((rating, index) => {
-                    return (
-                      rating.status == "accepted" && (
-                        <div className="mes-detail" key={index}>
+                {ratings.map((rating, index) => {
+                  return (
+                    rating.status == "accepted" && (
+                      <div className="mes-detail" key={index}>
+                        <div className="ava-wrapper">
                           <div className="ava">
                             <img src="./img/ava.png" alt="ava" />
                           </div>
-                          <div className="reply-wrapper">
-                            <div className="comments">{rating.title}</div>
-                            <p>{rating.review}</p>
-                            <div className="sku-grid">
-                              {rating.RatingImages.map((image, index) => {
-                                return (
-                                  <Fragment>
-                                    {image.idRating == rating.id && (
-                                      <div key={index} className="rating-image">
-                                        <img
-                                          className="rating-pic"
-                                          src={image.url}
-                                          alt="product"
-                                        />
-                                      </div>
-                                    )}
-                                  </Fragment>
-                                );
-                              })}
-                            </div>
-                            <div className="review">
-                              <Rating
-                                name="size-small"
-                                precision={0.5}
-                                value={rating.rate}
-                                size="small"
-                                readOnly
-                              />
-                            </div>
-                            <div>{this.convertDate(rating.createdAt)}</div>
-                            <div
-                              className="reply-btn"
-                              onClick={() => this.replyClick()}
-                            >
-                              Trả lời
-                            </div>
-                            {replyBoxHidden ? (
-                              <div style={{ width: "100%" }}>
-                                <textarea
-                                  onChange={this.handleChange}
-                                  name="content"
-                                  className="reply-box"
-                                ></textarea>
-                                <div className="row-flex">
-                                  <Button
-                                    onClick={() => this.sendCmt(rating.id)}
-                                    className="send-btn"
-                                    style={{
-                                      background: "#3571a7",
-                                      color: "white",
-                                      width: "115px",
-                                      height: "38px",
-                                      margin: "5px 5px 5px 0",
-                                    }}
-                                  >
-                                    Gửi
-                                  </Button>
-                                  <Button
-                                    style={{
-                                      background: "#fff",
-                                      color: "#000",
-                                      width: "115px",
-                                      height: "38px",
-                                      margin: "5px 5px 5px 0",
-                                      border: "1px solid #ccc",
-                                    }}
-                                    onClick={() => this.replyClick()}
-                                  >
-                                    Hủy bỏ
-                                  </Button>
-                                </div>
-                              </div>
-                            ) : null}
-                            {rating.Comments.map((cmt, cindex) => {
+                          <div>{rating.User.username}</div>
+                        </div>
+                        <div className="reply-wrapper">
+                          <div className="comments">{rating.title}</div>
+                          <p>{rating.review}</p>
+                          <div className="sku-grid">
+                            {rating.RatingImages.map((image, index) => {
                               return (
                                 <Fragment>
-                                  {cmt.idRating == rating.id &&
-                                    cmt.status == "accepted" && (
-                                      <div
-                                        className="reply-answer"
-                                        key={cindex}
-                                      >
-                                        <p> {cmt.content} </p>
-                                        <div className="cmt-wrapper">
-                                          <div className="ava-reply">
-                                            <img
-                                              src="./img/ava.png"
-                                              alt="ava"
-                                            />
-                                          </div>
-                                          <div style={{ color: "grey" }}>
-                                            {this.convertDate(cmt.createdAt)}
-                                          </div>
-                                        </div>
-                                      </div>
-                                    )}
+                                  {image.idRating == rating.id && (
+                                    <div key={index} className="rating-image">
+                                      <img
+                                        className="rating-pic"
+                                        src={image.url}
+                                        alt="product"
+                                      />
+                                    </div>
+                                  )}
                                 </Fragment>
                               );
                             })}
                           </div>
+                          <div className="review">
+                            <Rating
+                              name="size-small"
+                              precision={0.5}
+                              value={rating.rate}
+                              size="small"
+                              readOnly
+                            />
+                          </div>
+                          <div className="reply-date">
+                            {this.convertDate(rating.createdAt)}
+                          </div>
+                          <div
+                            className="reply-btn"
+                            onClick={() => this.replyClick()}
+                          >
+                            Trả lời
+                          </div>
+                          {replyBoxHidden ? (
+                            <div style={{ width: "100%" }}>
+                              <textarea
+                                onChange={this.handleChange}
+                                name="content"
+                                className="reply-box"
+                                value={content}
+                              ></textarea>
+                              <div className="row-flex">
+                                <Button
+                                  onClick={() => this.sendCmt(rating.id)}
+                                  className="send-btn"
+                                  style={{
+                                    background: "#3571a7",
+                                    color: "white",
+                                    width: "115px",
+                                    height: "38px",
+                                    margin: "5px 5px 5px 0",
+                                  }}
+                                >
+                                  Gửi
+                                </Button>
+                                <Button
+                                  style={{
+                                    background: "#fff",
+                                    color: "#000",
+                                    width: "115px",
+                                    height: "38px",
+                                    margin: "5px 5px 5px 0",
+                                    border: "1px solid #ccc",
+                                  }}
+                                  onClick={() => this.replyClick()}
+                                >
+                                  Hủy bỏ
+                                </Button>
+                              </div>
+                            </div>
+                          ) : null}
+                          {rating.Comments.map((cmt, cindex) => {
+                            return (
+                              <Fragment>
+                                {cmt.idRating == rating.id &&
+                                  cmt.status == "accepted" && (
+                                    <div className="reply-answer" key={cindex}>
+                                      <p> {cmt.content} </p>
+                                      <div className="cmt-wrapper">
+                                        <div className="ava-reply">
+                                          <img src="./img/ava.png" alt="ava" />
+                                        </div>
+                                        <div className="reply-date">
+                                          {this.convertDate(cmt.createdAt)}
+                                        </div>
+                                      </div>
+                                      <div>{cmt.User.username}</div>
+                                    </div>
+                                  )}
+                              </Fragment>
+                            );
+                          })}
                         </div>
-                      )
-                    );
-                  })}
+                      </div>
+                    )
+                  );
+                })}
               </div>
             </div>
           )}
         </div>
-
         <Footer />
       </div>
     );
@@ -951,4 +1148,7 @@ export default connect(mapStateToProps, {
   addComment,
   getRatingsByProduct,
   addCart,
+  getQuestionsByProduct,
+  addQuestion,
+  addAnswer,
 })(ProductDetail);

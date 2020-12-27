@@ -1,9 +1,10 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import Select from 'react-select';
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
-import { DateRangePicker } from 'react-date-range';
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import axios from "axios";
+import Select from "react-select";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { DateRangePicker } from "react-date-range";
 import {
   BarChart,
   Bar,
@@ -12,255 +13,270 @@ import {
   YAxis,
   Tooltip,
   Legend,
-} from 'recharts';
+} from "recharts";
+import ReportRow from "./ReportRow";
 
-import { getAllInvoices } from '../../../../state/actions/invoiceActions';
-import ReportRow from './ReportRow';
+const mapStateToProps = (state) => ({
+  idShop: state.auth.role.idShop,
+  token: state.auth.token,
+});
 
 class SaleReport extends Component {
   state = {
-    // data: [{ name: 'Page A', pv: 200, amt: 2400 },
-    // { name: 'Page B', pv: 6000, amt: 2400 },
     reportData: [
       {
-        label: 'Doanh số mỗi tháng',
-        value: 'SALE_SUMMARY',
+        label: "Doanh số mỗi tháng",
+        value: "SALE_SUMMARY",
       },
       {
-        label: 'Ngày trong tuần',
-        value: 'WEEKDAY',
+        label: "Ngày trong tuần",
+        value: "WEEKDAY",
       },
       {
-        label: 'Thành phố',
-        value: 'CITY',
+        label: "Thành phố",
+        value: "CITY",
       },
       {
-        label: 'Giờ',
-        value: 'HOUR',
+        label: "Giờ",
+        value: "HOUR",
       },
     ],
     sortData: [
       {
-        label: 'Khách hàng',
-        value: 'CUSTOMER',
+        label: "Khách hàng",
+        value: "CUSTOMER",
       },
       {
-        label: 'Đơn hàng',
-        value: 'ORDER',
+        label: "Đơn hàng",
+        value: "ORDER",
       },
       {
-        label: 'Phí ship',
-        value: 'SHIPPING',
+        label: "Phí ship",
+        value: "SHIPPING",
       },
       {
-        label: 'Mã giảm giá',
-        value: 'PROMOTINON',
+        label: "Mã giảm giá",
+        value: "PROMOTINON",
       },
       {
-        label: 'Sản phẩm',
-        value: 'PRODUCT',
+        label: "Sản phẩm",
+        value: "PRODUCT",
       },
     ],
     statusData: [
       {
-        label: 'Đang xử lý',
-        value: 'P',
+        label: "Đang xử lý",
+        value: "P",
       },
       {
-        label: 'Giao thành công',
-        value: 'S',
+        label: "Giao thành công",
+        value: "S",
       },
       {
-        label: 'Đã hủy',
-        value: 'C',
+        label: "Đã hủy",
+        value: "C",
       },
     ],
-    monthData: [
+    yearData: [
       {
-        label: '11',
-        value: '11',
+        label: "2013",
+        value: "2013",
       },
       {
-        label: '12',
-        value: '12',
+        label: "2014",
+        value: "2014",
+      },
+      {
+        label: "2015",
+        value: "2015",
+      },
+      {
+        label: "2016",
+        value: "2016",
+      },
+      {
+        label: "2017",
+        value: "2017",
+      },
+      {
+        label: "2018",
+        value: "2018",
+      },
+      {
+        label: "2019",
+        value: "2019",
+      },
+      {
+        label: "2020",
+        value: "2020",
+      },
+      {
+        label: "2021",
+        value: "2021",
+      },
+      {
+        label: "2022",
+        value: "2022",
       },
     ],
     data: [],
     options: [],
-    idMaterial: '',
-    selectedYear: '',
-    selectedMonth: '',
-    selectedReport: '',
-    selectedSort: '',
-    selectedStatus: '',
+    idMaterial: "",
+    selectedYear: "",
+    selectedMonth: "",
+    selectedReport: "",
+    selectedSort: "",
+    selectedStatus: "",
     selectionRange: {
       startDate: new Date(),
       endDate: new Date(),
-      key: 'selection',
+      key: "selection",
     },
-    sort: [{ value: '5' }, { value: '10' }, { value: '20' }],
-    select: '5',
+    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
+    select: "5",
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: '',
+    query: "",
     defaultHeaderList: [
-      'Đơn hàng',
-      'Khách hàng',
-      'Sản phẩm',
-      'Phí ship',
-      'Giảm giá',
-      'Tổng tiền',
-      'Hoàn tiền',
+      "Đơn hàng",
+      "Khách hàng",
+      "Sản phẩm",
+      "Phí ship",
+      "Giảm giá",
+      "Tổng tiền",
     ],
     headerList: [
-      'Loại báo cáo',
-      'Đơn hàng',
-      'Khách hàng',
-      'Sản phẩm',
-      'Phí ship',
-      'Giảm giá',
-      'Tổng tiền',
-      'Hoàn tiền',
+      "Loại báo cáo",
+      "Đơn hàng",
+      "Khách hàng",
+      "Sản phẩm",
+      "Phí ship",
+      "Giảm giá",
+      "Tổng tiền",
     ],
     reports: [],
-    totalList: {
-      orderTotal: 0,
-      customerTotal: 0,
-      productTotal: 0,
-      shippingTotal: 0,
-      promotionTotal: 0,
-      total: 0,
-      refundTotal: 0,
-    },
-    //totalList["orderTotal"]
   };
 
-  componentDidMount() {
-    this.props.getAllInvoices('');
-    //this.setState({ selectedYear: (new Date()).getFullYear() });
-  }
+  // componentDidUpdate(prevProps, prevState, snapshot) {
+  //   const { selectedYear, selectedMonth } = this.state;
+  //   if (selectedYear === "") return;
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { selectedYear, selectedMonth } = this.state;
-    if (selectedYear === '') return;
+  //   //ng dung chon thang thi hien thi 4 tuan trong thang
+  //   //ng dung ko chon thang ma chi chon nam thi hien thi 12 thang trong nam do
 
-    //ng dung chon thang thi hien thi 4 tuan trong thang
-    //ng dung ko chon thang ma chi chon nam thi hien thi 12 thang trong nam do
+  //   if (prevState.selectedYear !== selectedYear) {
+  //     if (selectedMonth === "") {
+  //       this.setState((state) => {
+  //         let data = [...state.data];
+  //         for (let i = 0; i < 12; i++) {
+  //           data.push({ total: 0, month: i + 1, amt: 2400 });
+  //         }
+  //         this.props.invoice.invoices.map((el) => {
+  //           if (new Date(el.createddate).getFullYear() == selectedYear) {
+  //             let month = new Date(el.createddate).getMonth() + 1;
+  //             switch (month) {
+  //               case 1:
+  //                 data[0]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 2:
+  //                 data[1]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 3:
+  //                 data[2]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 4:
+  //                 data[3]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 5:
+  //                 data[4]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 6:
+  //                 data[5]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 7:
+  //                 data[6]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 8:
+  //                 data[7]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 9:
+  //                 data[8]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 10:
+  //                 data[9]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 11:
+  //                 data[10]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 12:
+  //                 data[11]["total"] += el.totalAmt;
+  //                 return true;
+  //               default:
+  //                 return false;
+  //             }
+  //           }
+  //         });
+  //         return {
+  //           data,
+  //         };
+  //       });
+  //     }
+  //   }
+  //   if (prevState.selectedMonth !== selectedMonth) {
+  //     this.setState((state) => {
+  //       let data = [...state.data];
+  //       data = [];
+  //       for (let i = 0; i < 4; i++) {
+  //         data.push({ total: 0, month: i + 1, amt: 2400 });
+  //         //month dong tren dung ra la "week" nhung luoi ve lai chart :)
+  //       }
+  //       this.props.invoice.invoices.map((el) => {
+  //         if (new Date(el.createddate).getFullYear() == selectedYear) {
+  //           if (new Date(el.createddate).getMonth() + 1 == selectedMonth) {
+  //             let date = new Date(el.createddate).getDate();
 
-    if (prevState.selectedYear !== selectedYear) {
-      if (selectedMonth === '') {
-        this.setState((state) => {
-          let data = [...state.data];
-          for (let i = 0; i < 12; i++) {
-            data.push({ total: 0, month: i + 1, amt: 2400 });
-          }
-          this.props.invoice.invoices.map((el) => {
-            if (new Date(el.createddate).getFullYear() == selectedYear) {
-              let month = new Date(el.createddate).getMonth() + 1;
-              switch (month) {
-                case 1:
-                  data[0]['total'] += el.totalAmt;
-                  return true;
-                case 2:
-                  data[1]['total'] += el.totalAmt;
-                  return true;
-                case 3:
-                  data[2]['total'] += el.totalAmt;
-                  return true;
-                case 4:
-                  data[3]['total'] += el.totalAmt;
-                  return true;
-                case 5:
-                  data[4]['total'] += el.totalAmt;
-                  return true;
-                case 6:
-                  data[5]['total'] += el.totalAmt;
-                  return true;
-                case 7:
-                  data[6]['total'] += el.totalAmt;
-                  return true;
-                case 8:
-                  data[7]['total'] += el.totalAmt;
-                  return true;
-                case 9:
-                  data[8]['total'] += el.totalAmt;
-                  return true;
-                case 10:
-                  data[9]['total'] += el.totalAmt;
-                  return true;
-                case 11:
-                  data[10]['total'] += el.totalAmt;
-                  return true;
-                case 12:
-                  data[11]['total'] += el.totalAmt;
-                  return true;
-                default:
-                  return false;
-              }
-            }
-          });
-          return {
-            data,
-          };
-        });
-      }
-    }
-
-    if (prevState.selectedMonth !== selectedMonth) {
-      this.setState((state) => {
-        let data = [...state.data];
-        data = [];
-        for (let i = 0; i < 4; i++) {
-          data.push({ total: 0, month: i + 1, amt: 2400 });
-          //month dong tren dung ra la "week" nhung luoi ve lai chart :)
-        }
-        this.props.invoice.invoices.map((el) => {
-          if (new Date(el.createddate).getFullYear() == selectedYear) {
-            if (new Date(el.createddate).getMonth() + 1 == selectedMonth) {
-              let date = new Date(el.createddate).getDate();
-
-              switch (date) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                  data[0]['total'] += el.totalAmt;
-                  return true;
-                case 8:
-                case 9:
-                case 10:
-                case 11:
-                case 12:
-                case 13:
-                case 14:
-                  data[1]['total'] += el.totalAmt;
-                  return true;
-                case 15:
-                case 16:
-                case 17:
-                case 18:
-                case 19:
-                case 20:
-                case 21:
-                  data[2]['total'] += el.totalAmt;
-                  return true;
-                default:
-                  data[3]['total'] += el.totalAmt;
-                  return true;
-              }
-            }
-          }
-        });
-        return {
-          data,
-        };
-      });
-    }
-  }
+  //             switch (date) {
+  //               case 1:
+  //               case 2:
+  //               case 3:
+  //               case 4:
+  //               case 5:
+  //               case 6:
+  //               case 7:
+  //                 data[0]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 8:
+  //               case 9:
+  //               case 10:
+  //               case 11:
+  //               case 12:
+  //               case 13:
+  //               case 14:
+  //                 data[1]["total"] += el.totalAmt;
+  //                 return true;
+  //               case 15:
+  //               case 16:
+  //               case 17:
+  //               case 18:
+  //               case 19:
+  //               case 20:
+  //               case 21:
+  //                 data[2]["total"] += el.totalAmt;
+  //                 return true;
+  //               default:
+  //                 data[3]["total"] += el.totalAmt;
+  //                 return true;
+  //             }
+  //           }
+  //         }
+  //       });
+  //       return {
+  //         data,
+  //       };
+  //     });
+  //   }
+  // }
   handleOnChange = (e) => {
     this.setState({ [e.target.name]: e.target.value }, () => {
       const { select, currentPage, query } = this.state;
@@ -295,48 +311,67 @@ class SaleReport extends Component {
       selectionRange: {
         startDate: ranges.selection.startDate,
         endDate: ranges.selection.endDate,
-        key: 'selection',
+        key: "selection",
       },
     });
   };
   renderReports = () => {
-    const { reports, reportData } = this.state;
-    // const { reports } = this.props;
-    return reports.map((eachrp) => (
-      <ReportRow
-        history={this.props.history}
-        key={eachrp._id}
-        record={eachrp}
-        reportData={reportData}
-      />
-    ));
+    const { reports, selectedReport, selectedYear } = this.state;
+    if (reports.length === 0) {
+      return "Không có báo cáo nào";
+    } else {
+      return reports.map((report) => (
+        <ReportRow
+          key={report.id}
+          report={report}
+          selectedReport={selectedReport}
+          selectedYear={selectedYear}
+        />
+      ));
+    }
   };
 
   filter = () => {
     //gọi api lấy ds record gồm count tổng các thuộc tính có sẵn trên table report
-    let { selectedReport, defaultheaderList } = this.state,
-      addingColName = '';
-    if (selectedReport === 'SALE_SUMMARY') addingColName = 'Tháng, năm';
-    else if (selectedReport === 'WEEKDAY') addingColName = 'Thứ';
-    else if (selectedReport === 'CITY') addingColName = 'Tỉnh/Thành phố';
+    let { selectedReport, defaultHeaderList, selectedYear } = this.state,
+      addingColName = "";
+    const { idShop, token } = this.props;
+    if (selectedReport === "SALE_SUMMARY") addingColName = "Tháng/Năm";
+    else if (selectedReport === "WEEKDAY") {
+      addingColName = "Thứ";
+    } else if (selectedReport === "CITY") addingColName = "Tỉnh/Thành phố";
 
+    console.log(defaultHeaderList);
     //set lại các cột mặc định -> thêm các cột tùy theo loại report dc chọn
-    this.setState({ headerList: defaultheaderList }, () => {
-      this.setState((prepState) => ({
-        headerList: [addingColName, ...prepState.headerList],
-      }));
+    this.setState({ headerList: defaultHeaderList }, () => {
+      this.setState(
+        (prepState) => ({
+          headerList: [addingColName, ...prepState.headerList],
+        }),
+        () => console.log(this.state.headerList)
+      );
     });
+
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_ORDER}/api/report/${idShop}/getReportByMonth?year=${selectedYear}`,
+        {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      )
+      .then((response) => {
+        this.setState({ reports: response.data });
+      })
+      .catch((er) => console.log(er.response));
   };
 
   render() {
-    const { isLoaded } = this.props;
     const {
-      options,
-      yearData,
-      monthData,
       reportData,
       sortData,
       statusData,
+      yearData,
       selectionRange,
       headerList,
       defaultHeaderList,
@@ -347,98 +382,24 @@ class SaleReport extends Component {
 
     return (
       <Fragment>
-        {/* {!isLoaded ? (
-                    <Loader></Loader>
-                ) : ( */}
-
         <section className="content">
           <div className="row">
-            {/* left column */}
             <div className="col-md-12">
               <div className="box">
-                {/* /.box-header */}
-                <div className="box-body">
-                  <div className="box-body">
-                    <strong> Material</strong>
-                    <Select
-                      name="idMember"
-                      id="idMember"
-                      onMenuOpen={this.onMenuOpen}
-                      onChange={this.onChangeSelectedMaterial}
-                      isSearchable={true}
-                      options={options}
-                      placeholder="Select material..."
-                      required
-                    ></Select>
-                    {/* <input
-                          style={{ opacity: 0, height: 0 }}
-                            required
-                          value={invisibleInpMemVal}
-                          /> */}
-                    <br />
-
-                    <div style={container}>
-                      <div style={menuStyle}>
-                        <strong> Year</strong>
-                        <Select
-                          onChange={this.onChangeSelectedYear}
-                          isSearchable={true}
-                          options={yearData}
-                          placeholder="Select year..."
-                        ></Select>
-                      </div>
-                      <div style={menuStyle}>
-                        <strong> Month</strong>
-                        <Select
-                          onChange={this.onChangeSelectedMonth}
-                          isSearchable={true}
-                          options={monthData}
-                          placeholder="Select month..."
-                        ></Select>
-                      </div>
-                    </div>
-                  </div>
-                  <br />
-                  {/* /.box-body */}
-                  <BarChart
-                    fill="#8884d8"
-                    width={700}
-                    height={300}
-                    data={this.state.data}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="total" fill="#8884d8" barSize={40} />
-                  </BarChart>
-                  <br />
-                </div>
-
-                {/* /.row */}
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            {/* left column */}
-            <div className="col-md-12">
-              <div className="box">
-                {/* /.box-header */}
                 <div className="box-body">
                   <div className="box-body">
                     <div
                       style={{
-                        display: 'flex',
-                        flexDirection: 'column',
+                        display: "flex",
+                        flexDirection: "column",
                       }}
                     >
                       <div>
                         <button
                           style={{
-                            width: '100px',
-                            float: 'right',
-                            marginTop: '5px',
+                            width: "100px",
+                            float: "right",
+                            marginTop: "5px",
                           }}
                           type="button"
                           className="btn btn-block btn-success"
@@ -448,8 +409,8 @@ class SaleReport extends Component {
                         <button
                           type="button"
                           style={{
-                            width: '100px',
-                            float: 'right',
+                            width: "100px",
+                            float: "right",
                           }}
                           className="btn btn-block btn-primary"
                         >
@@ -458,7 +419,7 @@ class SaleReport extends Component {
                         <button
                           onClick={this.filter}
                           type="button"
-                          style={{ width: '100px', float: 'right' }}
+                          style={{ width: "100px", float: "right" }}
                           className="btn btn-block btn-info"
                         >
                           Filter
@@ -467,9 +428,9 @@ class SaleReport extends Component {
                       <div className="row-flex">
                         <div
                           style={{
-                            background: '#f5f5f5',
-                            padding: '10px',
-                            margin: '10px',
+                            background: "#f5f5f5",
+                            padding: "10px",
+                            margin: "10px",
                           }}
                         >
                           <h4>Ngày tạo đơn hàng</h4>
@@ -484,9 +445,9 @@ class SaleReport extends Component {
                         <div
                           className="column-flex"
                           style={{
-                            background: '#f5f5f5',
-                            padding: '10px 20px 0 0',
-                            margin: '10px',
+                            background: "#f5f5f5",
+                            padding: "10px 20px 0 0",
+                            margin: "10px",
                             flex: 1,
                           }}
                         >
@@ -501,16 +462,24 @@ class SaleReport extends Component {
                               ></Select>
                             </div>
                             <div style={menuStyle}>
-                              <h4> Sắp xếp theo</h4>
+                              <h4> Năm</h4>
                               <Select
                                 onChange={this.onChangeSelectedYear}
                                 isSearchable={true}
-                                options={sortData}
-                                placeholder="Chọn..."
+                                options={yearData}
+                                placeholder="Chọn năm..."
                               ></Select>
                             </div>
                           </div>
-
+                          <div style={menuStyle}>
+                            <h4> Sắp xếp theo</h4>
+                            <Select
+                              onChange={this.onChangeSelectedYear}
+                              isSearchable={true}
+                              options={sortData}
+                              placeholder="Chọn..."
+                            ></Select>
+                          </div>
                           <div style={menuStyle}>
                             <h4> Tình trạng đơn hàng</h4>
                             <Select
@@ -542,15 +511,6 @@ class SaleReport extends Component {
                               </div>
                             </div>
                           </div>
-                          <div style={menuStyle}>
-                            <h4> Số hàng</h4>
-                            <Select
-                              onChange={this.onChangeSelectedYear}
-                              isSearchable={true}
-                              options={yearData}
-                              placeholder="Chọn..."
-                            ></Select>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -571,7 +531,7 @@ class SaleReport extends Component {
                           >
                             <label
                               style={{
-                                fontFamily: 'Montserrat, sans-serif',
+                                fontFamily: "Montserrat, sans-serif",
                               }}
                             >
                               Hiển thị
@@ -579,7 +539,7 @@ class SaleReport extends Component {
                                 onChange={this.handleOnChange}
                                 name="select"
                                 aria-controls="example1"
-                                style={{ margin: '0px 5px' }}
+                                style={{ margin: "0px 5px" }}
                                 className="form-control input-sm"
                                 value={this.state.select}
                               >
@@ -603,15 +563,15 @@ class SaleReport extends Component {
                           >
                             <label
                               style={{
-                                float: 'right',
-                                fontFamily: 'Saira, sans-serif',
+                                float: "right",
+                                fontFamily: "Saira, sans-serif",
                               }}
                             >
                               Tìm kiếm
                               <input
                                 type="search"
                                 name="query"
-                                style={{ margin: '0px 5px' }}
+                                style={{ margin: "0px 5px" }}
                                 className="form-control input-sm"
                                 placeholder="Nhập từ khóa...  "
                                 aria-controls="example1"
@@ -636,8 +596,8 @@ class SaleReport extends Component {
                                 <th
                                   key={index}
                                   style={{
-                                    width: '5%',
-                                    fontFamily: 'Saira, sans-serif',
+                                    width: "5%",
+                                    fontFamily: "Saira, sans-serif",
                                   }}
                                 >
                                   {item}
@@ -645,11 +605,11 @@ class SaleReport extends Component {
                               ))}
                             </tr>
                           </thead>
-                          {/* <tbody>{this.renderReports()}</tbody> */}
-                          <tbody>
+                          <tbody>{this.renderReports()}</tbody>
+                          {/* <tbody>
                             <tr>
                               <td
-                                style={{ fontWeight: '600', color: '#003A88' }}
+                                style={{ fontWeight: "600", color: "#003A88" }}
                               >
                                 Tổng cộng
                               </td>
@@ -657,15 +617,15 @@ class SaleReport extends Component {
                                 <td
                                   key={index}
                                   style={{
-                                    fontWeight: '600',
-                                    color: '#003A88',
+                                    fontWeight: "600",
+                                    color: "#003A88",
                                   }}
                                 >
                                   10626000
                                 </td>
                               ))}
                             </tr>
-                          </tbody>
+                          </tbody> */}
 
                           <tfoot></tfoot>
                         </table>
@@ -687,41 +647,32 @@ class SaleReport extends Component {
                           className="dataTables_paginate paging_simple_numbers"
                           id="example1_paginate"
                         >
-                          <ul className="pagination" style={{ float: 'right' }}>
+                          <ul className="pagination" style={{ float: "right" }}>
                             {/* {this.renderPageButtons()} */}
                           </ul>
                         </div>
                       </div>
                     </div>
                   </div>
-                  {/*/.col (left) */}
                 </div>
               </div>
             </div>
           </div>
         </section>
-
-        {/* )} */}
       </Fragment>
     );
   }
 }
 
-const mapStateToProps = (state) => ({
-  isLoaded: state.member.isLoaded,
-  member: state.member,
-  invoice: state.invoice,
-});
-
-export default connect(mapStateToProps, { getAllInvoices })(SaleReport);
+export default connect(mapStateToProps, {})(SaleReport);
 
 const menuStyle = {
-  display: 'inline-block',
-  width: '94%',
-  margin: '0 0 20px 30px',
+  display: "inline-block",
+  width: "94%",
+  margin: "0 0 20px 30px",
 };
 
 const container = {
-  flexDirection: 'row',
-  display: 'flex',
+  flexDirection: "row",
+  display: "flex",
 };

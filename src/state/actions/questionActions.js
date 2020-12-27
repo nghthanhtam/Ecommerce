@@ -3,11 +3,17 @@ import {
   ADD_QUESTION,
   DELETE_QUESTION,
   UPDATE_QUESTION,
-  UPDATE_QUESTION_STATUS
-} from './types';
+  UPDATE_QUESTION_STATUS,
+  GET_QUESTIONS_BY_PRODUCT,
+} from "./types";
 
 export const getQuestions = (params) => ({
   type: GET_QUESTIONS,
+  pages: params,
+});
+
+export const getQuestionsByProduct = (params) => ({
+  type: GET_QUESTIONS_BY_PRODUCT,
   pages: params,
 });
 

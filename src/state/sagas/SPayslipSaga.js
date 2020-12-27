@@ -10,17 +10,18 @@ import {
   PAYSLIP_DELETED,
   UPDATE_PAYSLIP,
   PAYSLIP_UPDATED,
-  GET_RATINGS_BY_PRODUCT,
+  GET_PAYSLIP_BY_ID,
+  PAYSLIP_RECEIVED,
 } from "../actions/types";
 
 function* fetchPayslips(params) {
   try {
     const state = yield select(),
-      { limit, page, query } = params.pages;
+      { limit, page, query, idShop } = params.pages;
 
     const response = yield call(() =>
       axios.get(
-        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/payslip?limit=${limit}&page=${page}&query=${query}`,
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/payslip/shop/${idShop}?limit=${limit}&page=${page}&query=${query}`,
         tokenConfig(state)
       )
     );
@@ -37,9 +38,32 @@ function* fetchPayslips(params) {
   }
 }
 
+function* fetchPayslipById(params) {
+  try {
+    const state = yield select(),
+      { id } = params;
+    const response = yield call(() =>
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/payslip/${id}`,
+        tokenConfig(state)
+      )
+    );
+
+    yield put({ type: PAYSLIP_RECEIVED, payload: response });
+  } catch (error) {
+    console.log(error);
+    let err = { ...error };
+    if (err.status == 401) {
+      this.props.history.push({
+        pathname: "/seller/login",
+      });
+    }
+  }
+}
+
 function* addPayslip(params) {
   const state = yield select();
-
+  const { pages } = params.newItem;
   try {
     const response = yield call(() =>
       axios.post(
@@ -51,8 +75,8 @@ function* addPayslip(params) {
 
     yield put({ type: PAYSLIP_ADDED, payload: response.data });
     yield put({
-      type: GET_RATINGS_BY_PRODUCT,
-      pages: { limit: 1000, page: 1, idProduct: params.newItem.idProduct },
+      type: GET_PAYSLIPS,
+      pages,
     });
   } catch (error) {
     console.log({ ...error });
@@ -93,6 +117,7 @@ function* deletePayslip(params) {
 
 export default function* sPayslipSaga() {
   yield takeEvery(GET_PAYSLIPS, fetchPayslips);
+  yield takeEvery(GET_PAYSLIP_BY_ID, fetchPayslipById);
   yield takeEvery(ADD_PAYSLIP, addPayslip);
   yield takeEvery(UPDATE_PAYSLIP, updatePayslip);
   yield takeEvery(DELETE_PAYSLIP, deletePayslip);

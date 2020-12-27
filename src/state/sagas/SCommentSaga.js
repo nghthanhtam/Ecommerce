@@ -1,8 +1,8 @@
-import { takeEvery, put, call, select } from 'redux-saga/effects';
-import axios from 'axios';
-import { tokenConfig } from '../actions/authActions';
-import { tokenAdminConfig } from '../actions/authAdminActions';
-import { tokenUserConfig } from '../actions/authUserActions';
+import { takeEvery, put, call, select } from "redux-saga/effects";
+import axios from "axios";
+import { tokenConfig } from "../actions/authActions";
+import { tokenAdminConfig } from "../actions/authAdminActions";
+import { tokenUserConfig } from "../actions/authUserActions";
 import {
   GET_COMMENTS,
   ADD_COMMENT,
@@ -13,8 +13,8 @@ import {
   UPDATE_COMMENT,
   COMMENT_UPDATED,
   UPDATE_COMMENT_STATUS,
-  GET_RATINGS_BY_PRODUCT
-} from '../actions/types';
+  GET_RATINGS_BY_PRODUCT,
+} from "../actions/types";
 
 function* fetchComments(params) {
   try {
@@ -22,20 +22,19 @@ function* fetchComments(params) {
       { limit, page, query, status } = params.pages;
 
     const response = yield call(() =>
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_RATING}/api/comment?limit=${limit}&page=${page}&query=${query}&status=${status}`,
-          tokenAdminConfig(state)
-        )
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_RATING}/api/comment?limit=${limit}&page=${page}&query=${query}&status=${status}`,
+        tokenAdminConfig(state)
+      )
     );
 
     yield put({ type: COMMENTS_RECEIVED, payload: response });
   } catch (error) {
     console.log(error);
-    let err = { ...error }
+    let err = { ...error };
     if (err.status == 401) {
       this.props.history.push({
-        pathname: '/admin/login',
+        pathname: "/admin/login",
       });
     }
   }
@@ -49,15 +48,13 @@ function* addComment(params) {
       axios.post(
         `${process.env.REACT_APP_BACKEND_RATING}/api/comment/`,
         params.newCmt,
-        params.newCmt.type == 'user' ? tokenUserConfig(state) : tokenAdminConfig(state)
+        params.newCmt.type == "user"
+          ? tokenUserConfig(state)
+          : tokenAdminConfig(state)
       )
     );
 
     yield put({ type: COMMENT_ADDED, payload: response.data });
-    yield put({
-      type: GET_RATINGS_BY_PRODUCT,
-      pages: { limit: 1000, page: 1, idProduct: params.newCmt.idProduct },
-    });
   } catch (error) {
     console.log({ ...error });
   }
@@ -65,7 +62,7 @@ function* addComment(params) {
 
 function* updateCommentStt(params) {
   const state = yield select(),
-    { id, status, pages } = params.params
+    { id, status, pages } = params.params;
 
   try {
     const response = yield call(() =>

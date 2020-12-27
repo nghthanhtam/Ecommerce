@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
-import PayslipModal from "./PayslipModal";
-import PayslipRow from "./PayslipRow";
+import APayslipModal from "./PayslipModal";
+import APayslipRow from "./PayslipRow";
 import { connect } from "react-redux";
 import { getPayslips } from "../../../../state/actions/payslipActions";
 import PropTypes from "prop-types";
@@ -10,6 +10,7 @@ const mapStateToProps = (state) => ({
   payslips: state.payslip.payslips,
   isLoaded: state.payslip.isLoaded,
   totalDocuments: state.payslip.totalDocuments,
+  idShop: state.auth.role.idShop,
 });
 
 class Payslip extends Component {
@@ -22,14 +23,18 @@ class Payslip extends Component {
     start: 1,
     end: 5,
     isNextBtnShow: true,
+    activeEmp: true,
+    deletedEmp: false,
   };
 
   componentDidMount() {
     const { limit, page, query } = this.state;
+    const { idShop } = this.props;
     this.props.getPayslips({
       limit,
       page,
       query,
+      idShop,
     });
   }
 
@@ -103,10 +108,12 @@ class Payslip extends Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
+    const { idShop } = this.props;
     this.props.getPayslips({
       limit,
       page,
       query,
+      idShop,
     });
     this.getPages();
     this.getStartEndDocuments();
@@ -124,7 +131,7 @@ class Payslip extends Component {
       </tr>
     ) : (
       payslips.map((eachPayslip, index) => (
-        <PayslipRow
+        <APayslipRow
           history={this.props.history}
           key={eachPayslip.id}
           payslip={eachPayslip}
@@ -134,8 +141,9 @@ class Payslip extends Component {
     );
   };
 
-  handleChoosePage = (e) => {
-    if (e === "...") return;
+  handleChoosePage = (e, pageNumber) => {
+    e.preventDefault();
+    if (pageNumber === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
 
@@ -143,20 +151,22 @@ class Payslip extends Component {
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
 
-    if (e === -1) {
-      e = page + 1;
-      if (e === pages) this.setState({ isNextBtnShow: false });
+    if (pageNumber === -1) {
+      pageNumber = page + 1;
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
     } else {
-      if (e === pages) this.setState({ isNextBtnShow: false });
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
       else this.setState({ isNextBtnShow: true });
     }
 
-    this.setState({ page: e }, () => {
+    this.setState({ page: pageNumber }, () => {
       const { limit, page, query } = this.state;
+      const { idShop } = this.props;
       this.props.getPayslips({
         limit,
         page,
         query,
+        idShop,
       });
       this.getStartEndDocuments();
     });
@@ -199,8 +209,8 @@ class Payslip extends Component {
               <a
                 className="paga-link"
                 name="page"
-                href="javascript:void(0);"
-                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+                href="#"
+                onClick={(e) => this.handleChoosePage(e, eachButton.pageNumber)}
               >
                 {eachButton.pageNumber}
               </a>
@@ -213,7 +223,7 @@ class Payslip extends Component {
               }
               name="currentPage"
               href="#"
-              onClick={() => this.handleChoosePage(-1)}
+              onClick={(e) => this.handleChoosePage(e, -1)}
             >
               {">>"}
             </a>
@@ -223,46 +233,9 @@ class Payslip extends Component {
     }
   };
 
-  onCheckActiveEmp = (e) => {
-    const { activeEmp, limit, page, query, deletedEmp } = this.state;
-    if (e.target.name == "active") {
-      this.setState({ activeEmp: !activeEmp }, () => {
-        console.log(activeEmp);
-        this.props.getPayslips({
-          limit,
-          page,
-          query,
-          idPayslip: 1,
-          deletedEmp: this.state.deletedEmp,
-          activeEmp: this.state.activeEmp,
-        });
-      });
-    } else if (e.target.name == "deleted") {
-      this.setState({ deletedEmp: !deletedEmp }, () => {
-        console.log(activeEmp);
-        this.props.getPayslips({
-          limit,
-          page,
-          query,
-          idPayslip: 1,
-          deletedEmp: this.state.deletedEmp,
-          activeEmp: this.state.activeEmp,
-        });
-      });
-    }
-  };
-
   render() {
-    const {
-      limit,
-      page,
-      start,
-      end,
-      query,
-      activeEmp,
-      deletedEmp,
-    } = this.state;
-    const { totalDocuments } = this.props;
+    const { limit, page, start, end, query } = this.state;
+    const { totalDocuments, idShop } = this.props;
     return (
       <Fragment>
         <section className="content-header">
@@ -274,7 +247,7 @@ class Payslip extends Component {
               </a>
             </li>
             <li>
-              <a href="/admin/payslip">Nhà bán</a>
+              <a href="/admin/payslip">Mã giảm giá</a>
             </li>
           </ol>
         </section>
@@ -284,11 +257,11 @@ class Payslip extends Component {
               <div className="box">
                 <div className="box-header" style={{ marginTop: "5px" }}>
                   <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                    <h3 className="box-title">Quản lý nhà bán</h3>
+                    <h3 className="box-title">Quản lý mã giảm giá</h3>
                   </div>
 
                   <div className="col-md-4">
-                    <PayslipModal limit={limit} page={page} />
+                    <APayslipModal pages={{ limit, page, query, idShop }} />
                   </div>
                 </div>
                 <div className="box-body">
@@ -342,27 +315,25 @@ class Payslip extends Component {
                         >
                           <thead>
                             <tr>
-                              <th style={{ width: "5%" }}>#</th>
-                              <th style={{ width: "15%" }}>Tên nhà bán</th>
-                              <th style={{ width: "5%" }}>Mã kinh doanh</th>
-                              <th style={{ width: "15%" }}>Thành phố/tỉnh</th>
-                              <th style={{ width: "20%" }}>Đường dẫn</th>
-                              <th style={{ width: "5%" }}>Điện thoại</th>
-                              <th style={{ width: "25%" }}>Thao tác</th>
+                              <th style={{ width: "5%" }}>Stt</th>
+                              <th style={{ width: "8%" }}>Nhân viên</th>
+                              <th style={{ width: "10%" }}>Loại phiếu chi</th>
+                              <th style={{ width: "15%" }}>Tiêu đề</th>
+                              <th style={{ width: "10%" }}>Tổng tiền </th>
+                              <th style={{ width: "8%" }}>Ngày tạo </th>
+                              <th style={{ width: "10%" }}>Thao tác</th>
                             </tr>
                           </thead>
-
                           <tbody>{this.renderPayslips()}</tbody>
-
                           <tfoot>
                             <tr>
-                              <th>#</th>
-                              <th>Tên nhà bán</th>
-                              <th>Mã kinh doanh</th>
-                              <th>Thành phố/tỉnh</th>
-                              <th>Đường dẫn</th>
-                              <th>Điện thoại</th>
-                              <th>Hành động</th>
+                              <th>Stt</th>
+                              <th>Nhân viên</th>
+                              <th>Loại phiếu chi</th>
+                              <th>Tiêu đề</th>
+                              <th>Tổng tiền</th>
+                              <th>Ngày tạo </th>
+                              <th>Thao tác</th>
                             </tr>
                           </tfoot>
                         </table>

@@ -19,6 +19,29 @@ import {
   GET_ORDERS,
 } from "../actions/types";
 
+function* fetchOrders(params) {
+  try {
+    const state = yield select(),
+      { limit, page, query } = params.pages;
+    console.log(params);
+    const response = yield call(() =>
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_ORDER}/api/order?limit=${limit}&page=${page}&query=${query}`,
+        tokenAdminConfig(state)
+      )
+    );
+    yield put({ type: ORDERS_RECEIVED, payload: response });
+  } catch (error) {
+    console.log(error);
+    let err = { ...error };
+    if (err.status == 401) {
+      this.props.history.push({
+        pathname: "/admin/login",
+      });
+    }
+  }
+}
+
 function* fetchOrderDetsByOrderId(params) {
   try {
     const state = yield select(),
@@ -186,6 +209,7 @@ function* deleteOrder(params) {
 export default function* sOrderSaga() {
   yield takeEvery(GET_ORDERDETS_BY_ORDERID, fetchOrderDetsByOrderId);
   yield takeEvery(GET_ORDERS_BY_SHOP, fetchOrdersByShop);
+  yield takeEvery(GET_ORDERS, fetchOrders);
   yield takeEvery(GET_USER_ORDERS, fetchUserOrders);
   yield takeEvery(ADD_ORDER, addOrder);
   yield takeEvery(UPDATE_ORDER, updateOrder);

@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { deleteProduct } from '../../../../state/actions/productActions';
-import { pushHistory } from '../../../../state/actions/historyActions';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { deleteProduct } from "../../../../state/actions/productActions";
+import { pushHistory } from "../../../../state/actions/historyActions";
 
 class ReportRow extends Component {
   convertDate = (date) => {
@@ -14,7 +14,7 @@ class ReportRow extends Component {
 
     month = month < 10 ? `0${month}` : month;
 
-    return year + '-' + month + '-' + dt;
+    return year + "-" + month + "-" + dt;
   };
   handleEdit = (id) => {
     this.props.pushHistory(`/payslip/edit/${id}`);
@@ -22,27 +22,29 @@ class ReportRow extends Component {
   handleDelete = (id) => {
     this.props.deletePaySlip(id);
   };
+  componentDidMount() {
+    console.log(this.props.selectedReport);
+  }
 
   render() {
-    const { record, reportData } = this.props;
-
+    const { report, selectedReport, selectedYear } = this.props;
     return (
       <tr>
-        {reportData === 'SALE_SUMMARY' ? (
+        {selectedReport === "SALE_SUMMARY" ? (
           <td>
-            {record.month}/{record.year}
+            {/* {report.month}/{report.year} */}
+            {report.month}/{selectedYear}
           </td>
         ) : null}
-        {reportData === 'WEEKDAY' ? <td> {record.day}</td> : null}
-        {reportData === 'CITY' ? <td> {record.city}</td> : null}
-        {reportData === 'HOUR' ? <td> {record.hour}</td> : null}
-        <td>{record.orderTotal}</td>
-        <td>{record.customerTotal}</td>
-        <td>{record.productTotal}</td>
-        <td>{record.shippingTotal}</td>
-        <td>{record.promotionTotal}</td>
-        <td>{record.total}</td>
-        <td>{record.totalRefund}</td>
+        {selectedReport === "WEEKDAY" ? <td> {report.day}</td> : null}
+        {selectedReport === "CITY" ? <td> {report.city}</td> : null}
+        {selectedReport === "HOUR" ? <td> {report.hour}</td> : null}
+        <td>{report.total}</td>
+        <td>{report.totalUsers}</td>
+        <td>{report.totalProductVars}</td>
+        <td>{report.shippingFee}</td>
+        <td>{report.totalDiscount}</td>
+        <td>{report.totalAmountMoney}</td>
       </tr>
     );
   }

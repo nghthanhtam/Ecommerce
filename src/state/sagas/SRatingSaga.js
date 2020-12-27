@@ -1,8 +1,8 @@
-import { takeEvery, put, call, select } from 'redux-saga/effects';
-import axios from 'axios';
-import { tokenConfig } from '../actions/authActions';
-import { tokenAdminConfig } from '../actions/authAdminActions';
-import { tokenUserConfig } from '../actions/authUserActions';
+import { takeEvery, put, call, select } from "redux-saga/effects";
+import axios from "axios";
+import { tokenConfig } from "../actions/authActions";
+import { tokenAdminConfig } from "../actions/authAdminActions";
+import { tokenUserConfig } from "../actions/authUserActions";
 import {
   GET_RATINGS,
   ADD_RATING,
@@ -13,8 +13,8 @@ import {
   UPDATE_RATING,
   RATING_UPDATED,
   UPDATE_RATING_STATUS,
-  GET_RATINGS_BY_PRODUCT
-} from '../actions/types';
+  GET_RATINGS_BY_PRODUCT,
+} from "../actions/types";
 
 function* fetchRatings(params) {
   try {
@@ -22,11 +22,10 @@ function* fetchRatings(params) {
       { limit, page, query, status } = params.pages;
 
     const response = yield call(() =>
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_RATING}/api/rating?limit=${limit}&page=${page}&query=${query}&status=${status}`,
-          tokenConfig(state)
-        )
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_RATING}/api/rating?limit=${limit}&page=${page}&query=${query}&status=${status}`,
+        tokenConfig(state)
+      )
     );
 
     yield put({ type: RATINGS_RECEIVED, payload: response });
@@ -41,13 +40,12 @@ function* fetchRatingsByProduct(params) {
       { limit, page, idProduct } = params.pages;
 
     const response = yield call(() =>
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_RATING}/api/rating/product/${idProduct}?limit=${limit}&page=${page}`,
-          tokenConfig(state)
-        )
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_RATING}/api/rating/product/${idProduct}?limit=${limit}&page=${page}`,
+        tokenConfig(state)
+      )
     );
-
+    console.log(response);
     yield put({ type: RATINGS_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });
@@ -55,21 +53,21 @@ function* fetchRatingsByProduct(params) {
 }
 
 function* addRating(params) {
-  const state = yield select();
-
+  const state = yield select(),
+    { idProduct, type } = params.newRating;
   try {
     const response = yield call(() =>
       axios.post(
         `${process.env.REACT_APP_BACKEND_RATING}/api/rating/`,
         params.newRating,
-        params.newRating.type == 'user' ? tokenUserConfig(state) : tokenAdminConfig(state)
+        type == "user" ? tokenUserConfig(state) : tokenAdminConfig(state)
       )
     );
 
     yield put({ type: RATING_ADDED, payload: response.data });
     yield put({
       type: GET_RATINGS_BY_PRODUCT,
-      pages: { limit: 1000, page: 1, idProduct: params.newRating.idProduct },
+      pages: { limit: 1000, page: 1, idProduct },
     });
   } catch (error) {
     console.log(error.response);
@@ -78,7 +76,7 @@ function* addRating(params) {
 
 function* updateRatingStt(params) {
   const state = yield select(),
-    { id, status, pages } = params.params
+    { id, status, pages } = params.params;
 
   try {
     const response = yield call(() =>
@@ -94,7 +92,6 @@ function* updateRatingStt(params) {
     console.log({ ...error });
   }
 }
-
 
 function* updateRating(params) {
   const state = yield select();

@@ -3,6 +3,10 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Route, Switch, Redirect } from "react-router-dom";
+import { updateAuth } from "../state/actions/authActions";
+import { updateAuthUser } from "../state/actions/authUserActions";
+import { updateAuthAdmin } from "../state/actions/authAdminActions";
+import { PrivateRoute } from "../components/Content/Seller/PrivateRoute";
 
 import Header from "../components/Content/Seller/Header";
 import Footer from "../components/Content/Seller/Footer";
@@ -24,13 +28,10 @@ import ErrorPage from "../components/Content/Seller/ErrorPage/ErrorSellerPage";
 import Login from "../components/Content/Seller/Auth/Login";
 import Home from "../components/Content/Seller/Home/Home";
 import ModalStockHistory from "../components/Content/Modal/ModalStockHistory";
-
-import { updateAuth } from "../state/actions/authActions";
-import { updateAuthUser } from "../state/actions/authUserActions";
-import { updateAuthAdmin } from "../state/actions/authAdminActions";
 import Role from "../components/Content/Seller/Role/Role";
+import Payslip from "../components/Content/Seller/Payslip/Payslip";
+import PayslipEdit from "../components/Content/Seller/Payslip/PayslipEdit";
 import RoleEdit from "../components/Content/Seller/Role/RoleEdit";
-import { PrivateRoute } from "../components/Content/Seller/PrivateRoute";
 import ModalCancel from "../components/Content/Modal/ModalCancel";
 import ModalShippingFee from "../components/Content/Modal/ModalShippingFee";
 import ModalUpdateQty from "../components/Content/Modal/ModalUpdateQty";
@@ -65,9 +66,6 @@ const roles = {
 class RSeller extends Component {
   state = {};
 
-  componentDidMount() {
-    console.log(this.props.adminToken != null);
-  }
   componentWillMount() {
     //update user và role trong store, vì khi f5 hoặc tắt browser thì store bị xóa, chỉ còn token ở localstorage
     const {
@@ -80,6 +78,12 @@ class RSeller extends Component {
     } = this.props;
     if (token) {
       updateAuth(token);
+    }
+    if (userToken) {
+      updateAuthUser(userToken);
+    }
+    if (adminToken) {
+      updateAuthAdmin(adminToken);
     }
   }
 
@@ -172,6 +176,13 @@ class RSeller extends Component {
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
+                    path="/seller/payslip"
+                    component={Payslip}
+                    role={roles.payslip}
+                    token={token}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
                     path="/seller/supplierinfor"
                     component={SupplierInfor}
                     // role={roles.supplier}
@@ -181,6 +192,13 @@ class RSeller extends Component {
                     exact
                     path="/seller/role/edit/:id"
                     component={RoleEdit}
+                    role={roles.role}
+                    token={token}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/seller/payslip/edit"
+                    component={PayslipEdit}
                     role={roles.role}
                     token={token}
                   ></PrivateRoute>

@@ -4,7 +4,6 @@ import RoleRow from "./RoleRow";
 import { connect } from "react-redux";
 import { getRoles } from "../../../../state/actions/roleActions";
 import PropTypes from "prop-types";
-import axios from "axios";
 import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
@@ -113,7 +112,7 @@ class Role extends Component {
   };
 
   renderRoles = () => {
-    const { start, limit, page } = this.state;
+    const { start } = this.state;
     const { roles, isLoaded } = this.props;
 
     return !isLoaded ? (
@@ -226,8 +225,8 @@ class Role extends Component {
   };
 
   render() {
-    const { limit, page, start, end, query } = this.state;
-    const { isLoaded, totalDocuments } = this.props;
+    const { start, end, query, limit, page } = this.state;
+    const { isLoaded, totalDocuments, idShop } = this.props;
 
     return (
       <Fragment>
@@ -264,7 +263,7 @@ class Role extends Component {
                       </div>
 
                       <div className="col-md-4">
-                        <RoleModal />
+                        <RoleModal pages={{ limit, page, query, idShop }} />
                       </div>
                     </div>
                     {/* /.box-header */}
@@ -318,9 +317,11 @@ class Role extends Component {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: "10%" }}>#</th>
-                                  <th style={{ width: "20%" }}>Tên quyền</th>
-                                  <th style={{ width: "20%" }}>Người tạo</th>
+                                  <th style={{ width: "5%" }}>#</th>
+                                  <th style={{ width: "20%" }}>
+                                    Tên phân quyền
+                                  </th>
+                                  <th style={{ width: "20%" }}>Ngày tạo</th>
                                   <th style={{ width: "30%" }}>Thao tác</th>
                                 </tr>
                               </thead>

@@ -3,41 +3,54 @@ import { connect } from "react-redux";
 import { deletePayslip } from "../../../../state/actions/payslipActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
+const mapStateToProps = (state) => ({
+  history: state.history.history,
+});
+
 class PayslipRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
     let month = newDate.getMonth() + 1;
     let dt = newDate.getDate();
-
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return year + "-" + month + "-" + dt;
+    return dt + "/" + month + "/" + year;
+  };
+
+  convertPrice = (value) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   handleEdit = (id) => {
-    this.props.pushHistory(`/admin/payslip/edit/${id}`);
+    this.props.history.push({
+      pathname: "/seller/payslip/edit",
+      search: `?id=${id}`,
+    });
   };
 
   handleDelete = (id) => {
     this.props.deletePayslip(id);
   };
 
-  handleEmpDetails = (id) => {
-    this.props.pushHistory(`/admin/employee/payslip/${id}`);
-  };
-
   render() {
-    const { payslip, index } = this.props;
+    const { payslip, index, history } = this.props;
 
     return (
       <tr>
         <td>{index + 1}</td>
-        <td>{payslip.name}</td>
-        <td>{payslip.busLicenseId}</td>
-        <td>{payslip.city}</td>
-        <td>{payslip.url}</td>
-        <td>{payslip.phone}</td>
+        <td
+          style={{ color: "blue", cursor: "pointer" }}
+          onClick={() =>
+            history.push(`/seller/employee/edit/${payslip.idEmployee}`)
+          }
+        >
+          {payslip.idEmployee}
+        </td>
+        <td>{payslip.idCostType}</td>
+        <td>{payslip.title}</td>
+        <td>{this.convertPrice(payslip.totalAmount)}đ</td>
+        <td>{this.convertDate(payslip.createdAt)}</td>
         <td>
           <div className="btn-group">
             <button
@@ -55,14 +68,6 @@ class PayslipRow extends Component {
             >
               Xóa
             </button>
-
-            <button
-              onClick={() => this.handleEmpDetails(payslip.id)}
-              type="button"
-              className="btn btn-info"
-            >
-              Nhân viên
-            </button>
           </div>
         </td>
       </tr>
@@ -70,4 +75,6 @@ class PayslipRow extends Component {
   }
 }
 
-export default connect(null, { deletePayslip, pushHistory })(PayslipRow);
+export default connect(mapStateToProps, { deletePayslip, pushHistory })(
+  PayslipRow
+);

@@ -64,7 +64,7 @@ class ProductList extends React.Component {
     }
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { totalDocuments, isLoaded } = this.props;
+    const { isLoaded } = this.props;
     if (isLoaded == true && this.state.pages == prevState.pages) {
       this.getPages();
     }

@@ -1,12 +1,13 @@
 import {
   GET_ORDERS_BY_SHOP,
+  GET_ORDERS,
   ADD_ORDER,
   ORDER_DELETED,
   ORDERS_RECEIVED,
   ORDER_ADDED,
   ORDER_UPDATED,
-  ORDER_DETS_RECEIVED
-} from '../actions/types';
+  ORDER_DETS_RECEIVED,
+} from "../actions/types";
 
 const initialState = {
   orders: [],
@@ -14,7 +15,9 @@ const initialState = {
   isLoaded: false,
   isOrderDetsLoaded: false,
   isAdded: false,
-  ordersAdded: []
+  ordersAdded: [],
+  warningOrders: [],
+  totalWarningOrders: 0,
 };
 
 export default function (state = initialState, action) {
@@ -22,6 +25,12 @@ export default function (state = initialState, action) {
     case GET_ORDERS_BY_SHOP:
       return {
         ...state,
+        isLoaded: false,
+      };
+    case GET_ORDERS:
+      return {
+        ...state,
+        isLoaded: false,
       };
     case ORDERS_RECEIVED:
       return {
@@ -29,6 +38,12 @@ export default function (state = initialState, action) {
         orders: action.payload.data.items,
         totalDocuments: action.payload.data.total,
         isLoaded: true,
+        warningOrders: action.payload.data.items.filter(
+          (item) => item.Purchase.status == "warning"
+        ),
+        totalWarningOrders: action.payload.data.items.filter(
+          (item) => item.Purchase.status == "warning"
+        ).length,
       };
     case ORDER_DETS_RECEIVED:
       return {
@@ -40,21 +55,19 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isAdded: false,
-        ordersAdded: []
+        ordersAdded: [],
       };
     case ORDER_ADDED:
       return {
         ...state,
         isAdded: true,
-        ordersAdded: action.payload.data
+        ordersAdded: action.payload.data,
       };
 
     case ORDER_DELETED:
       return {
         ...state,
-        orders: state.orders.filter(
-          (order) => order.id !== action.payload.id
-        ),
+        orders: state.orders.filter((order) => order.id !== action.payload.id),
       };
 
     case ORDER_UPDATED:

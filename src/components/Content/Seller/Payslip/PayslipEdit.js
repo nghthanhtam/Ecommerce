@@ -1,19 +1,22 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { pushHistory } from "../../../../state/actions/historyActions";
-import {
-  updateShop,
-  getShopById,
-} from "../../../../state/actions/payslipActions";
+import Select from "react-select";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import styles from "../../../../assets/css/helper.module.css";
 import { useHistory } from "react-router-dom";
+import qs from "qs";
+import axios from "axios";
+import { pushHistory } from "../../../../state/actions/historyActions";
+import {
+  updatePayslip,
+  getPayslipById,
+} from "../../../../state/actions/payslipActions";
 
 const mapStateToProps = (state, props) => {
   return {
     history: state.history.history,
-    auth: state.auth,
+    token: state.auth.token,
     isLoaded: state.payslip.isLoaded,
     isUpdated: state.payslip.isUpdated,
     payslip: state.payslip.payslip,
@@ -23,23 +26,41 @@ const mapStateToProps = (state, props) => {
 const PayslipEdit = (props) => {
   const history = useHistory();
   useEffect(() => {
-    const { match, getShopById } = props;
-    getShopById(match.params.id);
-  }, [props.match.params.id]);
-
+    console.log(props.location.search);
+    const { getPayslipById } = props;
+    const id = qs.parse(props.location.search, { ignoreQueryPrefix: true }).id;
+    getPayslipById(id);
+  }, [props.location.search]);
   useEffect(() => {
-    if (props.isUpdated) history.push("/admin/payslip");
+    if (props.isUpdated) {
+      history.push("/seller/payslip");
+    }
   }, [props.isUpdated]);
 
-  const changeName = (event, setFieldValue) => {
-    const { name, value } = event.target;
-    setFieldValue(name, value);
-    //if payslip name changes
-    if (name === "name") {
-      let url = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      url = url.replace(/\s+/g, "-");
-      setFieldValue("url", url);
-    }
+  const [costtypes, setCostTypes] = useState([]);
+  useEffect(() => {
+    axios
+      .get(
+        `${
+          process.env.REACT_APP_BACKEND_PRODUCT
+        }/api/costtype?limit=${1000}&page=${1}`,
+        {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${props.token}`,
+          },
+        }
+      )
+      .then((res) => {
+        setCostTypes(res.data.items);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const handleChangeSelect = (selectedItem, setFieldValue) => {
+    setFieldValue("idCostType", selectedItem.id);
   };
 
   return !props.isLoaded ? (
@@ -48,25 +69,20 @@ const PayslipEdit = (props) => {
     <Formik
       initialValues={props.payslip}
       onSubmit={(values, actions) => {
-        props.updateShop(values);
+        values = {
+          ...values,
+          idEmployee: props.employee.id,
+          idShop: props.idShop,
+          pages: props.pages,
+        };
+        props.updatePayslip(values);
       }}
       validationSchema={Yup.object().shape({
-        name: Yup.string()
-          .max(200, "Chỉ được phép nhập ít hơn 200 kí tự")
-          .required("Required"),
-        busLicenseId: Yup.string()
-          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
-          .required("Required"),
-        city: Yup.string()
-          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
-          .required("Required"),
-        phone: Yup.string()
-          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
-          .required("Required")
-          .matches(
-            /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
-            "Số điện thoại không hợp lệ"
-          ),
+        title: Yup.string()
+          .min(3, "Tiêu đề phải dài hơn 3 kí tự")
+          .max(100, "Chỉ được phép nhập ít hơn 200 kí tự")
+          .required("Bắt buộc nhập"),
+        totalAmount: Yup.number().required("Bắt buộc nhập"),
       })}
     >
       {({
@@ -91,10 +107,10 @@ const PayslipEdit = (props) => {
                 </a>
               </li>
               <li>
-                <a href="/admin/payslip">Nhà bán</a>
+                <a href="/seller/payslip">Phiếu chi</a>
               </li>
               <li>
-                <a href="javascript:void(0);">Chỉnh sửa</a>
+                <a href="#!">Chỉnh sửa</a>
               </li>
             </ol>
           </section>
@@ -107,105 +123,85 @@ const PayslipEdit = (props) => {
                 <div className="box box-info">
                   <form className="form-horizontal" onSubmit={handleSubmit}>
                     <div className="box-body">
-                      <label className={styles.formiklabel} htmlFor="firstName">
-                        {" "}
-                        Tên nhà bán
-                      </label>
-                      <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        onChange={(event) => changeName(event, setFieldValue)}
-                        onBlur={handleBlur}
-                        value={values.name}
-                        className={
-                          errors.name && touched.name
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.name && errors.name ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.name}
-                        </div>
-                      ) : null}
                       <label
+                        htmlFor="idCostType"
                         className={styles.formiklabel}
-                        htmlFor="busLicenseId"
                       >
                         {" "}
-                        Mã kinh doanh
+                        Loại phiếu chi:
                       </label>
-                      <input
-                        name="busLicenseId"
-                        type="text"
-                        onChange={handleChange}
+                      <Select
+                        name="idCostType"
+                        onChange={(e) => handleChangeSelect(e, setFieldValue)}
+                        isSearchable={true}
+                        options={costtypes}
+                        getOptionLabel={(option) => option.name}
+                        getOptionValue={(option) => option.id}
+                        placeholder="Chọn loại mã giảm giá"
                         onBlur={handleBlur}
-                        value={values.busLicenseId}
+                        value={costtypes.filter(
+                          (option) => option.id === values.idCostType
+                        )}
                         className={
-                          errors.busLicenseId && touched.busLicenseId
+                          errors.idCostType && touched.idCostType
                             ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
+                            : ""
                         }
                       />
-                      {touched.busLicenseId && errors.busLicenseId ? (
+                      {touched.idCostType && errors.idCostType ? (
                         <div className={styles.inputfeedback}>
-                          {errors.busLicenseId}
+                          {errors.idCostType}
                         </div>
                       ) : null}
-                      <label className={styles.formiklabel} htmlFor="city">
+
+                      <label htmlFor="title" className={styles.formiklabel}>
                         {" "}
-                        Thành phố/Tỉnh
+                        Tiêu đề:
                       </label>
                       <input
-                        name="city"
                         type="text"
+                        className="form-control"
+                        placeholder="Nhập mô tả..."
+                        name="title"
+                        value={values.title}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.city}
                         className={
-                          errors.city && touched.city
+                          errors.title && touched.title
                             ? `${styles.formikinput} ${styles.error}`
                             : styles.formikinput
                         }
                       />
-                      {touched.city && errors.city ? (
+                      {touched.title && errors.title ? (
                         <div className={styles.inputfeedback}>
-                          {errors.city}
+                          {errors.title}
                         </div>
                       ) : null}
-                      <label className={styles.formiklabel} htmlFor="url">
+
+                      <label
+                        htmlFor="totalAmount"
+                        className={styles.formiklabel}
+                      >
                         {" "}
-                        Đường dẫn
+                        Tổng chi phí:
                       </label>
                       <input
-                        name="url"
-                        type="text"
+                        type="number"
+                        className="form-control"
+                        placeholder="Nhập mã giảm giá..."
+                        name="totalAmount"
+                        value={values.totalAmount}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.url}
-                        disabled
-                        className={styles.formikinput}
-                      />
-                      <label className={styles.formiklabel} htmlFor="phone">
-                        {" "}
-                        Số điện thoại
-                      </label>
-                      <input
-                        name="phone"
-                        type="text"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.phone}
                         className={
-                          errors.phone && touched.phone
+                          errors.totalAmount && touched.totalAmount
                             ? `${styles.formikinput} ${styles.error}`
                             : styles.formikinput
                         }
                       />
-                      {touched.phone && errors.phone ? (
+                      {touched.totalAmount && errors.totalAmount ? (
                         <div className={styles.inputfeedback}>
-                          {errors.phone}
+                          {errors.totalAmount}
                         </div>
                       ) : null}
                     </div>
@@ -214,7 +210,7 @@ const PayslipEdit = (props) => {
                         type="button"
                         className="btn btn-default"
                         onClick={() => {
-                          props.history.push("/admin/payslip");
+                          props.history.push("/seller/payslip");
                         }}
                       >
                         Hủy
@@ -236,6 +232,6 @@ const PayslipEdit = (props) => {
 
 export default connect(mapStateToProps, {
   pushHistory,
-  updateShop,
-  getShopById,
+  updatePayslip,
+  getPayslipById,
 })(PayslipEdit);

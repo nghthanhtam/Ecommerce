@@ -31,7 +31,7 @@ class Home extends Component {
   componentDidMount = () => {
     const { limit, page, query } = this.state;
     const { idShop, getOrdersByShop } = this.props;
-    getOrdersByShop({ limit, page, query, idShop });
+    getOrdersByShop({ limit, page, query, idShop, done: false });
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {

@@ -1,0 +1,19 @@
+.label-wrapper {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  margin-left: 10px;
+}
+.label-wrapper input {
+  margin-right: 5px;
+}
+.role-cate {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 8px;
+}
+.role-label {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}

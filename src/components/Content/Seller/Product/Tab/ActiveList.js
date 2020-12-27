@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Loader from "react-loader";
@@ -148,27 +148,25 @@ class ActiveList extends React.Component {
     this.getStartEndDocuments();
   };
 
-  handleChoosePage = (e) => {
-    if (e === "...") return;
+  handleChoosePage = (e, pageNumber) => {
+    e.preventDefault();
+    if (pageNumber === "...") return;
     const { limit, page } = this.state;
-    let { totalDocuments, productVars } = this.props;
+    let { totalDocuments } = this.props;
 
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
 
-    // console.log('e: ', e);
-    // console.log('page: ', page);
-    // console.log('pages: ', pages);
-    if (e === -1) {
-      e = page + 1;
-      if (e === pages) this.setState({ isNextBtnShow: false });
+    if (pageNumber === -1) {
+      pageNumber = page + 1;
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
     } else {
-      if (e === pages) this.setState({ isNextBtnShow: false });
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
       else this.setState({ isNextBtnShow: true });
     }
 
-    this.setState({ page: e }, () => {
+    this.setState({ page: pageNumber }, () => {
       const { limit, page, query } = this.state;
       const { idShop } = this.props;
       this.props.getProductVarsByIdShop({
@@ -199,8 +197,8 @@ class ActiveList extends React.Component {
               <a
                 className="paga-link"
                 name="currentPage"
-                href="javascript:void(0);"
-                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+                href="#"
+                onClick={(e) => this.handleChoosePage(e, eachButton.pageNumber)}
               >
                 {eachButton.pageNumber}
               </a>
@@ -212,8 +210,8 @@ class ActiveList extends React.Component {
                 isNextBtnShow === true ? "paga-link" : "paga-link_hidden"
               }
               name="currentPage"
-              href="javascript:;"
-              onClick={() => this.handleChoosePage(-1)}
+              href="#"
+              onClick={(e) => this.handleChoosePage(e, -1)}
             >
               {">>"}
             </a>

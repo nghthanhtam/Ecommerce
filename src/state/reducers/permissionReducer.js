@@ -1,54 +1,54 @@
 import {
-  GET_EMPROLES,
-  ADD_EMPROLE,
-  EMPROLE_DELETED,
-  EMPROLES_RECEIVED,
-  EMPROLE_ADDED,
-  EMPROLE_UPDATED,
-} from '../actions/types';
+  GET_PERMISSIONS,
+  ADD_PERMISSION,
+  DELETE_PERMISSION,
+  PERMISSION_ADDED,
+  PERMISSION_DELETED,
+  PERMISSIONS_RECEIVED,
+  PERMISSION_UPDATED,
+} from "../actions/types";
 
 const initialState = {
-  emproles: [],
-  totalDocuments: 0,
+  permissions: [],
+
   isLoaded: false,
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case GET_EMPROLES:
+    case GET_PERMISSIONS:
       return {
         ...state,
-        isLoaded: true,
       };
-    case EMPROLES_RECEIVED:
+    case PERMISSIONS_RECEIVED:
       return {
         ...state,
-        emproles: action.payload.data.items,
+        permissions: action.payload.data.items,
         totalDocuments: action.payload.data.total,
         isLoaded: true,
       };
-    case ADD_EMPROLE:
+    case ADD_PERMISSION:
       return {
         ...state,
         isLoaded: false,
       };
-    case EMPROLE_ADDED:
+    case PERMISSION_ADDED:
       return {
         ...state,
         isLoaded: true,
       };
-
-    case EMPROLE_DELETED:
+    case PERMISSION_DELETED:
       return {
         ...state,
-        emproles: state.emproles.filter((emp) => emp.id !== action.payload.id),
+        permissions: state.permissions.filter(
+          (permission) => permission.id !== action.payload.id
+        ),
       };
 
-    case EMPROLE_UPDATED:
+    case PERMISSION_UPDATED:
       return {
         ...state,
       };
-
     default:
       return state;
   }

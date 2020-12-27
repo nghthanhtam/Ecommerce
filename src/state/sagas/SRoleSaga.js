@@ -5,52 +5,73 @@ import {
   GET_ROLES,
   ADD_ROLE,
   ROLES_RECEIVED,
-  ROLES_ADDED,
+  ROLE_ADDED,
   DELETE_ROLE,
   ROLE_DELETED,
   UPDATE_ROLE,
   ROLE_UPDATED,
+  GET_ROLE_BY_ID,
+  ROLE_RECEIVED,
 } from "../actions/types";
-
-import mongoose from "mongoose";
 
 function* fetchRoles(params) {
   try {
-    console.log(params);
-    if (params.pages.query === "") params.pages.query = "undefined";
-    const state = yield select();
+    const state = yield select(),
+      { limit, page, query, idShop } = params.pages;
 
     const response = yield call(() =>
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_HOST}/api/role/${params.pages.select}/${params.pages.currentPage}/${params.pages.query}`,
-          tokenConfig(state)
-        )
-        .catch((er) => console.log(er.response))
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/EmployeeRole/shop/${idShop}?limit=${limit}&page=${page}&query=${query}`,
+        tokenConfig(state)
+      )
     );
 
     yield put({ type: ROLES_RECEIVED, payload: response });
   } catch (error) {
-    console.log(error);
+    console.log({ ...error });
   }
 }
 
-function* addRoles(params) {
+function* fetchRoleById(params) {
+  try {
+    const state = yield select(),
+      { id } = params;
+    const response = yield call(() =>
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/EmployeeRole/${id}`,
+        tokenConfig(state)
+      )
+    );
+
+    yield put({ type: ROLE_RECEIVED, payload: response });
+  } catch (error) {
+    console.log(error);
+    let err = { ...error };
+    if (err.status == 401) {
+      this.props.history.push({
+        pathname: "/admin/login",
+      });
+    }
+  }
+}
+
+function* addRole(params) {
   const state = yield select();
   console.log(params);
   try {
     const response = yield call(() =>
       axios.post(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/role/`,
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/EmployeeRole/`,
         params.newRole,
         tokenConfig(state)
       )
     );
-    if (response.data._id instanceof mongoose.Types.ObjectId) {
-      response.data._id = response.data._id.toString();
-    }
 
-    yield put({ type: ROLES_ADDED, payload: response.data });
+    yield put({ type: ROLE_ADDED, payload: response.data });
+    yield put({
+      type: GET_ROLES,
+      pages: params.newRole.pages,
+    });
   } catch (error) {
     console.log(error.response);
   }
@@ -61,7 +82,7 @@ function* updateRole(params) {
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/role/${params.newRole._id}`,
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/EmployeeRole/${params.newRole.id}`,
         params.newRole,
         tokenConfig(state)
       )
@@ -72,25 +93,27 @@ function* updateRole(params) {
     console.log(error.response);
   }
 }
+
 function* deleteRole(params) {
   const state = yield select();
   try {
-    const response = yield call(() =>
+    yield call(() =>
       axios.delete(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/role/${params.id}`,
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/EmployeeRole/${params.id}`,
         tokenConfig(state)
       )
     );
 
-    yield put({ type: ROLE_DELETED, payload: response.data });
+    yield put({ type: ROLE_DELETED, payload: { id: params.id } });
   } catch (error) {
     console.log(error.response);
   }
 }
 
 export default function* sRoleSaga() {
+  yield takeEvery(GET_ROLE_BY_ID, fetchRoleById);
   yield takeEvery(GET_ROLES, fetchRoles);
-  yield takeEvery(ADD_ROLE, addRoles);
+  yield takeEvery(ADD_ROLE, addRole);
   yield takeEvery(UPDATE_ROLE, updateRole);
   yield takeEvery(DELETE_ROLE, deleteRole);
 }

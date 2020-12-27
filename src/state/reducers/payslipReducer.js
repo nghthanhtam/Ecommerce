@@ -1,16 +1,18 @@
 import {
   GET_PAYSLIPS,
   ADD_PAYSLIP,
-  DELETE_PAYSLIP,
+  GET_PAYSLIP_BY_ID,
   PAYSLIP_DELETED,
   PAYSLIPS_RECEIVED,
   PAYSLIP_ADDED,
   PAYSLIP_UPDATED,
   UPDATE_PAYSLIP,
+  PAYSLIP_RECEIVED,
 } from "../actions/types";
 
 const initialState = {
   payslips: [],
+  totalDocuments: 0,
   isLoaded: false,
   isUpdated: false,
 };
@@ -20,32 +22,44 @@ export default function (state = initialState, action) {
     case GET_PAYSLIPS:
       return {
         ...state,
-        isLoaded: true,
+        isUpdated: false,
+        isLoaded: false,
+      };
+    case GET_PAYSLIP_BY_ID:
+      return {
+        ...state,
+        isUpdated: false,
+        isLoaded: false,
       };
     case PAYSLIPS_RECEIVED:
-      return { ...state, payslips: action.payload.data, isLoaded: true };
+      return {
+        ...state,
+        payslips: action.payload.data.items,
+        totalDocuments: action.payload.data.total,
+        isLoaded: true,
+      };
+    case PAYSLIP_RECEIVED:
+      return {
+        ...state,
+        payslip: action.payload.data,
+        isLoaded: true,
+      };
+    case ADD_PAYSLIP:
+      return {
+        ...state,
+        isLoaded: false,
+      };
     case PAYSLIP_ADDED:
       return {
         ...state,
-        payslips: [action.payload, ...state.payslips],
         isLoaded: true,
-      };
-    case DELETE_PAYSLIP:
-      return {
-        ...state,
       };
     case PAYSLIP_DELETED:
       return {
         ...state,
         payslips: state.payslips.filter(
-          (payslip) => payslip._id !== action.payload._id
+          (payslip) => payslip.id !== action.payload.id
         ),
-      };
-    case ADD_PAYSLIP:
-      return {
-        ...state,
-        //payslips: [action.payload, ...state.payslips],
-        isLoaded: false,
       };
     case UPDATE_PAYSLIP:
       return {
@@ -57,7 +71,6 @@ export default function (state = initialState, action) {
         ...state,
         isUpdated: true,
       };
-
     default:
       return state;
   }

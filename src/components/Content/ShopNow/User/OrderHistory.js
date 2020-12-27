@@ -72,7 +72,7 @@ class OrderHistory extends React.Component {
     this.props.showModal({
       show: true,
       modalName: "modalCancel",
-      details: { order: item, msg },
+      details: { order: item, msg, type: "user" },
     });
   };
 
