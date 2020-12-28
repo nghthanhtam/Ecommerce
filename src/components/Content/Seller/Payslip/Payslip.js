@@ -11,6 +11,7 @@ const mapStateToProps = (state) => ({
   isLoaded: state.payslip.isLoaded,
   totalDocuments: state.payslip.totalDocuments,
   idShop: state.auth.role.idShop,
+  permissions: state.auth.permissions,
 });
 
 class Payslip extends Component {
@@ -235,7 +236,7 @@ class Payslip extends Component {
 
   render() {
     const { limit, page, start, end, query } = this.state;
-    const { totalDocuments, idShop } = this.props;
+    const { totalDocuments, idShop, permissions } = this.props;
     return (
       <Fragment>
         <section className="content-header">
@@ -257,12 +258,13 @@ class Payslip extends Component {
               <div className="box">
                 <div className="box-header" style={{ marginTop: "5px" }}>
                   <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                    <h3 className="box-title">Quản lý mã giảm giá</h3>
+                    <h3 className="box-title">Quản lý phiếu chi</h3>
                   </div>
-
-                  <div className="col-md-4">
-                    <APayslipModal pages={{ limit, page, query, idShop }} />
-                  </div>
+                  {permissions.includes("createPayslip") && (
+                    <div className="col-md-4">
+                      <APayslipModal pages={{ limit, page, query, idShop }} />
+                    </div>
+                  )}
                 </div>
                 <div className="box-body">
                   <div
@@ -321,7 +323,10 @@ class Payslip extends Component {
                               <th style={{ width: "15%" }}>Tiêu đề</th>
                               <th style={{ width: "10%" }}>Tổng tiền </th>
                               <th style={{ width: "8%" }}>Ngày tạo </th>
-                              <th style={{ width: "10%" }}>Thao tác</th>
+                              {(permissions.includes("editPayslip") ||
+                                permissions.includes("deletePayslip")) && (
+                                <th style={{ width: "10%" }}>Thao tác</th>
+                              )}
                             </tr>
                           </thead>
                           <tbody>{this.renderPayslips()}</tbody>
@@ -333,7 +338,10 @@ class Payslip extends Component {
                               <th>Tiêu đề</th>
                               <th>Tổng tiền</th>
                               <th>Ngày tạo </th>
-                              <th>Thao tác</th>
+                              {(permissions.includes("editPayslip") ||
+                                permissions.includes("deletePayslip")) && (
+                                <th>Thao tác</th>
+                              )}
                             </tr>
                           </tfoot>
                         </table>

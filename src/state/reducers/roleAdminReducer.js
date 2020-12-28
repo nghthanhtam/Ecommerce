@@ -1,18 +1,20 @@
 import {
-  GET_PAYSLIPS,
-  ADD_PAYSLIP,
-  GET_PAYSLIP_BY_ID,
-  PAYSLIP_DELETED,
-  PAYSLIPS_RECEIVED,
-  PAYSLIP_ADDED,
-  PAYSLIP_UPDATED,
-  UPDATE_PAYSLIP,
-  PAYSLIP_RECEIVED,
+  GET_ROLEADMINS,
+  ADD_ROLEADMIN,
+  DELETE_ROLEADMIN,
+  UPDATE_ROLEADMIN,
+  ROLEADMIN_ADDED,
+  ROLEADMIN_DELETED,
+  ROLEADMINS_RECEIVED,
+  ROLEADMIN_UPDATED,
+  ROLEADMIN_RECEIVED,
+  GET_ROLEADMIN_BY_ID,
 } from "../actions/types";
 
 const initialState = {
-  payslips: [],
-  payslip: {},
+  roleAdmins: [],
+  rolePermissions: [],
+  roleAdmin: {},
   totalDocuments: 0,
   isLoaded: false,
   isUpdated: false,
@@ -20,54 +22,57 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case GET_PAYSLIPS:
+    case GET_ROLEADMINS:
       return {
         ...state,
         isUpdated: false,
         isLoaded: false,
       };
-    case GET_PAYSLIP_BY_ID:
+    case GET_ROLEADMIN_BY_ID:
       return {
         ...state,
         isUpdated: false,
         isLoaded: false,
       };
-    case PAYSLIPS_RECEIVED:
+    case ROLEADMINS_RECEIVED:
       return {
         ...state,
-        payslips: action.payload.data.items,
+        roleAdmins: action.payload.data.items,
         totalDocuments: action.payload.data.total,
         isLoaded: true,
       };
-    case PAYSLIP_RECEIVED:
+    case ROLEADMIN_RECEIVED:
       return {
         ...state,
-        payslip: action.payload.data,
+        roleAdmin: action.payload.data,
         isLoaded: true,
+        rolePermissions: action.payload.data.RolePermissions.map(
+          ({ idPermission }) => idPermission
+        ),
       };
-    case ADD_PAYSLIP:
+    case ADD_ROLEADMIN:
       return {
         ...state,
         isLoaded: false,
       };
-    case PAYSLIP_ADDED:
+    case ROLEADMIN_ADDED:
       return {
         ...state,
         isLoaded: true,
       };
-    case PAYSLIP_DELETED:
+    case ROLEADMIN_DELETED:
       return {
         ...state,
-        payslips: state.payslips.filter(
-          (payslip) => payslip.id !== action.payload.id
+        roleAdmins: state.roleAdmins.filter(
+          (roleAdmin) => roleAdmin.id !== action.payload.id
         ),
       };
-    case UPDATE_PAYSLIP:
+    case UPDATE_ROLEADMIN:
       return {
         ...state,
         isUpdated: false,
       };
-    case PAYSLIP_UPDATED:
+    case ROLEADMIN_UPDATED:
       return {
         ...state,
         isUpdated: true,

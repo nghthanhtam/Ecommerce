@@ -32,6 +32,8 @@ import sPromotionSaga from "./SPromotionSaga";
 import sPromotionTypeSaga from "./SPromotionTypeSaga";
 import sLaterListSaga from "./SLaterListSaga";
 import sPermissionSaga from "./SPermissionSaga";
+import sPurchaseSaga from "./SPurchaseSaga";
+import sRoleAdminSaga from "./SRoleAdminSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -68,6 +70,8 @@ export default function* rootSaga() {
     sPromotionTypeSaga(),
     sLaterListSaga(),
     sPermissionSaga(),
+    sPurchaseSaga(),
+    sRoleAdminSaga(),
   ]);
 }
 

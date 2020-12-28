@@ -368,8 +368,8 @@ class DoneList extends React.Component {
 }
 
 DoneList.propTypes = {
-  getProductVarsByIdShop: PropTypes.func.isRequired,
-  productVars: PropTypes.array.isRequired,
+  getOrdersByShop: PropTypes.func.isRequired,
+  orders: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 };
 

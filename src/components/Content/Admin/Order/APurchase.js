@@ -2,15 +2,15 @@ import React, { Component, Fragment } from "react";
 import ADoneList from "./Tab/ADoneList";
 import APendingList from "./Tab/APendingList";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
 import { getOrdersByShop } from "../../../../state/actions/orderActions";
 
 const mapStateToProps = (state) => ({});
 
-class AOrder extends Component {
+class APurchase extends Component {
   state = {
     block: <APendingList />,
   };
+
   onTabClick = (name) => {
     if (name == "pending") this.setState({ block: <APendingList /> });
     else if (name == "done") this.setState({ block: <ADoneList /> });
@@ -62,11 +62,4 @@ class AOrder extends Component {
   }
 }
 
-AOrder.propTypes = {
-  getOrdersByShop: PropTypes.func.isRequired,
-  orders: PropTypes.array.isRequired,
-  isLoaded: PropTypes.bool.isRequired,
-  totalDocuments: PropTypes.number.isRequired,
-};
-
-export default connect(mapStateToProps, { getOrdersByShop })(AOrder);
+export default connect(mapStateToProps, { getOrdersByShop })(APurchase);

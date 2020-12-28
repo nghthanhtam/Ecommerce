@@ -1,16 +1,16 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import Loader from 'react-loader';
-import './home.css';
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import Loader from "react-loader";
+import "./home.css";
 
-import { getOrdersByShop } from '../../../../state/actions/orderActions';
-import OrderRow from '../../Seller/Order/OrderRow';
+import { getPurchases } from "../../../../state/actions/purchaseActions";
+import PurchaseRow from "../Order/APurchaseRow";
 
 const mapStateToProps = (state) => ({
-  orders: state.order.orders,
-  isLoaded: state.order.isLoaded,
-  totalDocuments: state.order.totalDocuments,
+  purchases: state.purchase.purchases,
+  isLoaded: state.purchase.isLoaded,
+  totalDocuments: state.purchase.totalDocuments,
 });
 
 class AHome extends Component {
@@ -20,7 +20,7 @@ class AHome extends Component {
     page: 1,
     pages: [],
     totalDocuments: 0,
-    query: '',
+    query: "",
     start: 1,
     end: 5,
     isNextBtnShow: true,
@@ -28,12 +28,12 @@ class AHome extends Component {
 
   componentDidMount = () => {
     const { limit, page, query } = this.state;
-    const { getOrdersByShop } = this.props
-    getOrdersByShop({ limit, page, query, idShop: 1 });
+    const { getPurchases } = this.props;
+    getPurchases({ limit, page, query, status: "warning" });
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { totalDocuments, isLoaded } = this.props;
+    const { isLoaded } = this.props;
     if (isLoaded == true && this.state.pages == prevState.pages) {
       this.getPages();
     }
@@ -42,7 +42,7 @@ class AHome extends Component {
   handleOnChange = (e) => {
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === 'query') {
+      if (e.target.name === "query") {
         this.setState({ page: 1 }, () => {
           this.rerenderPage();
         });
@@ -54,8 +54,8 @@ class AHome extends Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    const { idShop, getOrdersByShop } = this.props
-    getOrdersByShop({ limit, page, query, idShop });
+    const { getPurchases } = this.props;
+    getPurchases({ limit, page, query, status: "warning" });
     this.getPages();
     this.getStartEndDocuments();
   };
@@ -78,8 +78,8 @@ class AHome extends Component {
   }
 
   handleChoosePage = (e) => {
-    if (e === '...') return
-    const { totalDocuments, idShop, getOrdersByShops } = this.props;
+    if (e === "...") return;
+    const { totalDocuments, getPurchases } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
@@ -95,12 +95,12 @@ class AHome extends Component {
 
     this.setState({ page: e }, () => {
       const { limit, page, query } = this.state;
-      let idShop = 1;
-      getOrdersByShops({
+      getPurchases({
         limit,
         page,
         query,
-        idShop
+        query,
+        status: "warning",
       });
       this.getStartEndDocuments();
     });
@@ -116,8 +116,8 @@ class AHome extends Component {
               key={eachButton.pageNumber}
               className={
                 page === eachButton.pageNumber
-                  ? 'paginae_button active'
-                  : 'paginate_button '
+                  ? "paginae_button active"
+                  : "paginate_button "
               }
             >
               <a
@@ -133,13 +133,13 @@ class AHome extends Component {
           <li className="paginate_button">
             <a
               className={
-                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
+                isNextBtnShow === true ? "paga-link" : "paga-link_hidden"
               }
               name="currentPage"
               href="#"
               onClick={() => this.handleChoosePage(-1)}
             >
-              {'>>'}
+              {">>"}
             </a>
           </li>
         </>
@@ -152,8 +152,8 @@ class AHome extends Component {
     const { totalDocuments } = this.props;
     if (totalDocuments == 0) return;
 
-    let newQuery = '';
-    if (query === '') newQuery = 'undefined';
+    let newQuery = "";
+    if (query === "") newQuery = "undefined";
     else newQuery = query;
 
     let pages = Math.floor(totalDocuments / limit);
@@ -171,7 +171,7 @@ class AHome extends Component {
         { pageNumber: 1 },
         { pageNumber: 2 },
         { pageNumber: 3 },
-        { pageNumber: '...' },
+        { pageNumber: "..." },
         { pageNumber: newArray.length },
       ];
     }
@@ -179,8 +179,9 @@ class AHome extends Component {
     this.setState({ pages: newArray });
   };
 
-  renderOrders = () => {
-    const { orders, isLoaded } = this.props, { start } = this.state;
+  renderPurchases = () => {
+    const { purchases, isLoaded } = this.props,
+      { start } = this.state;
     return !isLoaded ? (
       <tr>
         <td>
@@ -188,14 +189,14 @@ class AHome extends Component {
         </td>
       </tr>
     ) : (
-        orders.map((order, index) => (
-          <OrderRow
-            key={order.id}
-            order={order}
-            index={index + start - 1}
-          />
-        ))
-      );
+      purchases.map((purchase, index) => (
+        <PurchaseRow
+          key={purchase.id}
+          purchase={purchase}
+          index={index + start - 1}
+        />
+      ))
+    );
   };
 
   renderSelect = () => {
@@ -205,7 +206,7 @@ class AHome extends Component {
         onChange={this.handleOnChange}
         name="limit"
         aria-controls="example1"
-        style={{ margin: '0px 5px' }}
+        style={{ margin: "0px 5px" }}
         className="form-control input-sm"
         value={limit}
       >
@@ -226,342 +227,301 @@ class AHome extends Component {
         {!isLoaded ? (
           <Loader></Loader>
         ) : (
-            <React.Fragment>
-              <div>
-                {/* Content Header (Page header) */}
-                <section className="content-header">
-                  <h1>Dashboard</h1>
-                  <ol className="breadcrumb">
-                    <li>
-                      <a href="xd">
-                        <i className="fa fa-dashboard" /> Home
+          <React.Fragment>
+            <div>
+              {/* Content Header (Page header) */}
+              <section className="content-header">
+                <h1>Dashboard</h1>
+                <ol className="breadcrumb">
+                  <li>
+                    <a href="xd">
+                      <i className="fa fa-dashboard" /> Home
                     </a>
-                    </li>
-                    <li className="active">Dashboard</li>
-                  </ol>
-                </section>
-                {/* Main content */}
-                <section className="content">
-                  {/* Small boxes (Stat box) */}
-                  <div className="row">
-                    <div className="col-lg-3 col-xs-6">
-                      {/* small box */}
-                      <div className="small-box bg-aqua">
-                        <div className="inner">
-                          <h3>20</h3>
-                          <p>Sản phẩm đang bán</p>
-                        </div>
-                        <div className="icon">
-                          <i className="ion ion-bag" />
-                        </div>
-                        <a href="./order" className="small-box-footer">
-                          Xem chi tiết <i className="fa fa-arrow-circle-right" />
-                        </a>
+                  </li>
+                  <li className="active">Dashboard</li>
+                </ol>
+              </section>
+              {/* Main content */}
+              <section className="content">
+                {/* Small boxes (Stat box) */}
+                <div className="row">
+                  <div className="col-lg-3 col-xs-6">
+                    {/* small box */}
+                    <div className="small-box bg-aqua">
+                      <div className="inner">
+                        <h3>20</h3>
+                        <p>Sản phẩm đang bán</p>
                       </div>
-                    </div>
-                    {/* ./col */}
-                    {/* ./col */}
-                    <div className="col-lg-3 col-xs-6">
-                      {/* small box */}
-                      <div className="small-box bg-red">
-                        <div className="inner">
-                          <h3>65</h3>
-                          <p>Đơn hàng đang xử lý</p>
-                        </div>
-                        <div className="icon">
-                          <i className="ion ion-pie-graph" />
-                        </div>
-                        <a href="xd" className="small-box-footer">
-                          Xem chi tiết <i className="fa fa-arrow-circle-right" />
-                        </a>
+                      <div className="icon">
+                        <i className="ion ion-bag" />
                       </div>
-                    </div>
-                    {/* ./col */}
-                    <div className="col-lg-3 col-xs-6">
-                      {/* small box */}
-                      <div className="small-box bg-green">
-                        <div className="inner">
-                          <h3>
-                            250000<sup style={{ fontSize: 20 }}>VND</sup>
-                          </h3>
-                          <p>Doanh thu hôm nay</p>
-                        </div>
-                        <div className="icon">
-                          <i className="ion ion-stats-bars" />
-                        </div>
-                        <a href="xd" className="small-box-footer">
-                          Xem chi tiết <i className="fa fa-arrow-circle-right" />
-                        </a>
-                      </div>
-                    </div>
-                    {/* ./col */}
-                    <div className="col-lg-3 col-xs-6">
-                      {/* small box */}
-                      <div className="small-box bg-yellow">
-                        <div className="inner">
-                          <h3>20</h3>
-                          <p>Nhân viên</p>
-                        </div>
-                        <div className="icon">
-                          <i className="ion ion-person-add" />
-                        </div>
-                        <a href="./employee" className="small-box-footer">
-                          Xem chi tiết <i className="fa fa-arrow-circle-right" />
-                        </a>
-                      </div>
+                      <a href="./purchase" className="small-box-footer">
+                        Xem chi tiết <i className="fa fa-arrow-circle-right" />
+                      </a>
                     </div>
                   </div>
-                  {/* /.row */}
-                  {/* Main row */}
-                  <div className="row-flex">
-                    {/* Left col */}
-                    <section className="content" style={{ flex: 1 }}>
-                      <div className="row">
-                        {/* left column */}
+                  {/* ./col */}
+                  {/* ./col */}
+                  <div className="col-lg-3 col-xs-6">
+                    {/* small box */}
+                    <div className="small-box bg-red">
+                      <div className="inner">
+                        <h3>65</h3>
+                        <p>Đơn hàng đang xử lý</p>
+                      </div>
+                      <div className="icon">
+                        <i className="ion ion-pie-graph" />
+                      </div>
+                      <a href="xd" className="small-box-footer">
+                        Xem chi tiết <i className="fa fa-arrow-circle-right" />
+                      </a>
+                    </div>
+                  </div>
+                  {/* ./col */}
+                  <div className="col-lg-3 col-xs-6">
+                    {/* small box */}
+                    <div className="small-box bg-green">
+                      <div className="inner">
+                        <h3>
+                          250000<sup style={{ fontSize: 20 }}>VND</sup>
+                        </h3>
+                        <p>Doanh thu hôm nay</p>
+                      </div>
+                      <div className="icon">
+                        <i className="ion ion-stats-bars" />
+                      </div>
+                      <a href="xd" className="small-box-footer">
+                        Xem chi tiết <i className="fa fa-arrow-circle-right" />
+                      </a>
+                    </div>
+                  </div>
+                  {/* ./col */}
+                  <div className="col-lg-3 col-xs-6">
+                    {/* small box */}
+                    <div className="small-box bg-yellow">
+                      <div className="inner">
+                        <h3>20</h3>
+                        <p>Nhân viên</p>
+                      </div>
+                      <div className="icon">
+                        <i className="ion ion-person-add" />
+                      </div>
+                      <a href="./employee" className="small-box-footer">
+                        Xem chi tiết <i className="fa fa-arrow-circle-right" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                {/* /.row */}
+                {/* Main row */}
+                <div className="row-flex">
+                  {/* Left col */}
+                  <section className="content" style={{ flex: 1 }}>
+                    <div className="row">
+                      {/* left column */}
 
-                        <div className="box">
+                      <div className="box">
+                        <div
+                          className="box-header"
+                          style={{ marginTop: "5px" }}
+                        >
                           <div
-                            className="box-header"
-                            style={{ marginTop: '5px' }}
+                            style={{ paddingLeft: "0px" }}
+                            className="col-md-8"
                           >
-                            <div
-                              style={{ paddingLeft: '0px' }}
-                              className="col-md-8"
-                            >
-                              <h3 className="box-title">
-                                Danh sách đơn hàng cần xử lý
+                            <h3 className="box-title">
+                              Danh sách đơn hàng cần xử lý
                             </h3>
-                            </div>
-
                           </div>
-                          {/* /.box-header */}
-                          <div className="box-body">
-                            <div
-                              id="example1_wrapper"
-                              className="dataTables_wrapper form-inline dt-bootstrap"
-                            >
-                              <div className="row">
-                                <div>
-                                  <div className="col-sm-6">
-                                    <div
-                                      className="dataTables_length"
-                                      id="example1_length"
+                        </div>
+                        {/* /.box-header */}
+                        <div className="box-body">
+                          <div
+                            id="example1_wrapper"
+                            className="dataTables_wrapper form-inline dt-bootstrap"
+                          >
+                            <div className="row">
+                              <div>
+                                <div className="col-sm-6">
+                                  <div
+                                    className="dataTables_length"
+                                    id="example1_length"
+                                  >
+                                    <label
+                                      style={{
+                                        fontFamily: "Montserrat, sans-serif",
+                                      }}
                                     >
-                                      <label
-                                        style={{
-                                          fontFamily: 'Montserrat, sans-serif',
-                                        }}
-                                      >
-                                        Hiển thị
+                                      Hiển thị
                                       {this.renderSelect()}
                                       kết quả
                                     </label>
-                                    </div>
-                                  </div>
-
-                                </div>
-                              </div>
-
-                              <div className="row">
-                                <div className="col-sm-12">
-                                  <table
-                                    id="example1"
-                                    className="table table-bordered"
-                                  >
-                                    <thead className="order-header">
-                                      <tr>
-                                        <th style={{ width: '5%' }}>#</th>
-                                        <th
-                                          style={{
-                                            width: '5%',
-                                            fontFamily: 'Saira, sans-serif'
-                                          }} >
-                                          Mã
-                                        </th>
-                                        <th
-                                          style={{
-                                            width: '15%',
-                                            fontFamily: 'Saira, sans-serif',
-                                          }}>
-                                          Khách hàng
-                                        </th>
-
-                                        <th
-                                          style={{
-                                            width: '5%',
-                                            fontFamily: 'Saira, sans-serif',
-                                          }}>
-                                          Số điện thoại
-                                        </th>
-                                        <th
-                                          style={{
-                                            width: '15%',
-                                            fontFamily: 'Saira, sans-serif',
-                                          }}>
-                                          Địa chỉ giao hàng
-                                        </th>
-                                        <th
-                                          style={{
-                                            width: '10%',
-                                            fontFamily: 'Saira, sans-serif',
-                                          }}>
-                                          Tổng giá trị
-                                        </th>
-                                        <th
-                                          style={{
-                                            width: '10%',
-                                            fontFamily: 'Saira, sans-serif',
-                                          }}>
-                                          Ngày đặt
-                                        </th>
-                                        <th
-                                          style={{
-                                            width: '10%',
-                                            fontFamily: 'Saira, sans-serif',
-                                          }}>
-                                          Tình trạng
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>{this.renderOrders()}</tbody>
-                                    <tfoot></tfoot>
-                                  </table>
-                                </div>
-                              </div>
-                              <div className="row">
-                                <div className="col-sm-5">
-                                  <div
-                                    className="dataTables_info"
-                                    id="example1_info"
-                                    role="status"
-                                    aria-live="polite"
-                                  >
-                                    Hiển thị{' '}
-                                    {query == ''
-                                      ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
-                                      : ''}{' '}
-                                    {totalDocuments} kết quả
-                                </div>
-                                </div>
-                                <div className="col-sm-7">
-                                  <div
-                                    className="dataTables_paginate paging_simple_numbers"
-                                    id="example1_paginate"
-                                  >
-                                    <ul
-                                      className="pagination"
-                                      style={{ float: 'right' }}
-                                    >
-                                      {this.renderPageButtons()}
-                                    </ul>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                            {/*/.col (left) */}
+
+                            <div className="row">
+                              <div className="col-sm-12">
+                                <table
+                                  id="example1"
+                                  className="table table-bordered"
+                                >
+                                  <thead className="purchase-header">
+                                    <tr>
+                                      <th>Mã đơn tổng</th>
+                                      <th>Người nhận</th>
+                                      <th>Số điện thoại</th>
+                                      <th>Địa chỉ</th>
+                                      <th>Ngày đặt</th>
+                                      <th>Tình trạng</th>
+                                      <th>Thao tác</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>{this.renderPurchases()}</tbody>
+                                  <tfoot></tfoot>
+                                </table>
+                              </div>
+                            </div>
+                            <div className="row">
+                              <div className="col-sm-5">
+                                <div
+                                  className="dataTables_info"
+                                  id="example1_info"
+                                  role="status"
+                                  aria-live="polite"
+                                >
+                                  Hiển thị{" "}
+                                  {query == ""
+                                    ? start +
+                                      " đến " +
+                                      (totalDocuments < end
+                                        ? totalDocuments
+                                        : end) +
+                                      " trong "
+                                    : ""}{" "}
+                                  {totalDocuments} kết quả
+                                </div>
+                              </div>
+                              <div className="col-sm-7">
+                                <div
+                                  className="dataTables_paginate paging_simple_numbers"
+                                  id="example1_paginate"
+                                >
+                                  <ul
+                                    className="pagination"
+                                    style={{ float: "right" }}
+                                  >
+                                    {this.renderPageButtons()}
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          {/* /.row */}
+                          {/*/.col (left) */}
                         </div>
-                      </div>
-                    </section>
-                    {/* /.Left col */}
-                    {/* right col (We are only adding the ID to make the widgets sortable)*/}
-                    <div
-                      className="col-md-4"
-                      style={{
-                        margin: '15px -25px 0 0',
-                        fontSize: '12px',
-                        overflow: 'auto',
-                        flex: 0.3,
-                      }}
-                    >
-                      <div className="log-row">
-                        <div>08:58:51, 22/10/2020</div>
-                        <div className="log-timeline">
-                          <div className="log-line"></div>
-                          <div className="log-round"></div>
-                          <div className="log-line"></div>
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          Nhân viên 001 chỉnh sửa sản phẩm 004
-                      </div>
-                      </div>
-                      <div className="log-row">
-                        <div>08:58:51, 22/10/2020</div>
-                        <div className="log-timeline">
-                          <div className="log-line"></div>
-                          <div className="log-round"></div>
-                          <div className="log-line"></div>
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
-                          ffffffffff fffffffff fffffffffs sfdf
-                      </div>
-                      </div>
-                      <div className="log-row">
-                        <div>08:58:51, 22/10/2020</div>
-                        <div className="log-timeline">
-                          <div className="log-line"></div>
-                          <div className="log-round"></div>
-                          <div className="log-line"></div>
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
-                          ffffffffff fffffffff fffffffffs sfdf
-                      </div>
-                      </div>
-                      <div className="log-row">
-                        <div>08:58:51, 22/10/2020</div>
-                        <div className="log-timeline">
-                          <div className="log-line"></div>
-                          <div className="log-round"></div>
-                          <div className="log-line"></div>
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
-                          ffffffffff fffffffff fffffffffs sfdf
-                      </div>
-                      </div>
-                      <div className="log-row">
-                        <div>08:58:51, 22/10/2020</div>
-                        <div className="log-timeline">
-                          <div className="log-line"></div>
-                          <div className="log-round"></div>
-                          <div className="log-line"></div>
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          Nhân viên 001 chỉnh sửa sản phẩm 004
-                      </div>
-                      </div>
-                      <div className="log-row">
-                        <div>08:58:51, 22/10/2020</div>
-                        <div className="log-timeline">
-                          <div className="log-line"></div>
-                          <div className="log-round"></div>
-                          <div className="log-line"></div>
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          Nhân viên 001 chỉnh sửa sản phẩm 004
-                      </div>
+                        {/* /.row */}
                       </div>
                     </div>
-
-                    {/* right col */}
+                  </section>
+                  {/* /.Left col */}
+                  {/* right col (We are only adding the ID to make the widgets sortable)*/}
+                  <div
+                    className="col-md-4"
+                    style={{
+                      margin: "15px -25px 0 0",
+                      fontSize: "12px",
+                      overflow: "auto",
+                      flex: 0.3,
+                    }}
+                  >
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004
+                      </div>
+                    </div>
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
+                        ffffffffff fffffffff fffffffffs sfdf
+                      </div>
+                    </div>
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
+                        ffffffffff fffffffff fffffffffs sfdf
+                      </div>
+                    </div>
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
+                        ffffffffff fffffffff fffffffffs sfdf
+                      </div>
+                    </div>
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004
+                      </div>
+                    </div>
+                    <div className="log-row">
+                      <div>08:58:51, 22/10/2020</div>
+                      <div className="log-timeline">
+                        <div className="log-line"></div>
+                        <div className="log-round"></div>
+                        <div className="log-line"></div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        Nhân viên 001 chỉnh sửa sản phẩm 004
+                      </div>
+                    </div>
                   </div>
-                  {/* /.row (main row) */}
-                </section>
-                {/* /.content */}
-              </div>
-            </React.Fragment>
-          )}
+
+                  {/* right col */}
+                </div>
+                {/* /.row (main row) */}
+              </section>
+              {/* /.content */}
+            </div>
+          </React.Fragment>
+        )}
       </Fragment>
     );
   }
 }
 AHome.propTypes = {
-  getOrdersByShop: PropTypes.func.isRequired,
-  orders: PropTypes.array.isRequired,
+  getPurchases: PropTypes.func.isRequired,
+  purchases: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getOrdersByShop })(AHome);
+export default connect(mapStateToProps, { getPurchases })(AHome);

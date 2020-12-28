@@ -70,15 +70,13 @@ class AOrderRow extends Component {
   render() {
     const {
       totalAmount,
-      Purchase,
       createdAt,
       status,
       cancelReason,
       id,
       shippingFee,
-      Ward,
-      District,
-      City,
+      idShop,
+      estimatedDeliveryTime,
     } = this.props.order;
     const { statuses } = this.state;
 
@@ -95,20 +93,8 @@ class AOrderRow extends Component {
         >
           #{id}
         </td>
-        <td>{Purchase.recipient}</td>
-        <td>{Purchase.phone}</td>
-        <td>
-          {Purchase.numberAndStreet +
-            ", " +
-            Ward.ward +
-            ", " +
-            District.district +
-            ", " +
-            City.city}
-        </td>
-        <td>{totalAmount}</td>
-        <td>{this.convertDate(createdAt)}</td>
-        <td>{shippingFee}</td>
+        <td>{idShop}</td>
+        <td>{estimatedDeliveryTime}</td>
         <td>
           {status == "pending"
             ? "Đang xử lý"
@@ -120,6 +106,7 @@ class AOrderRow extends Component {
             ? "Đã tiếp nhận"
             : "Đã hủy"}
         </td>
+        <td>{shippingFee}</td>
         <td>{cancelReason}</td>
         {status == "delivered" || status == "canceled" ? null : (
           <td>

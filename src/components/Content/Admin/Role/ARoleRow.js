@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { deleteRole } from "../../../../state/actions/roleActions";
+import { deleteRoleAdmin } from "../../../../state/actions/roleAdminActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
 const mapStateToProps = (state) => ({
   permissions: state.auth.permissions,
 });
 
-class RoleRow extends Component {
+class ARoleRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
@@ -23,11 +23,11 @@ class RoleRow extends Component {
   };
 
   handleEdit = (id) => {
-    this.props.pushHistory(`/seller/role/edit/${id}`);
+    this.props.pushHistory(`/admin/role/edit/${id}`);
   };
 
   handleDelete = (id) => {
-    this.props.deleteRole(id);
+    this.props.deleteRoleAdmin(id);
   };
 
   render() {
@@ -68,4 +68,6 @@ class RoleRow extends Component {
   }
 }
 
-export default connect(mapStateToProps, { deleteRole, pushHistory })(RoleRow);
+export default connect(mapStateToProps, { deleteRoleAdmin, pushHistory })(
+  ARoleRow
+);

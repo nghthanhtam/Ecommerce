@@ -96,60 +96,30 @@ class ProductDetail extends React.Component {
     this.props.getProductById({ idShop, idProduct });
     this.props.getRatingsByProduct({ idProduct, limit: 1000, page: 1 });
     this.props.getQuestionsByProduct({ idProduct, limit: 1000, page: 1 });
-
-    //get products list in the same movie
-    // try {
-    //   axios
-    //     .get(
-    //       `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/search/filter?limit=${limit}&page=${page}&idMovie=${idMovie}`,
-    //       { headers: { 'Content-type': 'application/json' }, }
-    //     )
-    //     .then((response) => {
-    //       let {
-    //         fullname,
-    //         idRole,
-    //         identityCard,
-    //         phone,
-    //         username,
-    //         id,
-    //       } = response.data;
-    //       this.setState({ fullname, idRole, identityCard, phone, username, id });
-    //     })
-    // } catch (error) {
-    //   console.log(error.response);
-    // }
   }
 
   componentDidUpdate = (prevProps, prevState) => {
     const { nameObj, bigPhoto } = this.state;
-    const {
-      product,
-      isProVarLoaded,
-      isLoaded,
-      getProductVarById,
-      isAuthenticated,
-      showModal,
-    } = this.props;
-    // if (isAuthenticated && isShow) showModal({ show: false });
+    const { product, isProVarLoaded, isLoaded, getProductVarById } = this.props;
     if (bigPhoto == "" && isLoaded) {
       this.setState({ bigPhoto: product.images[0].url });
     }
-    if (!isProVarLoaded && isLoaded) {
-      getProductVarById(product.productVars[0].id);
-      if (product.product.idProductCat == 1 && nameObj == "") {
-        //book
-        this.setState({
-          nameObj: {
-            author: "Tác giả",
-            publisher: "Nhà xuất bản",
-            language: "Ngôn ngữ",
-          },
-        });
-      } else if (product.product.idProductCat == 3 && nameObj == "") {
-        //clothes
-        this.setState({ nameObj: { origin: "Xuất xứ" } });
-      }
-    }
+    // if (!isProVarLoaded && isLoaded) {
+    //   getProductVarById(product.productVars[0].id);
+    //   if (product.product.idProductCat == 1 && nameObj == "") {
+    //     //book
+    //     this.setState({
+    //       nameObj: {
+    //         author: "Tác giả",
+    //         publisher: "Nhà xuất bản",
+    //         language: "Ngôn ngữ",
+    //       },
+    //     });
+    //   } else if (product.product.idProductCat == 3 && nameObj == "") {
+    //     //clothes
+    //     this.setState({ nameObj: { origin: "Xuất xứ" } });
+    //   }
+    // }
     if (!prevProps.isLoaded && isLoaded) {
       this.setState((prevState) => ({
         selectedProductVar: {
@@ -418,6 +388,21 @@ class ProductDetail extends React.Component {
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
     return dt + "/" + month + "/" + year;
+  };
+
+  convertDetailName = (detail) => {
+    switch (detail) {
+      case "author":
+        return "Tác giả";
+      case "publisher":
+        return "NXB";
+      case "language":
+        return "Ngôn ngữ";
+      case "origin":
+        return "Xuất xứ";
+      default:
+        return "Chi tiết";
+    }
   };
 
   render() {
@@ -707,17 +692,24 @@ class ProductDetail extends React.Component {
                   <div className="voucher-list">
                     <h5> THÔNG TIN THÊM:</h5>
                     {product.product.Details.map((d) => {
-                      return Object.keys(nameObj).map((item, index) => {
-                        return (
-                          <Fragment key={index}>
-                            {item == d.detail && (
-                              <p>
-                                {nameObj[item]}: <span>{d.value}</span>
-                              </p>
-                            )}
-                          </Fragment>
-                        );
-                      });
+                      return (
+                        <p>
+                          {this.convertDetailName(d.detail)}:{" "}
+                          <span>{d.value}</span>
+                        </p>
+                      );
+
+                      // return Object.keys(nameObj).map((item, index) => {
+                      //   return (
+                      //     <Fragment key={index}>
+                      //       {item == d.detail && (
+                      //         <p>
+                      //           {nameObj[item]}: <span>{d.value}</span>
+                      //         </p>
+                      //       )}
+                      //     </Fragment>
+                      //   );
+                      // });
                     })}
                   </div>
                 </div>

@@ -75,6 +75,7 @@ class AOrderRow extends Component {
       phone,
       status,
       createdAt,
+      id,
     } = this.props.purchase;
     const { statuses } = this.state;
 
@@ -83,7 +84,7 @@ class AOrderRow extends Component {
         <td
           onClick={() =>
             this.props.history.push({
-              pathname: `/admin/order/edit/${id}`,
+              pathname: `/admin/order/purchase/${id}`,
               orderList: this.props.purchase.Orders,
             })
           }
@@ -117,7 +118,6 @@ class AOrderRow extends Component {
             ? "Đã tiếp nhận"
             : "Đã hủy"}
         </td>
-        <td>{cancelReason}</td>
         {status == "delivered" || status == "canceled" ? null : (
           <td>
             {status !== "canceled" && status !== "delivered" && (
@@ -155,7 +155,7 @@ class AOrderRow extends Component {
                         show: true,
                         modalName: "modalShippingFee",
                         details: {
-                          id,
+                          //id,
                           type: "seller",
                           createdAt,
                           pages: this.props.pages,

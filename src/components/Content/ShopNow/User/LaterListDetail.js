@@ -26,7 +26,8 @@ class LaterListDetail extends React.Component {
     return (
       <div className="order">
         <div className="order-pic">
-          <img alt="product" src={item.Images[0].url} />
+          {/* <img alt="product" src={item.Images[0].url} /> */}
+          <img alt="product" />
         </div>
         <div className="order-content">
           <div className="order-title">{item.name}</div>

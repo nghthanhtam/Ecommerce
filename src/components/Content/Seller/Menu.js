@@ -115,15 +115,14 @@ class Menu extends React.Component {
                     </li>
                   </ul>
                 </li>
-                <li>
-                  <Link to="/admin/role">
-                    <i className="fa fa-users" />{" "}
-                    <span>Phân quyền nhân viên</span>
-                    {/* <span className="pull-right-container">
-                    <small className="label pull-right bg-green">new</small>
-                  </span> */}
-                  </Link>
-                </li>
+                {permissions.includes("getRoles") && (
+                  <li>
+                    <Link to="/admin/role">
+                      <i className="fa fa-users" />{" "}
+                      <span>Quản lý phân quyền </span>
+                    </Link>
+                  </li>
+                )}
                 <li className="treeview">
                   <a href="#">
                     <i className="fa fa-pie-chart" />
@@ -186,11 +185,13 @@ class Menu extends React.Component {
                         <i className="fa fa-circle-o" /> Danh sách sản phẩm
                       </Link>
                     </li>
-                    <li>
-                      <Link to="/seller/add-product">
-                        <i className="fa fa-circle-o" /> Đăng ký sản phẩm mới
-                      </Link>
-                    </li>
+                    {permissions.includes("createProductVar") && (
+                      <li>
+                        <Link to="/seller/add-product">
+                          <i className="fa fa-circle-o" /> Đăng ký sản phẩm mới
+                        </Link>
+                      </li>
+                    )}
                   </ul>
                 </li>
                 {permissions.includes("getPayslips") && (

@@ -4,6 +4,11 @@ import { deleteStockHis } from "../../../state/actions/stockHistoryActions";
 import { pushHistory } from "../../../state/actions/historyActions";
 import { showModal } from "../../../state/actions/modalActions";
 
+const mapStateToProps = (state) => ({
+  history: state.history.history,
+  permissions: state.auth.permissions,
+});
+
 class StockHistoryRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
@@ -32,7 +37,7 @@ class StockHistoryRow extends Component {
   };
 
   render() {
-    const { stockHis, index } = this.props;
+    const { stockHis, index, permissions } = this.props;
 
     return (
       <tr>
@@ -40,30 +45,38 @@ class StockHistoryRow extends Component {
         <td>{stockHis.amount}</td>
         <td>{stockHis.price}</td>
         <td>{stockHis.idEmployee}</td>
-        <td>
-          <div className="btn-group">
-            <button
-              onClick={() => this.handleEdit(stockHis.id)}
-              type="button"
-              className="btn btn-success"
-            >
-              Sửa
-            </button>
-
-            <button
-              onClick={() => this.handleDelete(stockHis.id)}
-              type="button"
-              className="btn btn-danger"
-            >
-              Xóa
-            </button>
-          </div>
-        </td>
+        {!permissions.includes("editStockAmount") &&
+        !permissions.includes("editStockAmount") ? null : (
+          <td>
+            <div className="btn-group">
+              {permissions.includes("editStockAmount") && (
+                <button
+                  onClick={() => this.handleEdit(stockHis.id)}
+                  type="button"
+                  className="btn btn-success"
+                >
+                  Sửa
+                </button>
+              )}
+              {permissions.includes("deleteStockAmount") && (
+                <button
+                  onClick={() => this.handleDelete(stockHis.id)}
+                  type="button"
+                  className="btn btn-danger"
+                >
+                  Xóa
+                </button>
+              )}
+            </div>
+          </td>
+        )}
       </tr>
     );
   }
 }
 
-export default connect(null, { deleteStockHis, pushHistory, showModal })(
-  StockHistoryRow
-);
+export default connect(mapStateToProps, {
+  deleteStockHis,
+  pushHistory,
+  showModal,
+})(StockHistoryRow);

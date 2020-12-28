@@ -41,7 +41,7 @@ function* fetchProductVars(params) {
     const state = yield select(),
       { limit, page, arrayStatus } = params.pages;
 
-    let tempString = '';
+    let tempString = "";
     for (let x = 0; x < arrayStatus.length; x++) {
       tempString += `&arrayStatus[]=${arrayStatus[x]}`;
     }
@@ -49,7 +49,8 @@ function* fetchProductVars(params) {
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar?limit=${limit}&page=${page}` + tempString,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar?limit=${limit}&page=${page}` +
+            tempString,
           tokenAdminConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -64,12 +65,18 @@ function* fetchProductVars(params) {
 function* fetchProductVarsByIdShop(params) {
   try {
     const state = yield select();
-    let { limit, page, query, idShop, getActive } = params.pages;
+    let { limit, page, query, idShop, arrayStatus } = params.pages;
+
+    let tempString = "";
+    for (let x = 0; x < arrayStatus.length; x++) {
+      tempString += `&arrayStatus[]=${arrayStatus[x]}`;
+    }
 
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/shop/${idShop}?limit=${limit}&page=${page}&query=${query}&getActive=${getActive}`,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/shop/${idShop}?limit=${limit}&page=${page}&query=${query}` +
+            tempString,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -84,13 +91,12 @@ function* fetchProductVarsByIdShop(params) {
 function* addProductVar(params) {
   const state = yield select();
   try {
-    const response = yield call(
-      () =>
-        axios.post(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`,
-          params.newProductVar,
-          tokenConfig(state)
-        )
+    const response = yield call(() =>
+      axios.post(
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`,
+        params.newProductVar,
+        tokenConfig(state)
+      )
     );
 
     yield put({ type: PRODUCTVAR_ADDED, payload: response.data });
@@ -112,7 +118,14 @@ function* updateProductVarStatus(params) {
 
     yield put({ type: PRODUCTVAR_UPDATED, payload: response.data });
     yield put({
-      type: GET_PRODUCTVARS_BY_IDSHOP, pages: { limit: 10, page: 1, query: '', idShop: params.newProductVar.idShop, getActive: false },
+      type: GET_PRODUCTVARS_BY_IDSHOP,
+      pages: {
+        limit: 10,
+        page: 1,
+        query: "",
+        idShop: params.newProductVar.idShop,
+        getActive: false,
+      },
     });
   } catch (error) {
     console.log(error.response);

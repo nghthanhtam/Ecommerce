@@ -5,6 +5,7 @@ import { pushHistory } from "../../../../state/actions/historyActions";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
+  permissions: state.auth.permissions,
 });
 
 class PayslipRow extends Component {
@@ -34,7 +35,7 @@ class PayslipRow extends Component {
   };
 
   render() {
-    const { payslip, index, history } = this.props;
+    const { payslip, index, history, permissions } = this.props;
 
     return (
       <tr>
@@ -51,25 +52,31 @@ class PayslipRow extends Component {
         <td>{payslip.title}</td>
         <td>{this.convertPrice(payslip.totalAmount)}đ</td>
         <td>{this.convertDate(payslip.createdAt)}</td>
-        <td>
-          <div className="btn-group">
-            <button
-              onClick={() => this.handleEdit(payslip.id)}
-              type="button"
-              className="btn btn-success"
-            >
-              Sửa
-            </button>
-
-            <button
-              onClick={() => this.handleDelete(payslip.id)}
-              type="button"
-              className="btn btn-danger"
-            >
-              Xóa
-            </button>
-          </div>
-        </td>
+        {!permissions.includes("editPayslip") &&
+        !permissions.includes("deletePayslip") ? null : (
+          <td>
+            <div className="btn-group">
+              {permissions.includes("editPayslip") && (
+                <button
+                  onClick={() => this.handleEdit(payslip.id)}
+                  type="button"
+                  className="btn btn-success"
+                >
+                  Sửa
+                </button>
+              )}
+              {permissions.includes("deletePayslip") && (
+                <button
+                  onClick={() => this.handleDelete(payslip.id)}
+                  type="button"
+                  className="btn btn-danger"
+                >
+                  Xóa
+                </button>
+              )}
+            </div>
+          </td>
+        )}
       </tr>
     );
   }

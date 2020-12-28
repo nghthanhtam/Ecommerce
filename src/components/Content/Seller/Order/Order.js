@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import DoneList from "./Tab/DoneList";
 import PendingList from "./Tab/PendingList";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
 import { getOrdersByShop } from "../../../../state/actions/orderActions";
 
 const mapStateToProps = (state) => ({
@@ -11,7 +10,7 @@ const mapStateToProps = (state) => ({
 
 class Order extends Component {
   state = {
-    block: <PendingList />,
+    block: "",
   };
 
   onTabClick = (name) => {
@@ -22,10 +21,8 @@ class Order extends Component {
   componentDidMount() {
     if (!this.props.permissions.includes("getUndoneOrders")) {
       this.setState({ block: <DoneList /> });
-      console.log("donelist");
     } else {
       this.setState({ block: <PendingList /> });
-      console.log("avcvcv");
     }
   }
 
@@ -85,12 +82,5 @@ class Order extends Component {
     );
   }
 }
-
-Order.propTypes = {
-  getOrdersByShop: PropTypes.func.isRequired,
-  orders: PropTypes.array.isRequired,
-  isLoaded: PropTypes.bool.isRequired,
-  totalDocuments: PropTypes.number.isRequired,
-};
 
 export default connect(mapStateToProps, { getOrdersByShop })(Order);

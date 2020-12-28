@@ -1,19 +1,18 @@
 import React, { Component, Fragment } from "react";
-import RoleModal from "./RoleModal";
-import RoleRow from "./RoleRow";
+import ARoleModal from "./ARoleModal";
+import ARoleRow from "./ARoleRow";
 import { connect } from "react-redux";
-import { getRoles } from "../../../../state/actions/roleActions";
+import { getRoleAdmins } from "../../../../state/actions/roleAdminActions";
 import PropTypes from "prop-types";
 import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
-  roles: state.role.roles,
-  isLoaded: state.role.isLoaded,
-  idShop: state.auth.role.idShop,
+  roleAdmins: state.roleAdmin.roleAdmins,
+  isLoaded: state.roleAdmin.isLoaded,
   permissions: state.auth.permissions,
 });
 
-class Role extends Component {
+class ARole extends Component {
   state = {
     sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
     limit: 5,
@@ -27,8 +26,7 @@ class Role extends Component {
 
   componentDidMount() {
     const { limit, page, query } = this.state;
-    const { idShop } = this.props;
-    this.props.getRoles({ limit, page, query, idShop });
+    this.props.getRoleAdmins({ limit, page, query });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -101,12 +99,10 @@ class Role extends Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    const { idShop } = this.props;
-    this.props.getRoles({
+    this.props.getRoleAdmins({
       limit,
       page,
       query,
-      idShop,
     });
     this.getPages();
     this.getStartEndDocuments();
@@ -114,7 +110,7 @@ class Role extends Component {
 
   renderRoles = () => {
     const { start } = this.state;
-    const { roles, isLoaded } = this.props;
+    const { roleAdmins, isLoaded } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -123,11 +119,11 @@ class Role extends Component {
         </td>
       </tr>
     ) : (
-      roles.map((eachRole, index) => (
-        <RoleRow
+      roleAdmins.map((role, index) => (
+        <ARoleRow
           history={this.props.history}
-          key={eachRole.id}
-          role={eachRole}
+          key={role.id}
+          role={role}
           index={index + start - 1}
         />
       ))
@@ -153,12 +149,10 @@ class Role extends Component {
 
     this.setState({ page: e }, () => {
       const { limit, page, query } = this.state;
-      const { idShop } = this.props;
-      this.props.getRoles({
+      this.props.getRoleAdmins({
         limit,
         page,
         query,
-        idShop,
       });
       this.getStartEndDocuments();
     });
@@ -227,7 +221,7 @@ class Role extends Component {
 
   render() {
     const { start, end, query, limit, page } = this.state;
-    const { isLoaded, totalDocuments, idShop, permissions } = this.props;
+    const { isLoaded, totalDocuments, permissions } = this.props;
 
     return (
       <Fragment>
@@ -255,7 +249,6 @@ class Role extends Component {
             {/* Main content */}
             <section className="content">
               <div className="row">
-                {/* left column */}
                 <div className="col-md-12">
                   <div className="box">
                     <div className="box-header" style={{ marginTop: "5px" }}>
@@ -264,7 +257,7 @@ class Role extends Component {
                       </div>
                       {permissions.includes("createRole") && (
                         <div className="col-md-4">
-                          <RoleModal pages={{ limit, page, query, idShop }} />
+                          <ARoleModal pages={{ limit, page, query }} />
                         </div>
                       )}
                     </div>
@@ -374,9 +367,7 @@ class Role extends Component {
                           </div>
                         </div>
                       </div>
-                      {/*/.col (left) */}
                     </div>
-                    {/* /.row */}
                   </div>
                 </div>
               </div>
@@ -389,10 +380,10 @@ class Role extends Component {
   }
 }
 
-Role.propTypes = {
-  getRoles: PropTypes.func.isRequired,
-  roles: PropTypes.array.isRequired,
+ARole.propTypes = {
+  getRoleAdmins: PropTypes.func.isRequired,
+  roleAdmins: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getRoles })(Role);
+export default connect(mapStateToProps, { getRoleAdmins })(ARole);

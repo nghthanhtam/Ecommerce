@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Loader from "react-loader";
-
 import { pushHistory } from "../../../state/actions/historyActions";
 import { showModal } from "../../../state/actions/modalActions";
 import { getStockHisByProductVar } from "../../../state/actions/stockHistoryActions";
 import StockHistoryRow from "./StockHistoryRow";
-
 import "./modal.css";
 
 const mapStateToProps = (state) => ({
@@ -17,6 +15,7 @@ const mapStateToProps = (state) => ({
   totalDocuments: state.stockHis.totalDocuments,
   stockHises: state.stockHis.stockHises,
   isLoaded: state.stockHis.isLoaded,
+  permissions: state.auth.permissions,
 });
 
 class ModalStockHistory extends Component {
@@ -248,7 +247,7 @@ class ModalStockHistory extends Component {
   };
 
   render() {
-    const { totalDocuments, details } = this.props;
+    const { totalDocuments, details, permissions } = this.props;
     const { start, end, page, limit, query } = this.state;
     return (
       <div className="modal-wrapper">
@@ -274,27 +273,29 @@ class ModalStockHistory extends Component {
           <div className="stock-modal">
             <h3 className="login-box-msg">Lịch sử nhập kho</h3>
             <div className="col-md-4">
-              <button
-                style={{ marginBottom: "5px" }}
-                className="btn btn-info"
-                onClick={() => {
-                  this.props.showModal({
-                    show: true,
-                    modalName: "modalUpdateQty",
-                    details: {
-                      pages: {
-                        page,
-                        limit,
-                        idProductVar: details.idProductVar
-                          ? details.idProductVar
-                          : details.pages.idProductVar,
+              {permissions.includes("createStockAmount") && (
+                <button
+                  style={{ marginBottom: "5px" }}
+                  className="btn btn-info"
+                  onClick={() => {
+                    this.props.showModal({
+                      show: true,
+                      modalName: "modalUpdateQty",
+                      details: {
+                        pages: {
+                          page,
+                          limit,
+                          idProductVar: details.idProductVar
+                            ? details.idProductVar
+                            : details.pages.idProductVar,
+                        },
                       },
-                    },
-                  });
-                }}
-              >
-                Nhập kho
-              </button>
+                    });
+                  }}
+                >
+                  Nhập kho
+                </button>
+              )}
             </div>
             <section className="content">
               <div className="row">
@@ -335,7 +336,12 @@ class ModalStockHistory extends Component {
                                   <th style={{ width: "10%" }}>Số lượng</th>
                                   <th style={{ width: "10%" }}>Đơn giá</th>
                                   <th style={{ width: "10%" }}>Người nhập</th>
-                                  <th style={{ width: "10%" }}>Thao tác</th>
+                                  {(permissions.includes("editStockAmount") ||
+                                    permissions.includes(
+                                      "deleteStockAmount"
+                                    )) && (
+                                    <th style={{ width: "10%" }}>Thao tác</th>
+                                  )}
                                 </tr>
                               </thead>
 

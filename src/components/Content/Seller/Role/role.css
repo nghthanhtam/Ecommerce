@@ -7,6 +7,9 @@
 .label-wrapper input {
   margin-right: 5px;
 }
+.label-wrapper p {
+  font-weight: 400;
+}
 .role-cate {
   padding: 0;
   margin: 0;

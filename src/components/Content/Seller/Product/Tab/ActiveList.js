@@ -29,13 +29,12 @@ class ActiveList extends React.Component {
   componentDidMount() {
     const { limit, page, query } = this.state;
     const { idShop } = this.props;
-    console.log("idShop: ", idShop);
     this.props.getProductVarsByIdShop({
       limit,
       page,
       query,
       idShop,
-      getActive: true,
+      arrayStatus: ["active", "inactive"],
     });
   }
 
@@ -143,6 +142,7 @@ class ActiveList extends React.Component {
       query,
       getActive: true,
       idShop,
+      arrayStatus: ["active", "inactive"],
     });
     this.getPages();
     this.getStartEndDocuments();
@@ -175,6 +175,7 @@ class ActiveList extends React.Component {
         query,
         getActive: true,
         idShop,
+        arrayStatus: ["active", "inactive"],
       });
       this.getStartEndDocuments();
     });

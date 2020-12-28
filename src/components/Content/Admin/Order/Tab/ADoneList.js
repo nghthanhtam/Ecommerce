@@ -368,8 +368,8 @@ class ADoneList extends React.Component {
 }
 
 ADoneList.propTypes = {
-  getProductVarsByIdShop: PropTypes.func.isRequired,
-  productVars: PropTypes.array.isRequired,
+  getOrdersByShop: PropTypes.func.isRequired,
+  orders: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 };
 

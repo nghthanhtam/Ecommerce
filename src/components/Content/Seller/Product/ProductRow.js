@@ -7,6 +7,7 @@ import { pushHistory } from "../../../../state/actions/historyActions";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
+  permissions: state.auth.permissions,
 });
 
 class ProductRow extends Component {
@@ -37,7 +38,7 @@ class ProductRow extends Component {
       stockAmount,
       Images,
     } = this.props.productVar;
-    const { index, getActive } = this.props;
+    const { index, getActive, permissions } = this.props;
 
     return (
       <Fragment>
@@ -63,31 +64,35 @@ class ProductRow extends Component {
             {status == "active" && (
               <td>
                 <div className="btn-group">
-                  <button
-                    onClick={() => {
-                      this.props.history.push({
-                        pathname: "/seller/productvar/edit",
-                        search: `?id=${id}`,
-                      });
-                    }}
-                    type="button"
-                    className="btn btn-success"
-                  >
-                    Sửa
-                  </button>
-                  <button
-                    onClick={() => {
-                      this.props.showModal({
-                        show: true,
-                        modalName: "modalStockHis",
-                        details: { idProductVar: id, name },
-                      });
-                    }}
-                    type="button"
-                    className="btn btn-primary"
-                  >
-                    Nhập kho
-                  </button>
+                  {permissions.includes("editProductVar") && (
+                    <button
+                      onClick={() => {
+                        this.props.history.push({
+                          pathname: "/seller/productvar/edit",
+                          search: `?id=${id}`,
+                        });
+                      }}
+                      type="button"
+                      className="btn btn-success"
+                    >
+                      Sửa
+                    </button>
+                  )}
+                  {permissions.includes("getStockAmount") && (
+                    <button
+                      onClick={() => {
+                        this.props.showModal({
+                          show: true,
+                          modalName: "modalStockHis",
+                          details: { idProductVar: id, name },
+                        });
+                      }}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      Nhập kho
+                    </button>
+                  )}
                 </div>
               </td>
             )}

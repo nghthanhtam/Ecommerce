@@ -11,6 +11,7 @@ const mapStateToProps = (state) => ({
   idShop: state.auth.role.idShop,
   isLoaded: state.shop.isLoaded,
   isUpdated: state.shop.isUpdated,
+  permissions: state.auth.permissions,
 });
 
 const SupplierInfor = (props) => {
@@ -32,6 +33,8 @@ const SupplierInfor = (props) => {
 
   const changeName = (event, setFieldValue) => {
     const { name, value } = event.target;
+    setFieldValue([name], value);
+
     let url = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     url = url.replace(/\s+/g, "-");
     setFieldValue("url", url);
@@ -47,7 +50,7 @@ const SupplierInfor = (props) => {
       }}
       validationSchema={Yup.object().shape({
         name: Yup.string()
-          .max(50, "Chỉ được phép nhập ít hơn 50 kí tự")
+          .max(200, "Chỉ được phép nhập ít hơn 50 kí tự")
           .required("Bắt buộc nhập!"),
         city: Yup.string()
           .max(50, "Chỉ được phép nhập ít hơn 50 kí tự")
@@ -56,7 +59,7 @@ const SupplierInfor = (props) => {
           .max(50, "Chỉ được phép nhập ít hơn 50 kí tự")
           .required("Bắt buộc nhập!"),
         phone: Yup.string()
-          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
+          .max(20, "Chỉ được phép nhập ít hơn 20 kí tự")
           .required("Required")
           .matches(
             /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
@@ -95,7 +98,7 @@ const SupplierInfor = (props) => {
             <div className="row">
               <div className="col-md-12">
                 <div className="box">
-                  <form onSubmit={handleSubmit} style={{ padding: "5px" }}>
+                  <form onSubmit={handleSubmit} style={{ padding: "20px" }}>
                     <div className="row-flex">
                       <div style={{ width: "100%", padding: "5px" }}>
                         <div className="label-text1" htmlFor="name">
@@ -107,7 +110,7 @@ const SupplierInfor = (props) => {
                           disabled={disabled}
                           name="name"
                           type="text"
-                          onChange={(event) => changeName(event, setFieldValue)}
+                          onChange={(e) => changeName(e, setFieldValue)}
                           onBlur={handleBlur}
                           value={values.name}
                           style={{
@@ -237,18 +240,22 @@ const SupplierInfor = (props) => {
                         </button>
                       </div>
                     ) : (
-                      <div className="box-footer">
-                        <button
-                          tye="button"
-                          className="edit-btn"
-                          onClick={() => {
-                            setDisabled(false);
-                            setShow(!isShow);
-                          }}
-                        >
-                          Chỉnh sửa
-                        </button>
-                      </div>
+                      <>
+                        {props.permissions.includes("editShop") && (
+                          <div className="box-footer">
+                            <button
+                              tye="button"
+                              className="edit-btn"
+                              onClick={() => {
+                                setDisabled(false);
+                                setShow(!isShow);
+                              }}
+                            >
+                              Chỉnh sửa
+                            </button>
+                          </div>
+                        )}
+                      </>
                     )}
                   </form>
                 </div>
@@ -256,7 +263,7 @@ const SupplierInfor = (props) => {
             </div>
           </section>
 
-          <section className="content" style={{ marginTop: "-30px" }}>
+          {/* <section className="content" style={{ marginTop: "-30px" }}>
             <div className="nav-tabs-custom">
               <ul className="nav nav-tabs">
                 <li className="active">
@@ -399,7 +406,7 @@ const SupplierInfor = (props) => {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
         </Fragment>
       )}
     </Formik>

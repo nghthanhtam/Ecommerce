@@ -1,5 +1,5 @@
 import React from "react";
-import AOrderRow from "../AOrderRow";
+import APurchaseRow from "../APurchaseRow";
 import Loader from "react-loader";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -7,8 +7,8 @@ import { getPurchases } from "../../../../../state/actions/purchaseActions";
 
 const mapStateToProps = (state) => ({
   purchases: state.purchase.purchases,
-  isLoaded: state.order.isLoaded,
-  totalWarningOrders: state.order.totalWarningOrders,
+  isLoaded: state.purchase.isLoaded,
+  totalDocuments: state.purchase.totalDocuments,
   idShop: state.auth.role.idShop,
   details: state.modal.details,
 });
@@ -31,6 +31,7 @@ class APendingList extends React.Component {
       limit,
       page,
       query,
+      status: "warning",
     });
   }
 
@@ -43,17 +44,17 @@ class APendingList extends React.Component {
 
   getStartEndDocuments() {
     const { limit, page } = this.state;
-    const { totalWarningOrders } = this.props;
+    const { totalDocuments } = this.props;
 
-    let pages = Math.floor(totalWarningOrders / limit),
-      remainder = totalWarningOrders % limit;
+    let pages = Math.floor(totalDocuments / limit),
+      remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
-    console.log(totalWarningOrders);
+    console.log(totalDocuments);
 
     this.setState({ start: (page - 1) * limit + 1 }, () => {
       let end;
-      if (Math.floor(totalWarningOrders / limit) + 1 == page)
-        end = (page - 1) * limit + (totalWarningOrders % limit);
+      if (Math.floor(totalDocuments / limit) + 1 == page)
+        end = (page - 1) * limit + (totalDocuments % limit);
       else end = page * limit;
       this.setState({ end: end });
     });
@@ -61,15 +62,15 @@ class APendingList extends React.Component {
 
   getPages = () => {
     const { limit, query } = this.state;
-    const { totalWarningOrders } = this.props;
-    if (totalWarningOrders == 0) return;
+    const { totalDocuments } = this.props;
+    if (totalDocuments == 0) return;
 
     let newQuery = "";
     if (query === "") newQuery = "undefined";
     else newQuery = query;
 
-    let pages = Math.floor(totalWarningOrders / limit);
-    let remainder = totalWarningOrders % limit;
+    let pages = Math.floor(totalDocuments / limit);
+    let remainder = totalDocuments % limit;
     let newArray = [];
     if (remainder !== 0) pages += 1;
 
@@ -77,7 +78,7 @@ class APendingList extends React.Component {
       newArray.push({ pageNumber: i + 1 });
     }
 
-    //Nếu totalWarningOrders > 6 thì pageButtons được chia ra làm 3 nút số đầu - dấu 3 chấm - nút số cuối
+    //Nếu totalDocuments > 6 thì pageButtons được chia ra làm 3 nút số đầu - dấu 3 chấm - nút số cuối
     if (newArray && newArray.length > 6) {
       newArray = [
         { pageNumber: 1 },
@@ -105,11 +106,11 @@ class APendingList extends React.Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    this.props.getOrders({
+    this.props.getPurchases({
       limit,
       page,
       query,
-      done: false,
+      status: "warning",
     });
     this.getPages();
     this.getStartEndDocuments();
@@ -127,7 +128,7 @@ class APendingList extends React.Component {
       </tr>
     ) : (
       purchases.map((purchase, index) => (
-        <AOrderRow
+        <APurchaseRow
           history={this.props.history}
           key={purchase.id}
           purchase={purchase}
@@ -139,10 +140,10 @@ class APendingList extends React.Component {
 
   handleChoosePage = (e) => {
     if (e === "...") return;
-    const { totalWarningOrders } = this.props;
+    const { totalDocuments } = this.props;
     const { limit, page } = this.state;
-    let pages = Math.floor(totalWarningOrders / limit),
-      remainder = totalWarningOrders % limit;
+    let pages = Math.floor(totalDocuments / limit),
+      remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
 
     console.log(page + " and " + pages);
@@ -157,11 +158,11 @@ class APendingList extends React.Component {
 
     this.setState({ page: e }, () => {
       const { limit, page, query } = this.state;
-      this.props.getOrders({
+      this.props.getPurchases({
         limit,
         page,
         query,
-        done: false,
+        status: "warning",
       });
       this.getStartEndDocuments();
     });
@@ -230,7 +231,7 @@ class APendingList extends React.Component {
 
   render() {
     const { limit, page, start, end, query } = this.state;
-    const { totalWarningOrders } = this.props;
+    const { totalDocuments } = this.props;
     return (
       <div className="row">
         <div className="col-md-12">
@@ -292,19 +293,19 @@ class APendingList extends React.Component {
                     >
                       <thead>
                         <tr>
-                          <th>#</th>
+                          <th>Mã đơn tổng</th>
                           <th>Người nhận</th>
                           <th>Số điện thoại</th>
                           <th>Địa chỉ</th>
                           <th>Ngày đặt</th>
                           <th>Tình trạng</th>
-                          <th style={{ width: "100%" }}>Thao tác</th>
+                          <th>Thao tác</th>
                         </tr>
                       </thead>
                       <tbody>{this.renderPurchases()}</tbody>
                       <tfoot>
                         <tr>
-                          <th>#</th>
+                          <th>Mã đơn tổng</th>
                           <th>Người nhận</th>
                           <th>Số điện thoại</th>
                           <th>Địa chỉ</th>
@@ -328,12 +329,10 @@ class APendingList extends React.Component {
                       {query == ""
                         ? start +
                           " đến " +
-                          (totalWarningOrders < end
-                            ? totalWarningOrders
-                            : end) +
+                          (totalDocuments < end ? totalDocuments : end) +
                           " trong "
                         : ""}{" "}
-                      {totalWarningOrders} kết quả
+                      {totalDocuments} kết quả
                     </div>
                   </div>
                   <div className="col-sm-7">
@@ -359,8 +358,8 @@ class APendingList extends React.Component {
 }
 
 APendingList.propTypes = {
-  getProductVarsByIdShop: PropTypes.func.isRequired,
-  productVars: PropTypes.array.isRequired,
+  getPurchases: PropTypes.func.isRequired,
+  purchases: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 };
 

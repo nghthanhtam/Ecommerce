@@ -1,16 +1,12 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import ProductRow from "./ProductRow";
 import PendingList from "./Tab/PendingList";
 import ActiveList from "./Tab/ActiveList";
 import QtyUpdate from "./Tab/QtyUpdate";
-
 import { getProductVarsByIdShop } from "../../../../state/actions/productVarActions";
 import { showNoti } from "../../../../state/actions/notificationActions";
 import "react-notifications/lib/notifications.css";
-import { NotificationContainer } from "react-notifications";
-import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
   productVars: state.productVar.productVars,

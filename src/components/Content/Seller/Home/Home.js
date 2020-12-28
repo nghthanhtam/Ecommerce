@@ -253,7 +253,7 @@ class Home extends Component {
                       <div className="icon">
                         <i className="ion ion-bag" />
                       </div>
-                      <a href="./order" className="small-box-footer">
+                      <a href="/seller/product" className="small-box-footer">
                         Xem chi tiết <i className="fa fa-arrow-circle-right" />
                       </a>
                     </div>
@@ -270,7 +270,7 @@ class Home extends Component {
                       <div className="icon">
                         <i className="ion ion-pie-graph" />
                       </div>
-                      <a href="xd" className="small-box-footer">
+                      <a href="/seller/order" className="small-box-footer">
                         Xem chi tiết <i className="fa fa-arrow-circle-right" />
                       </a>
                     </div>
@@ -288,7 +288,7 @@ class Home extends Component {
                       <div className="icon">
                         <i className="ion ion-stats-bars" />
                       </div>
-                      <a href="xd" className="small-box-footer">
+                      <a href="/seller/salereport" className="small-box-footer">
                         Xem chi tiết <i className="fa fa-arrow-circle-right" />
                       </a>
                     </div>
@@ -304,7 +304,7 @@ class Home extends Component {
                       <div className="icon">
                         <i className="ion ion-person-add" />
                       </div>
-                      <a href="./employee" className="small-box-footer">
+                      <a href="/seller/employee" className="small-box-footer">
                         Xem chi tiết <i className="fa fa-arrow-circle-right" />
                       </a>
                     </div>

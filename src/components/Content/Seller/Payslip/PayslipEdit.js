@@ -69,12 +69,6 @@ const PayslipEdit = (props) => {
     <Formik
       initialValues={props.payslip}
       onSubmit={(values, actions) => {
-        values = {
-          ...values,
-          idEmployee: props.employee.id,
-          idShop: props.idShop,
-          pages: props.pages,
-        };
         props.updatePayslip(values);
       }}
       validationSchema={Yup.object().shape({

@@ -24,7 +24,7 @@ function* fetchRatings(params) {
     const response = yield call(() =>
       axios.get(
         `${process.env.REACT_APP_BACKEND_RATING}/api/rating?limit=${limit}&page=${page}&query=${query}&status=${status}`,
-        tokenConfig(state)
+        tokenAdminConfig(state)
       )
     );
 

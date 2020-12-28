@@ -71,6 +71,7 @@ function* fetchOrdersByShop(params) {
     const state = yield select(),
       { limit, page, idShop, done } = params.pages;
     console.log(params.pages);
+    console.log(params.pages);
     const response = yield call(() =>
       axios.get(
         `${process.env.REACT_APP_BACKEND_ORDER}/api/order/shop/${idShop}?limit=${limit}&page=${page}&done=${done}`,

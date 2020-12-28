@@ -9,13 +9,14 @@ import Header from "../components/Content/Seller/Header";
 import Footer from "../components/Content/Seller/Footer";
 import Menu from "../components/Content/Seller/Menu";
 import ProductVarEdit from "../components/Content/Seller/Product/ProductVarEdit";
-import Order from "../components/Content/Admin/Order/AOrder";
+import APurchase from "../components/Content/Admin/Order/APurchase";
+import AOrdersByPurchase from "../components/Content/Admin/Order/AOrdersByPurchase";
 import OrderDetail from "../components/Content/Admin/Order/AOrderDetail";
 import APromotion from "../components/Content/Admin/Promotion/APromotion";
 import APromotionEdit from "../components/Content/Admin/Promotion/APromotionEdit";
 import PropTypes from "prop-types";
-import Role from "../components/Content/Seller/Role/Role";
-import RoleEdit from "../components/Content/Seller/Role/RoleEdit";
+import ARole from "../components/Content/Admin/Role/ARole";
+import ARoleEdit from "../components/Content/Admin/Role/ARoleEdit";
 import { PrivateRoute } from "../components/Content/Seller/PrivateRoute";
 
 import ALogin from "../components/Content/Admin/Auth/ALogin";
@@ -34,7 +35,6 @@ import AShop from "../components/Content/Admin/Shop/AShop";
 import AShopEdit from "../components/Content/Admin/Shop/AShopEdit";
 import AUser from "../components/Content/Admin/User/AUser";
 import AUserEdit from "../components/Content/Admin/User/AUserEdit";
-import AOrderWarning from "../components/Content/Admin/Order/AOrderWarning";
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -201,14 +201,14 @@ class RAdmin extends Component {
                   <PrivateRoute
                     exact
                     path="/admin/role"
-                    component={Role}
+                    component={ARole}
                     role={roles.employee}
                     token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/role/edit/:id"
-                    component={RoleEdit}
+                    component={ARoleEdit}
                     role={roles.role}
                     token={adminToken}
                   ></PrivateRoute>
@@ -257,14 +257,14 @@ class RAdmin extends Component {
                   <PrivateRoute
                     exact
                     path="/admin/order"
-                    component={Order}
+                    component={APurchase}
                     role={roles.order}
                     token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
-                    path="/admin/order/warningorder"
-                    component={AOrderWarning}
+                    path="/admin/order/purchase/:id"
+                    component={AOrdersByPurchase}
                     role={roles.order}
                     token={adminToken}
                   ></PrivateRoute>

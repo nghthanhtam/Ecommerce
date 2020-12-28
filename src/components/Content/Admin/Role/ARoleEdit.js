@@ -1,6 +1,9 @@
 import React, { Fragment, useEffect } from "react";
 import { connect } from "react-redux";
-import { updateRole, getRoleById } from "../../../../state/actions/roleActions";
+import {
+  updateRoleAdmin,
+  getRoleAdminById,
+} from "../../../../state/actions/roleAdminActions";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import styles from "../../../../assets/css/helper.module.css";
@@ -10,22 +13,22 @@ const mapStateToProps = (state) => {
   return {
     history: state.history.history,
     auth: state.auth,
-    isLoaded: state.role.isLoaded,
-    isUpdated: state.role.isUpdated,
-    role: state.role.role,
+    isLoaded: state.roleAdmin.isLoaded,
+    isUpdated: state.roleAdmin.isUpdated,
+    roleAdmin: state.roleAdmin.roleAdmin,
     rolePermissions: state.role.rolePermissions,
   };
 };
 
-const RoleEdit = (props) => {
+const ARoleEdit = (props) => {
   const history = useHistory();
   useEffect(() => {
-    const { match, getRoleById } = props;
-    getRoleById(match.params.id);
+    const { match, getRoleAdminById } = props;
+    getRoleAdminById(match.params.id);
   }, [props.match.params.id]);
 
   useEffect(() => {
-    if (props.isUpdated) history.push("/seller/role");
+    if (props.isUpdated) history.push("/admin/role");
   }, [props.isUpdated]);
 
   const handleCheck = (e, setFieldValue, values) => {
@@ -41,11 +44,13 @@ const RoleEdit = (props) => {
     <div>Loading...</div>
   ) : (
     <Formik
-      initialValues={{ checked: props.rolePermissions, name: props.role.name }}
+      initialValues={{
+        checked: props.rolePermissions,
+        name: props.roleAdmin.name,
+      }}
       onSubmit={(values, actions) => {
         const { name, checked } = values;
-        console.log(values.checked);
-        props.updateRole({
+        props.updateRoleAdmin({
           id: props.match.params.id,
           name,
           permissions: checked,
@@ -125,7 +130,7 @@ const RoleEdit = (props) => {
                               <input
                                 name="checked"
                                 type="checkbox"
-                                value={2}
+                                value={66}
                                 checked={values.checked.includes(2)}
                                 onChange={(e) =>
                                   handleCheck(e, setFieldValue, values)
@@ -259,34 +264,7 @@ const RoleEdit = (props) => {
                               <p>Cập nhật trạng thái đơn hàng</p>
                             </label>
                           </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(11)}
-                                value={11}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xem lịch sử đơn hàng</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(12)}
-                                value={12}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xem đơn hàng đang trong giao dịch</p>
-                            </label>
-                          </div>
+
                           <div>
                             <label className="label-wrapper">
                               <input
@@ -545,6 +523,6 @@ const RoleEdit = (props) => {
 };
 
 export default connect(mapStateToProps, {
-  updateRole,
-  getRoleById,
-})(RoleEdit);
+  updateRoleAdmin,
+  getRoleAdminById,
+})(ARoleEdit);

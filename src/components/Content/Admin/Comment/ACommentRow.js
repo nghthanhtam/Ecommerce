@@ -6,6 +6,10 @@ import {
 } from "../../../../state/actions/commentActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
+const mapStateToProps = (state) => ({
+  permissions: state.auth.permissions,
+});
+
 class ACommentRow extends Component {
   state = {
     statuses: [
@@ -30,7 +34,7 @@ class ACommentRow extends Component {
   };
 
   render() {
-    const { comment, index } = this.props;
+    const { comment, index, permissions } = this.props;
     const { statuses } = this.state;
 
     return (
@@ -46,33 +50,37 @@ class ACommentRow extends Component {
         <td>
           <div className="btn-group">
             <div className="btn-group">
-              <button type="button" className="btn btn-info">
-                Duyệt
-              </button>
-              <button
-                type="button"
-                className="btn btn-info dropdown-toggle"
-                data-toggle="dropdown"
-              >
-                <span className="caret"></span>
-                <span className="sr-only">Toggle Dropdown</span>
-              </button>
-              <ul className="dropdown-menu" role="menu">
-                {statuses.map((item, index) => (
-                  <li
-                    key={index}
-                    onClick={() => {
-                      this.props.updateCommentStatus({
-                        id: comment.id,
-                        status: item.value,
-                      });
-                      window.location.reload();
-                    }}
+              {permissions.includes("pendComment") && (
+                <>
+                  <button type="button" className="btn btn-info">
+                    Duyệt
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-info dropdown-toggle"
+                    data-toggle="dropdown"
                   >
-                    <a href="javascript:void(0);"> {item.label} </a>
-                  </li>
-                ))}
-              </ul>
+                    <span className="caret"></span>
+                    <span className="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul className="dropdown-menu" role="menu">
+                    {statuses.map((item, index) => (
+                      <li
+                        key={index}
+                        onClick={() => {
+                          this.props.updateCommentStatus({
+                            id: comment.id,
+                            status: item.value,
+                          });
+                          window.location.reload();
+                        }}
+                      >
+                        <a href="javascript:void(0);"> {item.label} </a>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </div>
             <button
               onClick={() => this.handleDelete(comment.id)}
@@ -88,7 +96,7 @@ class ACommentRow extends Component {
   }
 }
 
-export default connect(null, {
+export default connect(mapStateToProps, {
   deleteComment,
   pushHistory,
   updateCommentStatus,

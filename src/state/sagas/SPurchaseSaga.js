@@ -18,22 +18,22 @@ import {
 function* fetchPurchases(params) {
   try {
     const state = yield select(),
-      { limit, page, query } = params.pages;
+      { limit, page, query, status } = params.pages;
 
     const response = yield call(() =>
       axios.get(
-        `${process.env.REACT_APP_BACKEND_ORDER}/api/purchase?limit=${limit}&page=${page}&query=${query}`,
+        `${process.env.REACT_APP_BACKEND_ORDER}/api/purchase?limit=${limit}&page=${page}&query=${query}&status=${status}`,
         tokenAdminConfig(state)
       )
     );
 
     yield put({ type: PURCHASES_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.status == 401) {
       this.props.history.push({
-        pathname: "/login",
+        pathname: "/admin/login",
       });
     }
   }
