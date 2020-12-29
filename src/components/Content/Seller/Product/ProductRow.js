@@ -104,7 +104,7 @@ class ProductRow extends Component {
                     style={{ color: "#52c41a" }}
                     className="fa fa-spinner"
                     aria-hidden="true"
-                  ></i>
+                  ></i>{" "}
                   Chờ duyệt
                 </td>
               </>

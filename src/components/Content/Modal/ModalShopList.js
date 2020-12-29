@@ -6,50 +6,39 @@ import { getShops } from "../../../state/actions/shopActions";
 import "./modal.css";
 
 const mapStateToProps = (state) => ({
-  history: state.history,
-  userToken: state.authUser.token,
-  user: state.authUser.user,
+  history: state.history.history,
   details: state.modal.details,
-  shops: state.shop.shops,
 });
 
 class ModalShopList extends Component {
-  state = {
-    cancelReason: "",
-    msg: null,
-    inputErrors: false,
+  state = {};
+
+  convertPrice = (value) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  componentDidMount() {
-    this.props.getShops({ limit: 1000, page: 1 });
-  }
+  changeShop = (idShop) => {
+    this.props.showModal({ show: false });
+    this.props.details.changeShop(idShop);
+    this.props.history.push(
+      `/shopnow/product-detail/idProduct/2/idShop/${idShop}`
+    );
+  };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    const { details, showModal, updateOrder } = this.props;
-    const { cancelReason } = this.state;
-
-    if (details) {
-      const newOrder = details.order;
-      newOrder.status = "canceled";
-      newOrder.cancelReason = cancelReason;
-      updateOrder(newOrder);
-      showModal({ show: false });
-      window.location.reload();
-    }
+  visitShop = (idShop, shopName) => {
+    this.props.history.push(`/shopnow/shop/${idShop}/${shopName}`);
   };
 
   render() {
-    const { showModal } = this.props;
+    const { showModal, details } = this.props;
     return (
       <div className="modal-wrapper">
         <div
           style={{
             background: "#fff",
-            padding: "20px 20px 20px 20px",
-            transition: "opacity 0.5s linear",
+            padding: "10px",
           }}
-          className="login-box"
+          className="shoplist-box"
         >
           <button
             onClick={() => this.props.showModal({ show: false })}
@@ -76,55 +65,30 @@ class ModalShopList extends Component {
                 </button>
               </div>
             ) : null}
-
-            <div className="shoplist-wrapper">
-              <div className="ava-reply">
-                <img src="./img/ava.png" alt="ava" />
-              </div>
-              <div className="shoplist-infor">
-                <h4>Tiki notTrading</h4>
-                <p style={{ fontSize: "17px" }}>150,000đ</p>
-              </div>
-              <button
-                className="btn btn-default"
-                onClick={() => showModal({ show: false })}
-              >
-                {" "}
-                Chọn
-              </button>
-            </div>
-            <div className="shoplist-wrapper">
-              <div className="ava-reply">
-                <img src="./img/ava.png" alt="ava" />
-              </div>
-              <div className="shoplist-infor">
-                <h4>Tiki notTrading</h4>
-                <p style={{ fontSize: "17px" }}>150,000đ</p>
-              </div>
-              <button
-                className="btn btn-default"
-                onClick={() => showModal({ show: false })}
-              >
-                {" "}
-                Chọn
-              </button>
-            </div>
-            <div className="shoplist-wrapper">
-              <div className="ava-reply">
-                <img src="./img/ava.png" alt="ava" />
-              </div>
-              <div className="shoplist-infor">
-                <h4>Tiki notTrading</h4>
-                <p style={{ fontSize: "17px" }}>150,000đ</p>
-              </div>
-              <button
-                className="btn btn-default"
-                onClick={() => showModal({ show: false })}
-              >
-                {" "}
-                Chọn
-              </button>
-            </div>
+            {details.otherShops.map((shop) => {
+              return (
+                <div className="shoplist-wrapper">
+                  <div className="ava-reply">
+                    <img src="./img/ava.png" alt="ava" />
+                  </div>
+                  <div className="shoplist-infor">
+                    <h4 onClick={() => this.visitShop(shop.id, shop.name)}>
+                      {shop.name}
+                    </h4>
+                    {/* <p style={{ fontSize: "17px" }}>150,000đ</p> */}
+                    <p style={{ fontSize: "17px" }}>
+                      {this.convertPrice(shop.minPrice)}đ
+                    </p>
+                  </div>
+                  <button
+                    className="btn btn-default"
+                    onClick={() => this.changeShop(shop.id)}
+                  >
+                    Chọn
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

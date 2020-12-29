@@ -19,7 +19,8 @@
   margin-top: -15px;
 }
 .shoplist-infor h4 {
-  width: 150px;
+  flex: 1;
+  cursor: pointer;
 }
 .shoplist-wrapper {
   display: flex;
@@ -96,4 +97,13 @@
   background: rgba(0, 0, 0, 0.5);
   transition: 0.75s linear;
   z-index: 1001;
+}
+.shoplist-box {
+  width: 400px;
+  min-height: 240px;
+  max-height: 4400px;
+  position: absolute;
+  left: 35%;
+  top: 10%;
+  overflow-y: scroll;
 }

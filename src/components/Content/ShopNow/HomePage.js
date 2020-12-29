@@ -333,6 +333,7 @@ class HomePage extends React.Component {
                     style={{
                       width: "1245px",
                       height: "160px",
+                      marginLeft: "50px",
                     }}
                     {...settingsKW}
                   >
@@ -376,7 +377,7 @@ class HomePage extends React.Component {
                 </div>
               </div>
 
-              <div className="container-his">
+              {/* <div className="container-his">
                 <div className="title-his">SẢN PHẨM BẠN ĐÃ XEM</div>
                 <div className="sliderwrapper">
                   <Slider
@@ -391,7 +392,7 @@ class HomePage extends React.Component {
                     })}
                   </Slider>
                 </div>
-              </div>
+              </div> */}
             </div>
             <Footer />
           </Fragment>

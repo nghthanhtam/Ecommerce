@@ -6,11 +6,21 @@ const mapStateToProps = (state) => ({
   employee: state.auth.employee,
   admin: state.authAdmin.admin,
   permissions: state.auth.permissions,
+  permissionAdmins: state.authAdmin.permissions,
 });
 
 class Menu extends React.Component {
+  componentDidMount() {
+    console.log(this.props.permissionAdmins);
+  }
   render() {
-    const { employee, admin, isAdmin, permissions } = this.props;
+    const {
+      employee,
+      admin,
+      isAdmin,
+      permissions,
+      permissionAdmins,
+    } = this.props;
     return (
       <div>
         {/* Left side column. contains the logo and sidebar */}
@@ -115,14 +125,15 @@ class Menu extends React.Component {
                     </li>
                   </ul>
                 </li>
-                {permissions.includes("getRoles") && (
-                  <li>
-                    <Link to="/admin/role">
-                      <i className="fa fa-users" />{" "}
-                      <span>Quản lý phân quyền </span>
-                    </Link>
-                  </li>
-                )}
+                {permissionAdmins &&
+                  permissionAdmins.includes("getAdminRoles") && (
+                    <li>
+                      <Link to="/admin/role">
+                        <i className="fa fa-users" />{" "}
+                        <span>Quản lý phân quyền </span>
+                      </Link>
+                    </li>
+                  )}
                 <li className="treeview">
                   <a href="#">
                     <i className="fa fa-pie-chart" />

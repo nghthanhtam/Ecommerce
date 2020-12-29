@@ -33,7 +33,7 @@ class PendingList extends React.Component {
       page,
       query,
       idShop,
-      arrayStatus: ["pending", "declined"],
+      arrayStatus: ["pending"],
     });
   }
 
@@ -130,10 +130,12 @@ class PendingList extends React.Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    this.props.getProducts({
+    const { idShop } = this.props;
+    this.props.getProductVarsByIdShop({
       limit,
       page,
       query,
+      idShop,
     });
     this.getPages();
     this.getStartEndDocuments();
@@ -162,7 +164,7 @@ class PendingList extends React.Component {
         page,
         query,
         idShop,
-        arrayStatus: ["pending", "declined"],
+        arrayStatus: ["pending"],
       });
       this.getStartEndDocuments();
     });
@@ -210,8 +212,8 @@ class PendingList extends React.Component {
   };
 
   render() {
-    const { limit, page, query, start, end } = this.state;
-    const { totalDocuments, idShop, productVars } = this.props;
+    const { query, start, end } = this.state;
+    const { totalDocuments } = this.props;
     return (
       <div className="row">
         <div className="col-md-12">
@@ -305,9 +307,13 @@ class PendingList extends React.Component {
                     aria-live="polite"
                   >
                     Hiển thị{" "}
-                    {query == "" ? start + " đến " + end + " trong " : ""}{" "}
-                    {productVars.filter((o) => o.status !== "active").length}{" "}
-                    kết quả
+                    {query == ""
+                      ? start +
+                        " đến " +
+                        (totalDocuments < end ? totalDocuments : end) +
+                        " trong "
+                      : ""}{" "}
+                    {totalDocuments} kết quả
                   </div>
                 </div>
                 <div className="col-sm-7">

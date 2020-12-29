@@ -1,81 +1,68 @@
 import React from "react";
+import AShopRow from "../AShopRow";
+import Loader from "react-loader";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import Loader from "react-loader";
-
-import { getProductVarsByIdShop } from "../../../../../state/actions/productVarActions";
-import { pushHistory } from "../../../../../state/actions/historyActions";
-import ProductRow from "../ProductRow";
+import { getShops } from "../../../../../state/actions/shopActions";
 
 const mapStateToProps = (state) => ({
-  productVars: state.productVar.productVars,
-  isLoaded: state.productVar.isLoaded,
+  shops: state.shop.shops,
+  isLoaded: state.shop.isLoaded,
+  totalDocuments: state.shop.totalDocuments,
   idShop: state.auth.role.idShop,
-  totalDocuments: state.productVar.totalDocuments,
+  details: state.modal.details,
 });
 
-class ActiveList extends React.Component {
+class APendingList extends React.Component {
   state = {
     sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
     limit: 5,
     page: 1,
-    query: "",
     pages: [],
+    query: "",
     start: 1,
     end: 5,
     isNextBtnShow: true,
-    declinedProduct: false,
   };
 
   componentDidMount() {
     const { limit, page, query } = this.state;
-    const { idShop } = this.props;
-    this.props.getProductVarsByIdShop({
+    this.props.getShops({
       limit,
       page,
       query,
-      idShop,
-      arrayStatus: ["active", "inactive"],
+      arrayStatus: ["pending"],
     });
   }
 
-  componentDidUpdate = (prevProps, prevState, snapshot) => {
-    let { totalDocuments, isLoaded } = this.props,
-      { end } = this.state;
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { isLoaded } = this.props;
     if (isLoaded == true && this.state.pages == prevState.pages) {
       this.getPages();
     }
-    // if (totalDocuments < 5 && end !== totalDocuments) {
-    //     this.setState({ end: totalDocuments })
-    // }
-  };
+  }
 
-  renderProducts = (getActive) => {
-    const { productVars, isLoaded } = this.props;
-    const { start } = this.state;
-    return !isLoaded ? (
-      <tr>
-        <td>
-          <Loader></Loader>
-        </td>
-      </tr>
-    ) : (
-      productVars.map((p, index) => (
-        <ProductRow
-          history={this.props.history}
-          key={index}
-          productVar={p}
-          index={index + start - 1}
-          getActive={getActive}
-        />
-      ))
-    );
-  };
+  getStartEndDocuments() {
+    const { limit, page } = this.state;
+    const { totalDocuments } = this.props;
+
+    let pages = Math.floor(totalDocuments / limit),
+      remainder = totalDocuments % limit;
+    if (remainder !== 0) pages += 1;
+    console.log(totalDocuments);
+
+    this.setState({ start: (page - 1) * limit + 1 }, () => {
+      let end;
+      if (Math.floor(totalDocuments / limit) + 1 == page)
+        end = (page - 1) * limit + (totalDocuments % limit);
+      else end = page * limit;
+      this.setState({ end: end });
+    });
+  }
 
   getPages = () => {
     const { limit, query } = this.state;
-    let { totalDocuments, productVars } = this.props;
-
+    const { totalDocuments } = this.props;
     if (totalDocuments == 0) return;
 
     let newQuery = "";
@@ -117,69 +104,89 @@ class ActiveList extends React.Component {
     });
   };
 
-  getStartEndDocuments() {
-    const { limit, page } = this.state;
-    let { totalDocuments, productVars } = this.props;
-
-    let pages = Math.floor(totalDocuments / limit),
-      remainder = totalDocuments % limit;
-    if (remainder !== 0) pages += 1;
-
-    this.setState({ start: (page - 1) * limit + 1 }, () => {
-      let end;
-      if (Math.floor(totalDocuments / limit) + 1 == page)
-        end = (page - 1) * limit + (totalDocuments % limit);
-      else end = page * limit;
-      this.setState({ end: end });
-    });
-  }
-
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    const { idShop } = this.props;
-    this.props.getProductVarsByIdShop({
+    this.props.getShops({
       limit,
       page,
       query,
-      getActive: true,
-      idShop,
-      arrayStatus: ["active", "inactive"],
+      arrayStatus: ["pending"],
     });
     this.getPages();
     this.getStartEndDocuments();
   };
 
-  handleChoosePage = (e, pageNumber) => {
-    e.preventDefault();
-    if (pageNumber === "...") return;
-    const { limit, page } = this.state;
-    let { totalDocuments } = this.props;
+  renderShops = () => {
+    const { limit, page, query, start } = this.state;
+    const { shops, isLoaded } = this.props;
 
+    return !isLoaded ? (
+      <tr>
+        <td>
+          <Loader></Loader>
+        </td>
+      </tr>
+    ) : (
+      shops.map((shop, index) => (
+        <AShopRow
+          history={this.props.history}
+          key={shop.id}
+          shop={shop}
+          pages={{ limit, page, query }}
+          index={index + start - 1}
+        />
+      ))
+    );
+  };
+
+  handleChoosePage = (e) => {
+    if (e === "...") return;
+    const { totalDocuments } = this.props;
+    const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
 
-    if (pageNumber === -1) {
-      pageNumber = page + 1;
-      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
+    console.log(page + " and " + pages);
+
+    if (e === -1) {
+      e = page + 1;
+      if (e === pages) this.setState({ isNextBtnShow: false });
     } else {
-      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
+      if (e === pages) this.setState({ isNextBtnShow: false });
       else this.setState({ isNextBtnShow: true });
     }
 
-    this.setState({ page: pageNumber }, () => {
+    this.setState({ page: e }, () => {
       const { limit, page, query } = this.state;
-      const { idShop } = this.props;
-      this.props.getProductVarsByIdShop({
+      this.props.getShops({
         limit,
         page,
         query,
-        getActive: true,
-        idShop,
-        arrayStatus: ["active", "inactive"],
+        arrayStatus: ["pending"],
       });
       this.getStartEndDocuments();
     });
+  };
+
+  renderSelect = () => {
+    const { sort, limit } = this.state;
+    return (
+      <select
+        onChange={this.handleOnChange}
+        name="limit"
+        aria-controls="example1"
+        style={{ margin: "0px 5px" }}
+        className="form-control input-sm"
+        value={limit}
+      >
+        {sort.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.value}
+          </option>
+        ))}
+      </select>
+    );
   };
 
   renderPageButtons = () => {
@@ -200,7 +207,7 @@ class ActiveList extends React.Component {
                 className="paga-link"
                 name="currentPage"
                 href="#"
-                onClick={(e) => this.handleChoosePage(e, eachButton.pageNumber)}
+                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
               >
                 {eachButton.pageNumber}
               </a>
@@ -213,7 +220,7 @@ class ActiveList extends React.Component {
               }
               name="currentPage"
               href="#"
-              onClick={(e) => this.handleChoosePage(e, -1)}
+              onClick={() => this.handleChoosePage(-1)}
             >
               {">>"}
             </a>
@@ -223,25 +230,8 @@ class ActiveList extends React.Component {
     }
   };
 
-  onCheckActiveProduct = (e) => {
-    const { limit, page, query, declinedProduct } = this.state;
-    const { idShop } = this.props;
-    this.setState({ declinedProduct: !declinedProduct }, () => {
-      let arrayStatus = [];
-      if (this.state.declinedProduct) arrayStatus = ["declined", "active"];
-      else arrayStatus = ["active"];
-      this.props.getProductVarsByIdShop({
-        limit,
-        page,
-        query,
-        idShop,
-        arrayStatus,
-      });
-    });
-  };
-
   render() {
-    const { declinedProduct, query, start, end } = this.state;
+    const { limit, page, start, end, query } = this.state;
     const { totalDocuments } = this.props;
     return (
       <div className="row">
@@ -277,29 +267,7 @@ class ActiveList extends React.Component {
                       </div>
                     </div>
                     <div className="col-sm-6">
-                      <div
-                        id="example1_filter"
-                        className="dataTables_filter"
-                        style={{ display: "flex", float: "right" }}
-                      >
-                        <div
-                          style={{
-                            fontWeight: 400,
-                            width: "180px",
-                          }}
-                        >
-                          <input
-                            style={{
-                              marginRight: "3px",
-                            }}
-                            type="checkbox"
-                            className="minimal"
-                            name="declined"
-                            checked={declinedProduct}
-                            onChange={this.onCheckActiveProduct}
-                          />
-                          Không được duyệt
-                        </div>
+                      <div id="example1_filter" className="dataTables_filter">
                         <label style={{ float: "right" }}>
                           Tìm kiếm
                           <input
@@ -322,29 +290,31 @@ class ActiveList extends React.Component {
                   <div className="col-sm-12">
                     <table
                       id="example1"
-                      className="table table-bordered table-striped"
+                      className="table table-bordered table-striped table-scroll"
                     >
                       <thead>
                         <tr>
-                          <th style={{ width: "3%" }}>#</th>
-                          <th style={{ width: "20%" }}>Hình ảnh</th>
-                          <th style={{ width: "20%" }}>Tên sản phẩm</th>
-                          <th style={{ width: "10%" }}>SKU</th>
-                          <th style={{ width: "10%" }}>Đơn giá</th>
-                          <th style={{ width: "12%" }}>Số lượng tồn</th>
-                          <th style={{ width: "15%" }}>Thao tác</th>
+                          <th>#</th>
+                          <th>Tên nhà bán</th>
+                          <th>Mã kinh doanh</th>
+                          <th>Thành phố/tỉnh</th>
+                          <th>Đường dẫn</th>
+                          <th>Điện thoại</th>
+                          <th>Tình trạng</th>
+                          <th style={{ width: "35%" }}>Thao tác</th>
                         </tr>
                       </thead>
-                      <tbody>{this.renderProducts(true)}</tbody>
+                      <tbody>{this.renderShops()}</tbody>
                       <tfoot>
                         <tr>
                           <th>#</th>
-                          <th>Hình ảnh</th>
-                          <th>Tên sản phẩm</th>
-                          <th>SKU</th>
-                          <th>Đơn giá</th>
-                          <th>Số lượng tồn</th>
-                          <th>Thao tác</th>
+                          <th>Tên nhà bán</th>
+                          <th>Mã kinh doanh</th>
+                          <th>Thành phố/tỉnh</th>
+                          <th>Đường dẫn</th>
+                          <th>Điện thoại</th>
+                          <th>Tình trạng</th>
+                          <th style={{ width: "35%" }}>Thao tác</th>
                         </tr>
                       </tfoot>
                     </table>
@@ -359,7 +329,12 @@ class ActiveList extends React.Component {
                       aria-live="polite"
                     >
                       Hiển thị{" "}
-                      {query == "" ? start + " đến " + end + " trong " : ""}{" "}
+                      {query == ""
+                        ? start +
+                          " đến " +
+                          (totalDocuments < end ? totalDocuments : end) +
+                          " trong "
+                        : ""}{" "}
                       {totalDocuments} kết quả
                     </div>
                   </div>
@@ -385,13 +360,12 @@ class ActiveList extends React.Component {
   }
 }
 
-ActiveList.propTypes = {
-  getProductVarsByIdShop: PropTypes.func.isRequired,
-  productVars: PropTypes.array.isRequired,
+APendingList.propTypes = {
+  getShops: PropTypes.func.isRequired,
+  shops: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, {
-  getProductVarsByIdShop,
-  pushHistory,
-})(ActiveList);
+  getShops,
+})(APendingList);

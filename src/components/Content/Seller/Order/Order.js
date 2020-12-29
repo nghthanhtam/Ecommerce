@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import DoneList from "./Tab/DoneList";
 import PendingList from "./Tab/PendingList";
 import { connect } from "react-redux";
-import { getOrdersByShop } from "../../../../state/actions/orderActions";
 
 const mapStateToProps = (state) => ({
   permissions: state.auth.permissions,
@@ -83,4 +82,4 @@ class Order extends Component {
   }
 }
 
-export default connect(mapStateToProps, { getOrdersByShop })(Order);
+export default connect(mapStateToProps, {})(Order);

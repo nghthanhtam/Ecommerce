@@ -1,17 +1,20 @@
-import React from 'react';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import '../../../../assets/css/product.css';
-import Loader from 'react-loader';
+import React from "react";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "../../../../assets/css/product.css";
+import Loader from "react-loader";
 
-import ShowingProduct from '../Product/ShowingProduct';
-import Header from '../Header/Header';
-import Footer from '../Footer/Footer';
+import ShowingProduct from "../Product/ShowingProduct";
+import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
 
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { getProductsByIdShop, sortProducts } from '../../../../state/actions/productActions'
-import { getShopById } from '../../../../state/actions/shopActions'
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import {
+  getProductsByIdShop,
+  sortProducts,
+} from "../../../../state/actions/productActions";
+import { getShopById } from "../../../../state/actions/shopActions";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
@@ -19,33 +22,39 @@ const mapStateToProps = (state) => ({
   shop: state.shop.shop,
   isLoaded: state.product.isLoaded,
   isShopLoaded: state.shop.isLoaded,
-  totalDocuments: state.product.totalDocuments
+  totalDocuments: state.product.totalDocuments,
 });
 
 class Shop extends React.Component {
   state = {
-    header: 'header',
-    picLink: './img/blue.png',
-    section: 'section-blue',
+    header: "header",
+    picLink: "./img/blue.png",
+    section: "section-blue",
     left: 0,
 
     limit: 1000,
     page: 1,
     start: 1,
     end: 8,
-    query: '',
+    query: "",
     pages: [],
-    isNextBtnShow: true
-  }
+    isNextBtnShow: true,
+  };
 
   componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
-    const { getProductsByIdShop, getShopById } = this.props
-    const { limit, page, query } = this.state
+    window.addEventListener("scroll", this.handleScroll);
+    const { getProductsByIdShop, getShopById } = this.props;
+    const { limit, page, query } = this.state;
     if (this.props.match) {
-      const { idShop } = this.props.match.params
-      getProductsByIdShop({ limit, page, query, idShop, arrayStatus: ['accepted'] });
-      getShopById(idShop)
+      const { idShop } = this.props.match.params;
+      getProductsByIdShop({
+        limit,
+        page,
+        query,
+        idShop,
+        arrayStatus: ["accepted"],
+      });
+      getShopById(idShop);
     }
   }
 
@@ -57,7 +66,7 @@ class Shop extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener("scroll", this.handleScroll);
   }
 
   getStartEndDocuments() {
@@ -67,7 +76,6 @@ class Shop extends React.Component {
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
-    console.log(totalDocuments);
 
     this.setState({ start: (page - 1) * limit + 1 }, () => {
       let end;
@@ -81,7 +89,11 @@ class Shop extends React.Component {
   rerenderPage = () => {
     const { limit, page, query } = this.state;
     this.props.getProductsByIdShop({
-      limit, page, query, idShop: 1, arrayStatus: ['accepted']
+      limit,
+      page,
+      query,
+      idShop: 1,
+      arrayStatus: ["accepted"],
     });
     this.getPages();
     this.getStartEndDocuments();
@@ -107,7 +119,7 @@ class Shop extends React.Component {
         { pageNumber: 1 },
         { pageNumber: 2 },
         { pageNumber: 3 },
-        { pageNumber: '...' },
+        { pageNumber: "..." },
         { pageNumber: newArray.length },
       ];
     }
@@ -117,7 +129,7 @@ class Shop extends React.Component {
   handleOnChange = (e) => {
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === 'query') {
+      if (e.target.name === "query") {
         this.setState({ page: 1 }, () => {
           this.rerenderPage();
         });
@@ -129,30 +141,30 @@ class Shop extends React.Component {
 
   handleScroll = () => {
     if (window.scrollY > 10) {
-      this.setState({ header: 'header1' });
+      this.setState({ header: "header1" });
     } else {
-      this.setState({ header: 'header' });
+      this.setState({ header: "header" });
     }
     this.setState({
-      left: (-window.scrollY * 0.5).toString() + 'px',
+      left: (-window.scrollY * 0.5).toString() + "px",
     });
   };
 
   changePic = (e) => {
-    if (e.target.alt === 'blue') {
-      this.setState({ picLink: './img/blue.png' });
-      this.setState({ section: 'section-blue' });
-    } else if (e.target.alt === 'red') {
-      this.setState({ picLink: './img/red.png' });
-      this.setState({ section: 'section-red' });
+    if (e.target.alt === "blue") {
+      this.setState({ picLink: "./img/blue.png" });
+      this.setState({ section: "section-blue" });
+    } else if (e.target.alt === "red") {
+      this.setState({ picLink: "./img/red.png" });
+      this.setState({ section: "section-red" });
     } else {
-      this.setState({ picLink: './img/black.png' });
-      this.setState({ section: 'section-black' });
+      this.setState({ picLink: "./img/black.png" });
+      this.setState({ section: "section-black" });
     }
   };
 
   handleChoosePage = (e) => {
-    if (e === '...') return
+    if (e === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),
@@ -169,9 +181,13 @@ class Shop extends React.Component {
 
     this.setState({ page: e }, () => {
       const { limit, page, query } = this.state;
-      const { getProductsByIdShop } = this.props
+      const { getProductsByIdShop } = this.props;
       getProductsByIdShop({
-        limit, page, query, idShop: 1, arrayStatus: ['accepted']
+        limit,
+        page,
+        query,
+        idShop: 1,
+        arrayStatus: ["accepted"],
       });
       this.getStartEndDocuments();
     });
@@ -187,13 +203,16 @@ class Shop extends React.Component {
               key={eachButton.pageNumber}
               className={
                 page === eachButton.pageNumber
-                  ? 'paginae_button active'
-                  : 'paginate_button'}>
+                  ? "paginae_button active"
+                  : "paginate_button"
+              }
+            >
               <a
                 className="paga-link"
                 name="currentPage"
                 href="#"
-                onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
+                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+              >
                 {eachButton.pageNumber}
               </a>
             </li>
@@ -201,13 +220,13 @@ class Shop extends React.Component {
           <li className="paginate_button">
             <a
               className={
-                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
+                isNextBtnShow === true ? "paga-link" : "paga-link_hidden"
               }
               name="currentPage"
               href="#"
               onClick={() => this.handleChoosePage(-1)}
             >
-              {'>>'}
+              {">>"}
             </a>
           </li>
         </>
@@ -223,22 +242,23 @@ class Shop extends React.Component {
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return dt + '/' + month + '/' + year;
+    return dt + "/" + month + "/" + year;
   };
 
-  selectFilter = e => {
-    const { value } = e.target
-    this.props.sortProducts(value)
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log('isLoaded: ', this.props.isLoaded);
-  }
-
+  selectFilter = (e) => {
+    const { value } = e.target;
+    this.props.sortProducts(value);
+  };
 
   render() {
     const { start, end } = this.state;
-    const { products, isLoaded, totalDocuments, isShopLoaded, shop } = this.props
+    const {
+      products,
+      isLoaded,
+      totalDocuments,
+      isShopLoaded,
+      shop,
+    } = this.props;
 
     return (
       <div>
@@ -246,40 +266,60 @@ class Shop extends React.Component {
         <div
           style={{
             zIndex: 10,
-            marginBottom: '300px',
-            position: 'relative',
-            backgroundColor: '#f7f7f7'
-          }}  >
+            marginBottom: "300px",
+            position: "relative",
+            backgroundColor: "#f7f7f7",
+          }}
+        >
           <div className="nohome-section" />
           <div className="container1">
-            <div style={{ display: 'flex', padding: '40px', justifyContent: 'center' }}>
+            <div
+              style={{
+                display: "flex",
+                padding: "40px",
+                justifyContent: "center",
+              }}
+            >
               <div className="shop-profile">
                 <div className="shop-pic">
-                  <img src='./img/shop.png'></img>
+                  <img src="./img/shop.png"></img>
                 </div>
-                <div className='shop-infor'>
-                  {isShopLoaded &&
+                <div className="shop-infor">
+                  {isShopLoaded && (
                     <>
-                      <div className='shop-name'>
+                      <div className="shop-name">
                         <div>Cửa hàng:</div>
-                        <div style={{ fontWeight: '500', marginLeft: '5px' }}>{shop.name}</div>
+                        <div style={{ fontWeight: "500", marginLeft: "5px" }}>
+                          {shop.name}
+                        </div>
                       </div>
-                      <div style={{ color: 'grey' }}>Thành viên từ {this.convertDate(shop.createdAt)}</div>
-                    </>}
+                      <div style={{ color: "grey" }}>
+                        Thành viên từ {this.convertDate(shop.createdAt)}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="column-flex">
                 <div className="filter-pane">
-                  <div className="ui action input" style={{ width: '500px' }}>
-                    <input type="text" name='query' placeholder="Tìm kiếm sản phẩm của shop..." onChange={this.handleOnChange} />
-                    <button className="ui icon button" >
+                  <div className="ui action input" style={{ width: "500px" }}>
+                    <input
+                      type="text"
+                      name="query"
+                      placeholder="Tìm kiếm sản phẩm của shop..."
+                      onChange={this.handleOnChange}
+                    />
+                    <button className="ui icon button">
                       <i className="search icon"></i>
                     </button>
                   </div>
                   <div className="row-flex-center">
-                    <div style={{ marginRight: '10px' }}>Sort By</div>
+                    <div style={{ marginRight: "10px" }}>Sort By</div>
                     <div>
-                      <select className="ui dropdown" onChange={this.selectFilter}>
+                      <select
+                        className="ui dropdown"
+                        onChange={this.selectFilter}
+                      >
                         <option value="des">Giá giảm dần</option>
                         <option value="asc">Giá tăng dần</option>
                         <option value="latest">Hàng mới</option>
@@ -290,27 +330,41 @@ class Shop extends React.Component {
                 </div>
                 <div>
                   <div className="list-wrapper">
-                    {isLoaded && products.length > 0 &&
-                      <div className="grid" >
+                    {isLoaded && products.length > 0 && (
+                      <div className="grid">
                         {products.map((item, index) => {
                           return <ShowingProduct key={index} item={item} />;
                         })}
-                      </div>}
-                    {isLoaded && products.length == 0 &&
-                      <div className="grid" style={{ width: '932px', height: '350px' }}>
+                      </div>
+                    )}
+                    {isLoaded && products.length == 0 && (
+                      <div
+                        className="grid"
+                        style={{ width: "932px", height: "350px" }}
+                      >
                         Không tìm thấy sản phẩm nào
-                      </div>}
-                    {!isLoaded && <div className="grid" style={{ width: '932px', height: '350px' }}>
-                      Chờ tí nhé! Hệ thống đang xử lý!
-                    </div>}
+                      </div>
+                    )}
+                    {!isLoaded && (
+                      <div
+                        className="grid"
+                        style={{ width: "932px", height: "350px" }}
+                      >
+                        Chờ tí nhé! Hệ thống đang xử lý!
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div className="col-sm-7"
-                  style={{ width: '100%', display: 'flex', padding: 0 }}>
-                  <div style={{ marginLeft: 'auto' }} className="dataTables_paginate paging_simple_numbers" id="example1_paginate">
-                    <ul className="pagination">
-                      {this.renderPageButtons()}
-                    </ul>
+                <div
+                  className="col-sm-7"
+                  style={{ width: "100%", display: "flex", padding: 0 }}
+                >
+                  <div
+                    style={{ marginLeft: "auto" }}
+                    className="dataTables_paginate paging_simple_numbers"
+                    id="example1_paginate"
+                  >
+                    <ul className="pagination">{this.renderPageButtons()}</ul>
                   </div>
                 </div>
               </div>
@@ -318,7 +372,7 @@ class Shop extends React.Component {
           </div>
         </div>
         <Footer />
-      </div >
+      </div>
     );
   }
 }
@@ -329,4 +383,8 @@ Shop.propTypes = {
   products: PropTypes.array.isRequired,
 };
 
-export default connect(mapStateToProps, { getProductsByIdShop, getShopById, sortProducts })(Shop);
+export default connect(mapStateToProps, {
+  getProductsByIdShop,
+  getShopById,
+  sortProducts,
+})(Shop);

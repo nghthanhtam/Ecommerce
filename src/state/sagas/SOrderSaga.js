@@ -34,7 +34,7 @@ function* fetchOrders(params) {
   } catch (error) {
     console.log(error);
     let err = { ...error };
-    if (err.status == 401) {
+    if (err.response.status == 401) {
       this.props.history.push({
         pathname: "/admin/login",
       });
@@ -58,7 +58,7 @@ function* fetchOrderDetsByOrderId(params) {
   } catch (error) {
     console.log(error);
     let err = { ...error };
-    if (err.status == 401) {
+    if (err.response.status == 401) {
       this.props.history.push({
         pathname: "/login",
       });
@@ -70,8 +70,6 @@ function* fetchOrdersByShop(params) {
   try {
     const state = yield select(),
       { limit, page, idShop, done } = params.pages;
-    console.log(params.pages);
-    console.log(params.pages);
     const response = yield call(() =>
       axios.get(
         `${process.env.REACT_APP_BACKEND_ORDER}/api/order/shop/${idShop}?limit=${limit}&page=${page}&done=${done}`,
@@ -83,7 +81,7 @@ function* fetchOrdersByShop(params) {
   } catch (error) {
     console.log(error);
     let err = { ...error };
-    if (err.status == 401) {
+    if (err.response.status == 401) {
       this.props.history.push({
         pathname: "/login",
       });
@@ -107,7 +105,7 @@ function* fetchUserOrders(params) {
   } catch (error) {
     console.log(error);
     let err = { ...error };
-    if (err.status == 401) {
+    if (err.response.status == 401) {
       this.props.history.push({
         pathname: "/shopnow",
       });

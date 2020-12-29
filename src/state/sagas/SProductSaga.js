@@ -18,13 +18,13 @@ import {
   UPDATE_PRODUCT,
   UPDATE_PRODUCT_STATUS,
   PRODUCT_UPDATED,
-  GET_PRODUCTS_BY_FILTERS
+  GET_PRODUCTS_BY_FILTERS,
 } from "../actions/types";
 
 function* sortProducts(params) {
   try {
     const { sortField } = params;
-    yield delay(1000)
+    yield delay(1000);
     yield put({ type: PRODUCTS_SORTED, payload: sortField });
   } catch (error) {
     console.log({ ...error });
@@ -54,14 +54,15 @@ function* fetchProductsByIdShop(params) {
   try {
     const state = yield select(),
       { limit, page, query, idShop, arrayStatus } = params.pages;
-    let tempString = '';
+    let tempString = "";
     for (let x = 0; x < arrayStatus.length; x++) {
       tempString += `&arrayStatus[]=${arrayStatus[x]}`;
     }
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/shop/${idShop}?limit=${limit}&page=${page}&query=${query}` + tempString,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/shop/${idShop}?limit=${limit}&page=${page}&query=${query}` +
+            tempString,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -77,7 +78,7 @@ function* fetchProducts(params) {
   try {
     const state = yield select(),
       { limit, page, query, arrayStatus } = params.pages;
-    let tempString = '';
+    let tempString = "";
     for (let x = 0; x < arrayStatus.length; x++) {
       tempString += `&arrayStatus[]=${arrayStatus[x]}`;
     }
@@ -85,7 +86,8 @@ function* fetchProducts(params) {
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product?limit=${limit}&page=${page}&query=${query}` + tempString,
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product?limit=${limit}&page=${page}&query=${query}` +
+            tempString,
           tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
@@ -101,7 +103,7 @@ function* fetchProductsByFilters(params) {
   try {
     const state = yield select(),
       { limit, page, arrayFilter } = params.pages;
-    let filters = '';
+    let filters = "";
     for (let x = 0; x < arrayFilter.length; x++) {
       filters += `&` + arrayFilter[x].name + `=${arrayFilter[x].value}`;
     }
@@ -109,8 +111,9 @@ function* fetchProductsByFilters(params) {
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/search/filter?limit=${limit}&page=${page}` + filters,
-          tokenConfig(state)
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/search/filter?limit=${limit}&page=${page}` +
+            filters,
+          noTokenConfig
         )
         .catch((er) => console.log(er.response))
     );
@@ -124,13 +127,12 @@ function* fetchProductsByFilters(params) {
 function* addProduct(params) {
   const state = yield select();
   try {
-    const response = yield call(
-      () =>
-        axios.post(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/`,
-          params.newProduct,
-          tokenConfig(state)
-        )
+    const response = yield call(() =>
+      axios.post(
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/`,
+        params.newProduct,
+        tokenConfig(state)
+      )
     );
 
     yield put({ type: PRODUCT_ADDED, payload: response.data });
@@ -184,7 +186,7 @@ function* deleteProducts(params) {
 
 function* updateProductStt(params) {
   const state = yield select(),
-    { id, status, pages } = params.params
+    { id, status, pages } = params.params;
 
   try {
     const response = yield call(() =>
@@ -205,7 +207,7 @@ function* updateProductStt(params) {
 }
 
 export default function* sProductSaga() {
-  yield takeEvery(SORT_PRODUCTS, sortProducts)
+  yield takeEvery(SORT_PRODUCTS, sortProducts);
   yield takeEvery(GET_PRODUCT_BY_ID, fetchProductById);
   yield takeEvery(GET_PRODUCTS_BY_IDSHOP, fetchProductsByIdShop);
   yield takeEvery(GET_PRODUCTS, fetchProducts);

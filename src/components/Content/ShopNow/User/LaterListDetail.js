@@ -1,15 +1,17 @@
 import React from "react";
+import { connect } from "react-redux";
 import Button from "@material-ui/core/Button";
 import "font-awesome/css/font-awesome.min.css";
 import "../../../../assets/css/cart.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+const mapStateToProps = (state) => ({
+  history: state.history.history,
+});
+
 class LaterListDetail extends React.Component {
-  state = {
-    productList: [1, 2, 3, 4, 5, 6, 7, 8],
-    replyBoxHidden: false,
-  };
+  state = {};
 
   convertPrice = (value) => {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -21,19 +23,27 @@ class LaterListDetail extends React.Component {
     return Math.ceil(discount * Math.pow(10, 2)) / Math.pow(10, 2);
   };
 
+  visitShop = (idShop, shopName) => {
+    this.props.history.push(`/shopnow/shop/${idShop}/${shopName}`);
+  };
+
   render() {
     const { item } = this.props;
     return (
       <div className="order">
         <div className="order-pic">
-          {/* <img alt="product" src={item.Images[0].url} /> */}
-          <img alt="product" />
+          <img alt="product" src={item.Images[0].url} />
         </div>
         <div className="order-content">
           <div className="order-title">{item.name}</div>
           <div className="row-flex">
             <div className="order-shop">Cung cấp bởi</div>
-            <div className="order-button">{item.idShop}</div>
+            <div
+              className="order-button"
+              onClick={() => this.visitShop(item.Shop.id, item.Shop.name)}
+            >
+              {item.Shop.name}
+            </div>
           </div>
 
           <div className="row-flex">
@@ -61,4 +71,4 @@ class LaterListDetail extends React.Component {
   }
 }
 
-export default LaterListDetail;
+export default connect(mapStateToProps, {})(LaterListDetail);

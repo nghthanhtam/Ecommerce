@@ -16,7 +16,7 @@ const mapStateToProps = (state) => {
     isLoaded: state.roleAdmin.isLoaded,
     isUpdated: state.roleAdmin.isUpdated,
     roleAdmin: state.roleAdmin.roleAdmin,
-    rolePermissions: state.role.rolePermissions,
+    rolePermissions: state.roleAdmin.rolePermissions,
   };
 };
 
@@ -112,387 +112,541 @@ const ARoleEdit = (props) => {
                             : styles.formikinput
                         }
                       />
-                      {touched.name && errors.name ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.name}
-                        </div>
-                      ) : null}
                       <div
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
                         }}
                       >
-                        <div className="role-label">
-                          <h4 className="role-cate">Quản lý phân quyền</h4>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                value={66}
-                                checked={values.checked.includes(2)}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Tạo phân quyền</p>
-                            </label>
+                        {touched.name && errors.name ? (
+                          <div className={styles.inputfeedback}>
+                            {errors.name}
                           </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                value={3}
-                                checked={values.checked.includes(3)}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Chính sửa phân quyền</p>
-                            </label>
+                        ) : null}
+                        <div
+                          style={{
+                            display: "inline-block",
+                            justifyContent: "flex-start",
+                          }}
+                        >
+                          <div className="role-label">
+                            <h4 className="role-cate">Quản lý phân quyền</h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  value={66}
+                                  checked={values.checked.includes(66)}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Tạo phân quyền</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  value={67}
+                                  checked={values.checked.includes(67)}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Chỉnh sửa phân quyền</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  value={68}
+                                  checked={values.checked.includes(68)}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xem danh sách phân quyền</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(69)}
+                                  value={69}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xóa phân quyền</p>
+                              </label>
+                            </div>
                           </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                value={4}
-                                checked={values.checked.includes(4)}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xem danh sách phân quyền</p>
-                            </label>
+                          <div className="role-label">
+                            <h4 className="role-cate">Quản lý nhân viên</h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  value={6}
+                                  checked={values.checked.includes(6)}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Tạo nhân viên</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  value={7}
+                                  checked={values.checked.includes(7)}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Chỉnh sửa nhân viên</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(8)}
+                                  value={8}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xem danh sách nhân viên</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(9)}
+                                  value={9}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xóa nhân viên</p>
+                              </label>
+                            </div>
                           </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(5)}
-                                value={5}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xóa phân quyền</p>
-                            </label>
+                          <div className="role-label">
+                            <h4 className="role-cate">Quản lý sản phẩm</h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(23)}
+                                  value={23}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Tạo sản phẩm</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(24)}
+                                  value={24}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Sửa sản phẩm</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(25)}
+                                  value={25}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xem danh sản phẩm</p>
+                              </label>
+                            </div>
                           </div>
                         </div>
-                        <div className="role-label">
-                          <h4 className="role-cate">Quản lý nhân viên</h4>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                value={6}
-                                checked={values.checked.includes(6)}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Tạo nhân viên</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                value={7}
-                                checked={values.checked.includes(7)}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Chính sửa nhân viên</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(8)}
-                                value={8}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xem danh sách nhân viên</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(9)}
-                                value={9}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xóa nhân viên</p>
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <div className="role-label">
-                          <h4 className="role-cate">Quản lý đơn hàng</h4>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(10)}
-                                value={10}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Cập nhật trạng thái đơn hàng</p>
-                            </label>
-                          </div>
 
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(13)}
-                                value={13}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Cập nhật thông tin giao hàng</p>
-                            </label>
+                        <div
+                          style={{
+                            display: "inline-block",
+                            justifyContent: "flex-start",
+                          }}
+                        >
+                          <div className="role-label">
+                            <h4 className="role-cate">Quản lý mã giảm giá</h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(31)}
+                                  value={31}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Tạo mã giảm giá</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(32)}
+                                  value={32}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Sửa mã giảm giá</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(33)}
+                                  value={33}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xem danh sách mã giảm giá</p>
+                              </label>
+                            </div>
+                          </div>
+                          <div className="role-label">
+                            <h4 className="role-cate">Quản lý thể loại phim</h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(35)}
+                                  value={35}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Tạo thể loại phim</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(36)}
+                                  value={36}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Sửa thể loại phim</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(37)}
+                                  value={37}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xem danh sách thể loại phim</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(38)}
+                                  value={38}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xóa thể loại phim</p>
+                              </label>
+                            </div>
+                          </div>
+                          <div className="role-label">
+                            <h4 className="role-cate">Quản lý phim</h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(39)}
+                                  value={39}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Tạo phim</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(40)}
+                                  value={40}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Sửa phim</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(41)}
+                                  value={41}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xem danh sách phim</p>
+                              </label>
+                            </div>
                           </div>
                         </div>
-                        <div className="role-label">
-                          <h4 className="role-cate">Quản lý phiếu chi</h4>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(14)}
-                                value={14}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Tạo phiếu chi</p>
-                            </label>
+                        <div
+                          style={{
+                            display: "inline-block",
+                            justifyContent: "flex-start",
+                          }}
+                        ></div>
+                        <div
+                          style={{
+                            display: "inline-block",
+                            justifyContent: "flex-start",
+                          }}
+                        >
+                          <div className="role-label">
+                            <h4 className="role-cate">Quản lý bài đánh giá</h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(37)}
+                                  value={56}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xem danh sách bài đánh giá</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(57)}
+                                  value={57}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Duyệt bài đánh giá</p>
+                              </label>
+                            </div>
                           </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(15)}
-                                value={15}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Sửa phiếu chi</p>
-                            </label>
+                          <div className="role-label">
+                            <h4 className="role-cate">
+                              Quản lý phần bình luận
+                            </h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(59)}
+                                  value={59}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xem danh sách bình luận</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(60)}
+                                  value={60}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Duyệt bình luận</p>
+                              </label>
+                            </div>
                           </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(16)}
-                                value={16}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xem danh sách phiếu chi</p>
-                            </label>
+                          <div className="role-label">
+                            <h4 className="role-cate">Quản lý câu hỏi</h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(37)}
+                                  value={56}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xem danh sách các câu hỏi</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(57)}
+                                  value={57}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Duyệtcâu hỏi</p>
+                              </label>
+                            </div>
                           </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(17)}
-                                value={17}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xóa phiếu chi</p>
-                            </label>
+                        </div>
+                        <div
+                          style={{
+                            display: "inline-block",
+                            justifyContent: "flex-start",
+                          }}
+                        >
+                          <div className="role-label">
+                            <h4 className="role-cate">Quản lý câu trả lời</h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(64)}
+                                  value={64}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xem danh sách các câu trả lời</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(65)}
+                                  value={65}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Duyệt câu trả lời</p>
+                              </label>
+                            </div>
+                          </div>
+                          <div className="role-label">
+                            <h4 className="role-cate">Quản lý đơn hàng</h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(10)}
+                                  value={10}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Cập nhật trạng thái đơn hàng</p>
+                              </label>
+                            </div>
+
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(13)}
+                                  value={13}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Cập nhật thông tin giao hàng</p>
+                              </label>
+                            </div>
+                          </div>
+                          <div className="role-label">
+                            <h4 className="role-cate">Khác</h4>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(1)}
+                                  value={1}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Chỉnh sửa thông tin shop</p>
+                              </label>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <div className="role-label">
-                          <h4 className="role-cate">Quản lý sản phẩm</h4>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(20)}
-                                value={20}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Tạo sản phẩm</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(21)}
-                                value={21}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Sửa sản phẩm</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(22)}
-                                value={22}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xem danh sản phẩm</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(23)}
-                                value={23}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Tạo phiếu nhập kho</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(24)}
-                                value={24}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Sửa phiếu nhập kho</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(25)}
-                                value={25}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xem danh sách phiếu nhập kho</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(26)}
-                                value={26}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xóa phiếu nhập kho</p>
-                            </label>
-                          </div>
-                        </div>
-                        <div className="role-label">
-                          <h4 className="role-cate">Khác</h4>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(1)}
-                                value={1}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Chỉnh sửa thông tin shop</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(18)}
-                                value={18}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xem doanh thu</p>
-                            </label>
-                          </div>
-                          <div>
-                            <label className="label-wrapper">
-                              <input
-                                name="checked"
-                                type="checkbox"
-                                checked={values.checked.includes(19)}
-                                value={19}
-                                onChange={(e) =>
-                                  handleCheck(e, setFieldValue, values)
-                                }
-                              />
-                              <p>Xem chi phí</p>
-                            </label>
-                          </div>
-                        </div>
-                      </div>
+
                       <div className="box-footer">
                         <button
                           type="button"

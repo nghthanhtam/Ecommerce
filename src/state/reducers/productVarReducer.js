@@ -7,7 +7,8 @@ import {
   PRODUCTVAR_ADDED,
   PRODUCTVAR_UPDATED,
   PRODUCTVAR_RECEIVED,
-  GET_PRODUCTVAR_BY_ID
+  GET_PRODUCTVAR_BY_ID,
+  GET_PRODUCTVARS_BY_IDSHOP,
 } from "../actions/types";
 
 const initialState = {
@@ -15,7 +16,7 @@ const initialState = {
   productVar: {},
   isLoaded: false,
   totalDocuments: 0,
-  isAdded: false
+  isAdded: false,
 };
 
 export default function (state = initialState, action) {
@@ -23,8 +24,14 @@ export default function (state = initialState, action) {
     case GET_PRODUCTVARS:
       return {
         ...state,
-        isLoaded: false
+        isLoaded: false,
       };
+    case GET_PRODUCTVARS_BY_IDSHOP:
+      return {
+        ...state,
+        isLoaded: false,
+      };
+
     case PRODUCTVARS_RECEIVED:
       return {
         ...state,
@@ -35,7 +42,7 @@ export default function (state = initialState, action) {
     case GET_PRODUCTVAR_BY_ID:
       return {
         ...state,
-        isLoaded: false
+        isLoaded: false,
       };
     case PRODUCTVAR_RECEIVED:
       return {
@@ -48,7 +55,7 @@ export default function (state = initialState, action) {
         ...state,
         productVars: [action.payload, ...state.productVars],
         //isLoaded: true,
-        isAdded: true
+        isAdded: true,
       };
     case DELETE_PRODUCTVAR:
       return {

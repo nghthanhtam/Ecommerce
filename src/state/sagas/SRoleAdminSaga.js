@@ -1,5 +1,6 @@
-import { takeEvery, put, call, select } from "redux-saga/effects";
+import { takeEvery, put, call, select, delay } from "redux-saga/effects";
 import axios from "axios";
+import { history } from "../../App";
 import { tokenAdminConfig } from "../actions/authAdminActions";
 import {
   GET_ROLEADMINS,
@@ -12,6 +13,8 @@ import {
   ROLEADMIN_UPDATED,
   GET_ROLEADMIN_BY_ID,
   ROLEADMIN_RECEIVED,
+  ADMIN_LOGOUT,
+  SHOW_MODAL,
 } from "../actions/types";
 
 function* fetchRoleAdmins(params) {
@@ -28,7 +31,20 @@ function* fetchRoleAdmins(params) {
 
     yield put({ type: ROLEADMINS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    error = { ...error };
+
+    if (error.response.status == 401) {
+      yield put({
+        type: SHOW_MODAL,
+        payload: { show: true, modalName: "modalExpire" },
+      });
+      yield delay(2000);
+      yield put({
+        type: SHOW_MODAL,
+        payload: { show: false },
+      });
+      yield put({ type: ADMIN_LOGOUT });
+    }
   }
 }
 
@@ -47,7 +63,7 @@ function* fetchRoleAdminById(params) {
   } catch (error) {
     console.log(error);
     let err = { ...error };
-    if (err.status == 401) {
+    if (err.response.status == 401) {
       this.props.history.push({
         pathname: "/admin/login",
       });

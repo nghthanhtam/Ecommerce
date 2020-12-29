@@ -39,6 +39,13 @@ class AShopRow extends Component {
         <td>{shop.url}</td>
         <td>{shop.phone}</td>
         <td>
+          {shop.status == "pending"
+            ? "Chờ duyệt"
+            : shop.status == "accepted"
+            ? "Đang hoạt động"
+            : "Không được duyệt"}
+        </td>
+        <td>
           <div className="btn-group">
             <button
               onClick={() => this.handleEdit(shop.id)}

@@ -107,8 +107,8 @@ class ADoneList extends React.Component {
   };
 
   rerenderPage = () => {
-    const { limit, page, query, deletedEmp, activeEmp } = this.state;
-    let idShop = 1;
+    const { limit, page, query } = this.state;
+    const { idShop } = this.props;
     this.props.getOrdersByShop({
       limit,
       page,
@@ -162,7 +162,7 @@ class ADoneList extends React.Component {
 
     this.setState({ page: e }, () => {
       const { limit, page, query } = this.state;
-      let idShop = 1;
+      const { idShop } = this.props;
       this.props.getOrdersByShop({
         limit,
         page,

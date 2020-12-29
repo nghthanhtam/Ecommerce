@@ -55,5 +55,5 @@ class App extends Component {
     );
   }
 }
-
+export { history };
 export default App;

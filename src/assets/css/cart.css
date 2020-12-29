@@ -74,8 +74,9 @@
   background-color: #f5f5f5;
 }
 .order-pic {
-  width: 150px;
+  width: 140px;
   height: 145px;
+  padding: 5px;
 }
 .order-content {
   display: flex;

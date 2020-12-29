@@ -36,7 +36,7 @@ const mapStateToProps = (state) => ({
   product: state.product.product,
   show: state.modal.show,
   modalName: state.modal.modalName,
-  isLoaded: state.product.isProductLoaded,
+  isProductLoaded: state.product.isProductLoaded,
   isProVarLoaded: state.productVar.isLoaded,
   productVar: state.productVar.productVar,
   ratings: state.rating.ratings,
@@ -56,7 +56,8 @@ class ProductDetail extends React.Component {
   }
 
   state = {
-    productList: [1, 2, 3, 4, 5, 6, 7, 8],
+    productList: [1, 2, 3, 4, 5, 6, 7],
+    sameMovieProucts: [],
     replyBoxHidden: false,
     answerBoxHidden: false,
     selectedFiles: [],
@@ -76,20 +77,6 @@ class ProductDetail extends React.Component {
     nameObj: "",
   };
 
-  tokenConfig = (token) => {
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-      },
-    };
-
-    //Header
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    return config;
-  };
-
   componentDidMount() {
     const { idProduct, idShop } = this.props.match.params;
     this.setState({ idProduct });
@@ -99,12 +86,44 @@ class ProductDetail extends React.Component {
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-    const { nameObj, bigPhoto } = this.state;
-    const { product, isProVarLoaded, isLoaded, getProductVarById } = this.props;
-    if (bigPhoto == "" && isLoaded) {
+    const { bigPhoto } = this.state;
+    const { product, isProductLoaded } = this.props;
+    if (bigPhoto == "" && isProductLoaded) {
       this.setState({ bigPhoto: product.images[0].url });
     }
-    // if (!isProVarLoaded && isLoaded) {
+
+    if (
+      isProductLoaded &&
+      prevProps.isProductLoaded !== this.props.isProductLoaded
+    ) {
+      let filters = "",
+        arrayFilter = [{ name: "idMovie", value: product.product.idMovie }];
+      for (let x = 0; x < arrayFilter.length; x++) {
+        filters += `&` + arrayFilter[x].name + `=${arrayFilter[x].value}`;
+      }
+      try {
+        axios
+          .get(
+            `${
+              process.env.REACT_APP_BACKEND_PRODUCT
+            }/api/product/search/filter?limit=${1000}&page=${1}` + filters,
+            {
+              headers: {
+                "Content-type": "application/json",
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response.data);
+            this.setState({
+              sameMovieProucts: response.data.items,
+            });
+          });
+      } catch (error) {
+        console.log(error.response);
+      }
+    }
+    // if (!isProVarLoaded && isProductLoaded) {
     //   getProductVarById(product.productVars[0].id);
     //   if (product.product.idProductCat == 1 && nameObj == "") {
     //     //book
@@ -120,7 +139,7 @@ class ProductDetail extends React.Component {
     //     this.setState({ nameObj: { origin: "Xuất xứ" } });
     //   }
     // }
-    if (!prevProps.isLoaded && isLoaded) {
+    if (!prevProps.isProductLoaded && isProductLoaded) {
       this.setState((prevState) => ({
         selectedProductVar: {
           // object that we want to update
@@ -405,9 +424,13 @@ class ProductDetail extends React.Component {
     }
   };
 
+  changeShop = (idShop) => {
+    const { idProduct } = this.props.match.params;
+    this.props.getProductById({ idShop, idProduct });
+  };
+
   render() {
     const {
-      nameObj,
       selectedProductVar,
       productList,
       replyBoxHidden,
@@ -423,12 +446,13 @@ class ProductDetail extends React.Component {
       variants,
       bigPhoto,
       errorMsg,
+      sameMovieProucts,
     } = this.state;
     const {
       showModal,
       show,
       modalName,
-      isLoaded,
+      isProductLoaded,
       product,
       ratings,
       isRatingsLoaded,
@@ -441,8 +465,7 @@ class ProductDetail extends React.Component {
     const settings = {
       infinite: true,
       speed: 800,
-      slidesToShow: 5,
-      slidesToScroll: 3,
+      slidesToScroll: 1,
       className: "slider",
     };
     const bigSettings = {
@@ -475,7 +498,7 @@ class ProductDetail extends React.Component {
           }}
         >
           <div className="nohome-section"></div>
-          {isLoaded && (
+          {isProductLoaded && (
             <div className="container">
               <div className="card1">
                 <div className="image1">
@@ -570,8 +593,6 @@ class ProductDetail extends React.Component {
 
                   <div className="price">
                     <div>
-                      {/* {price == '' && isProVarLoaded && (<h2> {this.convertPrice(productVar.price)}đ</h2>)}
-                      {price !== '' && <h2>{this.convertPrice(price)}đ</h2>} */}
                       {selectedProductVar && selectedProductVar.price !== "" ? (
                         <h2>{this.convertPrice(selectedProductVar.price)}đ</h2>
                       ) : (
@@ -579,8 +600,6 @@ class ProductDetail extends React.Component {
                       )}
                     </div>
                     <div>
-                      {/* {marketPrice == '' && isProVarLoaded && <h4>{this.convertPrice(productVar.marketPrice)}đ</h4>}
-                      {marketPrice !== '' && <h4>{this.convertPrice(marketPrice)}đ</h4>} */}
                       {selectedProductVar &&
                       selectedProductVar.marketPrice !== "" ? (
                         <h4>
@@ -669,21 +688,30 @@ class ProductDetail extends React.Component {
                         className="link-shop"
                         onClick={() =>
                           this.props.history.push(
-                            `/shopnow/shop/${product.shop.id}`
+                            `/shopnow/shop/${product.shop.id}/${product.shop.name}`
                           )
                         }
                       >
                         {product.shop.name}
                       </span>
                     </div>
-                    <div
-                      className="link"
-                      onClick={() => {
-                        showModal({ show: true, modalName: "modalShopList" });
-                      }}
-                    >
-                      Thay đổi nhà bán
-                    </div>
+                    {product.otherShops.length > 0 && (
+                      <div
+                        className="link"
+                        onClick={() => {
+                          showModal({
+                            show: true,
+                            modalName: "modalShopList",
+                            details: {
+                              otherShops: product.otherShops,
+                              changeShop: this.changeShop,
+                            },
+                          });
+                        }}
+                      >
+                        Thay đổi nhà bán
+                      </div>
+                    )}
                   </div>
                   <div style={{ display: "flex" }}>
                     <div className="label-prodet">Sản phẩm thuộc về phim:</div>
@@ -691,25 +719,13 @@ class ProductDetail extends React.Component {
                   </div>
                   <div className="voucher-list">
                     <h5> THÔNG TIN THÊM:</h5>
-                    {product.product.Details.map((d) => {
+                    {product.product.Details.map((d, index) => {
                       return (
-                        <p>
+                        <p key={index}>
                           {this.convertDetailName(d.detail)}:{" "}
                           <span>{d.value}</span>
                         </p>
                       );
-
-                      // return Object.keys(nameObj).map((item, index) => {
-                      //   return (
-                      //     <Fragment key={index}>
-                      //       {item == d.detail && (
-                      //         <p>
-                      //           {nameObj[item]}: <span>{d.value}</span>
-                      //         </p>
-                      //       )}
-                      //     </Fragment>
-                      //   );
-                      // });
                     })}
                   </div>
                 </div>
@@ -720,11 +736,19 @@ class ProductDetail extends React.Component {
                 </h3>
                 <div className="sliderwrapper">
                   <Slider
-                    style={{ width: "107%", height: "380px" }}
+                    style={{
+                      width: "107%",
+                      marginLeft: "-40px",
+                      height: "380px",
+                    }}
                     {...settings}
+                    isProductLoaded
+                    slidesToShow={
+                      sameMovieProucts.length < 5 ? sameMovieProucts.length : 5
+                    }
                   >
-                    {productList.map((item, index) => {
-                      return <RecProduct key={index} />;
+                    {sameMovieProucts.map((item, index) => {
+                      return <RecProduct item={item} key={index} />;
                     })}
                   </Slider>
                 </div>
@@ -735,11 +759,18 @@ class ProductDetail extends React.Component {
                 </h3>
                 <div className="sliderwrapper">
                   <Slider
-                    style={{ width: "107%", height: "380px" }}
+                    style={{
+                      width: "107%",
+                      height: "380px",
+                      marginLeft: "-40px",
+                    }}
                     {...settings}
+                    slidesToShow={
+                      sameMovieProucts.length < 5 ? sameMovieProucts.length : 5
+                    }
                   >
-                    {productList.map((item, index) => {
-                      return <RecProduct key={index} />;
+                    {sameMovieProucts.map((item, index) => {
+                      return <RecProduct item={item} key={index} />;
                     })}
                   </Slider>
                 </div>
@@ -1026,7 +1057,7 @@ class ProductDetail extends React.Component {
                           <div className="sku-grid">
                             {rating.RatingImages.map((image, index) => {
                               return (
-                                <Fragment>
+                                <Fragment key={index}>
                                   {image.idRating == rating.id && (
                                     <div key={index} className="rating-image">
                                       <img

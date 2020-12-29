@@ -31,7 +31,7 @@ function* fetchQuestions(params) {
   } catch (error) {
     console.log({ ...error });
     let err = { ...error };
-    if (err.status == 401) {
+    if (err.response.status == 401) {
       this.props.history.push({
         pathname: "/admin/login",
       });

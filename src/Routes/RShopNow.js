@@ -74,7 +74,6 @@ class RShopNow extends Component {
       updateAuthUser(userToken);
     }
     if (adminToken) {
-      console.log("adminToken: ", adminToken);
       updateAuthAdmin(adminToken);
     }
   }

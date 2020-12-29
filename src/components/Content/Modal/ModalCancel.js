@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
 import { pushHistory } from "../../../state/actions/historyActions";
 import { showModal } from "../../../state/actions/modalActions";
 import { updateOrder } from "../../../state/actions/orderActions";

@@ -36,6 +36,7 @@ class LaterList extends React.Component {
     const { getLaterlists, user } = this.props;
     getLaterlists({ limit: 1000, page: 1, idUser: user.id });
   }
+
   render() {
     const {} = this.state;
     const { isLoaded, laterLists } = this.props;

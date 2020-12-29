@@ -5,7 +5,7 @@ import { updateAuthUser } from "../state/actions/authUserActions";
 import { updateAuthAdmin } from "../state/actions/authAdminActions";
 import { connect } from "react-redux";
 
-import Header from "../components/Content/Seller/Header";
+import Header from "../components/Content/Admin/Header";
 import Footer from "../components/Content/Seller/Footer";
 import Menu from "../components/Content/Seller/Menu";
 import ProductVarEdit from "../components/Content/Seller/Product/ProductVarEdit";
@@ -28,6 +28,7 @@ import AAnswer from "../components/Content/Admin/Answer/AAnswer";
 import ARating from "../components/Content/Admin/Rating/ARating";
 import ModalProductDetails from "../components/Content/Modal/ModalProductDetails";
 import ModalCancel from "../components/Content/Modal/ModalCancel";
+import ModalExpire from "../components/Content/Modal/ModalExpire";
 import ProductInforEdit from "../components/Content/Admin/Product/ProductInforEdit";
 import AEmployee from "../components/Content/Admin/Employee/AEmployee";
 import EmployeeEdit from "../components/Content/Admin/Employee/AEmployeeEdit";
@@ -130,6 +131,7 @@ class RAdmin extends Component {
           {/* ADMIN */}
           {adminToken && (
             <Fragment>
+              {show && modalName == "modalExpire" && <ModalExpire />}
               {show && modalName == "modalCancel" && <ModalCancel />}
               {show && modalName == "productDetails" && <ModalProductDetails />}
               <Header isAdmin={true} />

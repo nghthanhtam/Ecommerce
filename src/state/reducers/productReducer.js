@@ -11,14 +11,14 @@ import {
   GET_PRODUCTS_BY_IDSHOP,
   GET_PRODUCT_BY_ID,
   PRODUCTS_SORTED,
-  GET_PRODUCTS_BY_FILTERS
+  GET_PRODUCTS_BY_FILTERS,
 } from "../actions/types";
 
 const initialState = {
   products: [],
   isLoaded: false,
   totalDocuments: 0,
-  isProductLoaded: false
+  isProductLoaded: false,
 };
 
 export default function (state = initialState, action) {
@@ -31,31 +31,43 @@ export default function (state = initialState, action) {
 
     case PRODUCTS_SORTED:
       switch (action.payload) {
-        case 'des':
+        case "des":
           return {
             ...state,
-            products: state.products.sort((a, b) => parseFloat(parseFloat(b.ProductVars[0].price) - a.ProductVars[0].price)),
+            products: state.products.sort((a, b) =>
+              parseFloat(
+                parseFloat(b.ProductVars[0].price) - a.ProductVars[0].price
+              )
+            ),
             isLoaded: true,
             totalDocuments: state.totalDocuments,
           };
-        case 'asc':
+        case "asc":
           return {
             ...state,
-            products: state.products.sort((a, b) => parseFloat(a.ProductVars[0].price) - parseFloat(b.ProductVars[0].price)),
+            products: state.products.sort(
+              (a, b) =>
+                parseFloat(a.ProductVars[0].price) -
+                parseFloat(b.ProductVars[0].price)
+            ),
             isLoaded: true,
             totalDocuments: state.totalDocuments,
           };
-        case 'bestsold':
+        case "bestsold":
           return {
             ...state,
             products: action.payload.data.items,
             isLoaded: true,
             totalDocuments: action.payload.data.total,
           };
-        case 'latest':
+        case "latest":
           return {
             ...state,
-            products: state.products.sort((a, b) => parseFloat(a.ProductVars[0].createdAt) - parseFloat(b.ProductVars[0].createdAt)),
+            products: state.products.sort(
+              (a, b) =>
+                parseFloat(a.ProductVars[0].createdAt) -
+                parseFloat(b.ProductVars[0].createdAt)
+            ),
             isLoaded: true,
             totalDocuments: state.totalDocuments,
           };
@@ -63,7 +75,7 @@ export default function (state = initialState, action) {
           return {
             ...state,
             isLoaded: false,
-          }
+          };
       }
 
     case GET_PRODUCT_BY_ID:

@@ -1,7 +1,7 @@
-import { takeEvery, put, call, select } from 'redux-saga/effects';
-import axios from 'axios';
-import { tokenConfig } from '../../state/actions/authActions';
-import { tokenAdminConfig } from '../../state/actions/authAdminActions';
+import { takeEvery, put, call, select, delay } from "redux-saga/effects";
+import axios from "axios";
+import { tokenConfig } from "../../state/actions/authActions";
+import { tokenAdminConfig } from "../../state/actions/authAdminActions";
 import {
   GET_SHOPS,
   ADD_SHOP,
@@ -12,30 +12,43 @@ import {
   SHOP_DELETED,
   UPDATE_SHOP,
   SHOP_UPDATED,
-  GET_SHOP_BY_ID
-} from '../actions/types';
+  GET_SHOP_BY_ID,
+  SHOW_MODAL,
+  ADMIN_LOGOUT,
+} from "../actions/types";
 
 function* fetchShops(params) {
   try {
     const state = yield select(),
-      { limit, page, query } = params.pages;
+      { limit, page, query, arrayStatus } = params.pages;
+    let tempString = "";
+    for (let x = 0; x < arrayStatus.length; x++) {
+      tempString += `&arrayStatus[]=${arrayStatus[x]}`;
+    }
 
     const response = yield call(() =>
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/shop?limit=${limit}&page=${page}&query=${query}`,
-          tokenAdminConfig(state)
-        )
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/shop?limit=${limit}&page=${page}&query=${query}` +
+          tempString,
+        tokenAdminConfig(state)
+      )
     );
 
     yield put({ type: SHOPS_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });
-    let err = { ...error }
-    if (err.status == 401) {
-      this.props.history.push({
-        pathname: '/login',
+    let err = { ...error };
+    if (err.response.status == 401) {
+      yield put({
+        type: SHOW_MODAL,
+        payload: { show: true, modalName: "modalExpire" },
       });
+      yield delay(2000);
+      yield put({
+        type: SHOW_MODAL,
+        payload: { show: false },
+      });
+      yield put({ type: ADMIN_LOGOUT });
     }
   }
 }
@@ -45,20 +58,19 @@ function* fetchShopById(params) {
     const state = yield select(),
       { id } = params;
     const response = yield call(() =>
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/shop/${id}`,
-          tokenAdminConfig(state)
-        )
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/shop/${id}`,
+        tokenAdminConfig(state)
+      )
     );
 
     yield put({ type: SHOP_RECEIVED, payload: response });
   } catch (error) {
     console.log({ ...error });
-    let err = { ...error }
-    if (err.status == 401) {
+    let err = { ...error };
+    if (err.response.status == 401) {
       this.props.history.push({
-        pathname: '/admin/login',
+        pathname: "/admin/login",
       });
     }
   }

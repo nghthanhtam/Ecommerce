@@ -41,6 +41,7 @@ class UserProfile extends React.Component {
         {profileItemList.map((item, index) => {
           return (
             <div
+              key={index}
               onClick={() => {
                 console.log(item);
                 this.props.pushHistory(item.link);
