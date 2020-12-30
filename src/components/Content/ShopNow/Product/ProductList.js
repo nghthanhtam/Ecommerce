@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import Loader from "react-loader";
+import qs from "qs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../../../../assets/css/product.css";
@@ -50,6 +51,20 @@ class ProductList extends React.Component {
     const { getProductsByFilters, getProductCates } = this.props;
     const { limit, page } = this.state;
 
+    getProductCates({ limit: 1000, page: 1 });
+    console.log(this.props.location.search);
+    if (this.props.location) {
+      const searchQuery = qs.parse(this.props.location.search, {
+        ignoreQueryPrefix: true,
+      }).q;
+      getProductsByFilters({
+        limit,
+        page,
+        arrayFilter: [{ name: "query", value: searchQuery }],
+      });
+      return;
+    }
+
     //get productlist by movieCate
     if (this.props.match) {
       const { idMovieCat } = this.props.match.params;
@@ -60,9 +75,10 @@ class ProductList extends React.Component {
         page,
         arrayFilter: [{ name: "idCategory", value: idMovieCat }],
       });
-      getProductCates({ limit: 1000, page: 1 });
     }
+    //get productlist by movieCate
   }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { isLoaded } = this.props;
     if (isLoaded == true && this.state.pages == prevState.pages) {
@@ -302,21 +318,22 @@ class ProductList extends React.Component {
     this.setState(
       (state) => {
         let arrayFilter = [...state.arrayFilter];
-        arrayFilter.map((item) => {
+        arrayFilter.map((item, index) => {
           if (f.name == item.name) {
-            item.value = "";
+            arrayFilter.splice(index, 1);
           }
         });
         return {
           arrayFilter,
         };
       },
-      () =>
+      () => {
         this.props.getProductsByFilters({
           limit,
           page,
           arrayFilter: this.state.arrayFilter,
-        })
+        });
+      }
     );
   };
 

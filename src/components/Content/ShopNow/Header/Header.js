@@ -9,6 +9,7 @@ const mapStateToProps = (state) => ({
   userToken: state.authUser.token,
   totalCount: state.cart.totalCount,
   isLoaded: state.cart.isLoaded,
+  history: state.history.history,
 });
 
 class Header extends React.Component {
@@ -26,6 +27,7 @@ class Header extends React.Component {
       backgroundColor: "transparent",
     },
     isLogoText: false,
+    searchQuery: "",
   };
 
   componentDidMount() {
@@ -80,9 +82,25 @@ class Header extends React.Component {
     });
   };
 
+  search = (e) => {
+    const { searchQuery } = this.state;
+    if ((e.key && e.key !== "Enter") || searchQuery == "") {
+      return;
+    }
+    this.props.history.push({
+      pathname: "/shopnow/search",
+      search: `?q=${searchQuery}`,
+    });
+  };
+
+  onChangeSearch = (e) => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  };
+
   render() {
-    const { hideSearchBar, cartWrapper, isLogoText } = this.state;
-    const { user, totalCount, isLoaded } = this.props;
+    const { hideSearchBar, cartWrapper, isLogoText, searchQuery } = this.state;
+    const { user, totalCount } = this.props;
 
     return (
       <div className={this.state.header}>
@@ -110,13 +128,21 @@ class Header extends React.Component {
           }}
           className="ui action input"
         >
-          <button style={searchBtn} className="ui icon button">
+          <button
+            style={searchBtn}
+            className="ui icon button"
+            onClick={this.search}
+          >
             <i className="search icon"></i>
           </button>
           <input
             style={searchInput}
+            name="searchQuery"
             type="text"
+            value={searchQuery}
             placeholder="Nhập từ khóa tìm kiếm ..."
+            onChange={this.onChangeSearch}
+            onKeyDown={this.search}
           />
         </div>
         <ul className="row-flex-center">

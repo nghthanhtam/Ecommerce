@@ -32,7 +32,6 @@ function* fetchRoleAdmins(params) {
     yield put({ type: ROLEADMINS_RECEIVED, payload: response });
   } catch (error) {
     error = { ...error };
-
     if (error.response.status == 401) {
       yield put({
         type: SHOW_MODAL,

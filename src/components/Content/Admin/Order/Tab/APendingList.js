@@ -289,7 +289,7 @@ class APendingList extends React.Component {
                   <div className="col-sm-12">
                     <table
                       id="example1"
-                      className="table table-bordered table-striped table-scroll"
+                      className="table table-bordered table-striped"
                     >
                       <thead>
                         <tr>
@@ -299,7 +299,6 @@ class APendingList extends React.Component {
                           <th>Địa chỉ</th>
                           <th>Ngày đặt</th>
                           <th>Tình trạng</th>
-                          <th>Thao tác</th>
                         </tr>
                       </thead>
                       <tbody>{this.renderPurchases()}</tbody>
@@ -311,7 +310,6 @@ class APendingList extends React.Component {
                           <th>Địa chỉ</th>
                           <th>Ngày đặt</th>
                           <th>Tình trạng</th>
-                          <th>Thao tác</th>
                         </tr>
                       </tfoot>
                     </table>

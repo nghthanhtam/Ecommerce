@@ -35,7 +35,7 @@
 .card {
   border-radius: 8px;
   width: 161px;
-  height: 165px;
+  height: 168px;
   padding: 2rem 1rem;
   background: #fff;
   position: relative;
@@ -127,6 +127,8 @@
 /*KEYWORD BOX*/
 .container-kw {
   margin-top: 60px;
+  justify-content: center;
+  align-items: center;
 }
 .title-kw {
   font-weight: 700;
@@ -141,7 +143,7 @@
   justify-content: center;
   align-items: center;
   height: 75px;
-  width: 165px;
+  width: 168px;
   border-radius: 6px;
   background-color: rgb(5, 5, 87);
   padding: 15px;
@@ -152,7 +154,7 @@
   justify-content: center;
   align-items: center;
   height: 75px;
-  width: 165px;
+  width: 168px;
   border-radius: 6px;
   background-color: rgb(133, 30, 64);
   padding: 15px;
@@ -163,7 +165,7 @@
   justify-content: center;
   align-items: center;
   height: 75px;
-  width: 165px;
+  width: 168px;
   border-radius: 6px;
   background-color: rgb(2, 85, 2);
   padding: 15px;
@@ -174,7 +176,7 @@
   justify-content: center;
   align-items: center;
   height: 75px;
-  width: 165px;
+  width: 168px;
   border-radius: 6px;
   background-color: rgb(179, 14, 14);
   padding: 15px;

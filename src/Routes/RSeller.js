@@ -49,20 +49,6 @@ const mapStateToProps = (state) => ({
   modalName: state.modal.modalName,
 });
 
-const roles = {
-  employee: "employeeManagement",
-  role: "roleManagement",
-  member: "memberManagement",
-  product: "productManagement",
-  user: "userManagement",
-  invoice: "invoiceManagement",
-  supplier: "supplierManagement",
-  payslip: "payslipManagement",
-  order: "orderManagement",
-  material: "materialManagement",
-  materialReceiptNote: "materialReceiptNoteManagement",
-};
-
 class RSeller extends Component {
   state = {};
 
@@ -136,99 +122,71 @@ class RSeller extends Component {
                     exact
                     path="/seller/employee"
                     component={Employee}
-                    role={roles.employee}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/add-product"
                     component={ProductAdd}
-                    role={roles.product}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/add-product/photos"
                     component={ProductAddNextPage}
-                    role={roles.product}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/product"
                     component={Product}
-                    role={roles.product}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/productvar/edit"
                     component={ProductVarEdit}
-                    role={roles.product}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/role"
                     component={Role}
-                    role={roles.employee}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/payslip"
                     component={Payslip}
-                    role={roles.payslip}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/supplierinfor"
                     component={SupplierInfor}
-                    // role={roles.supplier}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/role/edit/:id"
                     component={RoleEdit}
-                    role={roles.role}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/payslip/edit"
                     component={PayslipEdit}
-                    role={roles.role}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/employee/edit/:id"
                     component={EmployeeEdit}
-                    role={roles.employee}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/order"
                     component={Order}
-                    role={roles.order}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/order/edit/:id"
                     component={OrderDetail}
-                    role={roles.order}
-                    token={token}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/seller/supplier/edit/:id"
                     component={SupplierEdit}
-                    role={roles.supplier}
-                    token={token}
                   ></PrivateRoute>
                   <Route
                     exact

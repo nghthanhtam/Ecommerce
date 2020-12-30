@@ -15,12 +15,12 @@ import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import ShowingProduct from "./Product/ShowingProduct";
 import { getProductsByFilters } from "../../../state/actions/productActions";
-import RecProduct from "./Product/RecProduct";
 import {
   createNotification,
   NOTIFICATION_TYPE_SUCCESS,
 } from "react-redux-notify";
 import { Notify } from "react-redux-notify";
+import RecProduct from "../ShopNow/Product/RecProduct";
 
 const mySuccessNotification = {
   message: "Dữ liệu cập nhật thành công!",
@@ -132,7 +132,7 @@ class HomePage extends React.Component {
     const settingsKW = {
       infinite: true,
       speed: 1000,
-      slidesToShow: 7,
+      slidesToShow: 6,
       slidesToScroll: 4,
       className: "slider",
     };
@@ -158,6 +158,9 @@ class HomePage extends React.Component {
                 marginBottom: "300px",
                 position: "relative",
                 backgroundColor: "#f7f7f7",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
               }}
             >
               <Slider {...settings}>
@@ -310,37 +313,28 @@ class HomePage extends React.Component {
                 </>
               )}
 
-              {/* <div className="container-kw">
-                <div className="title-kw">TỪ KHÓA HOT</div>
-                <div className="sliderwrapper">
-                  <Slider
-                    style={{
-                      width: "94%",
-                      height: "160px",
-                    }}
-                    {...settingsKW}
-                  >
-                    {keywords.map((item, index) => {
-                      return <Keyword key={index} item={item} />;
-                    })}
-                  </Slider>
-                </div>
-              </div> */}
-              <div className="container-kw">
-                <div className="title-kw">HOT KEYWORDS</div>
-                <div className="sliderwrapper">
-                  <Slider
-                    style={{
-                      width: "1245px",
-                      height: "160px",
-                      marginLeft: "50px",
-                    }}
-                    {...settingsKW}
-                  >
-                    {keywords.map((item, index) => {
-                      return <Keyword key={index} item={item} />;
-                    })}
-                  </Slider>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <div className="container-kw">
+                  <div className="title-kw">HOT KEYWORDS</div>
+                  <div className="sliderwrapper">
+                    <Slider
+                      style={{
+                        width: "1240px",
+                        height: "160px",
+                      }}
+                      {...settingsKW}
+                    >
+                      {keywords.map((item, index) => {
+                        return <Keyword key={index} item={item} />;
+                      })}
+                    </Slider>
+                  </div>
                 </div>
               </div>
 

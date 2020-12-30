@@ -1,21 +1,19 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { addEmployee } from "../../../../state/actions/employeeActions";
-import { getRoles } from "../../../../state/actions/roleActions";
+import { addAdmin } from "../../../../state/actions/adminActions";
+import { getRoleAdmins } from "../../../../state/actions/roleAdminActions";
 import Select from "react-select";
 
 const mapStateToProps = (state) => ({
-  roles: state.role.roles,
-  isLoaded: state.role.isLoaded,
-  idShop: state.auth.role.idShop,
+  roles: state.roleAdmin.roleAdmins,
+  isLoaded: state.admin.isLoaded,
 });
 
-class EmployeeModal extends Component {
+class AdminModal extends Component {
   state = {
     fullname: "",
     password: "",
     phone: "",
-    identityCard: "",
     idRole: "",
     username: "",
     inputErrors: false,
@@ -23,11 +21,10 @@ class EmployeeModal extends Component {
   };
 
   componentDidMount() {
-    this.props.getRoles({
+    this.props.getRoleAdmins({
       limit: 1000,
       page: 1,
       query: "",
-      idShop: this.props.idShop,
     });
   }
 
@@ -56,17 +53,6 @@ class EmployeeModal extends Component {
       /[^a-z0-9A-Z_-_ ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽếềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]/u
     ).test(fullname);
   };
-
-  resetField() {
-    this.setState({
-      password: "",
-      fullname: "",
-      idRole: "",
-      phone: "",
-      identityCard: "",
-      username: "",
-    });
-  }
 
   createUsername = (fullname) => {
     function convertToNonAccentVNese(str) {
@@ -98,15 +84,8 @@ class EmployeeModal extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    const { pages, idShop } = this.props,
-      {
-        password,
-        fullname,
-        username,
-        idRole,
-        phone,
-        identityCard,
-      } = this.state;
+    const { limit, page } = this.props,
+      { password, fullname, username, idRole, phone } = this.state;
     let newItem = {};
     newItem = {
       password,
@@ -114,20 +93,23 @@ class EmployeeModal extends Component {
       username,
       idRole,
       phone,
-      identityCard,
-      idShop,
-      pages,
     };
 
-    this.props.addEmployee(newItem);
+    this.props.addAdmin(newItem);
     this.resetField();
 
     // Close modal
     document.getElementById("triggerButton").click();
   };
 
-  onCancel = (e) => {
-    this.resetField();
+  onCancel = () => {
+    this.setState({
+      password: "",
+      fullname: "",
+      idRole: "",
+      phone: "",
+      username: "",
+    });
   };
 
   handleChangeSelect = (selectedItem) => {
@@ -135,14 +117,7 @@ class EmployeeModal extends Component {
   };
 
   render() {
-    const {
-      password,
-      fullname,
-      username,
-      idRole,
-      phone,
-      identityCard,
-    } = this.state;
+    const { password, fullname, username, idRole, phone } = this.state;
     const { isLoaded, roles } = this.props;
 
     return (
@@ -268,20 +243,6 @@ class EmployeeModal extends Component {
                         onChange={this.onChange}
                       />
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="identityCard" className="col-form-label">
-                        Số CMND:
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="identityCard"
-                        placeholder="Nhập số CMND..."
-                        name="identityCard"
-                        value={identityCard}
-                        onChange={this.onChange}
-                      />
-                    </div>
                   </div>
                   <div className="modal-footer">
                     <button
@@ -315,6 +276,6 @@ class EmployeeModal extends Component {
   }
 }
 
-export default connect(mapStateToProps, { addEmployee, getRoles })(
-  EmployeeModal
+export default connect(mapStateToProps, { addAdmin, getRoleAdmins })(
+  AdminModal
 );

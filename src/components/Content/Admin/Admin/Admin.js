@@ -1,19 +1,18 @@
 import React, { Component, Fragment } from "react";
-import EmployeeModal from "./EmployeeModal";
-import EmployeeRow from "./EmployeeRow";
+import AdminModal from "./AdminModal";
+import AdminRow from "./AdminRow";
 import { connect } from "react-redux";
-import { getEmployeesByShop } from "../../../../state/actions/employeeActions";
+import { getAdmins } from "../../../../state/actions/adminActions";
 import PropTypes from "prop-types";
 import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
-  employees: state.employee.employees,
-  isLoaded: state.employee.isLoaded,
-  totalDocuments: state.employee.totalDocuments,
-  idShop: state.auth.role.idShop,
+  admins: state.admin.admins,
+  isLoaded: state.admin.isLoaded,
+  totalDocuments: state.admin.totalDocuments,
 });
 
-class Employee extends Component {
+class Admin extends Component {
   state = {
     sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
     limit: 5,
@@ -28,16 +27,11 @@ class Employee extends Component {
   };
 
   componentDidMount() {
-    const { limit, page, query, deletedEmp, activeEmp } = this.state;
-    const { idShop } = this.props;
-    this.props.getEmployeesByShop({
+    const { limit, page, query } = this.state;
+    this.props.getAdmins({
       limit,
       page,
       query,
-      idShop,
-      deletedEmp,
-      activeEmp,
-      isAdmin: false,
     });
   }
 
@@ -110,24 +104,19 @@ class Employee extends Component {
   }
 
   rerenderPage = () => {
-    const { limit, page, query, deletedEmp, activeEmp } = this.state;
-    const { idShop } = this.props;
-    this.props.getEmployeesByShop({
+    const { limit, page, query } = this.state;
+    this.props.getAdmins({
       limit,
       page,
       query,
-      idShop,
-      deletedEmp,
-      activeEmp,
-      isAdmin: false,
     });
     this.getPages();
     this.getStartEndDocuments();
   };
 
-  renderEmployees = () => {
-    const { start, limit, page } = this.state;
-    const { employees, isLoaded } = this.props;
+  renderAdmins = () => {
+    const { start } = this.state;
+    const { admins, isLoaded } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -136,11 +125,11 @@ class Employee extends Component {
         </td>
       </tr>
     ) : (
-      employees.map((eachEmployee, index) => (
-        <EmployeeRow
+      admins.map((eachAdmin, index) => (
+        <AdminRow
           history={this.props.history}
-          key={eachEmployee.id}
-          employee={eachEmployee}
+          key={eachAdmin.id}
+          admin={eachAdmin}
           index={index + start - 1}
         />
       ))
@@ -165,16 +154,11 @@ class Employee extends Component {
     }
 
     this.setState({ page: e }, () => {
-      const { limit, page, query, deletedEmp, activeEmp } = this.state;
-      const { idShop } = this.props;
-      this.props.getEmployeesByShop({
+      const { limit, page, query } = this.state;
+      this.props.getAdmins({
         limit,
         page,
         query,
-        idShop,
-        deletedEmp,
-        activeEmp,
-        isAdmin: false,
       });
       this.getStartEndDocuments();
     });
@@ -241,38 +225,6 @@ class Employee extends Component {
     }
   };
 
-  onCheckActiveEmp = (e) => {
-    const { activeEmp, limit, page, query, deletedEmp } = this.state;
-    const { idShop } = this.props;
-    if (e.target.name == "active") {
-      this.setState({ activeEmp: !activeEmp }, () => {
-        console.log(activeEmp);
-        this.props.getEmployeesByShop({
-          limit,
-          page,
-          query,
-          idShop,
-          deletedEmp: this.state.deletedEmp,
-          activeEmp: this.state.activeEmp,
-          isAdmin: false,
-        });
-      });
-    } else if (e.target.name == "deleted") {
-      this.setState({ deletedEmp: !deletedEmp }, () => {
-        console.log(activeEmp);
-        this.props.getEmployeesByShop({
-          limit,
-          page,
-          query,
-          idShop,
-          deletedEmp: this.state.deletedEmp,
-          activeEmp: this.state.activeEmp,
-          isAdmin: false,
-        });
-      });
-    }
-  };
-
   render() {
     const {
       limit,
@@ -283,7 +235,7 @@ class Employee extends Component {
       activeEmp,
       deletedEmp,
     } = this.state;
-    const { totalDocuments, idShop } = this.props;
+    const { totalDocuments } = this.props;
     return (
       <Fragment>
         {/* {!isLoaded ? (
@@ -294,12 +246,12 @@ class Employee extends Component {
             <h1>Nhân viên</h1>
             <ol className="breadcrumb">
               <li>
-                <a href="fake_url">
+                <a href="/admin">
                   <i className="fa fa-dashboard" /> Trang chủ
                 </a>
               </li>
               <li>
-                <a href="fake_url">Nhân viên</a>
+                <a href="/admin/admin">Nhân viên</a>
               </li>
             </ol>
           </section>
@@ -313,17 +265,7 @@ class Employee extends Component {
                       <h3 className="box-title">Quản lý nhân viên</h3>
                     </div>
                     <div className="col-md-4">
-                      <EmployeeModal
-                        pages={{
-                          limit,
-                          page,
-                          query,
-                          deletedEmp,
-                          activeEmp,
-                          idShop,
-                          isAdmin: false,
-                        }}
-                      />
+                      <AdminModal limit={limit} page={page} />
                     </div>
                   </div>
                   {/* /.box-header */}
@@ -350,46 +292,10 @@ class Employee extends Component {
                             <div
                               id="example1_filter"
                               className="dataTables_filter"
-                              style={{ display: "flex" }}
+                              style={{ margin: "0px 0px", float: "right" }}
                             >
-                              <div
-                                style={{
-                                  fontWeight: 400,
-                                  width: "180px",
-                                }}
-                              >
-                                <input
-                                  style={{
-                                    marginRight: "3px",
-                                  }}
-                                  type="checkbox"
-                                  className="minimal"
-                                  name="active"
-                                  checked={activeEmp}
-                                  onChange={this.onCheckActiveEmp}
-                                />
-                                Đang hoạt động
-                              </div>
-                              <div
-                                style={{
-                                  fontWeight: 400,
-                                  width: "180px",
-                                }}
-                              >
-                                <input
-                                  style={{
-                                    marginRight: "3px",
-                                  }}
-                                  type="checkbox"
-                                  className="minimal"
-                                  name="deleted"
-                                  checked={deletedEmp}
-                                  onChange={this.onCheckActiveEmp}
-                                />
-                                Đã xóa
-                              </div>
                               <div>
-                                Tìm kiếm
+                                Tìm kiếm{" "}
                                 <input
                                   type="search"
                                   name="query"
@@ -423,7 +329,7 @@ class Employee extends Component {
                               </tr>
                             </thead>
 
-                            <tbody>{this.renderEmployees()}</tbody>
+                            <tbody>{this.renderAdmins()}</tbody>
 
                             <tfoot>
                               <tr>
@@ -486,11 +392,11 @@ class Employee extends Component {
   }
 }
 
-Employee.propTypes = {
-  getEmployeesByShop: PropTypes.func.isRequired,
-  employees: PropTypes.array.isRequired,
+Admin.propTypes = {
+  getAdmins: PropTypes.func.isRequired,
+  admins: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getEmployeesByShop })(Employee);
+export default connect(mapStateToProps, { getAdmins })(Admin);

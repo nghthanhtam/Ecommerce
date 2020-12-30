@@ -7,7 +7,13 @@ import {
   GET_USER_ORDERS,
   GET_ORDERDETS_BY_ORDERID,
   UPDATE_SHIPPINGFEE,
+  DELETE_PROMOTIONINFOR,
 } from "./types";
+
+export const addOrder = (newOrder) => ({
+  type: ADD_ORDER,
+  newOrder,
+});
 
 export const getOrders = (params) => ({
   type: GET_ORDERS,
@@ -34,9 +40,9 @@ export const deleteOrder = (id) => ({
   id: id,
 });
 
-export const addOrder = (newOrder) => ({
-  type: ADD_ORDER,
-  newOrder,
+export const deletePromotionInfor = (id) => ({
+  type: DELETE_PROMOTIONINFOR,
+  id,
 });
 
 export const updateShippingFee = (newOrder) => ({

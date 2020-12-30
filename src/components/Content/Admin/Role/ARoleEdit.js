@@ -643,6 +643,20 @@ const ARoleEdit = (props) => {
                                 <p>Chỉnh sửa thông tin shop</p>
                               </label>
                             </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(78)}
+                                  value={78}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Hủy mã giảm giá đơn hàng</p>
+                              </label>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -652,7 +666,7 @@ const ARoleEdit = (props) => {
                           type="button"
                           className="btn btn-default"
                           onClick={() => {
-                            props.history.push("/seller/role");
+                            props.history.push("/admin/role");
                           }}
                         >
                           Hủy

@@ -36,6 +36,7 @@ import laterListReducer from "./laterListReducer ";
 import permissionReducer from "./permissionReducer";
 import purchaseReducer from "./purchaseReducer";
 import roleAdminReducer from "./roleAdminReducer";
+import adminReducer from "./adminReducer";
 
 export default combineReducers({
   notifications: notifyReducer,
@@ -75,4 +76,5 @@ export default combineReducers({
   permission: permissionReducer,
   purchase: purchaseReducer,
   roleAdmin: roleAdminReducer,
+  admin: adminReducer,
 });

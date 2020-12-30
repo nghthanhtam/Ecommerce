@@ -38,25 +38,27 @@ class EmployeeRow extends Component {
         <td>{employee.idRole}</td>
         <td>{employee.fullname}</td>
         <td>{employee.phone}</td>
-        <td>
-          <div className="btn-group">
-            <button
-              onClick={() => this.handleEdit(employee.id)}
-              type="button"
-              className="btn btn-success"
-            >
-              Sửa
-            </button>
+        {!employee.deletedAt && (
+          <td>
+            <div className="btn-group">
+              <button
+                onClick={() => this.handleEdit(employee.id)}
+                type="button"
+                className="btn btn-success"
+              >
+                Sửa
+              </button>
 
-            <button
-              onClick={() => this.handleDelete(employee.id)}
-              type="button"
-              className="btn btn-danger"
-            >
-              Xóa
-            </button>
-          </div>
-        </td>
+              <button
+                onClick={() => this.handleDelete(employee.id)}
+                type="button"
+                className="btn btn-danger"
+              >
+                Xóa
+              </button>
+            </div>
+          </td>
+        )}
       </tr>
     );
   }

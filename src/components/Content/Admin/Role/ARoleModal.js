@@ -44,6 +44,7 @@ class ARoleModal extends Component {
     editMovie: false,
     getMovie: false,
     deleteMovie: false,
+    deleteOrderPromotionInfo: false,
   };
 
   componentDidMount() {
@@ -99,6 +100,7 @@ class ARoleModal extends Component {
           editMovie: !all,
           getMovie: !all,
           deleteMovie: !all,
+          deleteOrderPromotionInfo: !all,
         });
         let permissionIds = permissions.map(({ id }) => id);
         this.setState({ permissions: permissionIds });
@@ -653,6 +655,18 @@ class ARoleModal extends Component {
                   onChange={this.onChange}
                 />
                 <p>Chỉnh sửa thông tin shop</p>
+              </label>
+            </div>
+            <div>
+              <label className="label-wrapper">
+                <input
+                  value={78}
+                  name="deleteOrderPromotionInfo"
+                  type="checkbox"
+                  checked={this.state.deleteOrderPromotionInfo}
+                  onChange={this.onChange}
+                />
+                <p>Hủy mã giảm giá đơn hàng</p>
               </label>
             </div>
           </div>

@@ -17,6 +17,7 @@ import {
   ORDER_DETS_RECEIVED,
   UPDATE_SHIPPINGFEE,
   GET_ORDERS,
+  DELETE_PROMOTIONINFOR,
 } from "../actions/types";
 
 function* fetchOrders(params) {
@@ -164,7 +165,6 @@ function* updateOrder(params) {
 function* updateShippingFee(params) {
   const state = yield select();
   const { type, pages, id } = params.newOrder;
-  console.log(params.newOrder);
   try {
     const response = yield call(() =>
       axios.put(
@@ -205,7 +205,23 @@ function* deleteOrder(params) {
   }
 }
 
+function* deletePromotionInfor(params) {
+  const state = yield select();
+  try {
+    yield call(() =>
+      axios.put(
+        `${process.env.REACT_APP_BACKEND_ORDER}/api/order/${params.id}/deletePromotionInfo`,
+        { idOrder: params.id },
+        tokenAdminConfig(state)
+      )
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export default function* sOrderSaga() {
+  yield takeEvery(DELETE_PROMOTIONINFOR, deletePromotionInfor);
   yield takeEvery(GET_ORDERDETS_BY_ORDERID, fetchOrderDetsByOrderId);
   yield takeEvery(GET_ORDERS_BY_SHOP, fetchOrdersByShop);
   yield takeEvery(GET_ORDERS, fetchOrders);

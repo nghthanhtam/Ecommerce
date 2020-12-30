@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { showModal } from "../../../../state/actions/modalActions";
-import { updateOrder } from "../../../../state/actions/orderActions";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
@@ -37,34 +36,6 @@ class AOrderRow extends Component {
 
   handleDelete = (id) => {
     this.props.deleteEmployee(id);
-  };
-
-  handleAction = (e, item) => {
-    const { status, id } = this.props.order;
-    if (
-      (status == "in transit" && item.value == "received") ||
-      status == item.value
-    )
-      e.stopPropagation();
-    else {
-      if (item.value == "canceled") {
-        this.props.showModal({
-          show: true,
-          modalName: "modalCancel",
-          details: {
-            pages: this.props.pages,
-            order: this.props.order,
-            type: "seller",
-          },
-        });
-      } else {
-        this.props.updateOrder({
-          id,
-          status: item.value,
-          pages: this.props.pages,
-        });
-      }
-    }
   };
 
   render() {
@@ -108,74 +79,15 @@ class AOrderRow extends Component {
         </td>
         <td>{this.convertDate(createdAt)}</td>
         <td>
-          {status == "pending"
-            ? "Đang xử lý"
-            : status == "in transit"
-            ? "Đang giao hàng"
-            : status == "delivered"
-            ? "Đã nhận hàng"
-            : status == "received"
-            ? "Đã tiếp nhận"
-            : "Đã hủy"}
+          {status == "warning"
+            ? "Cần xử lý"
+            : status == "canceled"
+            ? "Đã hủy"
+            : "Đã nhận hàng"}
         </td>
-        {status == "delivered" || status == "canceled" ? null : (
-          <td>
-            {status !== "canceled" && status !== "delivered" && (
-              <div className="btn-group" style={{ display: "flex" }}>
-                <button type="button" className="btn btn-info">
-                  Duyệt
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-info dropdown-toggle"
-                  data-toggle="dropdown"
-                >
-                  <span className="caret"></span>
-                  <span className="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul className="dropdown-menu" role="menu">
-                  {statuses.map((item, index) => (
-                    <li
-                      key={index}
-                      className={
-                        (status == "in transit" && item.value == "received") ||
-                        status == item.value ||
-                        (status !== "pending" && item.value == "canceled")
-                          ? "disabled-link"
-                          : ""
-                      }
-                      onClick={(e) => this.handleAction(e, item)}
-                    >
-                      <a href="javascript:void(0);"> {item.label} </a>
-                    </li>
-                  ))}
-                  <li
-                    onClick={(e) =>
-                      this.props.showModal({
-                        show: true,
-                        modalName: "modalShippingFee",
-                        details: {
-                          //id,
-                          type: "seller",
-                          createdAt,
-                          pages: this.props.pages,
-                        },
-                      })
-                    }
-                  >
-                    <a href="javascript:void(0);"> Cập nhật phí vận chuyển </a>
-                  </li>
-                </ul>
-                <button type="button" className="btn btn-warning">
-                  Xóa mã giảm giá
-                </button>
-              </div>
-            )}
-          </td>
-        )}
       </tr>
     );
   }
 }
 
-export default connect(mapStateToProps, { showModal, updateOrder })(AOrderRow);
+export default connect(mapStateToProps, { showModal })(AOrderRow);

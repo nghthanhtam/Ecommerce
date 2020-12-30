@@ -1,37 +1,19 @@
-import React, { Fragment, Component } from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { pushHistory } from "../../../../state/actions/historyActions";
 import { getOrderDets } from "../../../../state/actions/orderActions";
 import AOrderRow from "./AOrderRow";
+import { Redirect } from "react-router-dom";
 
 const mapStateToProps = (state) => ({
   isLoaded: state.order.isLoaded,
   history: state.history.history,
 });
 
-class AOrdersByPurchase extends Component {
+class AOrdersByPurchase extends React.Component {
   state = {};
 
-  componentDidMount() {
-    console.log(this.props);
-  }
   convertPrice = (value) => {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
-  tokenConfig = (token) => {
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-      },
-    };
-
-    //Header
-    if (token) {
-      config.headers["x-auth-token"] = token;
-    }
-
-    return config;
   };
 
   handleChange = (e) => {
@@ -64,11 +46,15 @@ class AOrdersByPurchase extends Component {
 
   renderOrders = () => {
     const { orderList } = this.props.location;
+    if (!orderList) {
+      console.log(this.props.history);
+      return <Redirect to="/admin/order" />;
+    }
     return orderList.map((o, index) => (
       <AOrderRow
         history={this.props.history}
         key={index}
-        orderDet={o}
+        order={o}
         index={index + 1}
       />
     ));
@@ -81,15 +67,15 @@ class AOrdersByPurchase extends Component {
           <h1>Đơn cần xử lý</h1>
           <ol className="breadcrumb">
             <li>
-              <a href="/home">
+              <a href="/admin">
                 <i className="fa fa-dashboard" /> Trang chủ
               </a>
             </li>
             <li>
-              <a href="/seller/order">Đơn hàng</a>
+              <a href="/admin/order">Đơn hàng</a>
             </li>
             <li>
-              <a href="fake_url">Đơn hàng chi tiết</a>
+              <a href="javascript:void(0)">Đơn hàng chi tiết</a>
             </li>
           </ol>
         </section>
@@ -101,7 +87,7 @@ class AOrdersByPurchase extends Component {
               <div className="box">
                 <div className="box-header" style={{ marginTop: "5px" }}>
                   <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                    <h3 className="box-title">Tổng đơn hàng: 2 đơn</h3>
+                    <h3 className="box-title">Tổng số lượng đơn hàng: 2 đơn</h3>
                   </div>
 
                   {/* <div className="col-md-4">
@@ -126,18 +112,17 @@ class AOrdersByPurchase extends Component {
                         >
                           <thead>
                             <tr>
-                              <th style={{ width: "2%" }}>#</th>
-                              <th style={{ width: "8%" }}>Nhà bán</th>
-                              <th style={{ width: "15%" }}>
-                                Thời gian giao hàng dự kiến
-                              </th>
-                              <th style={{ width: "8%" }}>Tình trạng</th>
-                              <th style={{ width: "8%" }}>Phí ship</th>
-                              <th style={{ width: "10%" }}>Lý do hủy</th>
+                              <th>Mã đơn hàng</th>
+                              <th>Nhà bán</th>
+                              <th>Thời gian giao hàng dự kiến</th>
+                              <th>Tình trạng</th>
+                              <th>Phí ship</th>
+                              <th>Lý do hủy</th>
+                              <th>Thao tác</th>
                             </tr>
                           </thead>
 
-                          {/* <tbody>{this.renderOrders()}</tbody> */}
+                          <tbody>{this.renderOrders()}</tbody>
 
                           <tfoot>
                             <tr>
@@ -147,6 +132,7 @@ class AOrdersByPurchase extends Component {
                               <th>Tình trạng</th>
                               <th>Phí ship</th>
                               <th>Lý do hủy</th>
+                              <th>Thao tác</th>
                             </tr>
                           </tfoot>
                         </table>
@@ -166,6 +152,4 @@ class AOrdersByPurchase extends Component {
   }
 }
 
-export default connect(mapStateToProps, { pushHistory, getOrderDets })(
-  AOrdersByPurchase
-);
+export default connect(mapStateToProps, { getOrderDets })(AOrdersByPurchase);

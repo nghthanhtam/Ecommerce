@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { showModal } from "../../../../state/actions/modalActions";
-import { updateOrder } from "../../../../state/actions/orderActions";
+import {
+  updateOrder,
+  deletePromotionInfor,
+} from "../../../../state/actions/orderActions";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
@@ -19,15 +22,14 @@ class AOrderRow extends Component {
   };
 
   convertDate = (date) => {
+    if (!date) return "Chưa cập nhật";
     const newDate = new Date(date);
     let year = newDate.getFullYear();
     let month = newDate.getMonth() + 1;
     let dt = newDate.getDate();
 
     dt = dt < 10 ? `0${dt}` : dt;
-
     month = month < 10 ? `0${month}` : month;
-
     return dt + "-" + month + "-" + year;
   };
 
@@ -67,9 +69,16 @@ class AOrderRow extends Component {
     }
   };
 
+  convertPrice = (value) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  deletePromotionInfor = (idOrder) => {
+    this.props.deletePromotionInfor(idOrder);
+  };
+
   render() {
     const {
-      totalAmount,
       createdAt,
       status,
       cancelReason,
@@ -86,15 +95,21 @@ class AOrderRow extends Component {
           onClick={() =>
             this.props.history.push({
               pathname: `/seller/order/edit/${id}`,
-              totalAmount,
+              //totalAmount,
+              totalAmount: 20000,
             })
           }
           style={{ color: "blue", cursor: "pointer" }}
         >
           #{id}
         </td>
-        <td>{idShop}</td>
-        <td>{estimatedDeliveryTime}</td>
+        <td
+          onClick={() => this.props.history.push(`/admin/shop`)}
+          style={{ color: "blue", cursor: "pointer" }}
+        >
+          {idShop}
+        </td>
+        <td>{this.convertDate(estimatedDeliveryTime)}</td>
         <td>
           {status == "pending"
             ? "Đang xử lý"
@@ -106,58 +121,63 @@ class AOrderRow extends Component {
             ? "Đã tiếp nhận"
             : "Đã hủy"}
         </td>
-        <td>{shippingFee}</td>
+        <td>{this.convertPrice(shippingFee)}đ</td>
         <td>{cancelReason}</td>
         {status == "delivered" || status == "canceled" ? null : (
           <td>
-            {status !== "canceled" && status !== "delivered" && (
-              <div className="btn-group" style={{ display: "flex" }}>
-                <button type="button" className="btn btn-info">
-                  Duyệt
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-info dropdown-toggle"
-                  data-toggle="dropdown"
-                >
-                  <span className="caret"></span>
-                  <span className="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul className="dropdown-menu" role="menu">
-                  {statuses.map((item, index) => (
-                    <li
-                      key={index}
-                      className={
-                        (status == "in transit" && item.value == "received") ||
-                        status == item.value ||
-                        (status !== "pending" && item.value == "canceled")
-                          ? "disabled-link"
-                          : ""
-                      }
-                      onClick={(e) => this.handleAction(e, item)}
-                    >
-                      <a href="javascript:void(0);"> {item.label} </a>
-                    </li>
-                  ))}
+            <div className="btn-group" style={{ display: "flex" }}>
+              <button type="button" className="btn btn-info">
+                Duyệt
+              </button>
+              <button
+                type="button"
+                className="btn btn-info dropdown-toggle"
+                data-toggle="dropdown"
+              >
+                <span className="caret"></span>
+                <span className="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul className="dropdown-menu" role="menu">
+                {statuses.map((item, index) => (
                   <li
-                    onClick={(e) =>
-                      this.props.showModal({
-                        show: true,
-                        modalName: "modalShippingFee",
-                        details: {
-                          id,
-                          type: "seller",
-                          createdAt,
-                          pages: this.props.pages,
-                        },
-                      })
+                    key={index}
+                    className={
+                      (status == "in transit" && item.value == "received") ||
+                      status == item.value ||
+                      (status !== "pending" && item.value == "canceled")
+                        ? "disabled-link"
+                        : ""
                     }
+                    onClick={(e) => this.handleAction(e, item)}
                   >
-                    <a href="javascript:void(0);"> Cập nhật phí vận chuyển </a>
+                    <a href="javascript:void(0);"> {item.label} </a>
                   </li>
-                </ul>
-              </div>
-            )}
+                ))}
+                <li
+                  onClick={(e) =>
+                    this.props.showModal({
+                      show: true,
+                      modalName: "modalShippingFee",
+                      details: {
+                        id,
+                        type: "seller",
+                        createdAt,
+                        pages: this.props.pages,
+                      },
+                    })
+                  }
+                >
+                  <a href="javascript:void(0);"> Cập nhật phí vận chuyển </a>
+                </li>
+              </ul>
+              <button
+                type="button"
+                className="btn btn-warning"
+                onClick={() => this.deletePromotionInfor(id)}
+              >
+                Xóa mã giảm giá
+              </button>
+            </div>
           </td>
         )}
       </tr>
@@ -165,4 +185,8 @@ class AOrderRow extends Component {
   }
 }
 
-export default connect(mapStateToProps, { showModal, updateOrder })(AOrderRow);
+export default connect(mapStateToProps, {
+  showModal,
+  updateOrder,
+  deletePromotionInfor,
+})(AOrderRow);

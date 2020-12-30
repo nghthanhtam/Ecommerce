@@ -61,7 +61,36 @@ class RoleModal extends Component {
       const statePermission = [...this.state.permissions],
         { all } = { ...this.state };
       if (name == "all") {
-        this.setState({ all: !all, createRole: !all });
+        this.setState({
+          all: !all,
+          createRole: !all,
+          editShop: !all,
+          createRole: !all,
+          editRole: !all,
+          getRoles: !all,
+          deleteRole: !all,
+          createEmployee: !all,
+          editEmployee: !all,
+          getEmployees: !all,
+          deleteEmployee: !all,
+          updateOrderStatus: !all,
+          getDoneOrders: !all,
+          getUndoneOrders: !all,
+          updateOrderShippingInformatio: !all,
+          createPayslip: !all,
+          editPayslip: !all,
+          getPayslips: !all,
+          deletePayslip: !all,
+          getGrossRevenue: !all,
+          getExpenses: !all,
+          createProductVar: !all,
+          editProductVar: !all,
+          getProductVars: !all,
+          createStockAmount: !all,
+          editStockAmount: !all,
+          getStockAmount: !all,
+          deleteStockAmount: !all,
+        });
         let permissionIds = permissions.map(({ id }) => id);
         this.setState({ permissions: permissionIds });
       } else {

@@ -59,7 +59,7 @@ function* fetchEmployees(params) {
     // });
     yield put({ type: EMPLOYEES_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       this.props.history.push({
@@ -106,21 +106,22 @@ function* fetchEmployeesByShop(params) {
 }
 
 function* addEmployee(params) {
-  const state = yield select();
-
+  const state = yield select(),
+    { newEmp } = params;
+  console.log(newEmp);
   try {
     const response = yield call(() =>
       axios.post(
         `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/employee/`,
-        params.newEmp,
+        newEmp,
         tokenConfig(state)
       )
     );
 
     yield put({ type: EMPLOYEE_ADDED, payload: response.data });
     yield put({
-      type: GET_EMPLOYEES,
-      pages: params.newEmp.pages,
+      type: GET_EMPLOYEES_BY_SHOP,
+      pages: newEmp.pages,
     });
   } catch (error) {
     console.log(error.response);

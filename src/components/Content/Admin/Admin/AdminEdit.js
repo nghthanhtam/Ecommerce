@@ -3,58 +3,39 @@ import { connect } from "react-redux";
 import { pushHistory } from "../../../../state/actions/historyActions";
 import Loader from "react-loader";
 import axios from "axios";
-import { updateEmployee } from "../../../../state/actions/employeeActions";
-import { getRoles } from "../../../../state/actions/roleActions";
+import { updateAdmin } from "../../../../state/actions/adminActions";
+import { getRoleAdmins } from "../../../../state/actions/roleAdminActions";
 import Select from "react-select";
 
-const mapStateToProps = (state, props) => {
-  return {
-    history: state.history.history,
-    auth: state.auth,
-    idShop: state.auth.role.idShop,
-    roles: state.role.roles,
-    isLoaded: state.role.isLoaded,
-  };
-};
+const mapStateToProps = (state) => ({
+  roles: state.roleAdmin.roleAdmins,
+  isLoaded: state.admin.isLoaded,
+});
 
-class EmployeeEdit extends Component {
+class AdminEdit extends Component {
   state = {
     fullname: "",
     idRole: "",
-    identityCard: "",
     phone: "",
     username: "",
     id: "",
   };
 
   componentDidMount() {
+    console.log(this.props.auth);
     const { id } = this.props.match.params;
-    const { token } = this.props.auth;
+    const { token } = this.props.authAdmin;
 
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/employee/${id}`,
+        `${process.env.REACT_APP_BACKEND_ADMIN}/api/admin/${id}`,
         this.tokenConfig(token)
       )
       .then((response) => {
-        let {
-          fullname,
-          idRole,
-          identityCard,
-          phone,
-          username,
-          id,
-        } = response.data;
-        this.setState({ fullname, idRole, identityCard, phone, username, id });
+        let { fullname, idRole, phone, username, id } = response.data;
+        this.setState({ fullname, idRole, phone, username, id });
       })
       .catch((er) => console.log(er.response));
-
-    this.props.getRoles({
-      limit: 1000,
-      page: 1,
-      query: "",
-      idShop: this.props.idShop,
-    });
   }
 
   tokenConfig = (token) => {
@@ -76,26 +57,23 @@ class EmployeeEdit extends Component {
   };
 
   handleSubmit = (e) => {
-    const { id, fullname, username, idRole, phone, identityCard } = this.state;
-    const { idShop } = this.props;
+    const { id, fullname, username, idRole, phone } = this.state;
     e.preventDefault();
 
-    const newEmployee = {
+    const newAdmin = {
       id,
       fullname,
       username,
       idRole,
       phone,
-      identityCard,
-      idShop,
     };
-    this.props.updateEmployee(newEmployee);
+    this.props.updateAdmin(newAdmin);
     //Quay về trang chính
-    this.props.history.push("/seller/employee");
+    this.props.history.push("/admin/admin");
   };
 
   handleCancel = (e) => {
-    this.props.history.push("/seller/employee");
+    this.props.history.push("/admin/admin");
   };
 
   handleChangeSelect = (selectedItem) => {
@@ -212,20 +190,18 @@ class EmployeeEdit extends Component {
                           >
                             Vai trò
                           </label>
-                          <div className="col-sm-10">
-                            <Select
-                              name="idRole"
-                              onChange={this.handleChangeSelect}
-                              isSearchable={true}
-                              options={roles}
-                              getOptionLabel={(option) => option.name}
-                              getOptionValue={(option) => option.id}
-                              placeholder="Chọn quyền truy cập cho nhân viên này"
-                              value={roles.filter(
-                                (option) => option.id === idRole
-                              )}
-                            />
-                          </div>
+                          <Select
+                            name="idRole"
+                            onChange={this.handleChangeSelect}
+                            isSearchable={true}
+                            options={roles}
+                            getOptionLabel={(option) => option.name}
+                            getOptionValue={(option) => option.id}
+                            placeholder="Chọn quyền truy cập cho nhân viên này"
+                            value={roles.filter(
+                              (option) => option.id === idRole
+                            )}
+                          />
                         </div>
                         <div className="form-group">
                           <label
@@ -277,6 +253,6 @@ class EmployeeEdit extends Component {
 
 export default connect(mapStateToProps, {
   pushHistory,
-  updateEmployee,
-  getRoles,
-})(EmployeeEdit);
+  updateAdmin,
+  getRoleAdmins,
+})(AdminEdit);

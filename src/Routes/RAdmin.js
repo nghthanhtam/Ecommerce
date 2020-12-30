@@ -36,6 +36,8 @@ import AShop from "../components/Content/Admin/Shop/AShop";
 import AShopEdit from "../components/Content/Admin/Shop/AShopEdit";
 import AUser from "../components/Content/Admin/User/AUser";
 import AUserEdit from "../components/Content/Admin/User/AUserEdit";
+import Admin from "../components/Content/Admin/Admin/Admin";
+import AdminEdit from "../components/Content/Admin/Admin/AdminEdit";
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -145,137 +147,124 @@ class RAdmin extends Component {
                     exact
                     path="/admin/comment"
                     component={AComment}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/question"
                     component={AQuestion}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/answer"
                     component={AAnswer}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/rating"
                     component={ARating}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/product"
                     component={AProduct}
                     role={roles.product}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/promotion"
                     component={APromotion}
                     role={roles.promotion}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/promotion/edit"
                     component={APromotionEdit}
                     role={roles.promotion}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/productvar/edit/:id"
                     component={ProductVarEdit}
                     role={roles.product}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/product/edit/:id"
                     component={ProductInforEdit}
                     role={roles.product}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/role"
                     component={ARole}
                     role={roles.employee}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/role/edit/:id"
                     component={ARoleEdit}
                     role={roles.role}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/employee/shop/:id"
                     component={AEmployee}
                     role={roles.employee}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/employee/edit/:id"
                     component={EmployeeEdit}
                     role={roles.employee}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/shop"
                     component={AShop}
                     role={roles.shop}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/shop/edit/:id"
                     component={AShopEdit}
                     role={roles.shop}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/user"
                     component={AUser}
                     role={roles.user}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/user/edit/:id"
                     component={AUserEdit}
                     role={roles.user}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/order"
                     component={APurchase}
-                    role={roles.order}
-                    token={adminToken}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/order/purchase/:id"
                     component={AOrdersByPurchase}
-                    role={roles.order}
-                    token={adminToken}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/admin/edit/:id"
+                    component={AdminEdit}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/admin"
+                    component={Admin}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/order/warningdetails/:id"
                     component={OrderDetail}
-                    role={roles.order}
-                    token={adminToken}
                   ></PrivateRoute>
                   <Route path="*" render={() => <Redirect to="/404" />} />
                 </Switch>
