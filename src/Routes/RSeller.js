@@ -35,6 +35,7 @@ import RoleEdit from "../components/Content/Seller/Role/RoleEdit";
 import ModalCancel from "../components/Content/Modal/ModalCancel";
 import ModalShippingFee from "../components/Content/Modal/ModalShippingFee";
 import ModalUpdateQty from "../components/Content/Modal/ModalUpdateQty";
+import { Notify } from "react-redux-notify";
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -46,6 +47,7 @@ const mapStateToProps = (state) => ({
   userToken: state.authUser.token,
   adminToken: state.authAdmin.token,
   show: state.modal.show,
+  showNoti: state.noti.showNoti,
   modalName: state.modal.modalName,
 });
 
@@ -78,7 +80,7 @@ class RSeller extends Component {
   };
 
   render() {
-    const { token, show, modalName } = this.props;
+    const { token, show, modalName, showNoti } = this.props;
     return (
       <Fragment>
         <Switch>
@@ -105,6 +107,7 @@ class RSeller extends Component {
           {/* EMPLOYEE */}
           {token && (
             <Fragment>
+              {showNoti && <Notify position="BottomRight" />}
               {show && modalName == "modalCancel" && <ModalCancel />}
               {show && modalName == "modalShippingFee" && <ModalShippingFee />}
               {(modalName == "modalStockHis" ||

@@ -91,7 +91,7 @@ class HomePage extends React.Component {
     clearInterval(this.timer);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     const { isAuthenticated, showModal, show } = this.props;
     if (isAuthenticated && show) showModal({ show: false });
   }
@@ -108,10 +108,12 @@ class HomePage extends React.Component {
       this.setState({ section: "section-black" });
     }
   };
+
   handleClick() {
     const { createNotification } = this.props;
     createNotification(mySuccessNotification);
   }
+
   render() {
     const { productList, keywords } = this.state;
     const {

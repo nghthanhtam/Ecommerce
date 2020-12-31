@@ -3,6 +3,7 @@ import APayslipModal from "./PayslipModal";
 import APayslipRow from "./PayslipRow";
 import { connect } from "react-redux";
 import { getPayslips } from "../../../../state/actions/payslipActions";
+import { showModal } from "../../../../state/actions/modalActions";
 import PropTypes from "prop-types";
 import Loader from "react-loader";
 
@@ -12,6 +13,7 @@ const mapStateToProps = (state) => ({
   totalDocuments: state.payslip.totalDocuments,
   idShop: state.auth.role.idShop,
   permissions: state.auth.permissions,
+  isUpdated: state.payslip.isUpdated,
 });
 
 class Payslip extends Component {
@@ -28,7 +30,7 @@ class Payslip extends Component {
     deletedEmp: false,
   };
 
-  componentDidMount() {
+  componentDidMount(prevProps, prevState, snapshot) {
     const { limit, page, query } = this.state;
     const { idShop } = this.props;
     this.props.getPayslips({
@@ -40,10 +42,14 @@ class Payslip extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { isLoaded } = this.props;
+    const { isLoaded, isUpdated } = this.props;
     if (isLoaded == true && this.state.pages == prevState.pages) {
       this.getPages();
     }
+    // if (isUpdated !== prevProps.isUpdated && isUpdated == false) {
+    //   const { createNotification } = this.props;
+    //   createNotification(mySuccessNotification);
+    // }
   }
 
   getPages = () => {
@@ -394,4 +400,7 @@ Payslip.propTypes = {
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getPayslips })(Payslip);
+export default connect(mapStateToProps, {
+  getPayslips,
+  showModal,
+})(Payslip);

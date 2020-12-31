@@ -48,7 +48,7 @@ class PayslipRow extends Component {
         >
           {payslip.idEmployee}
         </td>
-        <td>{payslip.idCostType}</td>
+        <td>{payslip.CostType.name}</td>
         <td>{payslip.title}</td>
         <td>{this.convertPrice(payslip.totalAmount)}đ</td>
         <td>{this.convertDate(payslip.createdAt)}</td>

@@ -12,7 +12,10 @@ import {
   ADDRESS_DELETED,
   UPDATE_ADDRESS,
   ADDRESS_UPDATED,
+  SHOW_NOTI,
 } from "../actions/types";
+import { ADD_NOTIFICATION } from "react-redux-notify";
+import { NOTI_SUCCESS } from "./NotificationObject";
 
 function* fetchAddresses(params) {
   try {
@@ -29,10 +32,9 @@ function* fetchAddresses(params) {
           : tokenUserConfig(state)
       )
     );
-    console.log(response);
     yield put({ type: ADDRESSES_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       this.props.history.push({
@@ -55,6 +57,11 @@ function* addAddress(params) {
     );
 
     yield put({ type: ADDRESS_ADDED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
     yield put({
       type: GET_ADDRESSES,
       pages: { page: 1, limit: 1000, idUser: params.newAddress.idUser },

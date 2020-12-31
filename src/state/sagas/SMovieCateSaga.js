@@ -1,6 +1,6 @@
-import { takeEvery, put, call, select } from 'redux-saga/effects';
-import axios from 'axios';
-import { tokenConfig } from '../actions/authActions';
+import { takeEvery, put, call, select } from "redux-saga/effects";
+import axios from "axios";
+import { tokenConfig } from "../actions/authActions";
 import {
   GET_MOVIE_CATES,
   ADD_MOVIE_CATE,
@@ -10,9 +10,10 @@ import {
   MOVIE_CATE_DELETED,
   UPDATE_MOVIE_CATE,
   MOVIE_CATE_UPDATED,
-} from '../actions/types';
-
-import mongoose from 'mongoose';
+  SHOW_NOTI,
+} from "../actions/types";
+import { ADD_NOTIFICATION } from "react-redux-notify";
+import { NOTI_SUCCESS } from "./NotificationObject";
 
 function* fetchMovieCates(params) {
   try {
@@ -47,6 +48,11 @@ function* addMovie(params) {
     );
 
     yield put({ type: MOVIE_CATE_ADDED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
     yield put({
       type: GET_MOVIE_CATES,
       pages: params.newMovieCate.pages,

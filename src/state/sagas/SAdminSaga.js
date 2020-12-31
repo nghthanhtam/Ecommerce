@@ -22,7 +22,10 @@ import {
   ADMIN_RECEIVED,
   ADMIN_UPDATED,
   SHOW_MODAL,
+  SHOW_NOTI,
 } from "../actions/types";
+import { ADD_NOTIFICATION } from "react-redux-notify";
+import { NOTI_SUCCESS } from "./NotificationObject";
 
 function* logout() {
   yield put({ type: ADMIN_LOGOUT_SUCCESS });
@@ -140,6 +143,11 @@ function* addAdmin(params) {
     );
 
     yield put({ type: ADMIN_ADDED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
     yield put({
       type: GET_ADMINS,
       pages: params.newEmp.pages,

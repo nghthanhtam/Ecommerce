@@ -2,19 +2,21 @@ import React, { Fragment, Component } from "react";
 import { connect } from "react-redux";
 import Select from "react-select";
 import axios from "axios";
-
+import { CloudinaryContext } from "cloudinary-react";
 import { pushHistory } from "../../../../state/actions/historyActions";
 import { updateProductVar } from "../../../../state/actions/productVarActions";
 import qs from "qs";
+import request from "superagent";
 
 const mapStateToProps = (state, props) => {
   return {
     history: state.history.history,
-    auth: state.auth,
+    token: state.auth.token,
   };
 };
 
 class ProductVarEdit extends Component {
+  static contextType = CloudinaryContext.contextType;
   state = {
     id: "",
     name: "",
@@ -22,7 +24,7 @@ class ProductVarEdit extends Component {
     marketPrice: 0,
     price: 0,
     status: "",
-    Images: [],
+    arrImages: [],
     statuses: [
       { label: "Đang chờ duyệt", value: "pending" },
       { label: "Đang kinh doanh", value: "active" },
@@ -33,11 +35,10 @@ class ProductVarEdit extends Component {
   componentDidMount() {
     const id = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })
       .id;
-    console.log(id, "--------------------------");
     axios
       .get(
         `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/${id}`,
-        this.tokenConfig(this.props.auth.token)
+        this.tokenConfig(this.props.token)
       )
       .then((response) => {
         let {
@@ -49,7 +50,15 @@ class ProductVarEdit extends Component {
           status,
           Images,
         } = response.data;
-        this.setState({ id, name, SKU, marketPrice, price, status, Images });
+        this.setState({
+          id,
+          name,
+          SKU,
+          marketPrice,
+          price,
+          status,
+          arrImages: Images,
+        });
       })
       .catch((er) => console.log(er.response));
   }
@@ -90,14 +99,42 @@ class ProductVarEdit extends Component {
       return true;
     };
 
+    const url =
+      `https://api.cloudinary.com/v1_1/` + process.env.CLOUD_NAME + `/upload`;
+
     let files = e.target.files;
     if (files.length) {
       for (let i = 0; i < files.length; i++) {
         if (validateFile(files[i])) {
-          files[i].filePath = URL.createObjectURL(files[i]);
-          this.setState((prepState) => ({
-            Images: [...prepState.Images, files[i]],
-          }));
+          const fileName = files[i].name;
+          request
+            .post(url)
+            .field("upload_preset", "ml_default")
+            .field("file", files[i])
+            .field("multiple", true)
+            .field("api_key", "444253177844458")
+            .field(
+              "tags",
+              fileName ? `myphotoalbum,${fileName}` : "myphotoalbum"
+            )
+            .field("context", fileName ? `photo=${fileName}` : "")
+            .end((error, response) => {
+              if (response) {
+                this.setState(
+                  (prepState) => ({
+                    arrImages: [
+                      ...prepState.arrImages,
+                      {
+                        ...files[i],
+                        url: response.body.url,
+                        public_id: response.body.public_id,
+                      },
+                    ],
+                  }),
+                  () => console.log(this.state.arrImages)
+                );
+              }
+            });
         } else {
           files[i]["invalid"] = true;
           this.setState({ errorMessage: "Định dạng tệp không phù hợp" });
@@ -130,16 +167,16 @@ class ProductVarEdit extends Component {
   oncheckboxChange = (id) => {
     this.setState(
       (prepState) => {
-        let Images = [...prepState.Images];
-        Images.map((image) => {
+        let arrImages = [...prepState.arrImages];
+        arrImages.map((image) => {
           if (image.id == id) image.isMain = true;
           else image.isMain = false;
         });
         return {
-          Images,
+          arrImages,
         };
       },
-      () => console.log(this.state.Images)
+      () => console.log(this.state.arrImages)
     );
   };
 
@@ -151,10 +188,9 @@ class ProductVarEdit extends Component {
       marketPrice,
       price,
       status,
-      Images,
+      arrImages,
       statuses,
     } = this.state;
-    console.log("PROD VAR EDIT");
     return (
       <Fragment>
         {/* {!id ? (
@@ -274,8 +310,8 @@ class ProductVarEdit extends Component {
                         />
                       </div>
                       <div className="sku-grid">
-                        {Images.length > 0 &&
-                          Images.map((photo, index) => {
+                        {arrImages.length > 0 &&
+                          arrImages.map((photo, index) => {
                             return (
                               <label
                                 key={index}

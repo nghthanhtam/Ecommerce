@@ -1,7 +1,7 @@
-import { takeEvery, put, call, select } from 'redux-saga/effects';
-import axios from 'axios';
-import { tokenConfig, } from '../actions/authActions';
-import { noTokenConfig } from '../actions/authUserActions';
+import { takeEvery, put, call, select } from "redux-saga/effects";
+import axios from "axios";
+import { tokenConfig } from "../actions/authActions";
+import { noTokenConfig } from "../actions/authUserActions";
 import {
   GET_PRODUCT_CATES,
   ADD_PRODUCT_CATE,
@@ -11,7 +11,10 @@ import {
   PRODUCT_CATE_DELETED,
   UPDATE_PRODUCT_CATE,
   PRODUCT_CATE_UPDATED,
-} from '../actions/types';
+  SHOW_NOTI,
+} from "../actions/types";
+import { ADD_NOTIFICATION } from "react-redux-notify";
+import { NOTI_SUCCESS } from "./NotificationObject";
 
 function* fetchProductCates(params) {
   try {
@@ -45,6 +48,11 @@ function* addProductCate(params) {
       )
     );
     yield put({ type: PRODUCT_CATE_ADDED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
     yield put({
       type: GET_PRODUCT_CATES,
       pages: params.newProductCate.pages,

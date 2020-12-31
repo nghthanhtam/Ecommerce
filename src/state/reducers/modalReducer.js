@@ -1,11 +1,9 @@
-import {
-  SHOW_MODAL,
-} from "../actions/types";
+import { SHOW_MODAL } from "../actions/types";
 
 const initialState = {
   show: false,
-  modalName: '',
-  details: {}
+  modalName: "",
+  details: {},
 };
 
 export default function (state = initialState, action) {
@@ -15,7 +13,7 @@ export default function (state = initialState, action) {
         ...state,
         show: action.payload.show,
         modalName: action.payload.modalName,
-        details: action.payload.details
+        details: action.payload.details,
       };
 
     default:

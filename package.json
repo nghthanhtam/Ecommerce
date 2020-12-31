@@ -7,6 +7,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "axios": "^0.19.0",
+    "cloudinary-react": "^1.6.8",
     "create-react-app": "^3.3.0",
     "dotenv": "^8.2.0",
     "font-awesome": "^4.7.0",
@@ -45,6 +46,7 @@
     "redux-thunk": "^2.3.0",
     "slick-carousel": "^1.8.1",
     "suneditor-react": "^2.14.4",
+    "superagent": "^6.1.0",
     "yarn": "^1.21.1",
     "yup": "^0.29.3"
   },

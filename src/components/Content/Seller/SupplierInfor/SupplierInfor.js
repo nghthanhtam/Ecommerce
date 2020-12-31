@@ -46,7 +46,7 @@ const SupplierInfor = (props) => {
     <Formik
       initialValues={props.shop}
       onSubmit={(values, actions) => {
-        props.updateShop(values);
+        props.updateShop({ newShop: values, type: "seller" });
       }}
       validationSchema={Yup.object().shape({
         name: Yup.string()

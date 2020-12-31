@@ -35,7 +35,7 @@ class EmployeeRow extends Component {
       <tr>
         <td>{index + 1}</td>
         <td>{employee.username}</td>
-        <td>{employee.idRole}</td>
+        <td>{employee.EmployeeRole.name}</td>
         <td>{employee.fullname}</td>
         <td>{employee.phone}</td>
         {!employee.deletedAt && (

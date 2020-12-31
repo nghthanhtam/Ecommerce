@@ -1,4 +1,10 @@
-import { GET_SHOPS, ADD_SHOP, DELETE_SHOP, UPDATE_SHOP, GET_SHOP_BY_ID } from './types';
+import {
+  GET_SHOPS,
+  ADD_SHOP,
+  DELETE_SHOP,
+  UPDATE_SHOP,
+  GET_SHOP_BY_ID,
+} from "./types";
 
 export const getShops = (params) => ({
   type: GET_SHOPS,
@@ -20,7 +26,7 @@ export const addShop = (newShop) => ({
   newShop: newShop,
 });
 
-export const updateShop = (newShop) => ({
+export const updateShop = (params) => ({
   type: UPDATE_SHOP,
-  newShop: newShop,
+  params,
 });

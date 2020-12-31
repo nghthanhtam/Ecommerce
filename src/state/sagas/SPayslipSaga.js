@@ -1,4 +1,4 @@
-import { takeEvery, put, call, select } from "redux-saga/effects";
+import { takeEvery, put, call, select, delay } from "redux-saga/effects";
 import { tokenConfig } from "../actions/authActions";
 import axios from "axios";
 import {
@@ -12,7 +12,10 @@ import {
   PAYSLIP_UPDATED,
   GET_PAYSLIP_BY_ID,
   PAYSLIP_RECEIVED,
+  SHOW_NOTI,
 } from "../actions/types";
+import { ADD_NOTIFICATION } from "react-redux-notify";
+import { NOTI_SUCCESS } from "./NotificationObject";
 
 function* fetchPayslips(params) {
   try {
@@ -74,6 +77,11 @@ function* addPayslip(params) {
     );
 
     yield put({ type: PAYSLIP_ADDED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
     yield put({
       type: GET_PAYSLIPS,
       pages,
@@ -95,6 +103,11 @@ function* updatePayslip(params) {
     );
 
     yield put({ type: PAYSLIP_UPDATED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
   } catch (error) {
     console.log({ ...error });
   }

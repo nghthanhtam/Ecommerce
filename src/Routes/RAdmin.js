@@ -38,6 +38,7 @@ import AUser from "../components/Content/Admin/User/AUser";
 import AUserEdit from "../components/Content/Admin/User/AUserEdit";
 import Admin from "../components/Content/Admin/Admin/Admin";
 import AdminEdit from "../components/Content/Admin/Admin/AdminEdit";
+import { Notify } from "react-redux-notify";
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -50,6 +51,7 @@ const mapStateToProps = (state) => ({
   userToken: state.authUser.token,
   show: state.modal.show,
   modalName: state.modal.modalName,
+  showNoti: state.noti.showNoti,
 });
 
 const roles = {
@@ -98,7 +100,7 @@ class RAdmin extends Component {
   };
 
   render() {
-    const { token, userToken, adminToken, show, modalName } = this.props;
+    const { showNoti, adminToken, show, modalName } = this.props;
     return (
       <Fragment>
         <Switch>
@@ -133,6 +135,7 @@ class RAdmin extends Component {
           {/* ADMIN */}
           {adminToken && (
             <Fragment>
+              {showNoti && <Notify position="BottomRight" />}
               {show && modalName == "modalExpire" && <ModalExpire />}
               {show && modalName == "modalCancel" && <ModalCancel />}
               {show && modalName == "productDetails" && <ModalProductDetails />}

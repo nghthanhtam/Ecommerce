@@ -74,6 +74,7 @@ class ProductVarEdit extends Component {
   };
 
   handleFileSelect = (e) => {
+    console.log("abccc");
     const validateFile = (file) => {
       const validTypes = [
         "image/jpeg",
@@ -88,6 +89,7 @@ class ProductVarEdit extends Component {
     };
 
     let files = e.target.files;
+    console.log(files);
     if (files.length) {
       for (let i = 0; i < files.length; i++) {
         if (validateFile(files[i])) {
@@ -267,7 +269,9 @@ class ProductVarEdit extends Component {
                         <input
                           type="file"
                           id="exampleInputFile"
-                          onChange={this.handleFileSelect}
+                          onChange={(e) => {
+                            this.handleFileSelect(e);
+                          }}
                         />
                       </div>
                       <div className="sku-grid">

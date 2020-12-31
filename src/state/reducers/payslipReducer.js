@@ -8,6 +8,7 @@ import {
   PAYSLIP_UPDATED,
   UPDATE_PAYSLIP,
   PAYSLIP_RECEIVED,
+  ADD_NOTIFICATION,
 } from "../actions/types";
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   totalDocuments: 0,
   isLoaded: false,
   isUpdated: false,
+  abc: true,
 };
 
 export default function (state = initialState, action) {
@@ -71,6 +73,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isUpdated: true,
+      };
+    case ADD_NOTIFICATION:
+      return {
+        ...state,
+        abc: false,
       };
     default:
       return state;

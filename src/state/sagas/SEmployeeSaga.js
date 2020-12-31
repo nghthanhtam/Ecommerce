@@ -15,7 +15,10 @@ import {
   EMPLOYEE_UPDATED,
   GET_EMPLOYEES_BY_SHOP,
   EMPLOYEE_LOGOUT,
+  SHOW_NOTI,
 } from "../actions/types";
+import { ADD_NOTIFICATION } from "react-redux-notify";
+import { NOTI_SUCCESS } from "./NotificationObject";
 
 function* fetchEmpById(params) {
   try {
@@ -119,6 +122,11 @@ function* addEmployee(params) {
     );
 
     yield put({ type: EMPLOYEE_ADDED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
     yield put({
       type: GET_EMPLOYEES_BY_SHOP,
       pages: newEmp.pages,
@@ -130,6 +138,7 @@ function* addEmployee(params) {
 
 function* updateEmployee(params) {
   const state = yield select();
+  console.log(params.newEmp.id);
   try {
     const response = yield call(() =>
       axios.put(

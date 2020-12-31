@@ -37,9 +37,11 @@ import permissionReducer from "./permissionReducer";
 import purchaseReducer from "./purchaseReducer";
 import roleAdminReducer from "./roleAdminReducer";
 import adminReducer from "./adminReducer";
+import notiReducer from "./notiReducer";
 
 export default combineReducers({
   notifications: notifyReducer,
+  noti: notiReducer,
   employee: employeeReducer,
   error: errorReducer,
   auth: authReducer,

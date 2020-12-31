@@ -10,9 +10,6 @@ const mapStateToProps = (state) => ({
 });
 
 class Menu extends React.Component {
-  componentDidMount() {
-    console.log(this.props.permissionAdmins);
-  }
   render() {
     const {
       employee,

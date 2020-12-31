@@ -370,8 +370,7 @@ class PendingList extends React.Component {
 }
 
 PendingList.propTypes = {
-  getProductVarsByIdShop: PropTypes.func.isRequired,
-  productVars: PropTypes.array.isRequired,
+  getOrdersByShop: PropTypes.func.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 };
 

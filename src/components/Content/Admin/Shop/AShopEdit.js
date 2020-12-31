@@ -25,7 +25,9 @@ const AShopEdit = (props) => {
   }, [props.match.params.id]);
 
   useEffect(() => {
-    if (props.isUpdated) history.push("/admin/shop");
+    if (props.isUpdated) {
+      history.push("/admin/shop");
+    }
   }, [props.isUpdated]);
 
   const changeName = (event, setFieldValue) => {
@@ -45,7 +47,7 @@ const AShopEdit = (props) => {
     <Formik
       initialValues={props.shop}
       onSubmit={(values, actions) => {
-        props.updateShop(values);
+        props.updateShop({ newShop: values, type: "admin" });
       }}
       validationSchema={Yup.object().shape({
         name: Yup.string()

@@ -15,7 +15,10 @@ import {
   GET_SHOP_BY_ID,
   SHOW_MODAL,
   ADMIN_LOGOUT,
+  SHOW_NOTI,
 } from "../actions/types";
+import { ADD_NOTIFICATION } from "react-redux-notify";
+import { NOTI_SUCCESS } from "./NotificationObject";
 
 function* fetchShops(params) {
   try {
@@ -99,19 +102,25 @@ function* addShop(params) {
 }
 
 function* updateShop(params) {
-  const state = yield select();
+  const state = yield select(),
+    { newShop, type } = params.params;
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/shop/${params.newShop.id}`,
-        params.newShop,
-        tokenConfig(state)
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/shop/${newShop.id}`,
+        newShop,
+        type == "seller" ? tokenConfig(state) : tokenAdminConfig(state)
       )
     );
 
     yield put({ type: SHOP_UPDATED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
 
