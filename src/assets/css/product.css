@@ -124,6 +124,14 @@
   justify-content: center;
   align-items: center;
 }
+.productadd-grid {
+  display: inline-grid;
+  flex-direction: row;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-column-gap: 8px;
+  grid-row-gap: 3px;
+  margin-bottom: 20px;
+}
 .sku-grid {
   display: inline-grid;
   flex-direction: row;

@@ -122,6 +122,10 @@ class ProductAddNextPage extends Component {
       });
   };
 
+  handleCheckPhotos = (e) => {
+    console.log(e.target);
+  };
+
   render() {
     const { errorMessage, isTransition } = this.state;
     const { arrProductVar } = this.props.location;
@@ -248,7 +252,7 @@ class ProductAddNextPage extends Component {
                           {product.name}
                         </p>
                         <div
-                          className="sku-grid"
+                          className="productadd-grid"
                           onDragOver={dragOver}
                           onDragEnter={dragEnter}
                           onDragLeave={dragLeave}
@@ -273,6 +277,7 @@ class ProductAddNextPage extends Component {
                                       className="color-checked"
                                       type="checkbox"
                                       id={item}
+                                      onChange={this.handleCheckPhotos}
                                     />
                                   </div>
                                 </label>

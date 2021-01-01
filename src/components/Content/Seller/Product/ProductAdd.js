@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from "react";
-import axios from "axios";
 import Loader from "react-loader";
 import Select from "react-select";
 import Slider from "react-slick";
@@ -24,15 +23,15 @@ const mapStateToProps = (state) => ({
   isMovieLoaded: state.movie.isLoaded,
   isProductCatesLoaded: state.productCate.isLoaded,
   isProductLoaded: state.product.isLoaded,
+  totalDocuments: state.product.totalDocuments,
   idShop: state.auth.role.idShop,
   token: state.auth.token,
 });
 
 class ProductAdd extends Component {
   state = {
-    //searching similar products
-    typing: false,
-    typingTimeout: 0,
+    //similar products
+    products: [],
 
     selectedFiles: [],
     errorMessage: "",
@@ -71,6 +70,28 @@ class ProductAdd extends Component {
     language: "",
     size: "",
   };
+
+  componentDidUpdate(prevProps) {
+    const { isProductLoaded, products } = this.props;
+
+    if (prevProps.isProductLoaded !== isProductLoaded && isProductLoaded) {
+      let tempArr = [...products];
+
+      if (products.length > 0 && products.length < 5) {
+        const arrLength = products.length;
+        for (let i = 0; i < 5 - arrLength + 1; i++) {
+          tempArr.push({
+            id: "",
+            name: "",
+            brand: "",
+            arrayImage: "",
+            price: "",
+          });
+        }
+      }
+      this.setState({ products: tempArr });
+    }
+  }
 
   componentDidMount() {
     const { getMovies, getProductCates } = this.props;
@@ -368,48 +389,38 @@ class ProductAdd extends Component {
     }));
   };
 
+  tokenConfig = (token) => {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+
+    //Header
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  };
+
   //dùng hàm này để chọn bán sp đã có sẵn
-  pickProduct = (idProduct) => {
-    this.setState({ idProduct });
+  pickProduct = (item) => {
+    console.log(item);
+    this.setState({ idProduct: item.id });
 
     //get available product to sell
-    try {
-      axios
-        .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${idProduct}`,
-          {
-            headers: {
-              "Content-type": "application/json",
-              Authorization: `Bearer ${this.props.token}`,
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response.data);
-          let {
-            name,
-            description,
-            brand,
-            idMovie,
-            idProductCat,
-            id,
-            Details,
-          } = response.data;
-          this.setState({
-            name,
-            description,
-            brand,
-            idMovie,
-            idProductCat,
-            id,
-          });
-          Details.map((d) => {
-            this.setState({ [d.detail]: d.value });
-          });
-        });
-    } catch (error) {
-      console.log(error.response);
-    }
+    let { name, description, brand, idMovie, idProductCat, id, Details } = item;
+    this.setState({
+      name,
+      description,
+      brand,
+      idMovie,
+      idProductCat,
+      id,
+    });
+    Details.map((d) => {
+      this.setState({ [d.detail]: d.value });
+    });
   };
 
   render() {
@@ -429,19 +440,20 @@ class ProductAdd extends Component {
         language,
         size,
         origin,
+        products,
       } = this.state,
       {
-        products,
         movies,
         productCates,
         isMovieLoaded,
         isProductCatesLoaded,
         isProductLoaded,
+        totalDocuments,
       } = this.props,
       settings = {
         infinite: true,
-        speed: 800,
-        slidesToScroll: 1,
+        speed: 900,
+        slidesToScroll: 3,
         slidesToShow: 5,
         className: "slider",
       };
@@ -488,18 +500,33 @@ class ProductAdd extends Component {
                           />
                         </div>
                       </div>
-
+                      <button
+                        onClick={() => {
+                          this.props.getProducts({
+                            limit: 50,
+                            page: 1,
+                            query: "áo",
+                            arrayStatus: ["accepted"],
+                          });
+                        }}
+                      >
+                        Tìm
+                      </button>
                       {isProductLoaded && products.length > 0 && (
                         <div style={{ margin: "5px 0 25px 0" }}>
                           <label htmlFor="exampleInputEmail1">
                             Sản phẩm có thể trùng
                           </label>
-                          <div className="duplicate-wrapper">
+                          <div className="similar-wrapper">
                             <Slider
-                              style={{ width: "103%", height: "280px" }}
+                              style={{
+                                width: "103%",
+                                height: "280px",
+                              }}
                               {...settings}
+                              arrows={totalDocuments <= 5 ? false : true}
                               slidesToShow={
-                                products.length <= 5 ? products.length : 5
+                                totalDocuments <= 5 ? totalDocuments : 5
                               }
                             >
                               {products.map((item, index) => {
@@ -508,7 +535,7 @@ class ProductAdd extends Component {
                                     key={index}
                                     item={item}
                                     arr={movies}
-                                    pickProduct={this.pickProduct}
+                                    pickProduct={() => this.pickProduct(item)}
                                   />
                                 );
                               })}
@@ -521,6 +548,12 @@ class ProductAdd extends Component {
                         <label>Sản phẩm thuộc về phim</label>
                         <div className={requiredMovie}>
                           <Select
+                            styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999,
+                              }),
+                            }}
                             name="idMovie"
                             onChange={this.onChangeSelect}
                             isSearchable={true}
