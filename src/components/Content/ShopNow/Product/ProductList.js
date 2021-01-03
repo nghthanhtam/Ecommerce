@@ -68,12 +68,16 @@ class ProductList extends React.Component {
       if (idMovieCategory)
         arrayFilter.push({ name: "idMovieCategory", value: idMovieCategory });
       if (idMovie) arrayFilter.push({ name: "idMovie", value: idMovie });
-      if (rating) arrayFilter.push({ name: "rating", value: rating });
+      if (rating)
+        arrayFilter.push({
+          name: "rating",
+          value: rating,
+          description: rating + " sao",
+        });
       if (minRange) {
         arrayFilter.push({
           name: "minRange",
           value: minRange,
-          description: minRange + " sao",
         });
         this.setState({ minRange });
       }
@@ -81,7 +85,6 @@ class ProductList extends React.Component {
         arrayFilter.push({
           name: "maxRange",
           value: maxRange,
-          description: maxRange + " sao",
         });
         this.setState({ maxRange });
       }
@@ -115,7 +118,6 @@ class ProductList extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { isLoaded, isProCateLoaded, productCates } = this.props;
-    const { minRange, maxRange } = this.state;
 
     if (isLoaded == true && this.state.pages == prevState.pages) {
       this.getPages();
