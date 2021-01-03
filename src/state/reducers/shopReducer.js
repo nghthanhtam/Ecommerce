@@ -7,8 +7,10 @@ import {
   UPDATE_SHOP,
   SHOP_UPDATED,
   SHOP_RECEIVED,
-  GET_SHOP_BY_ID
-} from '../actions/types';
+  GET_SHOP_BY_ID,
+  SHOP_STT_UPDATED,
+  CLEAR_SHOP,
+} from "../actions/types";
 
 const initialState = {
   shops: [],
@@ -16,10 +18,18 @@ const initialState = {
   totalDocuments: 0,
   isLoaded: false,
   isUpdated: false,
+  isAdded: false,
+  shopAdded: {},
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case CLEAR_SHOP:
+      return {
+        ...state,
+        isAdded: false,
+        shopAdded: {},
+      };
     case GET_SHOPS:
       return {
         ...state,
@@ -49,33 +59,36 @@ export default function (state = initialState, action) {
     case ADD_SHOP:
       return {
         ...state,
-        isLoaded: false,
+        isAdded: false,
+        shopAdded: {},
       };
 
     case SHOP_ADDED:
       return {
         ...state,
-        isLoaded: true,
+        isAdded: true,
+        shopAdded: action.payload.data,
       };
 
     case SHOP_DELETED:
       return {
         ...state,
-        shops: state.shops.filter(
-          (shop) => shop.id !== action.payload.id
-        ),
+        shops: state.shops.filter((shop) => shop.id !== action.payload.id),
       };
 
     case SHOP_UPDATED:
       return {
         ...state,
-        isUpdated: true
+        isUpdated: true,
       };
-
+    case SHOP_STT_UPDATED:
+      return {
+        ...state,
+      };
     case UPDATE_SHOP:
       return {
         ...state,
-        isUpdated: false
+        isUpdated: false,
       };
 
     default:

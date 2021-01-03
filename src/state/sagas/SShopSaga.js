@@ -2,6 +2,7 @@ import { takeEvery, put, call, select, delay } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../../state/actions/authActions";
 import { tokenAdminConfig } from "../../state/actions/authAdminActions";
+import { noTokenConfig } from "../../state/actions/authUserActions";
 import {
   GET_SHOPS,
   ADD_SHOP,
@@ -16,6 +17,8 @@ import {
   SHOW_MODAL,
   ADMIN_LOGOUT,
   SHOW_NOTI,
+  UPDATE_SHOP_STATUS,
+  SHOP_STT_UPDATED,
 } from "../actions/types";
 import { ADD_NOTIFICATION } from "react-redux-notify";
 import { NOTI_SUCCESS } from "./NotificationObject";
@@ -80,22 +83,25 @@ function* fetchShopById(params) {
 }
 
 function* addShop(params) {
-  const state = yield select();
+  const state = yield select(),
+    { newShop } = params;
 
   try {
     const response = yield call(() =>
       axios.post(
         `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/shop/`,
-        params.newShop,
-        tokenConfig(state)
+        newShop,
+        (newShop.type = "user" ? noTokenConfig(state) : tokenConfig(state))
       )
     );
 
-    yield put({ type: SHOP_ADDED, payload: response.data });
-    yield put({
-      type: GET_SHOPS,
-      pages: params.newShop.pages,
-    });
+    yield put({ type: SHOP_ADDED, payload: response });
+    newShop.type = "user"
+      ? null
+      : yield put({
+          type: GET_SHOPS,
+          pages: newShop.pages,
+        });
   } catch (error) {
     console.log(error.response);
   }
@@ -124,6 +130,30 @@ function* updateShop(params) {
   }
 }
 
+function* updateShopStt(params) {
+  const state = yield select(),
+    { id, status, pages } = params.params;
+
+  try {
+    const response = yield call(() =>
+      axios.put(
+        `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/shop/${id}/status`,
+        { status },
+        tokenAdminConfig(state)
+      )
+    );
+    yield put({ type: SHOP_STT_UPDATED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
+    yield put({ type: GET_SHOPS, pages });
+  } catch (error) {
+    console.log({ ...error });
+  }
+}
+
 function* deleteShop(params) {
   const state = yield select();
   try {
@@ -145,5 +175,6 @@ export default function* sShopSaga() {
   yield takeEvery(GET_SHOP_BY_ID, fetchShopById);
   yield takeEvery(ADD_SHOP, addShop);
   yield takeEvery(UPDATE_SHOP, updateShop);
+  yield takeEvery(UPDATE_SHOP_STATUS, updateShopStt);
   yield takeEvery(DELETE_SHOP, deleteShop);
 }

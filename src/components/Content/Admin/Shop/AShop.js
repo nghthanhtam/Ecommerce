@@ -43,9 +43,6 @@ class AShop extends Component {
   render() {
     return (
       <Fragment>
-        <div>
-          <Notify position="BottomRight" />
-        </div>
         <section className="content-header">
           <h1></h1>
           <ol className="breadcrumb" style={{ float: "right" }}>

@@ -4,7 +4,13 @@ import {
   DELETE_SHOP,
   UPDATE_SHOP,
   GET_SHOP_BY_ID,
+  UPDATE_SHOP_STATUS,
+  CLEAR_SHOP,
 } from "./types";
+
+export const clearShop = () => ({
+  type: CLEAR_SHOP,
+});
 
 export const getShops = (params) => ({
   type: GET_SHOPS,
@@ -23,10 +29,15 @@ export const deleteShop = (id) => ({
 
 export const addShop = (newShop) => ({
   type: ADD_SHOP,
-  newShop: newShop,
+  newShop,
 });
 
 export const updateShop = (params) => ({
   type: UPDATE_SHOP,
   params,
+});
+
+export const updateShopStatus = ({ status, id, pages }) => ({
+  type: UPDATE_SHOP_STATUS,
+  params: { status, id, pages },
 });

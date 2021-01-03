@@ -2,7 +2,6 @@ import React, { Fragment, Component } from "react";
 import { connect } from "react-redux";
 import Select from "react-select";
 import axios from "axios";
-
 import { pushHistory } from "../../../../state/actions/historyActions";
 import { updateProductVar } from "../../../../state/actions/productVarActions";
 
@@ -89,7 +88,6 @@ class ProductVarEdit extends Component {
     };
 
     let files = e.target.files;
-    console.log(files);
     if (files.length) {
       for (let i = 0; i < files.length; i++) {
         if (validateFile(files[i])) {

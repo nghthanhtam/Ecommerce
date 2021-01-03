@@ -132,15 +132,16 @@ class APendingList extends React.Component {
           history={this.props.history}
           key={shop.id}
           shop={shop}
-          pages={{ limit, page, query }}
+          pages={{ limit, page, query, arrayStatus: ["pending"] }}
           index={index + start - 1}
         />
       ))
     );
   };
 
-  handleChoosePage = (e) => {
-    if (e === "...") return;
+  handleChoosePage = (e, pageNumber) => {
+    e.preventDefault();
+    if (pageNumber === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),
@@ -149,15 +150,15 @@ class APendingList extends React.Component {
 
     console.log(page + " and " + pages);
 
-    if (e === -1) {
-      e = page + 1;
-      if (e === pages) this.setState({ isNextBtnShow: false });
+    if (pageNumber === -1) {
+      pageNumber = page + 1;
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
     } else {
-      if (e === pages) this.setState({ isNextBtnShow: false });
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
       else this.setState({ isNextBtnShow: true });
     }
 
-    this.setState({ page: e }, () => {
+    this.setState({ page: pageNumber }, () => {
       const { limit, page, query } = this.state;
       this.props.getShops({
         limit,
@@ -207,7 +208,7 @@ class APendingList extends React.Component {
                 className="paga-link"
                 name="currentPage"
                 href="#"
-                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+                onClick={(e) => this.handleChoosePage(e, eachButton.pageNumber)}
               >
                 {eachButton.pageNumber}
               </a>
@@ -220,7 +221,7 @@ class APendingList extends React.Component {
               }
               name="currentPage"
               href="#"
-              onClick={() => this.handleChoosePage(-1)}
+              onClick={(e) => this.handleChoosePage(e, -1)}
             >
               {">>"}
             </a>
@@ -236,7 +237,7 @@ class APendingList extends React.Component {
     return (
       <div className="row">
         <div className="col-md-12">
-          <div className="box1">
+          <div className="box-in-tab">
             <div className="box-body">
               <div
                 id="example1_wrapper"
@@ -301,10 +302,12 @@ class APendingList extends React.Component {
                           <th>Đường dẫn</th>
                           <th>Điện thoại</th>
                           <th>Tình trạng</th>
-                          <th style={{ width: "35%" }}>Thao tác</th>
+                          <th>Thao tác</th>
                         </tr>
                       </thead>
-                      <tbody>{this.renderShops()}</tbody>
+                      <tbody style={{ width: "120%", overflowX: "auto" }}>
+                        {this.renderShops()}
+                      </tbody>
                       <tfoot>
                         <tr>
                           <th>#</th>

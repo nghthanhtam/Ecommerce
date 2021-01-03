@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { deleteShop } from "../../../../state/actions/shopActions";
+import {
+  deleteShop,
+  updateShopStatus,
+} from "../../../../state/actions/shopActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
 class AShopRow extends Component {
@@ -17,6 +20,14 @@ class AShopRow extends Component {
 
   handleEdit = (id) => {
     this.props.pushHistory(`/admin/shop/edit/${id}`);
+  };
+
+  handleApprove = (id) => {
+    this.props.updateShopStatus({
+      id,
+      status: "accepted",
+      pages: this.props.pages,
+    });
   };
 
   handleDelete = (id) => {
@@ -46,7 +57,14 @@ class AShopRow extends Component {
             : "Không được duyệt"}
         </td>
         <td>
-          <div className="btn-group">
+          <div className="btn-group" style={{ display: "flex" }}>
+            <button
+              onClick={() => this.handleApprove(shop.id)}
+              type="button"
+              className="btn btn-primary"
+            >
+              Duyệt
+            </button>
             <button
               onClick={() => this.handleEdit(shop.id)}
               type="button"
@@ -54,7 +72,6 @@ class AShopRow extends Component {
             >
               Sửa
             </button>
-
             <button
               onClick={() => this.handleDelete(shop.id)}
               type="button"
@@ -77,4 +94,6 @@ class AShopRow extends Component {
   }
 }
 
-export default connect(null, { deleteShop, pushHistory })(AShopRow);
+export default connect(null, { deleteShop, pushHistory, updateShopStatus })(
+  AShopRow
+);

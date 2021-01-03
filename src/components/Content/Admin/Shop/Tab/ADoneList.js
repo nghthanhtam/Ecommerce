@@ -253,7 +253,7 @@ class ADoneList extends React.Component {
     return (
       <div className="row">
         <div className="col-md-12">
-          <div className="box1">
+          <div className="box-in-tab">
             <div className="box-body">
               <div
                 id="example1_wrapper"
@@ -332,7 +332,14 @@ class ADoneList extends React.Component {
                       className="table table-bordered table-striped table-scroll"
                     >
                       <thead>
-                        <tr>
+                        <tr
+                          style={{
+                            width: "120%",
+                            overflowX: "auto",
+                            whiteSpace: "nowrap",
+                            flex: 1,
+                          }}
+                        >
                           <th>#</th>
                           <th>Tên nhà bán</th>
                           <th>Mã kinh doanh</th>
@@ -340,7 +347,7 @@ class ADoneList extends React.Component {
                           <th>Đường dẫn</th>
                           <th>Điện thoại</th>
                           <th>Tình trạng</th>
-                          <th style={{ width: "35%" }}>Thao tác</th>
+                          <th>Thao tác</th>
                         </tr>
                       </thead>
                       <tbody>{this.renderShops(true)}</tbody>

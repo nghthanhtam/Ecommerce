@@ -710,7 +710,7 @@
   display: inline-flex;
   flex-direction: row;
   border-radius: 5px;
-  padding: 5px;
+  padding: 8px;
   background-color: #3571a7;
   color: white;
 }

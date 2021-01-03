@@ -36,6 +36,7 @@ class ActiveList extends React.Component {
       query,
       idShop,
       arrayStatus: ["active", "inactive"],
+      type: "seller",
     });
   }
 

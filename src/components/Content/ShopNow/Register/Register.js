@@ -1,109 +1,98 @@
-import React from 'react';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
-import mongoose from 'mongoose';
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-
-import { addShop } from '../../../../state/actions/shopActions';
-import './Register.css';
+import React, { useState } from "react";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import mongoose from "mongoose";
+import axios from "axios";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { addShop, clearShop } from "../../../../state/actions/shopActions";
+import "./Register.css";
 
 const mapStateToProps = (state) => ({
-  shop: state.shop,
+  isAdded: state.shop.isAdded,
+  history: state.history.history,
 });
 
 class Register extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {
-      productList: [1, 2, 3, 4, 5, 6, 7, 8],
-      replyBoxHidden: false,
-    };
-  }
+  state = {};
 
-  replyClick = () => {
-    let { replyBoxHidden } = this.state;
-    this.setState({ replyBoxHidden: !replyBoxHidden });
-  };
+  componentDidMount() {
+    this.props.clearShop();
+  }
+  componentDidUpdate(prevState, prevProps) {
+    console.log("componentDidUpdate");
+    const { isAdded, history } = this.props;
+    if (isAdded && prevProps.isAdded !== isAdded)
+      history.push("/shopnow/register-success");
+  }
 
   render() {
     const SignupForm = () => {
+      const [isChecked, setCheck] = useState(false);
       const formik = useFormik({
         initialValues: {
-          fullname: '',
-          employeePhone: '',
-          shopPhone: '',
-          password: '',
-          name: '',
-          email: '',
-          busLicenseId: '',
-          buscode: '',
-          city: '',
-          identityCard: '',
-          url: '',
+          fullname: "",
+          employeePhone: "",
+          shopPhone: "",
+          username: "",
+          password: "",
+          name: "",
+          email: "",
+          busLicenseId: "",
+          buscode: "",
+          city: "",
+          identityCard: "",
+          url: "",
         },
         validationSchema: Yup.object({
           fullname: Yup.string()
-            .max(255, 'Chỉ được phép nhập ít hơn 255 kí tự')
-            .required('Bắt buộc nhập!'),
+            .max(255, "Chỉ được phép nhập ít hơn 255 kí tự")
+            .required("Bắt buộc nhập!"),
           employeePhone: Yup.string()
-            .max(10, 'Chỉ được phép nhập ít hơn 10 kí tự')
-            .required('Bắt buộc nhập!')
+            .max(10, "Chỉ được phép nhập ít hơn 10 kí tự")
+            .required("Bắt buộc nhập!")
             .matches(
               /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
-              'Số điện thoại không hợp lệ'
+              "Số điện thoại không hợp lệ"
             ),
           shopPhone: Yup.string()
-            .max(10, 'Chỉ được phép nhập ít hơn 10 kí tự')
-            .required('Bắt buộc nhập!')
+            .max(10, "Chỉ được phép nhập ít hơn 10 kí tự")
+            .required("Bắt buộc nhập!")
             .matches(
               /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
-              'Số điện thoại không hợp lệ'
+              "Số điện thoại không hợp lệ"
             ),
           password: Yup.string()
-            .max(50, 'Chỉ được phép nhập ít hơn 50 kí tự')
-            .required('Bắt buộc nhập!')
+            .max(50, "Chỉ được phép nhập ít hơn 50 kí tự")
+            .required("Bắt buộc nhập!")
             .matches(
-              /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-              'Mật khẩu bao gồm 8 kí tự: Một kí tự viết hoa, Một kí tự viết thường, Một kí tự số và Một kí tự đặc biệt'
+              /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/,
+              "Mật khẩu phải bao gồm ít nhất: 1 kí tự viết hoa, 1 kí tự viết thường, 1 kí tự số"
             ),
           name: Yup.string()
-            .max(255, 'Chỉ được phép nhập ít hơn 255 kí tự')
-            .required('Bắt buộc nhập!'),
+            .max(255, "Chỉ được phép nhập ít hơn 255 kí tự")
+            .required("Bắt buộc nhập!"),
+          username: Yup.string()
+            .max(255, "Chỉ được phép nhập ít hơn 255 kí tự")
+            .required("Bắt buộc nhập!"),
           busLicenseId: Yup.string()
-            .max(25, 'Chỉ được phép nhập ít hơn 25 kí tự')
-            .required('Bắt buộc nhập!'),
+            .max(25, "Chỉ được phép nhập ít hơn 25 kí tự")
+            .required("Bắt buộc nhập!"),
           city: Yup.string()
-            .max(50, 'Chỉ được phép nhập ít hơn 50 kí tự')
-            .required('Bắt buộc nhập!'),
+            .max(50, "Chỉ được phép nhập ít hơn 50 kí tự")
+            .required("Bắt buộc nhập!"),
           identityCard: Yup.string()
-            .max(20, 'Chỉ được phép nhập ít hơn 20 kí tự')
-            .required('Bắt buộc nhập!'),
+            .min(9, "Số CMND phải có ít nhất 9 số")
+            .required("Bắt buộc nhập!"),
           email: Yup.string()
-            .email('Địa chỉ email không hợp lệ')
-            .required('Bắt buộc nhập!'),
+            .email("Địa chỉ email không hợp lệ")
+            .required("Bắt buộc nhập!"),
         }),
 
-        convertToNonAccentVNese(str) {
-          str = str.toLowerCase();
-          str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
-          str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
-          str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
-          str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
-          str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
-          str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
-          str = str.replace(/đ/g, 'd');
-          // Some system encode vietnamese combining accent as individual utf-8 characters
-          str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ''); // Huyền sắc hỏi ngã nặng
-          str = str.replace(/\u02C6|\u0306|\u031B/g, ''); // Â, Ê, Ă, Ơ, Ư
-          return str;
-        },
-
         onSubmit: (values) => {
-          console.log('abcccc');
           const {
             fullname,
+            username,
             password,
             employeePhone,
             shopPhone,
@@ -114,31 +103,6 @@ class Register extends React.Component {
             city,
           } = values;
 
-          function convertToNonAccentVNese(str) {
-            str = str.toLowerCase();
-            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
-            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
-            str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
-            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
-            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
-            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
-            str = str.replace(/đ/g, 'd');
-            // Some system encode vietnamese combining accent as individual utf-8 characters
-            str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ''); // Huyền sắc hỏi ngã nặng
-            str = str.replace(/\u02C6|\u0306|\u031B/g, ''); // Â, Ê, Ă, Ơ, Ư
-            return str;
-          }
-          let res = values.fullname.split(' ');
-          let firstName = res.pop(); //remove last element
-          firstName = convertToNonAccentVNese(firstName);
-          values.fullname = res.join(' '); //join back together
-
-          let matches = convertToNonAccentVNese(values.fullname).match(
-            /\b(\w)/g
-          ); //take first letter each word
-          let surName = matches.join('').toUpperCase();
-          console.log(firstName + surName);
-
           const employee = {
             idRole: 1,
             password,
@@ -148,7 +112,7 @@ class Register extends React.Component {
             email,
             busLicenseId,
             city,
-            username: firstName + surName,
+            username,
             id: mongoose.Types.ObjectId(),
           };
           const shop = {
@@ -159,29 +123,34 @@ class Register extends React.Component {
             id: mongoose.Types.ObjectId(),
           };
 
-          this.props.addShop({ shop, employee });
+          this.props.addShop({ shop, employee, type: "user" });
         },
       });
+
       const handleChange = (event) => {
         const { name, value } = event.target;
         formik.setFieldValue(name, value);
         //if shop name changes
-        if (name === 'name') {
-          let url = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-          url = url.replace(/\s+/g, '-');
-          formik.setFieldValue('url', url);
+        if (name === "name") {
+          let url = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          url = url.replace(/\s+/g, "-");
+          formik.setFieldValue("url", url);
 
-          if (value !== '') {
+          if (value !== "") {
             axios
-              .get(
-                `${process.env.REACT_APP_BACKEND_HOST}/api/shop/urlcheck/`,
-                value
+              .post(
+                `${process.env.REACT_APP_BACKEND_EMPLOYEE}/api/shop/urlcheck/`,
+                { name: value }
               )
-              .then((response) => {
-                console.log(response);
+              .then((res) => {
+                if (res) {
+                  console.log(res.status);
+                  if (res.status == 200) setCheck(true);
+                }
               })
               .catch((er) => {
-                console.log(er.response);
+                let error = { ...er };
+                if (error.response.status == 400) setCheck(false);
               });
           }
         }
@@ -191,19 +160,19 @@ class Register extends React.Component {
         <form
           onSubmit={formik.handleSubmit}
           style={{
-            padding: '5px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
+            padding: "5px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          <div style={{ width: '600px', padding: '5px' }}>
+          <div style={{ width: "600px", padding: "25px" }}>
             <div className="reg-inp-wrap">
               <label htmlFor="fullname">Họ và tên chủ cửa hàng: </label>
               <div className="reg-input">
                 <input
-                  style={{ width: '300px', borderRadius: '3px' }}
+                  style={{ width: "300px", borderRadius: "3px" }}
                   className="form-control"
                   id="fullname"
                   name="fullname"
@@ -222,7 +191,7 @@ class Register extends React.Component {
               <label htmlFor="shopPhone"> Số điện thoại cửa hàng: </label>
               <div className="reg-input">
                 <input
-                  style={{ width: '300px', borderRadius: '3px' }}
+                  style={{ width: "300px", borderRadius: "3px" }}
                   className="form-control"
                   id="shopPhone"
                   name="shopPhone"
@@ -255,8 +224,8 @@ class Register extends React.Component {
             </div>
             <div className="reg-inp-wrap">
               <label htmlFor="employeePhone">
-                {' '}
-                Số điện thoại chủ cửa hàng:{' '}
+                {" "}
+                Số điện thoại chủ cửa hàng:{" "}
               </label>
               <div className="reg-input">
                 <input
@@ -292,13 +261,29 @@ class Register extends React.Component {
             </div>
 
             <div className="reg-inp-wrap">
+              <label htmlFor="username"> Tên đăng nhập: </label>
+              <div className="reg-input">
+                <input
+                  className="form-control"
+                  name="username"
+                  type="text"
+                  onChange={handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.username}
+                />
+                {formik.errors.username && formik.touched.username ? (
+                  <div className="errors">{formik.errors.username}</div>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="reg-inp-wrap">
               <label htmlFor="password"> Mật khẩu: </label>
               <div className="reg-input">
                 <input
                   className="form-control"
-                  id="password"
                   name="password"
-                  type="text"
+                  type="password"
                   onChange={handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.password}
@@ -323,15 +308,31 @@ class Register extends React.Component {
                       onBlur={formik.handleBlur}
                       value={formik.values.name}
                     />
-                    <i
-                      style={{ color: '#52c41a', marginLeft: 'auto' }}
-                      class="fa fa-check-circle"
-                      aria-hidden="true"
-                    ></i>
+                    {isChecked ? (
+                      <i
+                        style={{ color: "#52c41a", marginLeft: "auto" }}
+                        className="fa fa-check-circle"
+                        aria-hidden="true"
+                      ></i>
+                    ) : formik.values.name !== "" ? (
+                      <i
+                        style={{ color: "red", marginLeft: "auto" }}
+                        className="fa fa-times-circle"
+                        aria-hidden="true"
+                      ></i>
+                    ) : (
+                      <i
+                        style={{ color: "red", marginLeft: "auto" }}
+                        className="fa fa-shopping-basket"
+                        aria-hidden="true"
+                      ></i>
+                    )}
                   </div>
-
                   {formik.errors.name && formik.touched.name ? (
                     <div className="errors">{formik.errors.name}</div>
+                  ) : null}
+                  {!isChecked && formik.values.name !== "" ? (
+                    <div className="errors">Tên đã được sử dụng</div>
                   ) : null}
                 </div>
                 <div className="reg-url-input">
@@ -342,7 +343,7 @@ class Register extends React.Component {
                     type="text"
                     disabled
                     onChange={handleChange}
-                    value={'shopnow/cua-hang/' + formik.values.url}
+                    value={"shopnow/cua-hang/" + formik.values.url}
                   />
                 </div>
               </div>
@@ -398,10 +399,12 @@ class Register extends React.Component {
             <div className="reg-title-wrapper">
               <div className="reg-text">
                 <p className="reg-title">Đăng ký bán hàng cùng ShopNow</p>
-                <p>Cảm ơn đối tác đã tin tưởng và lựa chọn đồng hành cùng Tiki!</p>
                 <p>
-                  Vui lòng hoàn tất thông tin để tạo tài khoản đăng nhập Trung Tâm
-                  Bán Hàng.
+                  Cảm ơn đối tác đã tin tưởng và lựa chọn đồng hành cùng Tiki!
+                </p>
+                <p>
+                  Vui lòng hoàn tất thông tin để tạo tài khoản đăng nhập Trung
+                  Tâm Bán Hàng.
                 </p>
               </div>
               <div className="reg-ava">
@@ -427,4 +430,4 @@ Register.propTypes = {
   //isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { addShop })(Register);
+export default connect(mapStateToProps, { addShop, clearShop })(Register);

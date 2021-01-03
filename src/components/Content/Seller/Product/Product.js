@@ -41,7 +41,7 @@ class Product extends Component {
       qtyAdd: 0,
       status: 1,
     },
-    block: <ActiveList />,
+    block: <PendingList />,
   };
 
   onChange = (e, index) => {
@@ -110,16 +110,17 @@ class Product extends Component {
         <section className="content">
           <div className="nav-tabs-custom">
             <ul className="nav nav-tabs">
-              <li onClick={() => this.onTabClick("active")} className="active">
-                <a href="#list" data-toggle="tab">
-                  Dánh sách sản phẩm
-                </a>
-              </li>
-              <li onClick={() => this.onTabClick("pending")}>
+              <li onClick={() => this.onTabClick("pending")} className="active">
                 <a href="#pendinglist" data-toggle="tab">
                   Chờ duyệt
                 </a>
               </li>
+              <li onClick={() => this.onTabClick("active")}>
+                <a href="#list" data-toggle="tab">
+                  Dánh sách sản phẩm
+                </a>
+              </li>
+
               <li onClick={() => this.onTabClick("qtyupdate")}>
                 <a href="#warehouse" data-toggle="tab">
                   Nhập kho

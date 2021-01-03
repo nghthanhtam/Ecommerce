@@ -16,8 +16,6 @@ const initialState = {
   isOrderDetsLoaded: false,
   isAdded: false,
   ordersAdded: [],
-  warningOrders: [],
-  totalWarningOrders: 0,
 };
 
 export default function (state = initialState, action) {
@@ -38,12 +36,6 @@ export default function (state = initialState, action) {
         orders: action.payload.data.items,
         totalDocuments: action.payload.data.total,
         isLoaded: true,
-        warningOrders: action.payload.data.items.filter(
-          (item) => item.Purchase.status == "warning"
-        ),
-        totalWarningOrders: action.payload.data.items.filter(
-          (item) => item.Purchase.status == "warning"
-        ).length,
       };
     case ORDER_DETS_RECEIVED:
       return {

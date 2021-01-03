@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "./product.css";
 import axios from "axios";
 import Loading from "../../ShopNow/Loading/Loading";
+import request from "superagent";
 
 const mapStateToProps = (state) => ({
   isLoaded: state.product.isLoaded,
@@ -13,24 +14,26 @@ const mapStateToProps = (state) => ({
 
 class ProductAddNextPage extends Component {
   state = {
-    selectedFiles: [],
+    images: [],
     errorMessage: "",
+    errUploadMsg: "",
     propValueList: [],
     isPriceBoardHidden: true,
     variantList: [],
     isTransition: false,
+    isUploading: false,
   };
 
   componentDidMount = () => {
-    const { selectedFiles, arrProductVar } = this.props.location;
-    if (selectedFiles) this.setState({ selectedFiles });
+    const { images, arrProductVar } = this.props.location;
+    if (images) this.setState({ images });
 
-    //luu arrProductVar thanh 1 state vi phai thay doi selectedfiles cua no
+    //luu arrProductVar thanh 1 state vi phai thay doi selectedfiles cua no arrProductVar
     this.setState({ arrProductVarState: arrProductVar });
   };
 
   back = () => {
-    const { selectedFiles } = this.state;
+    const { images } = this.state;
     const {
       arrProductVar,
       arrVariants,
@@ -42,7 +45,7 @@ class ProductAddNextPage extends Component {
       pathname: "/seller/add-product",
       details: {
         idProduct,
-        selectedFiles,
+        images,
         arrProductVar,
         arrVariants,
         product,
@@ -58,7 +61,8 @@ class ProductAddNextPage extends Component {
       product,
       idProduct,
     } = this.props.location;
-    const { selectedFiles } = this.state;
+    const { images, arrProductVarState } = this.state;
+
     let validateArrVariants = [];
     arrVariants.map((variant) => {
       if (!variant.name.__isNew__) {
@@ -86,28 +90,38 @@ class ProductAddNextPage extends Component {
     console.log("arrProductVar: ", arrProductVar);
     console.log("arrVariants: ", validateArrVariants);
     console.log("product: ", product);
-    console.log("selectedFiles: ", selectedFiles);
+    console.log("images: ", images);
 
-    const formData = new FormData();
-    selectedFiles.forEach((file) => {
-      formData.append("photos", file);
-    });
-    formData.append("arrProductVar", JSON.stringify(arrProductVar));
-    formData.append("arrVariants", JSON.stringify(validateArrVariants));
-    if (!idProduct) formData.append("product", JSON.stringify(product));
+    // const formData = new FormData();
+    // images.forEach((file) => {
+    //   formData.append("photos", file);
+    // });
+    // formData.append("arrProductVar", JSON.stringify(arrProductVar));
+    // formData.append("arrVariants", JSON.stringify(validateArrVariants));
+    // if (!idProduct) formData.append("product", JSON.stringify(product));
+
+    const dataInput = {
+      arrProductVar: arrProductVarState,
+      arrVariants: validateArrVariants,
+      product,
+    };
+    if (idProduct) delete dataInput.product;
 
     const config = {
       headers: {
-        "Content-Type":
-          'multipart/form-data; charset=utf-8; boundary="another cool boundary";',
+        // "Content-Type":
+        //   'multipart/form-data; charset=utf-8; boundary="another cool boundary";',
+        "Content-type": "application/json",
         Authorization: `Bearer ${this.props.token}`,
       },
     };
+
     this.setState({ isTransition: true });
+
     axios
       .post(
-        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/`,
-        formData,
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/v2/`,
+        dataInput,
         config
       )
       .then((response) => {
@@ -122,12 +136,30 @@ class ProductAddNextPage extends Component {
       });
   };
 
-  handleCheckPhotos = (e) => {
-    console.log(e.target);
+  handleCheckImages = (photoChecked, productVarIndex) => {
+    this.setState(
+      (preState) => {
+        let arrProductVarState = [...preState.arrProductVarState];
+        for (var photo of arrProductVarState[productVarIndex].images) {
+          if (photo.publicId == photoChecked.publicId) {
+            photo.isMain = !photo.isMain;
+          }
+        }
+        return {
+          arrProductVarState,
+        };
+      },
+      () => console.log(this.state.arrProductVarState)
+    );
   };
 
   render() {
-    const { errorMessage, isTransition } = this.state;
+    const {
+      errorMessage,
+      isTransition,
+      isUploading,
+      errUploadMsg,
+    } = this.state;
     const { arrProductVar } = this.props.location;
     const dragOver = (e) => {
       e.preventDefault();
@@ -150,44 +182,97 @@ class ProductAddNextPage extends Component {
       }
       return true;
     };
+
     const handleFiles = (files, index) => {
+      const url =
+        `https://api.cloudinary.com/v1_1/` + process.env.CLOUD_NAME + `/upload`;
       for (let i = 0; i < files.length; i++) {
         if (validateFile(files[i])) {
-          this.setState(
-            (preState) => {
-              let arrProductVarState = [...preState.arrProductVarState];
-              for (var product of arrProductVarState) {
-                if (product.index == index) {
-                  product.selectedFiles.push(files[i]);
-                }
-              }
-              return {
-                arrProductVarState,
-              };
-            },
-            () => {
-              console.log(
-                "arrProductVarState: ",
-                this.state.arrProductVarState
-              );
-            }
-          );
+          const fileName = files[i].name;
+          this.setState({ isUploading: true, errUploadMsg: "" });
+          console.log("abc");
+          request
+            .post(url)
+            .field("upload_preset", "ml_default")
+            .field("file", files[i])
+            .field("multiple", true)
+            .field("api_key", "444253177844458")
+            .field(
+              "tags",
+              fileName ? `myphotoalbum,${fileName}` : "myphotoalbum"
+            )
+            .field("context", fileName ? `photo=${fileName}` : "")
+            .end((error, res) => {
+              this.setState({ isUploading: false });
+              if (res) {
+                this.setState((preState) => {
+                  let arrProductVarState = [...preState.arrProductVarState];
+                  for (var productvar of arrProductVarState) {
+                    if (productvar.index == index) {
+                      productvar.images.push({
+                        ...files[i],
+                        url: res.body.url,
+                        publicId: res.body.public_id,
+                        isMain: false,
+                      });
+                    }
+                  }
+                  return {
+                    arrProductVarState,
+                  };
+                });
 
-          files[i].filePath = URL.createObjectURL(files[i]);
-          this.setState((prepState) => ({
-            selectedFiles: [...prepState.selectedFiles, files[i]],
-          }));
+                this.setState((prepState) => ({
+                  images: [
+                    ...prepState.images,
+                    {
+                      ...files[i],
+                      url: res.body.url,
+                      publicId: res.body.public_id,
+                      isMain: false,
+                    },
+                  ],
+                }));
+              } else {
+                this.setState({
+                  errUploadMsg: "Không thể upload ảnh " + fileName,
+                });
+              }
+            });
+
+          // this.setState(
+          //   (preState) => {
+          //     let arrProductVarState = [...preState.arrProductVarState];
+          //     for (var product of arrProductVarState) {
+          //       if (product.index == index) {
+          //         product.images.push(files[i]);
+          //       }
+          //     }
+          //     return {
+          //       arrProductVarState,
+          //     };
+          //   },
+          //   () => {
+          //     console.log(
+          //       "arrProductVarState: ",
+          //       this.state.arrProductVarState
+          //     );
+          //   }
+          // );
+          // files[i].filePath = URL.createObjectURL(files[i]);
+          // this.setState((prepState) => ({
+          //   images: [...prepState.images, files[i]],
+          // }));
         } else {
           files[i]["invalid"] = true;
           this.setState({ errorMessage: "File type not permitted" });
         }
       }
     };
+
     const fileDrop = (e, index) => {
-      console.log(index);
       e.preventDefault();
       const files = e.dataTransfer.files;
-
       if (files.length) {
         handleFiles(files, index);
       }
@@ -258,8 +343,8 @@ class ProductAddNextPage extends Component {
                           onDragLeave={dragLeave}
                           onDrop={(e) => fileDrop(e, pindex)}
                         >
-                          {product.selectedFiles.length > 0 &&
-                            product.selectedFiles.map((item, index) => {
+                          {product.images.length > 0 &&
+                            product.images.map((item, index) => {
                               return (
                                 <label
                                   key={index}
@@ -269,15 +354,17 @@ class ProductAddNextPage extends Component {
                                   <img
                                     style={{ width: "100%", height: "90%" }}
                                     className="product-pic"
-                                    src={item.filePath}
+                                    src={item.url}
                                     alt="product"
                                   />
                                   <div className="product-info">
                                     <input
                                       className="color-checked"
                                       type="checkbox"
-                                      id={item}
-                                      onChange={this.handleCheckPhotos}
+                                      onChange={() =>
+                                        this.handleCheckImages(item, pindex)
+                                      }
+                                      checked={item.isMain}
                                     />
                                   </div>
                                 </label>
@@ -295,7 +382,16 @@ class ProductAddNextPage extends Component {
                     );
                   })}
 
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div style={{ color: "red", marginRight: "5px" }}>
+                      {errUploadMsg}
+                    </div>
                     <button
                       style={{ width: "100px", marginRight: "5px" }}
                       type="button"
@@ -308,6 +404,7 @@ class ProductAddNextPage extends Component {
                       type="button"
                       className="btn btn-warning"
                       onClick={this.upload}
+                      disabled={isUploading}
                     >
                       Yêu cầu phê duyệt
                     </button>

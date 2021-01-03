@@ -22,8 +22,12 @@ class ProductRow extends Component {
   };
 
   approve = () => {
-    const { productVar } = this.props;
-    productVar.status = "active";
+    const { productVar, pages } = this.props;
+    productVar = {
+      ...productVar,
+      status: "active",
+      pages,
+    };
     this.props.updateProductVarStatus(productVar);
   };
 
@@ -104,7 +108,6 @@ class ProductRow extends Component {
             </>
           )}
         </tr>
-        {/* : null} */}
       </Fragment>
     );
   }

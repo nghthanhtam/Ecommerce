@@ -65,7 +65,7 @@ function* fetchProductVars(params) {
 function* fetchProductVarsByIdShop(params) {
   try {
     const state = yield select();
-    let { limit, page, query, idShop, arrayStatus } = params.pages;
+    let { limit, page, query, idShop, arrayStatus, type } = params.pages;
 
     let tempString = "";
     for (let x = 0; x < arrayStatus.length; x++) {
@@ -77,14 +77,14 @@ function* fetchProductVarsByIdShop(params) {
         .get(
           `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/shop/${idShop}?limit=${limit}&page=${page}&query=${query}` +
             tempString,
-          tokenConfig(state)
+          type == "admin" ? tokenAdminConfig(state) : tokenConfig(state)
         )
         .catch((er) => console.log(er.response))
     );
 
     yield put({ type: PRODUCTVARS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -124,7 +124,8 @@ function* updateProductVarStatus(params) {
         page: 1,
         query: "",
         idShop: params.newProductVar.idShop,
-        getActive: false,
+        arrayStatus: ["pending", "declined"],
+        type: "admin",
       },
     });
   } catch (error) {

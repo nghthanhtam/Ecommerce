@@ -45,6 +45,7 @@ export default function (state = initialState, action) {
         ...state,
         isLoaded: true,
       };
+
     case RATING_DELETED:
       return {
         ...state,

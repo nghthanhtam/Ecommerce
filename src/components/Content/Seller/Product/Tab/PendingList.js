@@ -34,6 +34,7 @@ class PendingList extends React.Component {
       query,
       idShop,
       arrayStatus: ["pending"],
+      type: "seller",
     });
   }
 

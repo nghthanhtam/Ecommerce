@@ -15,20 +15,6 @@ import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import ShowingProduct from "./Product/ShowingProduct";
 import { getProductsByFilters } from "../../../state/actions/productActions";
-import {
-  createNotification,
-  NOTIFICATION_TYPE_SUCCESS,
-} from "react-redux-notify";
-import { Notify } from "react-redux-notify";
-import RecProduct from "../ShopNow/Product/RecProduct";
-
-const mySuccessNotification = {
-  message: "Dữ liệu cập nhật thành công!",
-  type: NOTIFICATION_TYPE_SUCCESS,
-  duration: 2000,
-  canDismiss: true,
-  icon: <i className="fa fa-check" />,
-};
 
 const mapStateToProps = (state) => ({
   movieCates: state.movieCate.movieCates,
@@ -109,11 +95,6 @@ class HomePage extends React.Component {
     }
   };
 
-  handleClick() {
-    const { createNotification } = this.props;
-    createNotification(mySuccessNotification);
-  }
-
   render() {
     const { productList, keywords } = this.state;
     const {
@@ -148,9 +129,6 @@ class HomePage extends React.Component {
 
     return (
       <Fragment>
-        <div>
-          <Notify position="BottomRight" />
-        </div>
         <Header />
         {isLoadedMovieCate ? (
           <Fragment>
@@ -183,13 +161,9 @@ class HomePage extends React.Component {
                           với những vật dụng mang màu sắc của nhân vật phim ảnh
                           mà bạn yêu thích.
                         </p>
-                        <div
-                          className="item"
-                          to="/"
-                          onClick={() => this.handleClick(this)}
-                        >
+                        <Link className="item" to="/shopnow">
                           Tham quan các cửa hàng
-                        </div>
+                        </Link>
                       </div>
                       <div className="imgBox">
                         <img src={this.state.picLink} alt="blue" />
@@ -407,5 +381,4 @@ export default connect(mapStateToProps, {
   getMovieCates,
   showModal,
   getProductsByFilters,
-  createNotification,
 })(HomePage);

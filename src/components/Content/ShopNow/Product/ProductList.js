@@ -25,14 +25,12 @@ const mapStateToProps = (state) => ({
 
 class ProductList extends React.Component {
   state = {
-    productList: [1, 2, 3, 4, 5, 6, 7],
-    skeletonList: [1, 2, 3, 4],
     header: "header",
     picLink: "./img/blue.png",
     section: "section-blue",
     left: 0,
 
-    idMovieCat: "",
+    minRangeCat: "",
     limit: 8,
     page: 1,
     start: 1,
@@ -52,15 +50,51 @@ class ProductList extends React.Component {
     const { limit, page } = this.state;
 
     getProductCates({ limit: 1000, page: 1 });
-    console.log(this.props.location.search);
+
     if (this.props.location) {
-      const searchQuery = qs.parse(this.props.location.search, {
+      const search = qs.parse(this.props.location.search, {
         ignoreQueryPrefix: true,
-      }).q;
+      });
+      const query = search.q,
+        idMovieCategory = search.movieCategory,
+        idMovie = search.movie,
+        rating = search.rating,
+        minRange = search.minRange,
+        maxRange = search.maxRange,
+        idProductCategory = search.productCategory,
+        arrayFilter = [];
+
+      if (query) arrayFilter.push({ name: "query", value: query });
+      if (idMovieCategory)
+        arrayFilter.push({ name: "idMovieCategory", value: idMovieCategory });
+      if (idMovie) arrayFilter.push({ name: "idMovie", value: idMovie });
+      if (rating) arrayFilter.push({ name: "rating", value: rating });
+      if (minRange) {
+        arrayFilter.push({
+          name: "minRange",
+          value: minRange,
+          description: minRange + " sao",
+        });
+        this.setState({ minRange });
+      }
+      if (maxRange) {
+        arrayFilter.push({
+          name: "maxRange",
+          value: maxRange,
+          description: maxRange + " sao",
+        });
+        this.setState({ maxRange });
+      }
+      if (idProductCategory)
+        arrayFilter.push({
+          name: "idProductCategory",
+          value: idProductCategory,
+        });
+      this.setState({ arrayFilter });
       getProductsByFilters({
         limit,
         page,
-        arrayFilter: [{ name: "query", value: searchQuery }],
+        arrayFilter,
       });
       return;
     }
@@ -80,9 +114,28 @@ class ProductList extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { isLoaded } = this.props;
+    const { isLoaded, isProCateLoaded, productCates } = this.props;
+    const { minRange, maxRange } = this.state;
+
     if (isLoaded == true && this.state.pages == prevState.pages) {
       this.getPages();
+    }
+
+    //thêm description cho arrayFilter sau khi refresh
+    if (isProCateLoaded && prevProps.isProCateLoaded !== isProCateLoaded) {
+      this.setState((prevState) => {
+        let arrayFilter = [...prevState.arrayFilter];
+        arrayFilter.map((item, index) => {
+          if (item.name == "idProductCategory") {
+            item.description = productCates.filter(
+              (procate) => procate.id == item.value
+            )[0].description;
+          }
+        });
+        return {
+          arrayFilter,
+        };
+      });
     }
   }
 
@@ -169,19 +222,6 @@ class ProductList extends React.Component {
     });
   };
 
-  changePic = (e) => {
-    if (e.target.alt === "blue") {
-      this.setState({ picLink: "./img/blue.png" });
-      this.setState({ section: "section-blue" });
-    } else if (e.target.alt === "red") {
-      this.setState({ picLink: "./img/red.png" });
-      this.setState({ section: "section-red" });
-    } else {
-      this.setState({ picLink: "./img/black.png" });
-      this.setState({ section: "section-black" });
-    }
-  };
-
   handleChoosePage = (e) => {
     if (e === "...") return;
     const { totalDocuments } = this.props;
@@ -257,10 +297,66 @@ class ProductList extends React.Component {
   };
 
   filterProducts = (filterCate, star, productCate) => {
-    const { maxRange, minRange, idProductCategory, limit, page } = this.state;
-    let arrayFilter = [...this.state.arrayFilter];
+    const { limit, page } = this.state;
+    const { isProCateLoaded } = this.props;
 
-    //if (idProductCategory == '') arrayFilter.push({ name: 'idProductCategory', value: idProductCategory, description: productCate.description })
+    // //thêm description cho arrayFilter sau khi refresh
+    // if (isProCateLoaded) {
+    //   arrayFilter.map((item, index) => {
+    //     if (item.name == "idProductCategory") {
+    //       item.description = productCates.filter(
+    //         (procate) => procate.id == item.value
+    //       )[0].name;
+    //     }
+    //   });
+    // }
+
+    let arrayFilter = [...this.state.arrayFilter],
+      query = "",
+      idMovieCategory = "",
+      idMovie = "",
+      rating = "",
+      minRange = "",
+      maxRange = "",
+      idProductCategory = "";
+
+    if (this.props.location) {
+      const search = qs.parse(this.props.location.search, {
+        ignoreQueryPrefix: true,
+      });
+      query = search.q;
+      idMovieCategory = search.movieCategory;
+      idMovie = search.movie;
+      rating = search.rating;
+      minRange = search.minRange;
+      maxRange = search.maxRange;
+      idProductCategory = search.productCategory;
+
+      if (!arrayFilter.some((el) => el.name == "query") && query)
+        arrayFilter.push({ name: "query", value: query });
+      if (
+        !arrayFilter.some((el) => el.name == "idMovieCategory") &&
+        idMovieCategory
+      )
+        arrayFilter.push({ name: "idMovieCategory", value: idMovieCategory });
+      if (!arrayFilter.some((el) => el.name == "idMovie") && idMovie)
+        arrayFilter.push({ name: "idMovie", value: idMovie });
+      if (!arrayFilter.some((el) => el.name == "rating") && rating)
+        arrayFilter.push({ name: "rating", value: rating });
+      if (!arrayFilter.some((el) => el.name == "minRange") && minRange)
+        arrayFilter.push({ name: "minRange", value: minRange });
+      if (!arrayFilter.some((el) => el.name == "maxRange") && maxRange)
+        arrayFilter.push({ name: "maxRange", value: maxRange });
+      if (
+        !arrayFilter.some((el) => el.name == "idProductCategory") &&
+        idProductCategory
+      ) {
+        arrayFilter.push({
+          name: "idProductCategory1",
+          value: idProductCategory,
+        });
+      }
+    }
 
     if (filterCate == "idProductCategory" || filterCate == "rating") {
       if (arrayFilter.some((e) => e.name === filterCate)) {
@@ -271,6 +367,7 @@ class ProductList extends React.Component {
           }
         });
       } else {
+        console.log("vooooo");
         arrayFilter.push({
           name: filterCate,
           value: star ? star : productCate.id,
@@ -278,31 +375,131 @@ class ProductList extends React.Component {
         });
       }
     } else if (filterCate == "price") {
-      //check nếu minRange đã dc chọn, thay bằng cái mới
+      //check nếu minRange đã tồn tại trong arrayFilter, thay bằng cái mới
       if (arrayFilter.some((e) => e.name === "minRange")) {
         arrayFilter.map((f) => {
-          if (f.name == "minRange") f["value"] = minRange;
+          if (f.name == "minRange") f["value"] = this.state.minRange;
         });
       } else {
-        if (minRange !== "")
-          arrayFilter.push({ name: "minRange", value: minRange });
+        if (this.state.minRange !== "")
+          arrayFilter.push({ name: "minRange", value: this.state.minRange });
       }
 
-      //check nếu maxRange đã dc chọn, thay bằng cái mới
+      //check nếu maxRange đã tồn tại trong arrayFilter, thay bằng cái mới
       if (arrayFilter.some((e) => e.name === "maxRange")) {
         arrayFilter.map((f) => {
-          if (f.name == "maxRange") f["value"] = maxRange;
+          if (f.name == "maxRange") f["value"] = this.state.maxRange;
         });
       } else {
-        if (maxRange !== "")
-          arrayFilter.push({ name: "maxRange", value: maxRange });
+        if (this.state.maxRange !== "")
+          arrayFilter.push({ name: "maxRange", value: this.state.maxRange });
       }
     }
+
     if (arrayFilter.length > 0) {
-      this.setState({ arrayFilter });
-      this.props.getProductsByFilters({ limit, page, arrayFilter });
+      const search = qs.parse(this.props.location.search, {
+        ignoreQueryPrefix: true,
+      });
+      this.setState({ arrayFilter }, () => {
+        console.log("arrayFilter: ", this.state.arrayFilter);
+        query = search.q;
+        idMovieCategory = search.movieCategory;
+        idMovie = search.movie;
+        rating = search.rating;
+        minRange = search.minRange;
+        maxRange = search.maxRange;
+        idProductCategory = search.productCategory;
+
+        let tempString = "";
+        arrayFilter.map((filter) => {
+          if (query && filter.name == "query")
+            tempString += `&q=${filter.value}`;
+          if (filter.name == "idProductCategory") {
+            if (filter.value) tempString += `&productCategory=${filter.value}`;
+            else if (idProductCategory)
+              tempString += `&productCategory=${idProductCategory}`;
+          }
+          if (filter.name == "idMovieCategory") {
+            if (filter.value) tempString += `&movieCategory=${filter.value}`;
+            else if (idMovieCategory)
+              tempString += `&movieCategory=${idMovieCategory}`;
+          }
+          if (filter.name == "idMovie") {
+            if (filter.value) tempString += `&movie=${filter.value}`;
+            else if (idMovie) tempString += `&movie=${idMovie}`;
+          }
+          if (filter.name == "rating") {
+            if (filter.value) tempString += `&rating=${filter.value}`;
+            else if (rating) tempString += `&rating=${rating}`;
+          }
+          if (filter.name == "minRange") {
+            if (filter.value) tempString += `&minRange=${filter.value}`;
+            else if (minRange) tempString += `&minRange=${minRange}`;
+          }
+          if (filter.name == "maxRange") {
+            if (filter.value) tempString += `&maxRange=${filter.value}`;
+            else if (maxRange) tempString += `&maxRange=${maxRange}`;
+          }
+        });
+
+        this.props.history.push({
+          pathname: "/shopnow/search",
+          search: `?` + tempString.substring(1),
+        });
+        this.props.getProductsByFilters({ limit, page, arrayFilter });
+      });
     }
   };
+
+  // filterProducts = (filterCate, star, productCate, query) => {
+  //   const { maxRange, minRange, idProductCategory, limit, page } = this.state;
+  //   let arrayFilter = [...this.state.arrayFilter];
+
+  //   //if (idProductCategory == '') arrayFilter.push({ name: 'idProductCategory', value: idProductCategory, description: productCate.description })
+
+  //   if (filterCate == "idProductCategory" || filterCate == "rating") {
+  //     if (arrayFilter.some((e) => e.name === filterCate)) {
+  //       arrayFilter.map((f) => {
+  //         if (f.name == filterCate) {
+  //           f["value"] = star ? star : productCate.id;
+  //           f["description"] = star ? star + " sao" : productCate.description;
+  //         }
+  //       });
+  //     } else {
+  //       arrayFilter.push({
+  //         name: filterCate,
+  //         value: star ? star : productCate.id,
+  //         description: star ? star + " sao" : productCate.description,
+  //       });
+  //     }
+  //   } else if (filterCate == "price") {
+  //     //check nếu minRange đã dc chọn, thay bằng cái mới
+  //     if (arrayFilter.some((e) => e.name === "minRange")) {
+  //       arrayFilter.map((f) => {
+  //         if (f.name == "minRange") f["value"] = minRange;
+  //       });
+  //     } else {
+  //       if (minRange !== "")
+  //         arrayFilter.push({ name: "minRange", value: minRange });
+  //     }
+
+  //     //check nếu maxRange đã dc chọn, thay bằng cái mới
+  //     if (arrayFilter.some((e) => e.name === "maxRange")) {
+  //       arrayFilter.map((f) => {
+  //         if (f.name == "maxRange") f["value"] = maxRange;
+  //       });
+  //     } else {
+  //       if (maxRange !== "")
+  //         arrayFilter.push({ name: "maxRange", value: maxRange });
+  //     }
+  //   }
+
+  //   if (arrayFilter.length > 0) {
+  //     this.setState({ arrayFilter }, () =>
+  //       this.props.getProductsByFilters({ limit, page, arrayFilter })
+  //     );
+  //   }
+  // };
 
   renderCritName = (filter) => {
     if (filter.name == "idProductCategory" || filter.name == "rating")
@@ -315,19 +512,50 @@ class ProductList extends React.Component {
 
   clearFilter = (f) => {
     const { limit, page } = this.state;
+    let tempString = "";
+
     this.setState(
       (state) => {
         let arrayFilter = [...state.arrayFilter];
-        arrayFilter.map((item, index) => {
-          if (f.name == item.name) {
-            arrayFilter.splice(index, 1);
+
+        for (let i in arrayFilter) {
+          if (f.name == arrayFilter[i].name) {
+            arrayFilter.splice(i, 1);
+            this.setState({ [f.name]: "" });
           }
-        });
+        }
         return {
           arrayFilter,
         };
       },
       () => {
+        //set lại query trên routes
+        console.log(this.state.arrayFilter);
+        this.state.arrayFilter.map((filter) => {
+          if (filter.name == "query") tempString += `&q=${filter.value}`;
+          if (filter.name == "idProductCategory") {
+            tempString += `&productCategory=${filter.value}`;
+          }
+          if (filter.name == "idMovieCategory") {
+            tempString += `&movieCategory=${filter.value}`;
+          }
+          if (filter.name == "idMovie") {
+            tempString += `&movie=${filter.value}`;
+          }
+          if (filter.name == "rating") {
+            tempString += `&rating=${filter.value}`;
+          }
+          if (filter.name == "minRange") {
+            tempString += `&minRange=${filter.value}`;
+          }
+          if (filter.name == "maxRange") {
+            tempString += `&maxRange=${filter.value}`;
+          }
+        });
+        this.props.history.push({
+          pathname: "/shopnow/search",
+          search: "?" + tempString.substring(1),
+        });
         this.props.getProductsByFilters({
           limit,
           page,
@@ -338,15 +566,7 @@ class ProductList extends React.Component {
   };
 
   render() {
-    const {
-      skeletonList,
-      productList,
-      start,
-      end,
-      minRange,
-      maxRange,
-      arrayFilter,
-    } = this.state;
+    const { start, end, minRange, maxRange, arrayFilter } = this.state;
     const {
       products,
       isLoaded,
@@ -533,7 +753,7 @@ class ProductList extends React.Component {
                                 key={index}
                                 style={{ padding: "10px 10px 10px 0" }}
                               >
-                                {f.value !== "" && (
+                                {f.value !== "" && f.name !== "query" && (
                                   <div className="criteria">
                                     <div className="cri-name">
                                       {this.renderCritName(f)}{" "}

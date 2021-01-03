@@ -33,7 +33,7 @@ class ProductAdd extends Component {
     //similar products
     products: [],
 
-    selectedFiles: [],
+    images: [],
     errorMessage: "",
     variantList: [],
     isPriceBoardHidden: true,
@@ -48,7 +48,7 @@ class ProductAdd extends Component {
         price: 0,
         stockAmount: 0,
         variants: [[], [], []],
-        selectedFiles: [],
+        images: [],
       },
     ],
     requiredName: "",
@@ -66,8 +66,6 @@ class ProductAdd extends Component {
     publisher: "",
     language: "",
     origin: "",
-    publisher: "",
-    language: "",
     size: "",
   };
 
@@ -102,6 +100,7 @@ class ProductAdd extends Component {
     //details là data truyền từ ProductNextPage
     if (details) {
       const { arrProductVar, arrVariants } = this.props.location.details;
+      console.log(arrProductVar);
       const {
         name,
         description,
@@ -122,6 +121,22 @@ class ProductAdd extends Component {
         idShop,
         idMovie,
         idProductCat,
+      });
+      const {
+        author,
+        publisher,
+        origin,
+        language,
+        size,
+      } = details.product.details;
+      this.setState({
+        author,
+        publisher,
+        language,
+        origin,
+        publisher,
+        language,
+        size,
       });
     }
   }
@@ -148,7 +163,7 @@ class ProductAdd extends Component {
       price: 0,
       stockAmount: 0,
       variants: [[], [], []],
-      selectedFiles: [],
+      images: [],
     };
     obj.index =
       Math.max.apply(
@@ -360,8 +375,8 @@ class ProductAdd extends Component {
           status: "active",
           details,
         },
-        selectedFiles: this.props.location.details
-          ? this.props.location.details.selectedFiles
+        images: this.props.location.details
+          ? this.props.location.details.images
           : null,
         idProduct,
       });
@@ -500,18 +515,6 @@ class ProductAdd extends Component {
                           />
                         </div>
                       </div>
-                      <button
-                        onClick={() => {
-                          this.props.getProducts({
-                            limit: 50,
-                            page: 1,
-                            query: "áo",
-                            arrayStatus: ["accepted"],
-                          });
-                        }}
-                      >
-                        Tìm
-                      </button>
                       {isProductLoaded && products.length > 0 && (
                         <div style={{ margin: "5px 0 25px 0" }}>
                           <label htmlFor="exampleInputEmail1">
@@ -526,7 +529,7 @@ class ProductAdd extends Component {
                               {...settings}
                               arrows={totalDocuments <= 5 ? false : true}
                               slidesToShow={
-                                totalDocuments <= 5 ? totalDocuments : 5
+                                products.length <= 5 ? products.length : 5
                               }
                             >
                               {products.map((item, index) => {
@@ -866,7 +869,9 @@ class ProductAdd extends Component {
                                           this.onChangeProductVar(e, index)
                                         }
                                         suppressContentEditableWarning={true}
-                                      ></td>
+                                      >
+                                        {product.marketPrice}
+                                      </td>
                                       <td
                                         name="price"
                                         bgcolor="#FFFFFF"
@@ -876,7 +881,9 @@ class ProductAdd extends Component {
                                           this.onChangeProductVar(e, index)
                                         }
                                         suppressContentEditableWarning={true}
-                                      ></td>
+                                      >
+                                        {product.price}
+                                      </td>
                                       <td bgcolor="#FFFFFF">
                                         <div
                                           style={{

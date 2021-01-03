@@ -104,12 +104,15 @@ export const UPDATE_SHIPPINGFEE = "UPDATE_SHIPPINGFEE";
 export const GET_ORDERS = "GET_ORDERS";
 export const DELETE_PROMOTIONINFOR = "DELETE_PROMOTIONINFOR";
 
+export const CLEAR_SHOP = "CLEAR_SHOP";
 export const GET_SHOPS = "GET_SHOPS";
 export const GET_SHOP_BY_ID = "GET_SHOP_BY_ID";
 export const SHOPS_RECEIVED = "SHOPS_RECEIVED";
 export const SHOP_RECEIVED = "SHOP_RECEIVED";
 export const UPDATE_SHOP = "UPDATE_SHOP";
+export const UPDATE_SHOP_STATUS = "UPDATE_SHOP_STATUS";
 export const SHOP_UPDATED = "SHOP_UPDATED";
+export const SHOP_STT_UPDATED = "SHOP_STT_UPDATED";
 export const ADD_SHOP = "ADD_SHOP";
 export const SHOP_ADDED = "SHOP_ADDED";
 export const DELETE_SHOP = "DELETE_SHOP";

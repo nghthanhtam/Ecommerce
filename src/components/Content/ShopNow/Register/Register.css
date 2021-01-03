@@ -37,7 +37,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-bottom: 50px;
+  padding-bottom: 20px;
 }
 .reg-card li {
   font-weight: bold;
@@ -114,7 +114,6 @@
   width: 80px;
   height: 160px;
   display: flex;
-  align-items: center;
   justify-content: center;
   margin-left: auto;
 }

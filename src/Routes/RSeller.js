@@ -107,7 +107,7 @@ class RSeller extends Component {
           {/* EMPLOYEE */}
           {token && (
             <Fragment>
-              {showNoti && <Notify position="BottomRight" />}
+              {/* {showNoti && <Notify position="BottomRight" />} */}
               {show && modalName == "modalCancel" && <ModalCancel />}
               {show && modalName == "modalShippingFee" && <ModalShippingFee />}
               {(modalName == "modalStockHis" ||
