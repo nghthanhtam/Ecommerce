@@ -1,6 +1,7 @@
 import { takeEvery, put, call, select } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../actions/authActions";
+import { tokenUserConfig } from "../actions/authUserActions";
 import { tokenAdminConfig } from "../actions/authAdminActions";
 import {
   GET_QUESTIONS,
@@ -64,15 +65,11 @@ function* addQuestion(params) {
       axios.post(
         `${process.env.REACT_APP_BACKEND_RATING}/api/question/`,
         params.newQuestion,
-        tokenConfig(state)
+        tokenUserConfig(state)
       )
     );
 
     yield put({ type: QUESTION_ADDED, payload: response.data });
-    yield put({
-      type: GET_QUESTIONS,
-      pages: params.newQuestion.pages,
-    });
   } catch (error) {
     console.log(error.response);
   }

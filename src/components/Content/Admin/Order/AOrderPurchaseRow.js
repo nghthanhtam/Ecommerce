@@ -10,12 +10,12 @@ const mapStateToProps = (state) => ({
   history: state.history.history,
 });
 
-class AOrderRow extends Component {
+class AOrderPurchaseRow extends Component {
   state = {
     statuses: [
       { value: "received", label: "Đã tiếp nhận" },
-      { value: "in transit", label: "Đang giao hàng" },
-      { value: "delivered", label: "Đã nhận hàng" },
+      // { value: "in transit", label: "Đang giao hàng" },
+      // { value: "delivered", label: "Đã nhận hàng" },
       { value: "canceled", label: "Hủy đơn" },
     ],
     disabledState: "",
@@ -65,6 +65,7 @@ class AOrderRow extends Component {
           status: item.value,
           pages: this.props.pages,
         });
+        window.location.reload();
       }
     }
   };
@@ -79,20 +80,7 @@ class AOrderRow extends Component {
   };
 
   render() {
-    const {
-      createdAt,
-      status,
-      cancelReason,
-      id,
-      shippingFee,
-      idShop,
-      Purchase,
-      estimatedDeliveryTime,
-      Ward,
-      District,
-      City,
-      totalAmount,
-    } = this.props.order;
+    const { createdAt, status, cancelReason, id, idShop } = this.props.order;
     const { statuses } = this.state;
 
     return (
@@ -109,27 +97,13 @@ class AOrderRow extends Component {
         >
           #{id}
         </td>
-        <td>{Purchase.recipient}</td>
-        <td>{Purchase.phone}</td>
-        <td>
-          {" "}
-          {Purchase.numberAndStreet +
-            ", " +
-            Ward.ward +
-            ", " +
-            District.district +
-            ", " +
-            City.city}
-        </td>
-        {/* <td
+        <td
           onClick={() => this.props.history.push(`/admin/shop`)}
           style={{ color: "blue", cursor: "pointer" }}
         >
           {idShop}
-        </td> */}
-        <td>{this.convertPrice(totalAmount)}đ</td>
+        </td>
         <td>{this.convertDate(createdAt)}</td>
-        <td>{this.convertPrice(shippingFee)}đ</td>
         <td>
           {status == "pending"
             ? "Đang xử lý"
@@ -208,4 +182,4 @@ export default connect(mapStateToProps, {
   showModal,
   updateOrder,
   deletePromotionInfor,
-})(AOrderRow);
+})(AOrderPurchaseRow);

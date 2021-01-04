@@ -4,7 +4,12 @@ import {
   DELETE_USER,
   GET_USER_BY_ID,
   UPDATE_USER,
+  CLEAR_USER,
 } from "./types";
+
+export const clearUser = () => ({
+  type: CLEAR_USER,
+});
 
 export const getUsers = (params) => ({
   type: GET_USERS,

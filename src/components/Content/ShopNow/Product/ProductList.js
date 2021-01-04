@@ -37,7 +37,6 @@ class ProductList extends React.Component {
     end: 8,
     pages: [],
     isNextBtnShow: true,
-
     arrayFilter: [],
     maxRange: "",
     minRange: "",
@@ -300,18 +299,6 @@ class ProductList extends React.Component {
 
   filterProducts = (filterCate, star, productCate) => {
     const { limit, page } = this.state;
-    const { isProCateLoaded } = this.props;
-
-    // //thêm description cho arrayFilter sau khi refresh
-    // if (isProCateLoaded) {
-    //   arrayFilter.map((item, index) => {
-    //     if (item.name == "idProductCategory") {
-    //       item.description = productCates.filter(
-    //         (procate) => procate.id == item.value
-    //       )[0].name;
-    //     }
-    //   });
-    // }
 
     let arrayFilter = [...this.state.arrayFilter],
       query = "",

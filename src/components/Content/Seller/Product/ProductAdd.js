@@ -523,11 +523,12 @@ class ProductAdd extends Component {
                           <div className="similar-wrapper">
                             <Slider
                               style={{
-                                width: "103%",
+                                width: "106%",
                                 height: "280px",
+                                marginLeft: "-30px",
                               }}
                               {...settings}
-                              arrows={totalDocuments <= 5 ? false : true}
+                              arrows={products.length <= 6 ? false : true}
                               slidesToShow={
                                 products.length <= 5 ? products.length : 5
                               }
@@ -537,7 +538,6 @@ class ProductAdd extends Component {
                                   <DuplicateProduct
                                     key={index}
                                     item={item}
-                                    arr={movies}
                                     pickProduct={() => this.pickProduct(item)}
                                   />
                                 );

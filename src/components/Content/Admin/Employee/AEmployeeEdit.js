@@ -1,195 +1,230 @@
-import React, { Fragment, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { pushHistory } from '../../../../state/actions/historyActions';
-import { updateEmployee, getEmployeeById } from '../../../../state/actions/employeeActions';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import styles from '../../../../assets/css/helper.module.css'
-import { useHistory } from 'react-router-dom'
+import React, { Fragment, useEffect } from "react";
+import { connect } from "react-redux";
+import {
+  updateAdmin,
+  getAdminById,
+} from "../../../../state/actions/adminActions";
+import Select from "react-select";
+import { getRoleAdmins } from "../../../../state/actions/roleAdminActions";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import styles from "../../../../assets/css/helper.module.css";
+import { useHistory } from "react-router-dom";
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   return {
     history: state.history.history,
     auth: state.auth,
-    isLoaded: state.employee.isLoaded,
-    isUpdated: state.employee.isUpdated,
-    employee: state.employee.employee
+    isLoaded: state.admin.isLoaded,
+    isRolesLoaded: state.roleAdmin.isLoaded,
+    roleAdmins: state.roleAdmin.roleAdmins,
+    isUpdated: state.admin.isUpdated,
+    admin: state.admin.admin,
   };
 };
 
 const AEmployeeEdit = (props) => {
-  const history = useHistory()
+  const history = useHistory();
   useEffect(() => {
-    const { match, getEmployeeById } = props
-    getEmployeeById(match.params.id)
+    const { match, getAdminById, getRoleAdmins } = props;
+    getAdminById(match.params.id);
+    getRoleAdmins({ limit: 1000, page: 1, query: "" });
   }, [props.match.params.id]);
 
   useEffect(() => {
-    if (props.isUpdated) history.push('/admin/employee')
+    if (props.isUpdated) history.push("/admin/employee");
   }, [props.isUpdated]);
 
-  const changeName = (event, setFieldValue) => {
-    const { name, value } = event.target;
-    setFieldValue(name, value);
-    //if employee name changes
-    if (name === 'name') {
-      let url = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      url = url.replace(/\s+/g, '-');
-      setFieldValue('url', url);
-    }
-  }
+  const handleChangeSelect = (selectedItem, setFieldValue) => {
+    setFieldValue("idRole", selectedItem.id);
+  };
 
-  return (
-    !props.isLoaded ? <div>Loading...</div> :
-      <Formik
-        initialValues={props.employee}
-        onSubmit={(values, actions) => {
-          props.updateEmployee(values)
-        }}
-        validationSchema={Yup.object().shape({
-          name: Yup.string()
-            .max(200, 'Chỉ được phép nhập ít hơn 200 kí tự')
-            .required('Required'),
-          busLicenseId: Yup.string()
-            .max(30, 'Chỉ được phép nhập ít hơn 30 kí tự')
-            .required('Required'),
-          city: Yup.string()
-            .max(30, 'Chỉ được phép nhập ít hơn 30 kí tự')
-            .required('Required'),
-          phone: Yup.string()
-            .max(30, 'Chỉ được phép nhập ít hơn 30 kí tự')
-            .required('Required')
-            .matches(
-              /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
-              'Số điện thoại không hợp lệ')
-        })}
-      >
-        {({ values, touched, errors, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
-          <Fragment>
-            <section className="content-header">
-              <h1>
-                Nhân viên
-                {/* <small>Preview</small> */}
-              </h1>
-              <ol className="breadcrumb">
-                <li>
-                  <a href="/admin">
-                    <i className="fa fa-dashboard" /> Trang chủ
-                  </a>
-                </li>
-                <li>
-                  <a href="/admin/employee">Nhân viên</a>
-                </li>
-                <li>
-                  <a href="javascript:void(0);">Chỉnh sửa</a>
-                </li>
-              </ol>
-            </section>
-            <section className="content" style={{ width: '165vw', marginTop: '10px' }}>
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="box box-info">
-                    <form className="form-horizontal" onSubmit={handleSubmit}>
-                      <div className="box-body">
-                        <label className={styles.formiklabel} htmlFor="firstName"> Tên Nhân viên</label>
-                        <input
-                          id="name"
-                          name="name"
-                          type="text"
-                          onChange={(event) => changeName(event, setFieldValue)}
-                          onBlur={handleBlur}
-                          value={values.name}
-                          className={
-                            errors.name && touched.name
-                              ? `${styles.formikinput} ${styles.error}`
-                              : styles.formikinput
-                          }
-                        />
-                        {touched.name && errors.name ? (
-                          <div className={styles.inputfeedback}>{errors.name}</div>
-                        ) : null}
-                        <label className={styles.formiklabel} htmlFor="busLicenseId"> Mã kinh doanh</label>
-                        <input
-                          name="busLicenseId"
-                          type="text"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.busLicenseId}
-                          className={
-                            errors.busLicenseId && touched.busLicenseId
-                              ? `${styles.formikinput} ${styles.error}`
-                              : styles.formikinput
-                          } />
-                        {touched.busLicenseId && errors.busLicenseId ? (
-                          <div className={styles.inputfeedback}>{errors.busLicenseId}</div>
-                        ) : null}
-                        <label className={styles.formiklabel} htmlFor="city"> Thành phố/Tỉnh</label>
-                        <input
-                          name="city"
-                          type="text"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.city}
-                          className={
-                            errors.city && touched.city
-                              ? `${styles.formikinput} ${styles.error}`
-                              : styles.formikinput
-                          } />
-                        {touched.city && errors.city ? (
-                          <div className={styles.inputfeedback}>{errors.city}</div>
-                        ) : null}
-                        <label className={styles.formiklabel} htmlFor="url"> Đường dẫn</label>
-                        <input
-                          name="url"
-                          type="text"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.url}
-                          disabled
-                          className={styles.formikinput} />
-                        <label className={styles.formiklabel} htmlFor="phone"> Số điện thoại</label>
-                        <input
-                          name="phone"
-                          type="text"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.phone}
-                          className={
-                            errors.phone && touched.phone
-                              ? `${styles.formikinput} ${styles.error}`
-                              : styles.formikinput
-                          } />
-                        {touched.phone && errors.phone ? (
-                          <div className={styles.inputfeedback}>{errors.phone}</div>
-                        ) : null}
-                      </div>
-                      <div className="box-footer">
-                        <button
-                          type="button"
-                          className="btn btn-default"
-                          onClick={() => { props.history.push('/admin/employee') }}
-                        >
-                          Hủy
-                        </button>
-                        <button
-                          type="submit"
-                          className="btn btn-info pull-right" >
-                          Lưu
-                        </button>
-                      </div>
-                    </form>
-                  </div>
+  return !props.isLoaded && !props.isRolesLoaded ? (
+    <div>Loading...</div>
+  ) : (
+    <Formik
+      initialValues={props.admin}
+      onSubmit={(values, actions) => {
+        props.updateAdmin(values);
+      }}
+      validationSchema={Yup.object().shape({
+        fullname: Yup.string()
+          .max(200, "Chỉ được phép nhập ít hơn 200 kí tự")
+          .required("Required"),
+        username: Yup.string()
+          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
+          .required("Required"),
+        idRole: Yup.string().required("Required"),
+        phone: Yup.string()
+          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
+          .required("Required")
+          .matches(
+            /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
+            "Số điện thoại không hợp lệ"
+          ),
+      })}
+    >
+      {({
+        values,
+        touched,
+        errors,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+        setFieldValue,
+      }) => (
+        <Fragment>
+          <section className="content-header">
+            <h1>Nhân viên {/* <small>Preview</small> */}</h1>
+            <ol className="breadcrumb">
+              <li>
+                <a href="/admin">
+                  <i className="fa fa-dashboard" /> Trang chủ
+                </a>
+              </li>
+              <li>
+                <a href="/admin/employee">Nhân viên</a>
+              </li>
+              <li>
+                <a href="javascript:void(0);">Chỉnh sửa</a>
+              </li>
+            </ol>
+          </section>
+          <section
+            className="content"
+            style={{ width: "165vw", marginTop: "10px" }}
+          >
+            <div className="row">
+              <div className="col-md-6">
+                <div className="box box-info">
+                  <form className="form-horizontal" onSubmit={handleSubmit}>
+                    <div className="box-body">
+                      <label className={styles.formiklabel} htmlFor="firstName">
+                        {" "}
+                        Tên nhân viên
+                      </label>
+                      <input
+                        name="fullname"
+                        type="text"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.fullname}
+                        className={
+                          errors.fullname && touched.fullname
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
+                      />
+                      {touched.fullname && errors.fullname ? (
+                        <div className={styles.inputfeedback}>
+                          {errors.fullname}
+                        </div>
+                      ) : null}
+
+                      <label
+                        className={styles.formiklabel}
+                        htmlFor="busLicenseId"
+                      >
+                        {" "}
+                        Vai trò
+                      </label>
+                      <Select
+                        name="idRole"
+                        onChange={(event) =>
+                          handleChangeSelect(event, setFieldValue)
+                        }
+                        isSearchable={true}
+                        options={props.roleAdmins}
+                        getOptionLabel={(option) => option.name}
+                        getOptionValue={(option) => option.id}
+                        placeholder="Loading..."
+                        onBlur={handleBlur}
+                        value={props.roleAdmins.filter(
+                          (option) => option.id === values.idRole
+                        )}
+                        className={
+                          errors.idRole && touched.idRole
+                            ? `${styles.formikinput} ${styles.error}`
+                            : ""
+                        }
+                      />
+                      {touched.idRole && errors.idRole ? (
+                        <div className={styles.inputfeedback}>
+                          {errors.idRole}
+                        </div>
+                      ) : null}
+
+                      <label className={styles.formiklabel} htmlFor="username">
+                        {" "}
+                        Tên đăng nhập
+                      </label>
+                      <input
+                        name="username"
+                        type="text"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.username}
+                        className={
+                          errors.username && touched.username
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
+                      />
+                      {touched.username && errors.username ? (
+                        <div className={styles.inputfeedback}>
+                          {errors.username}
+                        </div>
+                      ) : null}
+
+                      <label className={styles.formiklabel} htmlFor="phone">
+                        {" "}
+                        Số điện thoại
+                      </label>
+                      <input
+                        name="phone"
+                        type="text"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.phone}
+                        className={
+                          errors.phone && touched.phone
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
+                      />
+                      {touched.phone && errors.phone ? (
+                        <div className={styles.inputfeedback}>
+                          {errors.phone}
+                        </div>
+                      ) : null}
+                    </div>
+                    <div className="box-footer">
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={() => {
+                          props.history.push("/admin/employee");
+                        }}
+                      >
+                        Hủy
+                      </button>
+                      <button type="submit" className="btn btn-info pull-right">
+                        Lưu
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
-            </section>
-          </Fragment>
-        )}
-      </Formik>
+            </div>
+          </section>
+        </Fragment>
+      )}
+    </Formik>
   );
 };
 
 export default connect(mapStateToProps, {
-  pushHistory,
-  updateEmployee,
-  getEmployeeById
+  updateAdmin,
+  getAdminById,
+  getRoleAdmins,
 })(AEmployeeEdit);

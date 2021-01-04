@@ -42,12 +42,14 @@ class OrderRow extends Component {
 
   handleAction = (e, item) => {
     const { status, id } = this.props.order;
+    console.log("aaaaaaaaaaaaa");
     if (
       (status == "in transit" && item.value == "received") ||
       status == item.value
     )
       e.stopPropagation();
     else {
+      console.log("aaaaaaaaaaaaa");
       if (item.value == "canceled") {
         this.props.showModal({
           show: true,

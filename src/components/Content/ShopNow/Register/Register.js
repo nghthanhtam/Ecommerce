@@ -113,7 +113,6 @@ class Register extends React.Component {
             busLicenseId,
             city,
             username,
-            id: mongoose.Types.ObjectId(),
           };
           const shop = {
             busLicenseId,

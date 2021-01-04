@@ -135,6 +135,7 @@ function* addOrder(params) {
 
 function* updateOrder(params) {
   const state = yield select();
+  console.log(params);
   const { id, status, cancelReason, type, idUser } = params.newOrder;
   let pages;
   if (params.newOrder.pages) pages = params.newOrder.pages;
@@ -154,7 +155,7 @@ function* updateOrder(params) {
         })
       : yield put({
           type: GET_ORDERS_BY_SHOP,
-          pages,
+          pages: { ...pages, done: false },
         });
     yield put({ type: ORDER_UPDATED, payload: response.data });
   } catch (error) {
@@ -182,7 +183,7 @@ function* updateShippingFee(params) {
         })
       : yield put({
           type: GET_ORDERS_BY_SHOP,
-          pages,
+          pages: { ...pages, done: false },
         });
   } catch (error) {
     console.log(error);

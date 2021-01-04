@@ -8,6 +8,7 @@ import {
   USER_ADDED,
   USER_DELETED,
   USER_UPDATED,
+  CLEAR_USER,
 } from "../actions/types";
 
 const initialState = {
@@ -16,10 +17,18 @@ const initialState = {
   isLoaded: false,
   isUpdated: false,
   user: {},
+  isAdded: false,
+  userAdded: {},
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case CLEAR_USER:
+      return {
+        ...state,
+        isAdded: false,
+        userAdded: {},
+      };
     case GET_USERS:
       return {
         ...state,
@@ -51,7 +60,8 @@ export default function (state = initialState, action) {
     case USER_ADDED:
       return {
         ...state,
-        isLoaded: true,
+        isAdded: true,
+        userAdded: action.payload.data,
       };
 
     case USER_DELETED:

@@ -180,6 +180,12 @@ class Login extends Component {
               >
                 <i className="fa fa-google-plus"></i> Sign in using Google+
               </a>
+              <a
+                href="/shopnow/register-user"
+                className="btn btn-block btn-warning btn-flat"
+              >
+                Create an account
+              </a>
             </div>
             {/* /.social-auth-links */}
           </div>

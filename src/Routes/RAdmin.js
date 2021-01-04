@@ -36,8 +36,6 @@ import AShop from "../components/Content/Admin/Shop/AShop";
 import AShopEdit from "../components/Content/Admin/Shop/AShopEdit";
 import AUser from "../components/Content/Admin/User/AUser";
 import AUserEdit from "../components/Content/Admin/User/AUserEdit";
-import Admin from "../components/Content/Admin/Admin/Admin";
-import AdminEdit from "../components/Content/Admin/Admin/AdminEdit";
 import { Notify } from "react-redux-notify";
 
 const mapStateToProps = (state) => ({
@@ -256,13 +254,8 @@ class RAdmin extends Component {
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
-                    path="/admin/admin/edit/:id"
-                    component={AdminEdit}
-                  ></PrivateRoute>
-                  <PrivateRoute
-                    exact
-                    path="/admin/admin"
-                    component={Admin}
+                    path="/admin/employee"
+                    component={AEmployee}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact

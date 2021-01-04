@@ -73,7 +73,7 @@ class Menu extends React.Component {
                   </a>
                   <ul className="treeview-menu">
                     <li>
-                      <Link to="/admin/admin">
+                      <Link to="/admin/employee">
                         <i className="fa fa-circle-o" /> Nhân viên
                       </Link>
                     </li>

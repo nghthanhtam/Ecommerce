@@ -69,11 +69,11 @@ class AdminEdit extends Component {
     };
     this.props.updateAdmin(newAdmin);
     //Quay về trang chính
-    this.props.history.push("/admin/admin");
+    this.props.history.push("/admin/employee");
   };
 
   handleCancel = (e) => {
-    this.props.history.push("/admin/admin");
+    this.props.history.push("/admin/employee");
   };
 
   handleChangeSelect = (selectedItem) => {
@@ -92,10 +92,7 @@ class AdminEdit extends Component {
           <Fragment>
             {/* Content Header (Page header) */}
             <section className="content-header">
-              <h1>
-                Nhân viên
-                {/* <small>Preview</small> */}
-              </h1>
+              <h1>Nhân viên </h1>
               <ol className="breadcrumb">
                 <li>
                   <a href="fake_url">

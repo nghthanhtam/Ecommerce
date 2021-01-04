@@ -13,6 +13,7 @@ const initialState = {
   admins: [],
   totalDocuments: 0,
   isLoaded: false,
+  isUpdated: false,
 };
 
 export default function (state = initialState, action) {
@@ -20,7 +21,8 @@ export default function (state = initialState, action) {
     case GET_ADMINS:
       return {
         ...state,
-        isLoaded: true,
+        isLoaded: false,
+        isUpdated: false,
       };
     case GET_ADMIN_BY_ID:
       return {
@@ -60,6 +62,7 @@ export default function (state = initialState, action) {
     case ADMIN_UPDATED:
       return {
         ...state,
+        isUpdated: true,
       };
 
     default:

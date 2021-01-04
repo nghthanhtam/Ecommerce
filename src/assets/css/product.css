@@ -21,11 +21,24 @@
 }
 .recproduct-card {
   width: 224px;
+  height: 320px;
   background: white;
   padding: 15px;
   position: relative;
   transition: 0.5s;
   border-radius: 8px;
+  margin-top: 30px;
+}
+.recproduct-card-hidden {
+  width: 224px;
+  height: 320px;
+  background: white;
+  padding: 15px;
+  position: relative;
+  transition: 0.5s;
+  border-radius: 8px;
+  margin-top: 30px;
+  visibility: hidden;
 }
 .product-card {
   width: 224px;
@@ -75,7 +88,7 @@
   align-items: center;
   padding-top: 20px;
   padding-bottom: 20px;
-  width: 200px;
+  height: 200px;
 }
 .product-pic {
   width: 100%;
@@ -278,6 +291,17 @@
   color: white;
   transition: 0.3s linear;
 }
+.cart-btn-stop {
+  height: 40px;
+  width: 45%;
+  border-radius: 50px;
+  background-color: #0d1136;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  transition: 0.3s linear;
+}
 .cart-btn i {
   margin-right: 20px;
 }
@@ -351,6 +375,7 @@
 .recommend-wrapper {
   width: 100%;
   height: 100%;
+  margin-bottom: 60px;
 }
 .recommend-pane {
   margin-bottom: -30px;
@@ -568,6 +593,9 @@
 }
 .tag:hover,
 .selected-tag {
+  width: 100px;
+  padding: 10px;
+  margin: 3px;
   cursor: pointer;
   display: flex;
   justify-content: center;

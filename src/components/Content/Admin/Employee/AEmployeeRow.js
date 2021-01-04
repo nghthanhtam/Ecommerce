@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { deleteEmployee } from '../../../../state/actions/employeeActions';
-import { pushHistory } from '../../../../state/actions/historyActions';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { deleteAdmin } from "../../../../state/actions/adminActions";
+import { pushHistory } from "../../../../state/actions/historyActions";
 
 class AEmployeeRow extends Component {
   convertDate = (date) => {
@@ -12,7 +12,7 @@ class AEmployeeRow extends Component {
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return year + '-' + month + '-' + dt;
+    return year + "-" + month + "-" + dt;
   };
 
   handleEdit = (id) => {
@@ -24,19 +24,19 @@ class AEmployeeRow extends Component {
   };
 
   render() {
-    const { employee, index } = this.props;
+    const { admin, index } = this.props;
 
     return (
       <tr>
         <td>{index + 1}</td>
-        <td>{employee.username}</td>
-        <td>{employee.idRole}</td>
-        <td>{employee.fullname}</td>
-        <td>{employee.phone}</td>
+        <td>{admin.username}</td>
+        <td>{admin.idRole}</td>
+        <td>{admin.fullname}</td>
+        <td>{admin.phone}</td>
         <td>
           <div className="btn-group">
             <button
-              onClick={() => this.handleEdit(employee.id)}
+              onClick={() => this.handleEdit(admin.id)}
               type="button"
               className="btn btn-success"
             >
@@ -44,13 +44,12 @@ class AEmployeeRow extends Component {
             </button>
 
             <button
-              onClick={() => this.handleDelete(employee.id)}
+              onClick={() => this.handleDelete(admin.id)}
               type="button"
               className="btn btn-danger"
             >
               Xóa
             </button>
-
           </div>
         </td>
       </tr>
@@ -58,4 +57,4 @@ class AEmployeeRow extends Component {
   }
 }
 
-export default connect(null, { deleteEmployee, pushHistory })(AEmployeeRow);
+export default connect(null, { deleteAdmin, pushHistory })(AEmployeeRow);

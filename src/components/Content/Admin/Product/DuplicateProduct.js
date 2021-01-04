@@ -1,10 +1,7 @@
 import React from "react";
 
 class DuplicateProduct extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {};
-  }
+  state = {};
 
   componentDidMount() {
     console.log(this.props.item);

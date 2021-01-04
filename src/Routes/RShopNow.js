@@ -25,6 +25,9 @@ import Watchlist from "../components/Content/ShopNow/User/Watchlist";
 import Wishlist from "../components/Content/ShopNow/User/Wishlist";
 import Shop from "../components/Content/ShopNow/Shop/Shop";
 import Login from "../components/Content/ShopNow/Auth/Login";
+import UserRegister from "../components/Content/ShopNow/Register/UserRegister";
+import UserRegisterSuccess from "../components/Content/ShopNow/Register/UserRegisterSuccess";
+import ModalVerify from "../components/Content/Modal/ModalVerify";
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -83,17 +86,22 @@ class RShopNow extends Component {
   };
 
   render() {
-    const { token, userToken, adminToken, show, modalName } = this.props;
+    const { userToken, show, modalName } = this.props;
     return (
       <Fragment>
+        {show && modalName == "modalVerify" && <ModalVerify />}
         {show && modalName == "login" && <Login />}
         <Switch>
+          <Route exact path="/shopnow/register-user">
+            <UserRegister />
+          </Route>
           <Route exact path="/shopnow/register">
             <Register />
           </Route>
           <Route exact path="/shopnow/register-success">
             <RegisterSuccess />
           </Route>
+          <Route exact path="/shopnow/verify" component={UserRegisterSuccess} />
           <Route exact path="/shopnow">
             <HomePage />
           </Route>

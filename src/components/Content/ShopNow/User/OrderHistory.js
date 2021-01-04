@@ -44,6 +44,10 @@ class OrderHistory extends React.Component {
     window.removeEventListener("scroll", this.handleScroll);
   }
 
+  convertPrice = (value) => {
+    if (value) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   handleScroll = () => {
     if (window.scrollY > 10) {
       this.setState({ header: "header1" });
@@ -145,15 +149,17 @@ class OrderHistory extends React.Component {
                         <div className="orderhis-line">
                           <p>Ngày giao hàng </p>
                           <p>
-                            {new Date(item.createdAt).getDate()}/
-                            {new Date(item.createdAt).getMonth() + 1}/
-                            {new Date(item.createdAt).getFullYear()}
+                            {new Date(item.estimatedDeliveryTime).getDate()}/
+                            {new Date(item.estimatedDeliveryTime).getMonth() +
+                              1}
+                            /
+                            {new Date(item.estimatedDeliveryTime).getFullYear()}
                           </p>
                         </div>
                         <div className="orderhis-line">
                           <h4>Tổng tiền </h4>
                           <div style={{ fontWeight: "600" }}>
-                            {item.totalPrice}
+                            {this.convertPrice(item.totalPrice)}
                           </div>
                         </div>
                       </div>
@@ -171,23 +177,20 @@ class OrderHistory extends React.Component {
                             <div className="orderhis-address">
                               <h4>Địa chỉ giao hàng</h4>
                               <p>
-                                {item.numberAndStreet}, {item.Ward.ward},{" "}
-                                {item.District.district}, {item.City.city}
+                                {item.User.Addresses[0].numberAndStreet},{" "}
+                                {item.Ward.ward}, {item.District.district},{" "}
+                                {item.City.city}
                               </p>
                             </div>
                             <div className="orderhis-total">
                               <div className="orderhis-line">
-                                <p>Giảm giá </p>
-                                <p>0đ</p>
-                              </div>
-                              <div className="orderhis-line">
                                 <p>Phí vận chuyển</p>
-                                <p>0đ</p>
+                                <p>{item.shippingFee}đ</p>
                               </div>
                               <div className="orderhis-line">
                                 <h4>Tổng tiền </h4>
                                 <div style={{ fontWeight: "600" }}>
-                                  {item.totalPrice}
+                                  {item.totalAmount}
                                 </div>
                               </div>
                             </div>
@@ -282,7 +285,9 @@ class OrderHistory extends React.Component {
                                         <td>{o.name}</td>
                                         <td>{o.quantity}</td>
                                         <td>{o.price}</td>
-                                        <td>{o.discountAmount}</td>
+                                        <td>
+                                          {this.convertPrice(o.discountAmount)}
+                                        </td>
                                       </tr>
                                     );
                                   })}

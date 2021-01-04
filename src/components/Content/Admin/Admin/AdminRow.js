@@ -16,7 +16,7 @@ class AdminRow extends Component {
   };
 
   handleEdit = (id) => {
-    this.props.pushHistory(`/seller/admin/edit/${id}`);
+    this.props.pushHistory(`/admin/employee/edit/${id}`);
   };
 
   handleDelete = (id) => {

@@ -25,6 +25,11 @@ class OrderReceipt extends React.Component {
     };
   }
 
+  convertPrice = (value) => {
+    if (value) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return 0;
+  };
+
   replyClick = () => {
     let { replyBoxHidden } = this.state;
     this.setState({ replyBoxHidden: !replyBoxHidden });
@@ -35,7 +40,7 @@ class OrderReceipt extends React.Component {
     o.orderDets.map((od) => {
       total += od.price * od.quantity;
     });
-    return total;
+    return this.convertPrice(total);
   };
 
   getTotal = () => {
@@ -45,7 +50,7 @@ class OrderReceipt extends React.Component {
         total += od.quantity * od.price;
       });
     });
-    return total;
+    return this.convertPrice(total);
   };
 
   render() {

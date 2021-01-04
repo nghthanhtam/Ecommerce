@@ -117,7 +117,6 @@ const APromotionEdit = (props) => {
                         onChange={(event) =>
                           handleChangeSelect(event, setFieldValue)
                         }
-                        name="idPromotionType"
                         isSearchable={true}
                         options={props.promotionTypes}
                         getOptionLabel={(option) => option.name}

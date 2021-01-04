@@ -1,7 +1,7 @@
 import { takeEvery, put, call, select } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../actions/authActions";
-import { tokenUserConfig } from "../actions/authUserActions";
+import { tokenUserConfig, noTokenConfig } from "../actions/authUserActions";
 import { tokenAdminConfig } from "../actions/authAdminActions";
 import {
   GET_USERS,
@@ -59,21 +59,23 @@ function* fetchUserById(params) {
 
 function* addUser(params) {
   const state = yield select();
-
+  const { newUser } = params;
   try {
     const response = yield call(() =>
       axios.post(
         `${process.env.REACT_APP_BACKEND_USER}/api/user/`,
-        params.newUser,
-        tokenConfig(state)
+        newUser,
+        (newUser.type = "user" ? noTokenConfig(state) : tokenAdminConfig(state))
       )
     );
 
-    yield put({ type: USER_ADDED, payload: response.data });
-    yield put({
-      type: GET_USERS,
-      pages: params.newUser.pages,
-    });
+    yield put({ type: USER_ADDED, payload: response });
+    newUser.type = "user"
+      ? null
+      : yield put({
+          type: GET_USERS,
+          pages: newUser.pages,
+        });
   } catch (error) {
     console.log(error.response);
   }

@@ -9,7 +9,9 @@ class Product extends React.Component {
   render() {
     let { name, brand, arrayImage } = this.props.item;
     return (
-      <div className="recproduct-card">
+      <div
+        className={name !== "" ? "recproduct-card" : "recproduct-card-hidden"}
+      >
         <h1>{name}</h1>
         <p>Thương hiệu: {brand}</p>
         <img

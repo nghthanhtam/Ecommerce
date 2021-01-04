@@ -1,15 +1,15 @@
-import React, { Component, Fragment } from 'react';
-import AEmployeeModal from './AEmployeeModal';
-import AEmployeeRow from './AEmployeeRow';
-import { connect } from 'react-redux';
-import { getEmployeesByShop } from '../../../../state/actions/employeeActions';
-import PropTypes from 'prop-types';
-import Loader from 'react-loader';
+import React, { Component, Fragment } from "react";
+import AEmployeeModal from "./AEmployeeModal";
+import AEmployeeRow from "./AEmployeeRow";
+import { connect } from "react-redux";
+import { getAdmins } from "../../../../state/actions/adminActions";
+import PropTypes from "prop-types";
+import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
-  employees: state.employee.employees,
-  isLoaded: state.employee.isLoaded,
-  totalDocuments: state.employee.totalDocuments
+  admins: state.admin.admins,
+  isLoaded: state.admin.isLoaded,
+  totalDocuments: state.admin.totalDocuments,
 });
 
 class AEmployee extends Component {
@@ -18,26 +18,18 @@ class AEmployee extends Component {
     limit: 5,
     page: 1,
     pages: [],
-    query: '',
+    query: "",
     start: 1,
     end: 5,
     isNextBtnShow: true,
-    activeEmp: true,
-    deletedEmp: false,
   };
 
   componentDidMount() {
-    const { limit, page, query, deletedEmp, activeEmp } = this.state
-    let idShop = ''
-    if (this.props.match.params.id) idShop = this.props.match.params.id
-    this.props.getEmployeesByShop({
+    const { limit, page, query } = this.state;
+    this.props.getAdmins({
       limit,
       page,
       query,
-      idShop,
-      deletedEmp,
-      activeEmp,
-      isAdmin: true
     });
   }
 
@@ -53,8 +45,8 @@ class AEmployee extends Component {
     const { totalDocuments } = this.props;
     if (totalDocuments == 0) return;
 
-    let newQuery = '';
-    if (query === '') newQuery = 'undefined';
+    let newQuery = "";
+    if (query === "") newQuery = "undefined";
     else newQuery = query;
 
     let pages = Math.floor(totalDocuments / limit);
@@ -72,7 +64,7 @@ class AEmployee extends Component {
         { pageNumber: 1 },
         { pageNumber: 2 },
         { pageNumber: 3 },
-        { pageNumber: '...' },
+        { pageNumber: "..." },
         { pageNumber: newArray.length },
       ];
     }
@@ -82,7 +74,7 @@ class AEmployee extends Component {
   handleOnChange = (e) => {
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === 'query') {
+      if (e.target.name === "query") {
         this.setState({ page: 1 }, () => {
           this.rerenderPage();
         });
@@ -110,17 +102,11 @@ class AEmployee extends Component {
   }
 
   rerenderPage = () => {
-    const { limit, page, query, deletedEmp, activeEmp } = this.state;
-    let idShop = ''
-    if (this.props.match.params.id) idShop = this.props.match.params.id
-    this.props.getEmployeesByShop({
+    const { limit, page, query } = this.state;
+    this.props.getAdmins({
       limit,
       page,
       query,
-      idShop,
-      deletedEmp,
-      activeEmp,
-      isAdmin: true
     });
     this.getPages();
     this.getStartEndDocuments();
@@ -128,7 +114,7 @@ class AEmployee extends Component {
 
   renderEmployees = () => {
     const { start, limit, page } = this.state;
-    const { employees, isLoaded } = this.props;
+    const { admins, isLoaded } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -137,19 +123,19 @@ class AEmployee extends Component {
         </td>
       </tr>
     ) : (
-        employees.map((eachEmployee, index) => (
-          <AEmployeeRow
-            history={this.props.history}
-            key={eachEmployee.id}
-            employee={eachEmployee}
-            index={index + start - 1}
-          />
-        ))
-      );
+      admins.map((admin, index) => (
+        <AEmployeeRow
+          history={this.props.history}
+          key={admin.id}
+          admin={admin}
+          index={index + start - 1}
+        />
+      ))
+    );
   };
 
   handleChoosePage = (e) => {
-    if (e === '...') return
+    if (e === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
 
@@ -166,17 +152,11 @@ class AEmployee extends Component {
     }
 
     this.setState({ page: e }, () => {
-      const { limit, page, query, deletedEmp, activeEmp } = this.state;
-      let idShop = ''
-      if (this.props.match.params.id) idShop = this.props.match.params.id
-      this.props.getEmployeesByShop({
+      const { limit, page, query } = this.state;
+      this.props.getAdmins({
         limit,
         page,
         query,
-        idShop,
-        deletedEmp,
-        activeEmp,
-        isAdmin: true
       });
       this.getStartEndDocuments();
     });
@@ -189,7 +169,7 @@ class AEmployee extends Component {
         onChange={this.handleOnChange}
         name="limit"
         aria-controls="example1"
-        style={{ margin: '0px 5px' }}
+        style={{ margin: "0px 5px" }}
         className="form-control input-sm"
         value={limit}
       >
@@ -212,8 +192,8 @@ class AEmployee extends Component {
               key={eachButton.pageNumber}
               className={
                 page === eachButton.pageNumber
-                  ? 'paginae_button active'
-                  : 'paginate_button '
+                  ? "paginae_button active"
+                  : "paginate_button "
               }
             >
               <a
@@ -229,13 +209,13 @@ class AEmployee extends Component {
           <li className="paginate_button">
             <a
               className={
-                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
+                isNextBtnShow === true ? "paga-link" : "paga-link_hidden"
               }
               name="currentPage"
               href="#"
               onClick={() => this.handleChoosePage(-1)}
             >
-              {'>>'}
+              {">>"}
             </a>
           </li>
         </>
@@ -243,43 +223,10 @@ class AEmployee extends Component {
     }
   };
 
-  onCheckActiveEmp = (e) => {
-    const { activeEmp, limit, page, query, deletedEmp } = this.state
-    let idShop = ''
-    if (this.props.match.params.id) idShop = this.props.match.params.id
-    if (e.target.name == 'active') {
-      this.setState({ activeEmp: !activeEmp }, () => {
-        this.props.getEmployeesByShop({
-          limit,
-          page,
-          query,
-          idShop,
-          deletedEmp: this.state.deletedEmp,
-          activeEmp: this.state.activeEmp,
-          isAdmin: true
-        });
-      });
-    }
-    else if (e.target.name == 'deleted') {
-      this.setState({ deletedEmp: !deletedEmp }, () => {
-        console.log(activeEmp);
-        this.props.getEmployeesByShop({
-          limit,
-          page,
-          query,
-          idShop,
-          deletedEmp: this.state.deletedEmp,
-          activeEmp: this.state.activeEmp,
-          isAdmin: true
-        });
-      });
-    }
-  };
-
   render() {
-    const { limit, page, start, end, query, activeEmp, deletedEmp } = this.state;
+    const { limit, page, start, end, query } = this.state;
     const { totalDocuments } = this.props;
-    const { id } = this.props.match.params
+    const { id } = this.props.match.params;
     return (
       <Fragment>
         {/* {!isLoaded ? (
@@ -287,9 +234,7 @@ class AEmployee extends Component {
         ) : ( */}
         <Fragment>
           <section className="content-header">
-            <h1>
-              Nhân viên nhà bán #{id}
-            </h1>
+            <h1>Nhân viên nhà bán #{id}</h1>
             <ol className="breadcrumb">
               <li>
                 <a href="./admin">
@@ -309,8 +254,8 @@ class AEmployee extends Component {
             <div className="row">
               <div className="col-md-12">
                 <div className="box">
-                  <div className="box-header" style={{ marginTop: '5px' }}>
-                    <div style={{ paddingLeft: '5px' }} className="col-md-8">
+                  <div className="box-header" style={{ marginTop: "5px" }}>
+                    <div style={{ paddingLeft: "5px" }} className="col-md-8">
                       <h3 className="box-title">Quản lý nhân viên</h3>
                     </div>
                     <div className="col-md-4">
@@ -341,50 +286,13 @@ class AEmployee extends Component {
                             <div
                               id="example1_filter"
                               className="dataTables_filter"
-                              style={{ display: 'flex' }}
                             >
-                              <div
-                                style={{
-                                  fontWeight: 400,
-                                  width: '180px'
-                                }}
-                              >
-                                <input
-                                  style={{
-                                    marginRight: '3px',
-                                  }}
-                                  type="checkbox"
-                                  className="minimal"
-                                  name='active'
-                                  checked={activeEmp}
-                                  onChange={this.onCheckActiveEmp}
-                                />
-                                Đang hoạt động
-                              </div>
-                              <div
-                                style={{
-                                  fontWeight: 400,
-                                  width: '180px'
-                                }}
-                              >
-                                <input
-                                  style={{
-                                    marginRight: '3px',
-                                  }}
-                                  type="checkbox"
-                                  className="minimal"
-                                  name='deleted'
-                                  checked={deletedEmp}
-                                  onChange={this.onCheckActiveEmp}
-                                />
-                                Không hoạt động
-                              </div>
                               <div>
                                 Tìm kiếm
                                 <input
                                   type="search"
                                   name="query"
-                                  style={{ margin: '0px 0px' }}
+                                  style={{ margin: "0px 0px" }}
                                   className="form-control input-sm"
                                   placeholder="Nhập từ khóa... "
                                   aria-controls="example1"
@@ -405,12 +313,12 @@ class AEmployee extends Component {
                           >
                             <thead>
                               <tr>
-                                <th style={{ width: '5%' }}>#</th>
-                                <th style={{ width: '15%' }}>Tên tài khoản</th>
-                                <th style={{ width: '10%' }}>Vai trò</th>
-                                <th style={{ width: '20%' }}>Họ tên</th>
-                                <th style={{ width: '15%' }}>Số điện thoại</th>
-                                <th style={{ width: '20%' }}>Thao tác</th>
+                                <th style={{ width: "5%" }}>#</th>
+                                <th style={{ width: "15%" }}>Tên tài khoản</th>
+                                <th style={{ width: "10%" }}>Vai trò</th>
+                                <th style={{ width: "20%" }}>Họ tên</th>
+                                <th style={{ width: "15%" }}>Số điện thoại</th>
+                                <th style={{ width: "20%" }}>Thao tác</th>
                               </tr>
                             </thead>
 
@@ -437,20 +345,24 @@ class AEmployee extends Component {
                             role="status"
                             aria-live="polite"
                           >
-                            Hiển thị{' '}
-                            {query == ''
-                              ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
-                              : ''}{' '}
+                            Hiển thị{" "}
+                            {query == ""
+                              ? start +
+                                " đến " +
+                                (totalDocuments < end ? totalDocuments : end) +
+                                " trong "
+                              : ""}{" "}
                             {totalDocuments} kết quả
                           </div>
                         </div>
                         <div className="col-sm-7">
                           <div
                             className="dataTables_paginate paging_simple_numbers"
-                            id="example1_paginate">
+                            id="example1_paginate"
+                          >
                             <ul
                               className="pagination"
-                              style={{ float: 'right' }}
+                              style={{ float: "right" }}
                             >
                               {this.renderPageButtons()}
                             </ul>
@@ -474,10 +386,10 @@ class AEmployee extends Component {
 }
 
 AEmployee.propTypes = {
-  getEmployeesByShop: PropTypes.func.isRequired,
-  employees: PropTypes.array.isRequired,
+  getAdmins: PropTypes.func.isRequired,
+  admins: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getEmployeesByShop })(AEmployee);
+export default connect(mapStateToProps, { getAdmins })(AEmployee);

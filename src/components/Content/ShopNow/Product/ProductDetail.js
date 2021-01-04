@@ -92,6 +92,7 @@ class ProductDetail extends React.Component {
       this.setState({ bigPhoto: product.images[0].url });
     }
 
+    //get recommended movies by idMovie
     if (
       isProductLoaded &&
       prevProps.isProductLoaded !== this.props.isProductLoaded
@@ -114,10 +115,23 @@ class ProductDetail extends React.Component {
             }
           )
           .then((response) => {
-            console.log(response.data);
-            this.setState({
-              sameMovieProucts: response.data.items,
-            });
+            let tempArr = response.data.items;
+            if (tempArr.length > 0 && tempArr.length < 5) {
+              const arrLength = tempArr.length;
+              for (let i = 0; i < 5 - arrLength + 1; i++) {
+                tempArr.push({
+                  name: "",
+                  brand: "",
+                  arrayImage: "",
+                });
+              }
+            }
+            this.setState(
+              {
+                sameMovieProucts: tempArr,
+              },
+              () => console.log(tempArr)
+            );
           });
       } catch (error) {
         console.log(error.response);
@@ -674,12 +688,14 @@ class ProductDetail extends React.Component {
                       </div>
                     </div>
                     {selectedProductVar !== "" &&
-                      selectedProductVar.status == "active" && (
-                        <div className="cart-btn" onClick={this.addToCart}>
-                          <i className="fa fa-shopping-cart"></i> Thêm vào giỏ
-                          hàng
-                        </div>
-                      )}
+                    selectedProductVar.status == "active" ? (
+                      <div className="cart-btn" onClick={this.addToCart}>
+                        <i className="fa fa-shopping-cart"></i> Thêm vào giỏ
+                        hàng
+                      </div>
+                    ) : (
+                      <div className="cart-btn-stop">Ngưng kinh doanh</div>
+                    )}
                   </div>
                   <div style={{ display: "flex" }}>
                     <div className="label-prodet">
@@ -738,13 +754,13 @@ class ProductDetail extends React.Component {
                   <Slider
                     style={{
                       width: "107%",
-                      marginLeft: "-40px",
-                      height: "380px",
+                      height: "370px",
+                      marginLeft: "-35px",
                     }}
                     {...settings}
-                    isProductLoaded
+                    arrows={sameMovieProucts.length <= 6 ? false : true}
                     slidesToShow={
-                      sameMovieProucts.length < 5 ? sameMovieProucts.length : 5
+                      sameMovieProucts.length <= 5 ? sameMovieProucts.length : 5
                     }
                   >
                     {sameMovieProucts.map((item, index) => {
@@ -762,11 +778,10 @@ class ProductDetail extends React.Component {
                     style={{
                       width: "107%",
                       height: "380px",
-                      marginLeft: "-40px",
                     }}
                     {...settings}
                     slidesToShow={
-                      sameMovieProucts.length < 5 ? sameMovieProucts.length : 5
+                      sameMovieProucts.length <= 5 ? sameMovieProucts.length : 5
                     }
                   >
                     {sameMovieProucts.map((item, index) => {
@@ -885,7 +900,7 @@ class ProductDetail extends React.Component {
                                     margin: "5px 5px 5px 0",
                                     border: "1px solid #ccc",
                                   }}
-                                  onClick={() => this.replyClick()}
+                                  onClick={() => this.answerClick()}
                                 >
                                   Hủy bỏ
                                 </Button>
@@ -932,7 +947,9 @@ class ProductDetail extends React.Component {
                   >
                     <div className="review-wrapper">
                       <p>ĐÁNH GIÁ</p>
-                      <div className="review-score">{averageRating}/5</div>
+                      <div className="review-score">
+                        {averageRating ? averageRating : 0}/5
+                      </div>
                       <Rating
                         precision={0.5}
                         name="simple-controlled"

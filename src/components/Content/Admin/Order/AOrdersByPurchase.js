@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { getOrderDets } from "../../../../state/actions/orderActions";
-import AOrderRow from "./AOrderRow";
+import AOrderPurchaseRow from "./AOrderPurchaseRow";
 import { Redirect } from "react-router-dom";
 
 const mapStateToProps = (state) => ({
@@ -51,7 +51,7 @@ class AOrdersByPurchase extends React.Component {
       return <Redirect to="/admin/order" />;
     }
     return orderList.map((o, index) => (
-      <AOrderRow
+      <AOrderPurchaseRow
         history={this.props.history}
         key={index}
         order={o}
@@ -126,7 +126,7 @@ class AOrdersByPurchase extends React.Component {
 
                           <tfoot>
                             <tr>
-                              <th>#</th>
+                              <th>Mã đơn hàng</th>
                               <th>Nhà bán </th>
                               <th>Thời gian giao hàng dự kiến</th>
                               <th>Tình trạng</th>

@@ -164,6 +164,7 @@ export const USER_REGISTER_FAIL = "USER_REGISTER_FAIL";
 export const USER_UPDATE_AUTH = "USER_UPDATE_AUTH";
 export const USER_UPDATE_AUTH_SUCCESS = "USER_UPDATE_AUTH_SUCCESS";
 export const GET_USERS = "GET_USERS";
+export const CLEAR_USER = "CLEAR_USER";
 export const USERS_RECEIVED = "USERS_RECEIVED";
 export const ADD_USER = "ADD_USER";
 export const USER_ADDED = "USER_ADDED";

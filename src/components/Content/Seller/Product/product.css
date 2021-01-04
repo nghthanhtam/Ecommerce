@@ -33,7 +33,7 @@
   margin-top: -10px;
 }
 .similar-wrapper {
-  margin: 10px 0 0 -30px;
+  margin: 10px 0 0 0px;
   display: flex;
 }
 .duplicate-info {
@@ -116,7 +116,4 @@
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-column-gap: 12px;
   grid-row-gap: 12px;
-}
-.similar-wrapper {
-  display: flex;
 }
