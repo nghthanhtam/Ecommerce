@@ -30,7 +30,7 @@ class AOrderPurchaseRow extends Component {
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return dt + "-" + month + "-" + year;
+    return dt + "/" + month + "/" + year;
   };
 
   handleEdit = (id) => {
@@ -80,7 +80,14 @@ class AOrderPurchaseRow extends Component {
   };
 
   render() {
-    const { createdAt, status, cancelReason, id, idShop } = this.props.order;
+    const {
+      createdAt,
+      status,
+      cancelReason,
+      id,
+      idShop,
+      shippingFee,
+    } = this.props.order;
     const { statuses } = this.state;
 
     return (
@@ -115,6 +122,7 @@ class AOrderPurchaseRow extends Component {
             ? "Đã tiếp nhận"
             : "Đã hủy"}
         </td>
+        <td>{this.convertPrice(shippingFee)}</td>
         <td>{cancelReason}</td>
         {status == "delivered" || status == "canceled" ? null : (
           <td>

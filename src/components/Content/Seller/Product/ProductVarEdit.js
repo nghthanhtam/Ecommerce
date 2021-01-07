@@ -2,7 +2,6 @@ import React, { Fragment, Component } from "react";
 import { connect } from "react-redux";
 import Select from "react-select";
 import axios from "axios";
-import { CloudinaryContext } from "cloudinary-react";
 import { pushHistory } from "../../../../state/actions/historyActions";
 import { updateProductVar } from "../../../../state/actions/productVarActions";
 import qs from "qs";
@@ -16,7 +15,6 @@ const mapStateToProps = (state, props) => {
 };
 
 class ProductVarEdit extends Component {
-  static contextType = CloudinaryContext.contextType;
   state = {
     id: "",
     name: "",
@@ -30,6 +28,8 @@ class ProductVarEdit extends Component {
       { label: "Đang kinh doanh", value: "active" },
       { label: "Ngừng kinh doanh", value: "inactive" },
     ],
+    errUploadMsg: "",
+    isUploading: false,
   };
 
   componentDidMount() {
@@ -100,19 +100,26 @@ class ProductVarEdit extends Component {
     };
 
     const url =
-      `https://api.cloudinary.com/v1_1/` + process.env.CLOUD_NAME + `/upload`;
+      `https://api.cloudinary.com/v1_1/` +
+      process.env.REACT_APP_CLOUD_NAME +
+      `/upload`;
 
     let files = e.target.files;
     if (files.length) {
       for (let i = 0; i < files.length; i++) {
         if (validateFile(files[i])) {
+          this.setState({
+            isUploading: true,
+            errUploadMsg: "Đang tải ảnh lên",
+          });
+
           const fileName = files[i].name;
           request
             .post(url)
             .field("upload_preset", "ml_default")
             .field("file", files[i])
             .field("multiple", true)
-            .field("api_key", "444253177844458")
+            .field("api_key", process.env.REACT_APP_API_KEY)
             .field(
               "tags",
               fileName ? `myphotoalbum,${fileName}` : "myphotoalbum"
@@ -120,6 +127,7 @@ class ProductVarEdit extends Component {
             .field("context", fileName ? `photo=${fileName}` : "")
             .end((error, response) => {
               if (response) {
+                this.setState({ isUploading: false, errUploadMsg: "" });
                 this.setState(
                   (prepState) => ({
                     arrImages: [
@@ -127,7 +135,8 @@ class ProductVarEdit extends Component {
                       {
                         ...files[i],
                         url: response.body.url,
-                        public_id: response.body.public_id,
+                        publicId: response.body.public_id,
+                        isMain: false,
                       },
                     ],
                   }),
@@ -144,8 +153,12 @@ class ProductVarEdit extends Component {
   };
 
   handleSubmit = (e) => {
-    const { id, name, SKU, marketPrice, price, status } = this.state;
+    const { id, name, SKU, marketPrice, price, status, arrImages } = this.state;
     e.preventDefault();
+    if (arrImages.length < 3) {
+      this.setState({ errUploadMsg: "Sản phẩm phải có ít nhất 3 hình" });
+      return;
+    }
 
     const newProductVar = {
       id,
@@ -154,14 +167,15 @@ class ProductVarEdit extends Component {
       marketPrice,
       price,
       status,
+      images: arrImages,
     };
     this.props.updateProductVar(newProductVar);
     //Quay về trang chính
-    this.props.history.push("/product");
+    this.props.history.push("/seller/product");
   };
 
   handleCancel = (e) => {
-    this.props.history.push("/product");
+    this.props.history.push("/seller/product");
   };
 
   oncheckboxChange = (id) => {
@@ -180,6 +194,18 @@ class ProductVarEdit extends Component {
     );
   };
 
+  onDeleteImage = (photoId) => {
+    this.setState((prepState) => {
+      let arrImages = [...prepState.arrImages];
+      arrImages.map((image, index) => {
+        if (image.id == photoId) arrImages.splice(index, 1);
+      });
+      return {
+        arrImages,
+      };
+    });
+  };
+
   render() {
     const {
       id,
@@ -190,12 +216,11 @@ class ProductVarEdit extends Component {
       status,
       arrImages,
       statuses,
+      errUploadMsg,
+      isUploading,
     } = this.state;
     return (
       <Fragment>
-        {/* {!id ? (
-          <Loader></Loader>
-        ) : ( */}
         <div>
           <section className="content-header">
             <ol className="breadcrumb">
@@ -318,12 +343,28 @@ class ProductVarEdit extends Component {
                                 htmlFor={photo}
                                 className="skuproduct-card"
                               >
-                                <img
-                                  style={{ width: "100%", height: "90%" }}
-                                  className="product-pic"
-                                  src={photo.url}
-                                  alt="sản phẩm"
-                                />
+                                <div style={{ display: "flex" }}>
+                                  <img
+                                    style={{
+                                      width: "210px",
+                                      height: "240px",
+                                    }}
+                                    className="product-pic"
+                                    src={photo.url}
+                                    alt="sản phẩm"
+                                  />
+                                  <button
+                                    onClick={() => this.onDeleteImage(photo.id)}
+                                    className="close"
+                                    style={{
+                                      marginBottom: "auto",
+                                      marginTop: "-5px",
+                                    }}
+                                  >
+                                    <span aria-hidden="true">×</span>
+                                  </button>
+                                </div>
+
                                 <div className="product-info">
                                   <input
                                     className="color-checked"
@@ -337,12 +378,10 @@ class ProductVarEdit extends Component {
                               </label>
                             );
                           })}
-                        {/* <div className="upload-area">
-                          <i className="fa fa-upload fa-3x" />
-                          <p className="upload-text">Kéo và thả ảnh vào để tải ảnh lên</p>
-                          {errorMessage}
-                        </div> */}
                       </div>
+                      {errUploadMsg !== "" ? (
+                        <p style={{ color: "red" }}>{errUploadMsg}</p>
+                      ) : null}
                     </div>
                     {/* /.box-body */}
                     <div className="box-footer">
@@ -353,7 +392,12 @@ class ProductVarEdit extends Component {
                       >
                         Hủy
                       </button>
-                      <button type="submit" className="btn btn-info pull-right">
+
+                      <button
+                        disabled={isUploading}
+                        type="submit"
+                        className="btn btn-info pull-right"
+                      >
                         Lưu
                       </button>
                     </div>

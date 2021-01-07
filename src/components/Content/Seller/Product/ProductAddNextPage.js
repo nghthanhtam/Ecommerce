@@ -190,7 +190,6 @@ class ProductAddNextPage extends Component {
         if (validateFile(files[i])) {
           const fileName = files[i].name;
           this.setState({ isUploading: true, errUploadMsg: "" });
-          console.log("abc");
           request
             .post(url)
             .field("upload_preset", "ml_default")
@@ -239,30 +238,6 @@ class ProductAddNextPage extends Component {
                 });
               }
             });
-
-          // this.setState(
-          //   (preState) => {
-          //     let arrProductVarState = [...preState.arrProductVarState];
-          //     for (var product of arrProductVarState) {
-          //       if (product.index == index) {
-          //         product.images.push(files[i]);
-          //       }
-          //     }
-          //     return {
-          //       arrProductVarState,
-          //     };
-          //   },
-          //   () => {
-          //     console.log(
-          //       "arrProductVarState: ",
-          //       this.state.arrProductVarState
-          //     );
-          //   }
-          // );
-          // files[i].filePath = URL.createObjectURL(files[i]);
-          // this.setState((prepState) => ({
-          //   images: [...prepState.images, files[i]],
-          // }));
         } else {
           files[i]["invalid"] = true;
           this.setState({ errorMessage: "File type not permitted" });

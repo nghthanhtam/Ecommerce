@@ -669,6 +669,18 @@ class ARoleModal extends Component {
                 <p>Hủy mã giảm giá đơn hàng</p>
               </label>
             </div>
+            <div>
+              <label className="label-wrapper">
+                <input
+                  value={79}
+                  name="getAdminLogs"
+                  type="checkbox"
+                  checked={this.state.getAdminLogs}
+                  onChange={this.onChange}
+                />
+                <p>Xem lịch sử hoạt động</p>
+              </label>
+            </div>
           </div>
         </div>
       </Fragment>

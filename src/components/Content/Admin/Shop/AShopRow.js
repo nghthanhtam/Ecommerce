@@ -34,8 +34,8 @@ class AShopRow extends Component {
     this.props.deleteShop(id);
   };
 
-  handleEmpDetails = (id) => {
-    this.props.pushHistory(`/admin/employee/shop/${id}`);
+  handleEmpDetails = (idShop) => {
+    this.props.pushHistory(`/admin/employee/shop/${idShop}`);
   };
 
   render() {

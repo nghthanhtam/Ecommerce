@@ -4,11 +4,14 @@ import { updateAuth } from "../state/actions/authActions";
 import { updateAuthUser } from "../state/actions/authUserActions";
 import { updateAuthAdmin } from "../state/actions/authAdminActions";
 import { connect } from "react-redux";
+import { PrivateRoute } from "../components/Content/Seller/PrivateRoute";
+import { Notify } from "react-redux-notify";
 
 import Header from "../components/Content/Admin/Header";
 import Footer from "../components/Content/Seller/Footer";
 import Menu from "../components/Content/Seller/Menu";
 import ProductVarEdit from "../components/Content/Seller/Product/ProductVarEdit";
+import AProductVarEdit from "../components/Content/Admin/Product/ProductVarEdit";
 import APurchase from "../components/Content/Admin/Order/APurchase";
 import AOrdersByPurchase from "../components/Content/Admin/Order/AOrdersByPurchase";
 import OrderDetail from "../components/Content/Admin/Order/AOrderDetail";
@@ -17,8 +20,6 @@ import APromotionEdit from "../components/Content/Admin/Promotion/APromotionEdit
 import PropTypes from "prop-types";
 import ARole from "../components/Content/Admin/Role/ARole";
 import ARoleEdit from "../components/Content/Admin/Role/ARoleEdit";
-import { PrivateRoute } from "../components/Content/Seller/PrivateRoute";
-
 import ALogin from "../components/Content/Admin/Auth/ALogin";
 import AHome from "../components/Content/Admin/Home/AHome";
 import AProduct from "../components/Content/Admin/Product/AProduct";
@@ -31,12 +32,18 @@ import ModalCancel from "../components/Content/Modal/ModalCancel";
 import ModalExpire from "../components/Content/Modal/ModalExpire";
 import ProductInforEdit from "../components/Content/Admin/Product/ProductInforEdit";
 import AEmployee from "../components/Content/Admin/Employee/AEmployee";
-import EmployeeEdit from "../components/Content/Admin/Employee/AEmployeeEdit";
+import AEmployeeEdit from "../components/Content/Admin/Employee/AEmployeeEdit";
+import AShopEmployee from "../components/Content/Admin/Shop/AShopEmployee";
+import AShopEmployeeEdit from "../components/Content/Admin/Shop/AShopEmployeeEdit";
 import AShop from "../components/Content/Admin/Shop/AShop";
 import AShopEdit from "../components/Content/Admin/Shop/AShopEdit";
 import AUser from "../components/Content/Admin/User/AUser";
 import AUserEdit from "../components/Content/Admin/User/AUserEdit";
-import { Notify } from "react-redux-notify";
+import LogAdmin from "../components/Content/Admin/LogAdmin/ALogAdmin";
+import AMovie from "../components/Content/Admin/Movie/AMovie";
+import AMovieEdit from "../components/Content/Admin/Movie/AMovieEdit";
+import AMovieCate from "../components/Content/Admin/MovieCate/AMovieCate";
+import AMovieCateEdit from "../components/Content/Admin/MovieCate/AMovieCateEdit";
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -51,21 +58,6 @@ const mapStateToProps = (state) => ({
   modalName: state.modal.modalName,
   showNoti: state.noti.showNoti,
 });
-
-const roles = {
-  employee: "employeeManagement",
-  role: "roleManagement",
-  member: "memberManagement",
-  product: "productManagement",
-  user: "userManagement",
-  invoice: "invoiceManagement",
-  supplier: "supplierManagement",
-  payslip: "payslipManagement",
-  order: "orderManagement",
-  material: "materialManagement",
-  materialReceiptNote: "materialReceiptNoteManagement",
-  SuperAdmin: "SuperAdmin",
-};
 
 class RAdmin extends Component {
   state = {};
@@ -168,79 +160,91 @@ class RAdmin extends Component {
                     exact
                     path="/admin/product"
                     component={AProduct}
-                    role={roles.product}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/promotion"
                     component={APromotion}
-                    role={roles.promotion}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/promotion/edit"
                     component={APromotionEdit}
-                    role={roles.promotion}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/movie"
+                    component={AMovie}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/movie/edit"
+                    component={AMovieEdit}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/moviecate"
+                    component={AMovieCate}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/moviecate/edit"
+                    component={AMovieCateEdit}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/productvar/edit/:id"
-                    component={ProductVarEdit}
-                    role={roles.product}
+                    component={AProductVarEdit}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/product/edit/:id"
                     component={ProductInforEdit}
-                    role={roles.product}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/role"
                     component={ARole}
-                    role={roles.employee}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/role/edit/:id"
                     component={ARoleEdit}
-                    role={roles.role}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
-                    path="/admin/employee/shop/:id"
-                    component={AEmployee}
-                    role={roles.employee}
+                    path="/admin/employee/shop/:idShop"
+                    component={AShopEmployee}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/employee/edit/:id"
-                    component={EmployeeEdit}
-                    role={roles.employee}
+                    component={AEmployeeEdit}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/employee/shop/edit/:id"
+                    component={AShopEmployeeEdit}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/shop"
                     component={AShop}
-                    role={roles.shop}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/shop/edit/:id"
                     component={AShopEdit}
-                    role={roles.shop}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/user"
                     component={AUser}
-                    role={roles.user}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
                     path="/admin/user/edit/:id"
                     component={AUserEdit}
-                    role={roles.user}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
@@ -261,6 +265,11 @@ class RAdmin extends Component {
                     exact
                     path="/admin/order/warningdetails/:id"
                     component={OrderDetail}
+                  ></PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/admin/logadmin"
+                    component={LogAdmin}
                   ></PrivateRoute>
                   <Route path="*" render={() => <Redirect to="/404" />} />
                 </Switch>

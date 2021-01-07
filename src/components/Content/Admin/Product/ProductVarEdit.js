@@ -2,6 +2,7 @@ import React, { Fragment, Component } from "react";
 import { connect } from "react-redux";
 import Select from "react-select";
 import axios from "axios";
+import request from "superagent";
 import { pushHistory } from "../../../../state/actions/historyActions";
 import { updateProductVar } from "../../../../state/actions/productVarActions";
 
@@ -20,14 +21,19 @@ class ProductVarEdit extends Component {
     marketPrice: 0,
     price: 0,
     status: "",
-    Images: [],
+    images: [],
     statuses: [
       { label: "Đang chờ duyệt", value: "pending" },
       { label: "Đang kinh doanh", value: "active" },
       { label: "Ngừng kinh doanh", value: "inactive" },
     ],
+    images: [],
+    errUploadMsg: "",
+    isUploading: false,
   };
+
   componentDidMount() {
+    console.log(process.env.REACT_APP_CLOUD_NAME);
     const { id } = this.props.match.params;
 
     axios
@@ -45,7 +51,15 @@ class ProductVarEdit extends Component {
           status,
           Images,
         } = response.data;
-        this.setState({ id, name, SKU, marketPrice, price, status, Images });
+        this.setState({
+          id,
+          name,
+          SKU,
+          marketPrice,
+          price,
+          status,
+          images: Images,
+        });
       })
       .catch((er) => console.log(er.response));
   }
@@ -73,7 +87,6 @@ class ProductVarEdit extends Component {
   };
 
   handleFileSelect = (e) => {
-    console.log("abccc");
     const validateFile = (file) => {
       const validTypes = [
         "image/jpeg",
@@ -87,14 +100,53 @@ class ProductVarEdit extends Component {
       return true;
     };
 
+    const url =
+      `https://api.cloudinary.com/v1_1/` +
+      process.env.REACT_APP_CLOUD_NAME +
+      `/upload`;
+
     let files = e.target.files;
     if (files.length) {
       for (let i = 0; i < files.length; i++) {
         if (validateFile(files[i])) {
-          files[i].filePath = URL.createObjectURL(files[i]);
-          this.setState((prepState) => ({
-            Images: [...prepState.Images, files[i]],
-          }));
+          this.setState({
+            isUploading: true,
+            errUploadMsg: "Đang tải ảnh lên...",
+          });
+
+          const fileName = files[i].name;
+
+          request
+            .post(url)
+            .field("upload_preset", "ml_default")
+            .field("file", files[i])
+            .field("multiple", true)
+            .field("api_key", process.env.REACT_APP_API_KEY)
+            .field(
+              "tags",
+              fileName ? `myphotoalbum,${fileName}` : "myphotoalbum"
+            )
+            .field("context", fileName ? `photo=${fileName}` : "")
+            .end((error, res) => {
+              if (res) {
+                this.setState({ isUploading: false, errUploadMsg: "" });
+                this.setState((prepState) => ({
+                  images: [
+                    ...prepState.images,
+                    {
+                      ...files[i],
+                      url: res.body.url,
+                      publicId: res.body.public_id,
+                      isMain: false,
+                    },
+                  ],
+                }));
+              } else {
+                this.setState({
+                  errUploadMsg: "Không thể upload ảnh " + fileName,
+                });
+              }
+            });
         } else {
           files[i]["invalid"] = true;
           this.setState({ errorMessage: "Định dạng tệp không phù hợp" });
@@ -104,8 +156,13 @@ class ProductVarEdit extends Component {
   };
 
   handleSubmit = (e) => {
-    const { id, name, SKU, marketPrice, price, status } = this.state;
+    const { id, name, SKU, marketPrice, price, status, images } = this.state;
     e.preventDefault();
+
+    if (images.length < 3) {
+      this.setState({ errUploadMsg: "Sản phẩm phải có ít nhất 3 hình" });
+      return;
+    }
 
     const newProductVar = {
       id,
@@ -114,30 +171,43 @@ class ProductVarEdit extends Component {
       marketPrice,
       price,
       status,
+      images,
     };
     this.props.updateProductVar(newProductVar);
     //Quay về trang chính
-    this.props.history.push("/product");
+    this.props.history.push("/admin/product");
   };
 
   handleCancel = (e) => {
-    this.props.history.push("/product");
+    this.props.history.push("/admin/product");
   };
 
   oncheckboxChange = (id) => {
     this.setState(
       (prepState) => {
-        let Images = [...prepState.Images];
-        Images.map((image) => {
+        let images = [...prepState.images];
+        images.map((image) => {
           if (image.id == id) image.isMain = true;
           else image.isMain = false;
         });
         return {
-          Images,
+          images,
         };
       },
-      () => console.log(this.state.Images)
+      () => console.log(this.state.images)
     );
+  };
+
+  onDeleteImage = (photoId) => {
+    this.setState((prepState) => {
+      let images = [...prepState.images];
+      images.map((image, index) => {
+        if (image.id == photoId) images.splice(index, 1);
+      });
+      return {
+        images,
+      };
+    });
   };
 
   render() {
@@ -148,8 +218,10 @@ class ProductVarEdit extends Component {
       marketPrice,
       price,
       status,
-      Images,
+      images,
       statuses,
+      isUploading,
+      errUploadMsg,
     } = this.state;
 
     return (
@@ -189,7 +261,7 @@ class ProductVarEdit extends Component {
                   <form role="form" onSubmit={this.handleSubmit}>
                     <div className="box-body">
                       <div className="form-group">
-                        <label for="id">ID</label>
+                        <label htmlFor="id">ID</label>
                         <input
                           className="form-control"
                           name="id"
@@ -202,7 +274,7 @@ class ProductVarEdit extends Component {
                         />
                       </div>
                       <div className="form-group">
-                        <label for="SKU">SKU</label>
+                        <label htmlFor="SKU">SKU</label>
                         <input
                           className="form-control"
                           name="SKU"
@@ -214,7 +286,7 @@ class ProductVarEdit extends Component {
                         />
                       </div>
                       <div className="form-group">
-                        <label for="name">Tên sản phẩm</label>
+                        <label htmlFor="name">Tên sản phẩm</label>
                         <input
                           className="form-control"
                           name="name"
@@ -226,7 +298,7 @@ class ProductVarEdit extends Component {
                         />
                       </div>
                       <div className="form-group">
-                        <label for="marketPrice">Giá niêm yết</label>
+                        <label htmlFor="marketPrice">Giá niêm yết</label>
                         <input
                           className="form-control"
                           name="marketPrice"
@@ -238,7 +310,7 @@ class ProductVarEdit extends Component {
                         />
                       </div>
                       <div className="form-group">
-                        <label for="price">Giá bán</label>
+                        <label htmlFor="price">Giá bán</label>
                         <input
                           className="form-control"
                           name="price"
@@ -250,7 +322,7 @@ class ProductVarEdit extends Component {
                         />
                       </div>
                       <div className="form-group">
-                        <label for="price">Tình trạng</label>
+                        <label htmlFor="price">Tình trạng</label>
                         <Select
                           name="status"
                           onChange={this.handleChangeSelect}
@@ -262,8 +334,8 @@ class ProductVarEdit extends Component {
                           )}
                         />
                       </div>
-                      <div class="form-group">
-                        <label for="exampleInputFile">Hình ảnh</label>
+                      <div className="form-group">
+                        <label htmlFor="exampleInputFile">Hình ảnh</label>
                         <input
                           type="file"
                           id="exampleInputFile"
@@ -272,21 +344,34 @@ class ProductVarEdit extends Component {
                           }}
                         />
                       </div>
-                      <div className="sku-grid">
-                        {Images.length > 0 &&
-                          Images.map((photo, index) => {
+                      <div className="productvar-grid">
+                        {images.length > 0 &&
+                          images.map((photo, index) => {
                             return (
                               <label
                                 key={index}
                                 htmlFor={photo}
                                 className="skuproduct-card"
                               >
-                                <img
-                                  style={{ width: "100%", height: "90%" }}
-                                  className="product-pic"
-                                  src={photo.url}
-                                  alt="sản phẩm"
-                                />
+                                <div style={{ display: "flex" }}>
+                                  <img
+                                    style={{ width: "210px", height: "240px" }}
+                                    className="product-pic"
+                                    src={photo.url}
+                                    alt="sản phẩm"
+                                  />
+                                  <button
+                                    onClick={() => this.onDeleteImage(photo.id)}
+                                    className="close"
+                                    style={{
+                                      marginBottom: "auto",
+                                      marginTop: "-5px",
+                                    }}
+                                  >
+                                    <span aria-hidden="true">×</span>
+                                  </button>
+                                </div>
+
                                 <div className="product-info">
                                   <input
                                     className="color-checked"
@@ -300,13 +385,12 @@ class ProductVarEdit extends Component {
                               </label>
                             );
                           })}
-                        {/* <div className="upload-area">
-                          <i className="fa fa-upload fa-3x" />
-                          <p className="upload-text">Kéo và thả ảnh vào để tải ảnh lên</p>
-                          {errorMessage}
-                        </div> */}
                       </div>
+                      {errUploadMsg !== "" ? (
+                        <p style={{ color: "red" }}>{errUploadMsg}</p>
+                      ) : null}
                     </div>
+
                     {/* /.box-body */}
                     <div className="box-footer">
                       <button
@@ -316,7 +400,11 @@ class ProductVarEdit extends Component {
                       >
                         Hủy
                       </button>
-                      <button type="submit" className="btn btn-info pull-right">
+                      <button
+                        disabled={isUploading}
+                        type="submit"
+                        className="btn btn-info pull-right"
+                      >
                         Lưu
                       </button>
                     </div>

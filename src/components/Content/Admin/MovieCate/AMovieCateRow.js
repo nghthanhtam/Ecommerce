@@ -1,42 +1,40 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { deleteAdmin } from "../../../../state/actions/adminActions";
-import { pushHistory } from "../../../../state/actions/historyActions";
+import { deleteMovieCate } from "../../../../state/actions/movieCateActions";
 
-class AEmployeeRow extends Component {
+class AMovieCateRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
     let month = newDate.getMonth() + 1;
     let dt = newDate.getDate();
-
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return year + "-" + month + "-" + dt;
+    return dt + "/" + month + "/" + year;
   };
 
   handleEdit = (id) => {
-    this.props.pushHistory(`/admin/employee/edit/${id}`);
+    this.props.history.push({
+      pathname: "/admin/moviecate/edit",
+      search: `?id=${id}`,
+    });
   };
 
   handleDelete = (id) => {
-    this.props.deleteAdmin(id);
+    this.props.deleteMovieCate(id);
   };
 
   render() {
-    const { admin, index } = this.props;
+    const { movieCate } = this.props;
 
     return (
       <tr>
-        <td>{index + 1}</td>
-        <td>{admin.username}</td>
-        <td>{admin.idRole}</td>
-        <td>{admin.fullname}</td>
-        <td>{admin.phone}</td>
+        <td>{movieCate.name}</td>
+        <td>{movieCate.description}</td>
         <td>
           <div className="btn-group">
             <button
-              onClick={() => this.handleEdit(admin.id)}
+              onClick={() => this.handleEdit(movieCate.id)}
               type="button"
               className="btn btn-success"
             >
@@ -44,7 +42,7 @@ class AEmployeeRow extends Component {
             </button>
 
             <button
-              onClick={() => this.handleDelete(admin.id)}
+              onClick={() => this.handleDelete(movieCate.id)}
               type="button"
               className="btn btn-danger"
             >
@@ -57,4 +55,4 @@ class AEmployeeRow extends Component {
   }
 }
 
-export default connect(null, { deleteAdmin, pushHistory })(AEmployeeRow);
+export default connect(null, { deleteMovieCate })(AMovieCateRow);

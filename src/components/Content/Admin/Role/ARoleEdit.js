@@ -657,6 +657,20 @@ const ARoleEdit = (props) => {
                                 <p>Hủy mã giảm giá đơn hàng</p>
                               </label>
                             </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(79)}
+                                  value={79}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xem lịch sử hoạt động</p>
+                              </label>
+                            </div>
                           </div>
                         </div>
                       </div>

@@ -38,6 +38,7 @@ import purchaseReducer from "./purchaseReducer";
 import roleAdminReducer from "./roleAdminReducer";
 import adminReducer from "./adminReducer";
 import notiReducer from "./notiReducer";
+import logAdminReducer from "./logAdminReducer";
 
 export default combineReducers({
   notifications: notifyReducer,
@@ -79,4 +80,5 @@ export default combineReducers({
   purchase: purchaseReducer,
   roleAdmin: roleAdminReducer,
   admin: adminReducer,
+  logAdmin: logAdminReducer,
 });

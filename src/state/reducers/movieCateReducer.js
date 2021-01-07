@@ -10,8 +10,9 @@ import {
 
 const initialState = {
   movieCates: [],
+  movieCate: {},
   isLoaded: false,
-  totalDocuments: 0
+  totalDocuments: 0,
 };
 
 export default function (state = initialState, action) {
@@ -19,7 +20,6 @@ export default function (state = initialState, action) {
     case GET_MOVIE_CATES:
       return {
         ...state,
-        //isLoaded: true,
       };
     case MOVIE_CATES_RECEIVED:
       return {
@@ -48,7 +48,6 @@ export default function (state = initialState, action) {
     case ADD_MOVIE_CATE:
       return {
         ...state,
-        //movieCates: [action.payload, ...state.movieCates],
         isLoaded: false,
       };
 

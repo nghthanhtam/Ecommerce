@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { deleteAdmin } from "../../../../state/actions/adminActions";
+import { deleteMovie } from "../../../../state/actions/movieActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
-class AEmployeeRow extends Component {
+class AMovieRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
@@ -12,31 +12,38 @@ class AEmployeeRow extends Component {
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return year + "-" + month + "-" + dt;
+    return dt + "/" + month + "/" + year;
   };
 
   handleEdit = (id) => {
-    this.props.pushHistory(`/admin/employee/edit/${id}`);
+    this.props.history.push({
+      pathname: "/admin/movie/edit",
+      search: `?id=${id}`,
+    });
   };
 
   handleDelete = (id) => {
-    this.props.deleteAdmin(id);
+    this.props.deleteMovie(id);
   };
 
   render() {
-    const { admin, index } = this.props;
+    const { movie } = this.props;
 
     return (
       <tr>
-        <td>{index + 1}</td>
-        <td>{admin.username}</td>
-        <td>{admin.idRole}</td>
-        <td>{admin.fullname}</td>
-        <td>{admin.phone}</td>
+        <td>{movie.idMovieType}</td>
+        <td>{movie.name}</td>
+        <td>{movie.couponCode}</td>
+        <td>
+          {this.convertDate(movie.timeStart)}-{this.convertDate(movie.timeEnd)}
+        </td>
+        <td>{movie.minAmount}</td>
+        <td>{movie.maxDiscount}</td>
+        <td>{movie.percentage}%</td>
         <td>
           <div className="btn-group">
             <button
-              onClick={() => this.handleEdit(admin.id)}
+              onClick={() => this.handleEdit(movie.id)}
               type="button"
               className="btn btn-success"
             >
@@ -44,7 +51,7 @@ class AEmployeeRow extends Component {
             </button>
 
             <button
-              onClick={() => this.handleDelete(admin.id)}
+              onClick={() => this.handleDelete(movie.id)}
               type="button"
               className="btn btn-danger"
             >
@@ -57,4 +64,4 @@ class AEmployeeRow extends Component {
   }
 }
 
-export default connect(null, { deleteAdmin, pushHistory })(AEmployeeRow);
+export default connect(null, { deleteMovie, pushHistory })(AMovieRow);

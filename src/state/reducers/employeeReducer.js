@@ -5,8 +5,8 @@ import {
   EMPLOYEES_RECEIVED,
   EMPLOYEE_ADDED,
   EMPLOYEE_UPDATED,
-  EMPLOYEE_RECEIVED
-} from '../actions/types';
+  EMPLOYEE_RECEIVED,
+} from "../actions/types";
 
 const initialState = {
   employees: [],
@@ -19,7 +19,6 @@ export default function (state = initialState, action) {
     case GET_EMPLOYEES:
       return {
         ...state,
-        //isLoaded: true,
       };
     case EMPLOYEES_RECEIVED:
       return {
@@ -37,13 +36,11 @@ export default function (state = initialState, action) {
     case ADD_EMPLOYEE:
       return {
         ...state,
-        //employees: [action.payload, ...state.employees],
         isLoaded: false,
       };
     case EMPLOYEE_ADDED:
       return {
         ...state,
-        //employees: [action.payload, ...state.employees],
         isLoaded: true,
       };
 

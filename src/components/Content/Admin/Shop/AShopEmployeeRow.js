@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { deleteAdmin } from "../../../../state/actions/adminActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
-class AEmployeeRow extends Component {
+class AShopEmployeeRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
@@ -15,8 +15,11 @@ class AEmployeeRow extends Component {
     return year + "-" + month + "-" + dt;
   };
 
-  handleEdit = (id) => {
-    this.props.pushHistory(`/admin/employee/edit/${id}`);
+  handleEdit = (id, idShop) => {
+    this.props.pushHistory({
+      pathname: `/admin/employee/shop/edit/${id}`,
+      idShop,
+    });
   };
 
   handleDelete = (id) => {
@@ -24,19 +27,19 @@ class AEmployeeRow extends Component {
   };
 
   render() {
-    const { admin, index } = this.props;
+    const { employee, index, idShop } = this.props;
 
     return (
       <tr>
         <td>{index + 1}</td>
-        <td>{admin.username}</td>
-        <td>{admin.idRole}</td>
-        <td>{admin.fullname}</td>
-        <td>{admin.phone}</td>
+        <td>{employee.username}</td>
+        <td>{employee.idRole}</td>
+        <td>{employee.fullname}</td>
+        <td>{employee.phone}</td>
         <td>
           <div className="btn-group">
             <button
-              onClick={() => this.handleEdit(admin.id)}
+              onClick={() => this.handleEdit(employee.id, idShop)}
               type="button"
               className="btn btn-success"
             >
@@ -44,7 +47,7 @@ class AEmployeeRow extends Component {
             </button>
 
             <button
-              onClick={() => this.handleDelete(admin.id)}
+              onClick={() => this.handleDelete(employee.id)}
               type="button"
               className="btn btn-danger"
             >
@@ -57,4 +60,4 @@ class AEmployeeRow extends Component {
   }
 }
 
-export default connect(null, { deleteAdmin, pushHistory })(AEmployeeRow);
+export default connect(null, { deleteAdmin, pushHistory })(AShopEmployeeRow);

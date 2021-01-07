@@ -1,6 +1,6 @@
 import { takeEvery, put, call, select } from "redux-saga/effects";
 import axios from "axios";
-import { tokenConfig } from "../actions/authActions";
+import { tokenAdminConfig } from "../actions/authAdminActions";
 import {
   GET_MOVIE_CATES,
   ADD_MOVIE_CATE,
@@ -10,6 +10,9 @@ import {
   MOVIE_CATE_DELETED,
   UPDATE_MOVIE_CATE,
   MOVIE_CATE_UPDATED,
+  ADMIN_LOGOUT,
+  GET_MOVIE_CATE_BY_ID,
+  MOVIE_CATE_RECEIVED,
   SHOW_NOTI,
 } from "../actions/types";
 import { ADD_NOTIFICATION } from "react-redux-notify";
@@ -24,7 +27,7 @@ function* fetchMovieCates(params) {
       axios
         .get(
           `${process.env.REACT_APP_BACKEND_PRODUCT}/api/moviecat?limit=${limit}&page=${page}&query=${query}`,
-          tokenConfig(state)
+          tokenAdminConfig(state)
         )
         .catch((er) => console.log(er.response))
     );
@@ -35,7 +38,31 @@ function* fetchMovieCates(params) {
   }
 }
 
-function* addMovie(params) {
+function* fetchMovieCateById(params) {
+  try {
+    const state = yield select(),
+      { id } = params;
+    const response = yield call(() =>
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/moviecat/${id}`,
+        tokenAdminConfig(state)
+      )
+    );
+
+    yield put({ type: MOVIE_CATE_RECEIVED, payload: response });
+  } catch (error) {
+    console.log({ ...error });
+    let err = { ...error };
+    if (err.response.status == 401) {
+      yield put({ type: ADMIN_LOGOUT });
+      this.props.history.push({
+        pathname: "/admin/login",
+      });
+    }
+  }
+}
+
+function* addMovieCate(params) {
   const state = yield select();
 
   try {
@@ -43,7 +70,7 @@ function* addMovie(params) {
       axios.post(
         `${process.env.REACT_APP_BACKEND_PRODUCT}/api/moviecat/`,
         params.newMovieCate,
-        tokenConfig(state)
+        tokenAdminConfig(state)
       )
     );
 
@@ -62,14 +89,14 @@ function* addMovie(params) {
   }
 }
 
-function* updateMovie(params) {
+function* updateMovieCate(params) {
   const state = yield select();
   try {
     const response = yield call(() =>
       axios.put(
         `${process.env.REACT_APP_BACKEND_PRODUCT}/api/moviecat/${params.newMovieCate.id}`,
         params.newMovieCate,
-        tokenConfig(state)
+        tokenAdminConfig(state)
       )
     );
 
@@ -78,13 +105,14 @@ function* updateMovie(params) {
     console.log(error.response);
   }
 }
+
 function* deleteMovieCate(params) {
   const state = yield select();
   try {
     yield call(() =>
       axios.delete(
         `${process.env.REACT_APP_BACKEND_PRODUCT}/api/moviecat/${params.id}`,
-        tokenConfig(state)
+        tokenAdminConfig(state)
       )
     );
 
@@ -96,7 +124,8 @@ function* deleteMovieCate(params) {
 
 export default function* sMovieCateSaga() {
   yield takeEvery(GET_MOVIE_CATES, fetchMovieCates);
-  yield takeEvery(ADD_MOVIE_CATE, addMovie);
-  yield takeEvery(UPDATE_MOVIE_CATE, updateMovie);
+  yield takeEvery(GET_MOVIE_CATE_BY_ID, fetchMovieCateById);
+  yield takeEvery(ADD_MOVIE_CATE, addMovieCate);
+  yield takeEvery(UPDATE_MOVIE_CATE, updateMovieCate);
   yield takeEvery(DELETE_MOVIE_CATE, deleteMovieCate);
 }

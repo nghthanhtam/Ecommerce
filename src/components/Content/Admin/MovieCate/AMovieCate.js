@@ -1,18 +1,18 @@
 import React, { Component, Fragment } from "react";
-import APromotionModal from "./APromotionModal";
-import APromotionRow from "./APromotionRow";
+import AMovieCateModal from "./AMovieCateModal";
+import AMovieCateRow from "./AMovieCateRow";
 import { connect } from "react-redux";
-import { getPromotions } from "../../../../state/actions/promotionActions";
+import { getMovieCates } from "../../../../state/actions/movieCateActions";
 import PropTypes from "prop-types";
 import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
-  promotions: state.promotion.promotions,
-  isLoaded: state.promotion.isLoaded,
-  totalDocuments: state.promotion.totalDocuments,
+  movieCates: state.movieCate.movieCates,
+  isLoaded: state.movieCate.isLoaded,
+  totalDocuments: state.movieCate.totalDocuments,
 });
 
-class APromotion extends Component {
+class AMovieCate extends Component {
   state = {
     sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
     limit: 5,
@@ -26,7 +26,7 @@ class APromotion extends Component {
 
   componentDidMount() {
     const { limit, page, query } = this.state;
-    this.props.getPromotions({
+    this.props.getMovieCates({
       limit,
       page,
       query,
@@ -103,7 +103,7 @@ class APromotion extends Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    this.props.getPromotions({
+    this.props.getMovieCates({
       limit,
       page,
       query,
@@ -112,9 +112,9 @@ class APromotion extends Component {
     this.getStartEndDocuments();
   };
 
-  renderPromotions = () => {
+  renderMovieCates = () => {
     const { start, limit, page } = this.state;
-    const { promotions, isLoaded } = this.props;
+    const { movieCates, isLoaded } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -123,19 +123,20 @@ class APromotion extends Component {
         </td>
       </tr>
     ) : (
-      promotions.map((eachPromotion, index) => (
-        <APromotionRow
+      movieCates.map((eachMovieCate, index) => (
+        <AMovieCateRow
           history={this.props.history}
-          key={eachPromotion.id}
-          promotion={eachPromotion}
+          key={eachMovieCate.id}
+          movieCate={eachMovieCate}
           index={index + start - 1}
         />
       ))
     );
   };
 
-  handleChoosePage = (e) => {
-    if (e === "...") return;
+  handleChoosePage = (e, pageNumber) => {
+    e.preventDefault();
+    if (pageNumber === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
 
@@ -143,17 +144,17 @@ class APromotion extends Component {
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
 
-    if (e === -1) {
-      e = page + 1;
-      if (e === pages) this.setState({ isNextBtnShow: false });
+    if (pageNumber === -1) {
+      pageNumber = page + 1;
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
     } else {
-      if (e === pages) this.setState({ isNextBtnShow: false });
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
       else this.setState({ isNextBtnShow: true });
     }
 
-    this.setState({ page: e }, () => {
+    this.setState({ page: pageNumber }, () => {
       const { limit, page, query } = this.state;
-      this.props.getPromotions({
+      this.props.getMovieCates({
         limit,
         page,
         query,
@@ -199,8 +200,8 @@ class APromotion extends Component {
               <a
                 className="paga-link"
                 name="page"
-                href="javascript:void(0);"
-                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+                href="#"
+                onClick={(e) => this.handleChoosePage(e, eachButton.pageNumber)}
               >
                 {eachButton.pageNumber}
               </a>
@@ -213,7 +214,7 @@ class APromotion extends Component {
               }
               name="currentPage"
               href="#"
-              onClick={() => this.handleChoosePage(-1)}
+              onClick={(e) => this.handleChoosePage(e, -1)}
             >
               {">>"}
             </a>
@@ -237,7 +238,7 @@ class APromotion extends Component {
               </a>
             </li>
             <li>
-              <a href="/admin/promotion">Mã giảm giá</a>
+              <a href="/admin/moviecate">Thể loại phim</a>
             </li>
           </ol>
         </section>
@@ -247,11 +248,11 @@ class APromotion extends Component {
               <div className="box">
                 <div className="box-header" style={{ marginTop: "5px" }}>
                   <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                    <h3 className="box-title">Quản lý mã giảm giá</h3>
+                    <h3 className="box-title">Quản lý thể loại phim</h3>
                   </div>
 
                   <div className="col-md-4">
-                    <APromotionModal pages={{ limit, page, query }} />
+                    <AMovieCateModal pages={{ limit, page, query }} />
                   </div>
                 </div>
                 <div className="box-body">
@@ -305,32 +306,18 @@ class APromotion extends Component {
                         >
                           <thead>
                             <tr>
-                              <th style={{ width: "8%" }}>Loại giảm giá</th>
+                              <th style={{ width: "8%" }}>Tên thể loại phim</th>
                               <th style={{ width: "10%" }}>Mô tả</th>
-                              <th style={{ width: "5%" }}>Mã giảm giá</th>
-                              <th style={{ width: "5%" }}>Thời gian </th>
-                              <th style={{ width: "15%" }}>
-                                Giá trị hóa đơn tối thiểu
-                              </th>
-                              <th style={{ width: "12%" }}>
-                                Mức giảm giá tối đa
-                              </th>
-                              <th style={{ width: "8%" }}>Phần trăm</th>
                               <th style={{ width: "10%" }}>Thao tác</th>
                             </tr>
                           </thead>
 
-                          <tbody>{this.renderPromotions()}</tbody>
+                          <tbody>{this.renderMovieCates()}</tbody>
 
                           <tfoot>
                             <tr>
-                              <th>Loại giảm giá</th>
+                              <th>Tên thể loại phim</th>
                               <th>Mô tả</th>
-                              <th>Mã giảm giá</th>
-                              <th>Thời gian </th>
-                              <th>Giá trị hóa đơn nhỏ nhất</th>
-                              <th>Giá trị giảm giá lớn nhất</th>
-                              <th>Phần trăm</th>
                               <th>Thao tác</th>
                             </tr>
                           </tfoot>
@@ -377,11 +364,11 @@ class APromotion extends Component {
   }
 }
 
-APromotion.propTypes = {
-  getPromotions: PropTypes.func.isRequired,
-  promotions: PropTypes.array.isRequired,
+AMovieCate.propTypes = {
+  getMovieCates: PropTypes.func.isRequired,
+  movieCates: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getPromotions })(APromotion);
+export default connect(mapStateToProps, { getMovieCates })(AMovieCate);

@@ -1,18 +1,17 @@
 import React, { Component, Fragment } from "react";
-import AEmployeeModal from "./AEmployeeModal";
-import AEmployeeRow from "./AEmployeeRow";
+import ALogAdminRow from "./ALogAdminRow";
 import { connect } from "react-redux";
-import { getAdmins } from "../../../../state/actions/adminActions";
+import { getLogAdmins } from "../../../../state/actions/logAdminActions";
 import PropTypes from "prop-types";
 import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
-  admins: state.admin.admins,
-  isLoaded: state.admin.isLoaded,
-  totalDocuments: state.admin.totalDocuments,
+  adminLogs: state.logAdmin.adminLogs,
+  isLoaded: state.logAdmin.isLoaded,
+  totalDocuments: state.logAdmin.totalDocuments,
 });
 
-class AEmployee extends Component {
+class ALogAdmin extends Component {
   state = {
     sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
     limit: 5,
@@ -26,7 +25,7 @@ class AEmployee extends Component {
 
   componentDidMount() {
     const { limit, page, query } = this.state;
-    this.props.getAdmins({
+    this.props.getLogAdmins({
       limit,
       page,
       query,
@@ -103,7 +102,7 @@ class AEmployee extends Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    this.props.getAdmins({
+    this.props.getLogAdmins({
       limit,
       page,
       query,
@@ -112,9 +111,9 @@ class AEmployee extends Component {
     this.getStartEndDocuments();
   };
 
-  renderEmployees = () => {
-    const { start, limit, page } = this.state;
-    const { admins, isLoaded } = this.props;
+  renderLogAdmins = () => {
+    const { start } = this.state;
+    const { adminLogs, isLoaded } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -123,11 +122,11 @@ class AEmployee extends Component {
         </td>
       </tr>
     ) : (
-      admins.map((admin, index) => (
-        <AEmployeeRow
+      adminLogs.map((logAdmin, index) => (
+        <ALogAdminRow
           history={this.props.history}
-          key={admin.id}
-          admin={admin}
+          key={index}
+          logAdmin={logAdmin}
           index={index + start - 1}
         />
       ))
@@ -154,7 +153,7 @@ class AEmployee extends Component {
 
     this.setState({ page: pageNumber }, () => {
       const { limit, page, query } = this.state;
-      this.props.getAdmins({
+      this.props.getLogAdmins({
         limit,
         page,
         query,
@@ -235,7 +234,7 @@ class AEmployee extends Component {
         ) : ( */}
         <Fragment>
           <section className="content-header">
-            <h1>Nhân viên nhà bán {id}</h1>
+            <h1>Lịch sử hoạt động</h1>
             <ol className="breadcrumb">
               <li>
                 <a href="./admin">
@@ -243,7 +242,7 @@ class AEmployee extends Component {
                 </a>
               </li>
               <li>
-                <a href="/admin/employee">Nhân viên nhà bán</a>
+                <a href="/admin/logadmin">Lịch sử hoạt động</a>
               </li>
             </ol>
           </section>
@@ -253,12 +252,7 @@ class AEmployee extends Component {
               <div className="col-md-12">
                 <div className="box">
                   <div className="box-header" style={{ marginTop: "5px" }}>
-                    <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                      <h3 className="box-title">Quản lý nhân viên</h3>
-                    </div>
-                    <div className="col-md-4">
-                      <AEmployeeModal limit={limit} page={page} />
-                    </div>
+                    <div className="col-md-4"></div>
                   </div>
                   {/* /.box-header */}
                   <div className="box-body">
@@ -284,13 +278,13 @@ class AEmployee extends Component {
                             <div
                               id="example1_filter"
                               className="dataTables_filter"
+                              style={{ float: "right" }}
                             >
                               <div>
-                                Tìm kiếm
+                                Tìm kiếm:{" "}
                                 <input
                                   type="search"
                                   name="query"
-                                  style={{ margin: "0px 0px" }}
                                   className="form-control input-sm"
                                   placeholder="Nhập từ khóa... "
                                   aria-controls="example1"
@@ -312,24 +306,22 @@ class AEmployee extends Component {
                             <thead>
                               <tr>
                                 <th style={{ width: "5%" }}>#</th>
-                                <th style={{ width: "15%" }}>Tên tài khoản</th>
-                                <th style={{ width: "10%" }}>Vai trò</th>
-                                <th style={{ width: "20%" }}>Họ tên</th>
-                                <th style={{ width: "15%" }}>Số điện thoại</th>
-                                <th style={{ width: "20%" }}>Thao tác</th>
+                                <th style={{ width: "10%" }}>Tên hoạt động</th>
+                                <th style={{ width: "15%" }}>Chi tiết</th>
+                                <th style={{ width: "10%" }}>Được tạo bởi</th>
+                                <th style={{ width: "15%" }}>Ngày tạo</th>
                               </tr>
                             </thead>
 
-                            <tbody>{this.renderEmployees()}</tbody>
+                            <tbody>{this.renderLogAdmins()}</tbody>
 
                             <tfoot>
                               <tr>
                                 <th>#</th>
-                                <th>Tên tài khoản</th>
-                                <th>Vai trò</th>
-                                <th>Họ tên</th>
-                                <th>Số điện thoại</th>
-                                <th>Hành động</th>
+                                <th>Tên hoạt động</th>
+                                <th>Chi tiết</th>
+                                <th>Được tạo bởi</th>
+                                <th>Ngày tạo</th>
                               </tr>
                             </tfoot>
                           </table>
@@ -383,11 +375,11 @@ class AEmployee extends Component {
   }
 }
 
-AEmployee.propTypes = {
-  getAdmins: PropTypes.func.isRequired,
-  admins: PropTypes.array.isRequired,
+ALogAdmin.propTypes = {
+  getLogAdmins: PropTypes.func.isRequired,
+  adminLogs: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getAdmins })(AEmployee);
+export default connect(mapStateToProps, { getLogAdmins })(ALogAdmin);

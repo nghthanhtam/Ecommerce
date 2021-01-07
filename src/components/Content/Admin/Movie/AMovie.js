@@ -1,18 +1,18 @@
 import React, { Component, Fragment } from "react";
-import APromotionModal from "./APromotionModal";
-import APromotionRow from "./APromotionRow";
+import AMovieModal from "./AMovieModal";
+import AMovieRow from "./AMovieRow";
 import { connect } from "react-redux";
-import { getPromotions } from "../../../../state/actions/promotionActions";
+import { getMovies } from "../../../../state/actions/movieActions";
 import PropTypes from "prop-types";
 import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
-  promotions: state.promotion.promotions,
-  isLoaded: state.promotion.isLoaded,
-  totalDocuments: state.promotion.totalDocuments,
+  movies: state.movie.movies,
+  isLoaded: state.movie.isLoaded,
+  totalDocuments: state.movie.totalDocuments,
 });
 
-class APromotion extends Component {
+class AMovie extends Component {
   state = {
     sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
     limit: 5,
@@ -22,11 +22,13 @@ class APromotion extends Component {
     start: 1,
     end: 5,
     isNextBtnShow: true,
+    activeEmp: true,
+    deletedEmp: false,
   };
 
   componentDidMount() {
     const { limit, page, query } = this.state;
-    this.props.getPromotions({
+    this.props.getMovies({
       limit,
       page,
       query,
@@ -103,7 +105,7 @@ class APromotion extends Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    this.props.getPromotions({
+    this.props.getMovies({
       limit,
       page,
       query,
@@ -112,9 +114,9 @@ class APromotion extends Component {
     this.getStartEndDocuments();
   };
 
-  renderPromotions = () => {
+  renderMovies = () => {
     const { start, limit, page } = this.state;
-    const { promotions, isLoaded } = this.props;
+    const { movies, isLoaded } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -123,11 +125,11 @@ class APromotion extends Component {
         </td>
       </tr>
     ) : (
-      promotions.map((eachPromotion, index) => (
-        <APromotionRow
+      movies.map((eachMovie, index) => (
+        <AMovieRow
           history={this.props.history}
-          key={eachPromotion.id}
-          promotion={eachPromotion}
+          key={eachMovie.id}
+          movie={eachMovie}
           index={index + start - 1}
         />
       ))
@@ -153,7 +155,7 @@ class APromotion extends Component {
 
     this.setState({ page: e }, () => {
       const { limit, page, query } = this.state;
-      this.props.getPromotions({
+      this.props.getMovies({
         limit,
         page,
         query,
@@ -223,6 +225,35 @@ class APromotion extends Component {
     }
   };
 
+  onCheckActiveEmp = (e) => {
+    const { activeEmp, limit, page, query, deletedEmp } = this.state;
+    if (e.target.name == "active") {
+      this.setState({ activeEmp: !activeEmp }, () => {
+        console.log(activeEmp);
+        this.props.getMovies({
+          limit,
+          page,
+          query,
+          idMovie: 1,
+          deletedEmp: this.state.deletedEmp,
+          activeEmp: this.state.activeEmp,
+        });
+      });
+    } else if (e.target.name == "deleted") {
+      this.setState({ deletedEmp: !deletedEmp }, () => {
+        console.log(activeEmp);
+        this.props.getMovies({
+          limit,
+          page,
+          query,
+          idMovie: 1,
+          deletedEmp: this.state.deletedEmp,
+          activeEmp: this.state.activeEmp,
+        });
+      });
+    }
+  };
+
   render() {
     const { limit, page, start, end, query } = this.state;
     const { totalDocuments } = this.props;
@@ -237,7 +268,7 @@ class APromotion extends Component {
               </a>
             </li>
             <li>
-              <a href="/admin/promotion">Mã giảm giá</a>
+              <a href="/admin/movie">Mã giảm giá</a>
             </li>
           </ol>
         </section>
@@ -251,7 +282,7 @@ class APromotion extends Component {
                   </div>
 
                   <div className="col-md-4">
-                    <APromotionModal pages={{ limit, page, query }} />
+                    <AMovieModal pages={{ limit, page, query }} />
                   </div>
                 </div>
                 <div className="box-body">
@@ -320,7 +351,7 @@ class APromotion extends Component {
                             </tr>
                           </thead>
 
-                          <tbody>{this.renderPromotions()}</tbody>
+                          <tbody>{this.renderMovies()}</tbody>
 
                           <tfoot>
                             <tr>
@@ -377,11 +408,11 @@ class APromotion extends Component {
   }
 }
 
-APromotion.propTypes = {
-  getPromotions: PropTypes.func.isRequired,
-  promotions: PropTypes.array.isRequired,
+AMovie.propTypes = {
+  getMovies: PropTypes.func.isRequired,
+  movies: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getPromotions })(APromotion);
+export default connect(mapStateToProps, { getMovies })(AMovie);

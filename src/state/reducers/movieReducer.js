@@ -5,10 +5,12 @@ import {
   MOVIES_RECEIVED,
   MOVIE_ADDED,
   MOVIE_UPDATED,
-} from '../actions/types';
+  MOVIE_RECEIVED,
+} from "../actions/types";
 
 const initialState = {
   movies: [],
+  movie: {},
   totalDocuments: 0,
   isLoaded: false,
 };
@@ -27,6 +29,12 @@ export default function (state = initialState, action) {
         totalDocuments: action.payload.data.total,
         isLoaded: true,
       };
+    case MOVIE_RECEIVED:
+      return {
+        ...state,
+        movie: action.payload.data,
+        isLoaded: true,
+      };
     case ADD_MOVIE:
       return {
         ...state,
@@ -40,9 +48,7 @@ export default function (state = initialState, action) {
     case MOVIE_DELETED:
       return {
         ...state,
-        movies: state.movies.filter(
-          (movie) => movie.id !== action.payload.id
-        ),
+        movies: state.movies.filter((movie) => movie.id !== action.payload.id),
       };
 
     case MOVIE_UPDATED:

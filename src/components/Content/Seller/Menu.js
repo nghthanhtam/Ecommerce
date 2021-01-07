@@ -65,7 +65,7 @@ class Menu extends React.Component {
                 </li>
                 <li className="treeview">
                   <a href="javascript:void(0);">
-                    <i className="fa fa-th" />
+                    <i className="fa fa-user" />
                     <span>Quản lý người dùng</span>
                     <span className="pull-right-container">
                       <i className="fa fa-angle-left pull-right" />
@@ -89,7 +89,29 @@ class Menu extends React.Component {
                     </li>
                   </ul>
                 </li>
-
+                <li className="treeview">
+                  <a href="javascript:void(0);">
+                    <i className="fa fa-film" />
+                    <span>Quản lý phim</span>
+                    <span className="pull-right-container">
+                      <i className="fa fa-angle-left pull-right" />
+                    </span>
+                  </a>
+                  <ul className="treeview-menu">
+                    <li>
+                      <Link to="/admin/movie">
+                        <i className="fa fa-circle-o" />
+                        Danh sách phim
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/admin/moviecate">
+                        <i className="fa fa-circle-o" />
+                        Thể loại phim
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
                 <li className="treeview">
                   <a href="javascript:void(0);">
                     <i className="fa fa-th" />
@@ -161,6 +183,12 @@ class Menu extends React.Component {
                       <small className="label pull-right bg-red">5</small>
                     </span>
                   </a>
+                </li>
+                <li>
+                  <Link to="/admin/logadmin">
+                    <i className="fa fa-sticky-note-o" />{" "}
+                    <span>Nhật kí hoạt động</span>
+                  </Link>
                 </li>
               </ul>
             ) : (
