@@ -30,7 +30,7 @@ function* fetchQuestions(params) {
 
     yield put({ type: QUESTIONS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       this.props.history.push({
@@ -53,7 +53,7 @@ function* fetchQuestionsByProduct(params) {
     );
     yield put({ type: QUESTIONS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -122,7 +122,7 @@ function* updateQuestionStt(params) {
     yield put({ type: QUESTION_UPDATED, payload: response.data });
     yield put({ type: GET_QUESTIONS, pages });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 

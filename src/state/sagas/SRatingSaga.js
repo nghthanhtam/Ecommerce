@@ -30,7 +30,7 @@ function* fetchRatings(params) {
 
     yield put({ type: RATINGS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -48,7 +48,7 @@ function* fetchRatingsByProduct(params) {
     console.log(response);
     yield put({ type: RATINGS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -89,7 +89,7 @@ function* updateRatingStt(params) {
     yield put({ type: RATING_UPDATED, payload: response.data });
     yield put({ type: GET_RATINGS, pages });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 

@@ -513,6 +513,20 @@ const RoleEdit = (props) => {
                               <p>Xem chi phí</p>
                             </label>
                           </div>
+                          <div>
+                            <label className="label-wrapper">
+                              <input
+                                name="checked"
+                                type="checkbox"
+                                checked={values.checked.includes(27)}
+                                value={27}
+                                onChange={(e) =>
+                                  handleCheck(e, setFieldValue, values)
+                                }
+                              />
+                              <p>Xem lịch sử hoạt động</p>
+                            </label>
+                          </div>
                         </div>
                       </div>
                       <div className="box-footer">

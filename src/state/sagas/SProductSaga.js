@@ -27,7 +27,7 @@ function* sortProducts(params) {
     yield delay(1000);
     yield put({ type: PRODUCTS_SORTED, payload: sortField });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -46,7 +46,7 @@ function* fetchProductById(params) {
     console.log(response);
     yield put({ type: PRODUCT_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -70,7 +70,7 @@ function* fetchProductsByIdShop(params) {
 
     yield put({ type: PRODUCTS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -137,7 +137,7 @@ function* addProduct(params) {
 
     yield put({ type: PRODUCT_ADDED, payload: response.data });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
 
@@ -155,7 +155,7 @@ function* updateProduct(params) {
 
     yield put({ type: PRODUCT_UPDATED, payload: response.data });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -202,7 +202,7 @@ function* updateProductStt(params) {
       pages,
     });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 

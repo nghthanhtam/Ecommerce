@@ -55,7 +55,7 @@ function* addLaterList(params) {
       pages: { limit: 1000, page: 1, idUser: params.newItem.idUser },
     });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -72,7 +72,7 @@ function* updateLaterList(params) {
 
     yield put({ type: LATERLIST_UPDATED, payload: response.data });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 

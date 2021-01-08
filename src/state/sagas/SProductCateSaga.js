@@ -32,7 +32,7 @@ function* fetchProductCates(params) {
 
     yield put({ type: PRODUCT_CATES_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 

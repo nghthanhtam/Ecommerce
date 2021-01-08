@@ -29,7 +29,7 @@ function* fetchAnswers(params) {
 
     yield put({ type: ANSWERS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       this.props.history.push({
@@ -54,7 +54,7 @@ function* addAnswer(params) {
 
     yield put({ type: ANSWER_ADDED, payload: response.data });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -73,7 +73,7 @@ function* updateAnswerStt(params) {
     yield put({ type: ANSWER_UPDATED, payload: response.data });
     yield put({ type: GET_ANSWERS, pages });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -90,7 +90,7 @@ function* updateAnswer(params) {
 
     yield put({ type: ANSWER_UPDATED, payload: response.data });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 

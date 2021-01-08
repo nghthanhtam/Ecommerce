@@ -40,6 +40,7 @@ class RoleModal extends Component {
     editStockAmount: false,
     getStockAmount: false,
     deleteStockAmount: false,
+    getShopLogs: false,
   };
 
   componentDidMount() {
@@ -90,6 +91,7 @@ class RoleModal extends Component {
           editStockAmount: !all,
           getStockAmount: !all,
           deleteStockAmount: !all,
+          getShopLogs: !all,
         });
         let permissionIds = permissions.map(({ id }) => id);
         this.setState({ permissions: permissionIds });
@@ -475,6 +477,17 @@ class RoleModal extends Component {
                   onChange={this.onChange}
                 />
                 <p>Xem chi phí</p>
+              </label>
+            </div>
+            <div>
+              <label className="label-wrapper">
+                <input
+                  name="getShopLogs"
+                  type="checkbox"
+                  checked={this.state.getShopLogs}
+                  onChange={this.onChange}
+                />
+                <p>Xem lịch sử hoạt động</p>
               </label>
             </div>
           </div>

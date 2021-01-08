@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { pushHistory } from "../../../../state/actions/historyActions";
 
-class ALogAdminRow extends Component {
+class ALogLogSellerRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
@@ -26,18 +27,18 @@ class ALogAdminRow extends Component {
   };
 
   render() {
-    const { logAdmin, index } = this.props;
+    const { logSeller, index } = this.props;
 
     return (
       <tr>
         <td>{index + 1}</td>
-        <td>{logAdmin.action}</td>
-        <td>{logAdmin.actionDetail}</td>
-        <td>{logAdmin.username}</td>
-        <td>{this.convertDate(logAdmin.createdAt)}</td>
+        <td>{logSeller.action}</td>
+        <td>{logSeller.actionDetail}</td>
+        <td>{logSeller.username}</td>
+        <td>{this.convertDate(logSeller.createdAt)}</td>
       </tr>
     );
   }
 }
 
-export default connect(null, {})(ALogAdminRow);
+export default connect(null, { pushHistory })(ALogLogSellerRow);

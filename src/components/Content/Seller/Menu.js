@@ -296,6 +296,12 @@ class Menu extends React.Component {
                     </span>
                   </a>
                 </li>
+                <li>
+                  <Link to="/seller/logseller">
+                    <i className="fa fa-sticky-note-o" />{" "}
+                    <span>Nhật kí hoạt động</span>
+                  </Link>
+                </li>
               </ul>
             )}
           </section>

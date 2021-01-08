@@ -15,24 +15,23 @@ import request from "superagent";
 
 const mapStateToProps = (state) => {
   return {
-    isLoaded: state.movieCate.isLoaded,
+    isMovieCateLoaded: state.movieCate.isMovieCateLoaded,
     isUpdated: state.movieCate.isUpdated,
     movieCate: state.movieCate.movieCate,
-    movieCates: state.movieCate.movieCates,
-    isLoadedMovieCate: state.movieCate.isLoaded,
   };
 };
 
 const AMovieCateEdit = (props) => {
   const history = useHistory(),
     [errUploadMsg, setMsg] = useState(""),
-    [isUploading, setUploading] = useState(false);
+    [isUploading, setUploading] = useState(false),
+    [imageUrl, setImageUrl] = useState(""),
+    [publicId, setpublicId] = useState("");
 
   useEffect(() => {
     const { getMovieCateById } = props;
     const id = qs.parse(props.location.search, { ignoreQueryPrefix: true }).id;
     getMovieCateById(id);
-    props.getMovieCates({ limit: 1000, page: 1, query: "" });
   }, [props.match.params.id]);
 
   useEffect(() => {
@@ -40,6 +39,12 @@ const AMovieCateEdit = (props) => {
       history.push("/admin/moviecate");
     }
   }, [props.isUpdated]);
+
+  useEffect(() => {
+    if (props.isMovieCateLoaded) {
+      setImageUrl(props.movieCate.imageUrl);
+    }
+  }, [props.isMovieCateLoaded]);
 
   const handleFileSelect = (e) => {
     const validateFile = (file) => {
@@ -83,27 +88,8 @@ const AMovieCateEdit = (props) => {
               if (res) {
                 setUploading(false);
                 setMsg("");
-
-                // setImages((state) => [
-                //   ...state,
-                //   {
-                //     ...files[i],
-                //     url: res.body.url,
-                //     publicId: res.body.public_id,
-                //     isMain: false,
-                //   },
-                // ]);
-                this.setState((prepState) => ({
-                  images: [
-                    ...prepState.images,
-                    {
-                      ...files[i],
-                      url: res.body.url,
-                      publicId: res.body.public_id,
-                      isMain: false,
-                    },
-                  ],
-                }));
+                setpublicId(res.body.public_id);
+                setImageUrl(res.body.url);
               } else {
                 setMsg("Không thể upload ảnh " + fileName);
               }
@@ -115,13 +101,17 @@ const AMovieCateEdit = (props) => {
     }
   };
 
-  return !props.isLoaded && !props.isLoadedMovieCate ? (
+  const onDeleteImage = () => {
+    setImageUrl("");
+  };
+
+  return !props.isMovieCateLoaded ? (
     <div>Loading...</div>
   ) : (
     <Formik
       initialValues={props.movieCate}
       onSubmit={(values, actions) => {
-        values = { ...values, pages: props.pages };
+        values = { ...values, pages: props.pages, imageUrl, publicId };
         props.updateMovieCate(values);
       }}
       validationSchema={Yup.object().shape({
@@ -215,38 +205,44 @@ const AMovieCateEdit = (props) => {
                           {errors.description}
                         </div>
                       ) : null}
-                      <div className="form-group">
-                        <label htmlFor="exampleInputFile">Hình ảnh</label>
-                        <input
-                          type="file"
-                          id="exampleInputFile"
-                          onChange={(e) => {
-                            handleFileSelect(e);
-                          }}
-                        />
-                      </div>
-                      <div className="productvar-grid">
-                        <label className="skuproduct-card">
-                          <div style={{ display: "flex" }}>
-                            <img
-                              style={{ width: "210px", height: "240px" }}
-                              className="product-pic"
-                              src={props.movieCate.imageUrl}
-                              alt="sản phẩm"
-                            />
-                            <button
-                              // onClick={this.onDeleteImage}
-                              className="close"
-                              style={{
-                                marginBottom: "auto",
-                                marginTop: "-5px",
-                              }}
-                            >
-                              <span aria-hidden="true">×</span>
-                            </button>
-                          </div>
-                        </label>
-                      </div>
+
+                      <label className={styles.formiklabel} htmlFor="imageUrl">
+                        Hình ảnh (chỉ được chọn 1 ảnh):
+                      </label>
+                      <input
+                        type="file"
+                        id="exampleInputFile"
+                        onChange={handleFileSelect}
+                        disabled={imageUrl !== ""}
+                      />
+                      {imageUrl !== "" && (
+                        <div
+                          className="productvar-grid"
+                          style={{ marginTop: "10px" }}
+                        >
+                          <label className="moviecate-card">
+                            <div style={{ display: "flex" }}>
+                              <img
+                                style={{ width: "150px", height: "160px" }}
+                                className="product-pic"
+                                src={imageUrl}
+                                alt="sản phẩm"
+                              />
+                              <button
+                                onClick={onDeleteImage}
+                                className="close"
+                                style={{
+                                  marginBottom: "auto",
+                                  marginTop: "-5px",
+                                }}
+                              >
+                                <span aria-hidden="true">×</span>
+                              </button>
+                            </div>
+                          </label>
+                        </div>
+                      )}
+
                       {errUploadMsg !== "" ? (
                         <p style={{ color: "red" }}>{errUploadMsg}</p>
                       ) : null}

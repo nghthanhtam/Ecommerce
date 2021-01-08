@@ -42,7 +42,7 @@ function* fetchShops(params) {
 
     yield put({ type: SHOPS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       yield put({
@@ -72,7 +72,7 @@ function* fetchShopById(params) {
 
     yield put({ type: SHOP_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       this.props.history.push({
@@ -150,7 +150,7 @@ function* updateShopStt(params) {
     });
     yield put({ type: GET_SHOPS, pages });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 

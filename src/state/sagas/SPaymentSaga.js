@@ -17,7 +17,7 @@ function* fetchPayments(params) {
 
     yield put({ type: PAYMENTS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       this.props.history.push({

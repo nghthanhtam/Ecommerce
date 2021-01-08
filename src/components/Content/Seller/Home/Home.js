@@ -3,9 +3,8 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Loader from "react-loader";
 import "./home.css";
-
 import { getOrdersByShop } from "../../../../state/actions/orderActions";
-import OrderRow from "../Order/OrderRow";
+import { getLogSellers } from "../../../../state/actions/logSellerActions";
 import OrderRowHome from "../Order/OrderRowHome";
 
 const mapStateToProps = (state) => ({
@@ -13,6 +12,8 @@ const mapStateToProps = (state) => ({
   isLoaded: state.order.isLoaded,
   totalDocuments: state.order.totalDocuments,
   idShop: state.auth.role.idShop,
+  sellerLogs: state.logSeller.sellerLogs,
+  isLogSellerLoaded: state.logSeller.isLoaded,
 });
 
 class Home extends Component {
@@ -30,16 +31,40 @@ class Home extends Component {
 
   componentDidMount = () => {
     const { limit, page, query } = this.state;
-    const { idShop, getOrdersByShop } = this.props;
+    const { idShop, getOrdersByShop, getLogSellers } = this.props;
     getOrdersByShop({ limit, page, query, idShop, done: false });
+    getLogSellers({ limit, page, query });
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { totalDocuments, isLoaded } = this.props;
+    const { isLoaded } = this.props;
     if (isLoaded == true && this.state.pages == prevState.pages) {
       this.getPages();
     }
   }
+
+  convertDate = (date) => {
+    const newDate = new Date(date);
+    let year = newDate.getFullYear();
+    let month = newDate.getMonth() + 1;
+    let dt = newDate.getDate();
+
+    dt = dt < 10 ? `0${dt}` : dt;
+    month = month < 10 ? `0${month}` : month;
+    return (
+      dt +
+      "/" +
+      month +
+      "/" +
+      year +
+      " " +
+      newDate.getHours() +
+      ":" +
+      newDate.getMinutes() +
+      ":" +
+      newDate.getMilliseconds()
+    );
+  };
 
   handleOnChange = (e) => {
     e.persist();
@@ -218,11 +243,16 @@ class Home extends Component {
   };
 
   render() {
-    const { isLoaded, totalDocuments } = this.props;
-    const { start, end, query, isNextBtnShow } = this.state;
+    const {
+      isLoaded,
+      isLogSellerLoaded,
+      totalDocuments,
+      sellerLogs,
+    } = this.props;
+    const { start, end, query } = this.state;
     return (
       <Fragment>
-        {!isLoaded ? (
+        {!isLoaded && !isLogSellerLoaded ? (
           <Loader></Loader>
         ) : (
           <React.Fragment>
@@ -483,75 +513,19 @@ class Home extends Component {
                       flex: 0.3,
                     }}
                   >
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004
-                      </div>
-                    </div>
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
-                        ffffffffff fffffffff fffffffffs sfdf
-                      </div>
-                    </div>
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
-                        ffffffffff fffffffff fffffffffs sfdf
-                      </div>
-                    </div>
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004 dfffffffff
-                        ffffffffff fffffffff fffffffffs sfdf
-                      </div>
-                    </div>
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004
-                      </div>
-                    </div>
-                    <div className="log-row">
-                      <div>08:58:51, 22/10/2020</div>
-                      <div className="log-timeline">
-                        <div className="log-line"></div>
-                        <div className="log-round"></div>
-                        <div className="log-line"></div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        Nhân viên 001 chỉnh sửa sản phẩm 004
-                      </div>
-                    </div>
+                    {sellerLogs.map((log) => {
+                      return (
+                        <div className="log-row">
+                          <div>{this.convertDate(log.createdAt)}</div>
+                          <div className="log-timeline">
+                            <div className="log-line"></div>
+                            <div className="log-round"></div>
+                            <div className="log-line"></div>
+                          </div>
+                          <div style={{ flex: 1 }}>{log.actionDetail}</div>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {/* right col */}
@@ -572,4 +546,6 @@ Home.propTypes = {
   isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getOrdersByShop })(Home);
+export default connect(mapStateToProps, { getOrdersByShop, getLogSellers })(
+  Home
+);

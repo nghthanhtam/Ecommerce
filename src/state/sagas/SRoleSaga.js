@@ -28,7 +28,7 @@ function* fetchRoles(params) {
 
     yield put({ type: ROLES_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 

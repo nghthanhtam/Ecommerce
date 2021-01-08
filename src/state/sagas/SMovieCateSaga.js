@@ -51,7 +51,7 @@ function* fetchMovieCateById(params) {
 
     yield put({ type: MOVIE_CATE_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       yield put({ type: ADMIN_LOGOUT });

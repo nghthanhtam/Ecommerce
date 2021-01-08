@@ -33,7 +33,7 @@ function* fetchEmpById(params) {
 
     yield put({ type: EMPLOYEE_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       yield put({ type: EMPLOYEE_LOGOUT });
@@ -98,7 +98,7 @@ function* fetchEmployeesByShop(params) {
     // });
     yield put({ type: EMPLOYEES_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       this.props.history.push({

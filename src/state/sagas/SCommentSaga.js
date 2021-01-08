@@ -56,7 +56,7 @@ function* addComment(params) {
 
     yield put({ type: COMMENT_ADDED, payload: response.data });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -75,7 +75,7 @@ function* updateCommentStt(params) {
     yield put({ type: COMMENT_UPDATED, payload: response.data });
     yield put({ type: GET_COMMENTS, pages });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -92,7 +92,7 @@ function* updateComment(params) {
 
     yield put({ type: COMMENT_UPDATED, payload: response.data });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 

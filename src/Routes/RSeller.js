@@ -7,6 +7,7 @@ import { updateAuth } from "../state/actions/authActions";
 import { updateAuthUser } from "../state/actions/authUserActions";
 import { updateAuthAdmin } from "../state/actions/authAdminActions";
 import { PrivateRoute } from "../components/Content/Seller/PrivateRoute";
+import { Notify } from "react-redux-notify";
 
 import Header from "../components/Content/Seller/Header";
 import Footer from "../components/Content/Seller/Footer";
@@ -35,7 +36,7 @@ import RoleEdit from "../components/Content/Seller/Role/RoleEdit";
 import ModalCancel from "../components/Content/Modal/ModalCancel";
 import ModalShippingFee from "../components/Content/Modal/ModalShippingFee";
 import ModalUpdateQty from "../components/Content/Modal/ModalUpdateQty";
-import { Notify } from "react-redux-notify";
+import LogSeller from "../components/Content/Seller/LogSeller/LogSeller";
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -200,6 +201,16 @@ class RSeller extends Component {
                     exact
                     path="/seller/warehouse-report"
                     component={StorageReport}
+                  ></Route>
+                  <Route
+                    exact
+                    path="/seller/sale-report"
+                    component={SaleReport}
+                  ></Route>
+                  <Route
+                    exact
+                    path="/seller/logseller"
+                    component={LogSeller}
                   ></Route>
                   <Route
                     exact

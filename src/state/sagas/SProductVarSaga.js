@@ -32,7 +32,7 @@ function* fetchProductVarByid(params) {
     console.log(response);
     yield put({ type: PRODUCTVAR_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -58,7 +58,7 @@ function* fetchProductVars(params) {
 
     yield put({ type: PRODUCTVARS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 

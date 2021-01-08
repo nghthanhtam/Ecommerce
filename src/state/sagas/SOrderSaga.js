@@ -202,7 +202,7 @@ function* deleteOrder(params) {
 
     yield put({ type: ORDER_DELETED, payload: { id: params.id } });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
 

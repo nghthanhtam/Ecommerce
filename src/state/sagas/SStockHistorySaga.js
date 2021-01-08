@@ -28,7 +28,7 @@ function* fetchStockHisById(params) {
 
     yield put({ type: STOCK_HISTORY_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       this.props.history.push({
@@ -52,7 +52,7 @@ function* fetchStockHistoriesByProductVar(params) {
 
     yield put({ type: STOCK_HISTORIES_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       this.props.history.push({

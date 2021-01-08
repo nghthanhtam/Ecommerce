@@ -22,7 +22,7 @@ function* fetchPermissions(params) {
     );
     yield put({ type: PERMISSIONS_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 

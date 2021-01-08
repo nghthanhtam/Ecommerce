@@ -28,7 +28,7 @@ function* fetchPromotionTypes(params) {
     console.log(response);
     yield put({ type: PROMOTIONTYPES_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       this.props.history.push({
@@ -51,7 +51,7 @@ function* fetchPromotionTypeById(params) {
 
     yield put({ type: PROMOTIONTYPE_RECEIVED, payload: response });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
     let err = { ...error };
     if (err.response.status == 401) {
       this.props.history.push({

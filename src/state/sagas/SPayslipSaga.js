@@ -87,7 +87,7 @@ function* addPayslip(params) {
       pages,
     });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -109,7 +109,7 @@ function* updatePayslip(params) {
       notification: NOTI_SUCCESS,
     });
   } catch (error) {
-    console.log({ ...error });
+    console.log(error);
   }
 }
 
@@ -124,7 +124,7 @@ function* deletePayslip(params) {
     );
     yield put({ type: PAYSLIP_DELETED, payload: { id: params.id } });
   } catch (err) {
-    console.log(err.response);
+    console.log(err);
   }
 }
 
