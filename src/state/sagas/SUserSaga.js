@@ -14,6 +14,8 @@ import {
   UPDATE_USER,
   USER_UPDATED,
   GET_USER_BY_ID,
+  UPDATE_PASS,
+  USER_PASS_UPDATED_ERROR,
 } from "../actions/types";
 
 function* fetchUsers(params) {
@@ -77,7 +79,7 @@ function* addUser(params) {
           pages: newUser.pages,
         });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
 
@@ -96,6 +98,25 @@ function* updateUser(params) {
     yield put({ type: USER_UPDATED, payload: response.data });
   } catch (error) {
     console.log(error);
+  }
+}
+
+function* updatePass(params) {
+  const state = yield select();
+  const { type, id, oldPassword, newPassword, confirmPassword } = params.params;
+  try {
+    const response = yield call(() =>
+      axios.put(
+        `${process.env.REACT_APP_BACKEND_USER}/api/user/password/${id}`,
+        { oldPassword, newPassword, confirmPassword },
+        type == "user" ? tokenUserConfig(state) : tokenAdminConfig(state)
+      )
+    );
+
+    yield put({ type: USER_UPDATED, payload: response.data });
+  } catch (error) {
+    console.log(error);
+    yield put({ type: USER_PASS_UPDATED_ERROR });
   }
 }
 
@@ -120,5 +141,6 @@ export default function* sUserSaga() {
   yield takeEvery(GET_USERS, fetchUsers);
   yield takeEvery(ADD_USER, addUser);
   yield takeEvery(UPDATE_USER, updateUser);
+  yield takeEvery(UPDATE_PASS, updatePass);
   yield takeEvery(DELETE_USER, deleteUser);
 }

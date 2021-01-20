@@ -33,7 +33,7 @@ class Home extends Component {
     const { limit, page, query } = this.state;
     const { idShop, getOrdersByShop, getLogSellers } = this.props;
     getOrdersByShop({ limit, page, query, idShop, done: false });
-    getLogSellers({ limit, page, query });
+    getLogSellers({ limit, page, query, idShop });
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -48,22 +48,15 @@ class Home extends Component {
     let year = newDate.getFullYear();
     let month = newDate.getMonth() + 1;
     let dt = newDate.getDate();
-
+    let hour =
+      newDate.getHours() < 10 ? `0${newDate.getHours()}` : newDate.getHours();
+    let minutes =
+      newDate.getMinutes() < 10
+        ? `0${newDate.getMinutes()}`
+        : newDate.getMinutes();
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return (
-      dt +
-      "/" +
-      month +
-      "/" +
-      year +
-      " " +
-      newDate.getHours() +
-      ":" +
-      newDate.getMinutes() +
-      ":" +
-      newDate.getMilliseconds()
-    );
+    return dt + "/" + month + "/" + year + " " + hour + ":" + minutes;
   };
 
   handleOnChange = (e) => {

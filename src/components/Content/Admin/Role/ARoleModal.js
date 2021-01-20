@@ -18,10 +18,10 @@ class ARoleModal extends Component {
     editAdminRole: false,
     getAdminRoles: false,
     deleteAdminRole: false,
-    createEmployee: false,
-    editEmployee: false,
-    getEmployees: false,
-    deleteEmployee: false,
+    createAdmin: false,
+    editAdmin: false,
+    getAdmins: false,
+    deleteAdmin: false,
     updateOrderStatus: false,
     getDoneOrders: false,
     getUndoneOrders: false,
@@ -34,6 +34,7 @@ class ARoleModal extends Component {
     pendProductVar: false,
     createPromotion: false,
     editPromotion: false,
+    deletePromotion: false,
     getPromotions: false,
     deletePromotion: false,
     createMovieCategory: false,
@@ -74,10 +75,10 @@ class ARoleModal extends Component {
           editAdminRole: !all,
           getAdminRoles: !all,
           deleteAdminRole: !all,
-          createEmployee: !all,
-          editEmployee: !all,
-          getEmployees: !all,
-          deleteEmployee: !all,
+          createAdmin: !all,
+          editAdmin: !all,
+          getAdmins: !all,
+          deleteAdmin: !all,
           updateOrderStatus: !all,
           getDoneOrders: !all,
           getUndoneOrders: !all,
@@ -90,6 +91,7 @@ class ARoleModal extends Component {
           pendProductVar: !all,
           createPromotion: !all,
           editPromotion: !all,
+          deletePromotion: !all,
           getPromotions: !all,
           deletePromotion: !all,
           createMovieCategory: !all,
@@ -230,14 +232,14 @@ class ARoleModal extends Component {
             </div>
           </div>
           <div className="role-label">
-            <h4 className="role-cate">Quản lý nhân viên</h4>
+            <h4 className="role-cate">Quản lý nhân viên admin</h4>
             <div>
               <label className="label-wrapper">
                 <input
                   value={9}
-                  name="createEmployee"
+                  name="createAdmin"
                   type="checkbox"
-                  checked={this.state.createEmployee}
+                  checked={this.state.createAdmin}
                   onChange={this.onChange}
                 />
                 <p>Tạo nhân viên</p>
@@ -247,9 +249,9 @@ class ARoleModal extends Component {
               <label className="label-wrapper">
                 <input
                   value={10}
-                  name="editEmployee"
+                  name="editAdmin"
                   type="checkbox"
-                  checked={this.state.editEmployee}
+                  checked={this.state.editAdmin}
                   onChange={this.onChange}
                 />
                 <p>Chính sửa nhân viên</p>
@@ -259,9 +261,9 @@ class ARoleModal extends Component {
               <label className="label-wrapper">
                 <input
                   value={11}
-                  name="getEmployees"
+                  name="getAdmins"
                   type="checkbox"
-                  checked={this.state.getEmployees}
+                  checked={this.state.getAdmins}
                   onChange={this.onChange}
                 />
                 <p>Xem danh sách nhân viên</p>
@@ -271,9 +273,9 @@ class ARoleModal extends Component {
               <label className="label-wrapper">
                 <input
                   value={12}
-                  name="deleteEmployee"
+                  name="deleteAdmin"
                   type="checkbox"
-                  checked={this.state.deleteEmployee}
+                  checked={this.state.deleteAdmin}
                   onChange={this.onChange}
                 />
                 <p>Xóa nhân viên</p>
@@ -306,6 +308,18 @@ class ARoleModal extends Component {
                   onChange={this.onChange}
                 />
                 <p>Sửa mã giảm giá</p>
+              </label>
+            </div>
+            <div>
+              <label className="label-wrapper">
+                <input
+                  value={32}
+                  name="deletePromotion"
+                  type="checkbox"
+                  checked={this.state.deletePromotion}
+                  onChange={this.onChange}
+                />
+                <p>Xóa mã giảm giá</p>
               </label>
             </div>
             <div>

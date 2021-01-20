@@ -6,7 +6,6 @@ import {
   createNotification,
   NOTIFICATION_TYPE_SUCCESS,
 } from "react-redux-notify";
-import { Notify } from "react-redux-notify";
 
 const mySuccessNotification = {
   message: "Dữ liệu cập nhật thành công!",

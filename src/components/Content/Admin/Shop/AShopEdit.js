@@ -4,6 +4,7 @@ import { pushHistory } from "../../../../state/actions/historyActions";
 import { updateShop, getShopById } from "../../../../state/actions/shopActions";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import qs from "qs";
 import styles from "../../../../assets/css/helper.module.css";
 import { useHistory } from "react-router-dom";
 
@@ -20,8 +21,9 @@ const mapStateToProps = (state) => {
 const AShopEdit = (props) => {
   const history = useHistory();
   useEffect(() => {
-    const { match, getShopById } = props;
-    getShopById(match.params.id);
+    const { getShopById } = props;
+    const id = qs.parse(props.location.search, { ignoreQueryPrefix: true }).id;
+    getShopById(id);
   }, [props.match.params.id]);
 
   useEffect(() => {

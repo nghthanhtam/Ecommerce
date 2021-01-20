@@ -6,6 +6,7 @@ import Select from "react-select";
 import { Formik } from "formik";
 import styles from "../../../../assets/css/helper.module.css";
 import { getMovies } from "../../../../state/actions/movieActions";
+import { getMovieCates } from "../../../../state/actions/movieCateActions";
 
 const mapStateToProps = (state) => ({
   movieCates: state.movieCate.movieCates,
@@ -14,23 +15,19 @@ const mapStateToProps = (state) => ({
 
 const AMovieModal = (props) => {
   useEffect(() => {
-    props.getMovies({ limit: 1000, page: 1 });
+    props.getMovieCates({ limit: 1000, page: 1, query: "" });
   }, []);
 
   const handleChangeSelect = (selectedItem, setFieldValue) => {
-    setFieldValue("idMovieType", selectedItem.id);
+    setFieldValue("idMovieCat", selectedItem.id);
   };
 
   return (
     <Formik
       initialValues={{
         name: "",
-        couponCode: "",
-        timeStart: "",
-        timeEnd: "",
-        minAmount: 0,
-        maxDiscount: 0,
-        percentage: 0,
+        author: "",
+        idMovieCat: "",
       }}
       onSubmit={(values, actions) => {
         values = { ...values, pages: props.pages };
@@ -38,17 +35,12 @@ const AMovieModal = (props) => {
         document.getElementById("triggerButton").click();
       }}
       validationSchema={Yup.object().shape({
-        //idMovieType: Yup.string().required("Bắt buộc nhập"),
+        //idMovieCat: Yup.string().required("Bắt buộc nhập"),
         name: Yup.string()
           .min(3, "Mô tả phải dài hơn 3 kí tự")
           .max(100, "Chỉ được phép nhập ít hơn 100 kí tự")
           .required("Bắt buộc nhập"),
-        couponCode: Yup.string().required("Bắt buộc nhập"),
-        timeStart: Yup.string().required("Bắt buộc nhập"),
-        timeEnd: Yup.string().required("Bắt buộc nhập"),
-        minAmount: Yup.number().required("Bắt buộc nhập"),
-        maxDiscount: Yup.number().required("Bắt buộc nhập"),
-        percentage: Yup.number().required("Bắt buộc nhập"),
+        author: Yup.string().required("Bắt buộc nhập"),
       })}
     >
       {({
@@ -69,7 +61,7 @@ const AMovieModal = (props) => {
             data-toggle="modal"
             data-target="#exampleModalCenter"
           >
-            Thêm mã giảm giá mới
+            Thêm phim mới
           </button>
           <div
             className="modal fade"
@@ -85,7 +77,7 @@ const AMovieModal = (props) => {
                   <div className="modal-header">
                     <span>
                       <h3 className="modal-title" id="exampleModalLongTitle">
-                        Thêm mã giảm giá mới
+                        Thêm phim mới
                       </h3>
                     </span>
                     <span>
@@ -101,47 +93,47 @@ const AMovieModal = (props) => {
                   </div>
                   <div className="modal-body">
                     <div className="form-group">
-                      <label htmlFor="idMovieType" className="col-form-label">
-                        Loại mã giảm giá:
+                      <label htmlFor="idMovieCat" className="col-form-label">
+                        Thể loại phim:
                       </label>
                       {props.isLoaded && (
                         <Select
-                          name="idMovieType"
+                          name="idMovieCat"
                           onChange={(event) =>
                             handleChangeSelect(event, setFieldValue)
                           }
-                          name="idMovieType"
+                          name="idMovieCat"
                           isSearchable={true}
                           options={props.movieCates}
                           getOptionLabel={(option) => option.name}
                           getOptionValue={(option) => option.id}
-                          placeholder="Chọn loại mã giảm giá"
+                          placeholder="Chọn thể loại phim"
                           onBlur={handleBlur}
                           value={props.movieCates.filter(
-                            (option) => option.id === values.idMovieType
+                            (option) => option.id === values.idMovieCat
                           )}
                           className={
-                            errors.idMovieType && touched.idMovieType
+                            errors.idMovieCat && touched.idMovieCat
                               ? `${styles.formikinput} ${styles.error}`
                               : ""
                           }
                         />
                       )}
 
-                      {touched.idMovieType && errors.idMovieType ? (
+                      {touched.idMovieCat && errors.idMovieCat ? (
                         <div className={styles.inputfeedback}>
-                          {errors.idMovieType}
+                          {errors.idMovieCat}
                         </div>
                       ) : null}
                     </div>
                     <div className="form-group">
                       <label htmlFor="name" className="col-form-label">
-                        Mô tả:
+                        Tên phim:
                       </label>
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Nhập mô tả..."
+                        placeholder="Nhập tên phim..."
                         name="name"
                         value={values.name}
                         onChange={handleChange}
@@ -158,148 +150,28 @@ const AMovieModal = (props) => {
                         </div>
                       ) : null}
                     </div>
+
                     <div className="form-group">
-                      <label htmlFor="couponCode" className="col-form-label">
-                        Mã giảm giá:
+                      <label htmlFor="author" className="col-form-label">
+                        Tên đạo diễn:
                       </label>
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Nhập mã giảm giá..."
-                        name="couponCode"
-                        value={values.couponCode}
+                        placeholder="Nhập tên đạo diễn..."
+                        name="author"
+                        value={values.author}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         className={
-                          errors.couponCode && touched.couponCode
+                          errors.author && touched.author
                             ? `${styles.formikinput} ${styles.error}`
                             : styles.formikinput
                         }
                       />
-                      {touched.couponCode && errors.couponCode ? (
+                      {touched.author && errors.author ? (
                         <div className={styles.inputfeedback}>
-                          {errors.couponCode}
-                        </div>
-                      ) : null}
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="timeStart" className="col-form-label">
-                        Thời gian bắt đầu:
-                      </label>
-                      <input
-                        type="datetime-local"
-                        className="form-control"
-                        name="timeStart"
-                        placeholder="Chọn thời gian bắt đầu"
-                        value={values.timeStart}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                          errors.timeStart && touched.timeStart
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.timeStart && errors.timeStart ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.timeStart}
-                        </div>
-                      ) : null}
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="timeEnd" className="col-form-label">
-                        Thời gian kết thúc
-                      </label>
-                      <input
-                        type="datetime-local"
-                        className="form-control"
-                        name="timeEnd"
-                        placeholder="Chọn thời gian kết thúc..."
-                        value={values.timeEnd}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                          errors.timeEnd && touched.timeEnd
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.timeEnd && errors.timeEnd ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.timeEnd}
-                        </div>
-                      ) : null}
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="minAmount" className="col-form-label">
-                        Giá trị hóa đơn tối thiểu:
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        placeholder="Nhập giá trị hóa đơn tối thiểu..."
-                        name="minAmount"
-                        value={values.minAmount}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                          errors.minAmount && touched.minAmount
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.minAmount && errors.minAmount ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.minAmount}
-                        </div>
-                      ) : null}
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="maxDiscount" className="col-form-label">
-                        Mức giảm giá tối đa:
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="maxDiscount"
-                        placeholder="Nhập mức giảm giá tối đa..."
-                        name="maxDiscount"
-                        value={values.maxDiscount}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                          errors.maxDiscount && touched.maxDiscount
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.maxDiscount && errors.maxDiscount ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.maxDiscount}
-                        </div>
-                      ) : null}
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="percentage" className="col-form-label">
-                        Phần trăm giảm giá:
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        placeholder="Nhập phần trăm giảm giá..."
-                        name="percentage"
-                        value={values.percentage}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                          errors.percentage && touched.percentage
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.percentage && errors.percentage ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.percentage}
+                          {errors.author}
                         </div>
                       ) : null}
                     </div>
@@ -316,7 +188,7 @@ const AMovieModal = (props) => {
                       type="submit"
                       className="btn btn-primary"
                       disabled={
-                        !errors.idMovieType &&
+                        !errors.idMovieCat &&
                         !errors.name &&
                         !errors.couponCode &&
                         !errors.timeStart &&
@@ -328,7 +200,7 @@ const AMovieModal = (props) => {
                           : true
                       }
                     >
-                      Thêm mã giảm giá
+                      Thêm mới
                     </button>
                   </div>
                 </div>
@@ -341,4 +213,6 @@ const AMovieModal = (props) => {
   );
 };
 
-export default connect(mapStateToProps, { addMovie, getMovies })(AMovieModal);
+export default connect(mapStateToProps, { addMovie, getMovies, getMovieCates })(
+  AMovieModal
+);

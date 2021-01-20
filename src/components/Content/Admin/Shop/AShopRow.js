@@ -6,20 +6,16 @@ import {
 } from "../../../../state/actions/shopActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
+const mapStateToProps = (state) => ({
+  permissionAdmins: state.authAdmin.permissions,
+});
+
 class AShopRow extends Component {
-  convertDate = (date) => {
-    const newDate = new Date(date);
-    let year = newDate.getFullYear();
-    let month = newDate.getMonth() + 1;
-    let dt = newDate.getDate();
-
-    dt = dt < 10 ? `0${dt}` : dt;
-    month = month < 10 ? `0${month}` : month;
-    return dt + "/" + month + "/" + year;
-  };
-
   handleEdit = (id) => {
-    this.props.pushHistory(`/admin/shop/edit/${id}`);
+    this.props.pushHistory({
+      pathname: "/admin/shop/edit",
+      search: `?id=${id}`,
+    });
   };
 
   handleApprove = (id) => {
@@ -94,6 +90,8 @@ class AShopRow extends Component {
   }
 }
 
-export default connect(null, { deleteShop, pushHistory, updateShopStatus })(
-  AShopRow
-);
+export default connect(mapStateToProps, {
+  deleteShop,
+  pushHistory,
+  updateShopStatus,
+})(AShopRow);

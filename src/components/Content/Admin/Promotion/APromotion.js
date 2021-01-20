@@ -10,6 +10,7 @@ const mapStateToProps = (state) => ({
   promotions: state.promotion.promotions,
   isLoaded: state.promotion.isLoaded,
   totalDocuments: state.promotion.totalDocuments,
+  permissionAdmins: state.authAdmin.permissions,
 });
 
 class APromotion extends Component {
@@ -123,11 +124,11 @@ class APromotion extends Component {
         </td>
       </tr>
     ) : (
-      promotions.map((eachPromotion, index) => (
+      promotions.map((promotion, index) => (
         <APromotionRow
           history={this.props.history}
-          key={eachPromotion.id}
-          promotion={eachPromotion}
+          key={promotion.id}
+          promotion={promotion}
           index={index + start - 1}
         />
       ))
@@ -225,7 +226,7 @@ class APromotion extends Component {
 
   render() {
     const { limit, page, start, end, query } = this.state;
-    const { totalDocuments } = this.props;
+    const { totalDocuments, permissionAdmins } = this.props;
     return (
       <Fragment>
         <section className="content-header">
@@ -316,7 +317,12 @@ class APromotion extends Component {
                                 Mức giảm giá tối đa
                               </th>
                               <th style={{ width: "8%" }}>Phần trăm</th>
-                              <th style={{ width: "10%" }}>Thao tác</th>
+                              {(permissionAdmins.includes("editPromotion") ||
+                                permissionAdmins.includes(
+                                  "deletePromotion"
+                                )) && (
+                                <th style={{ width: "10%" }}>Thao tác</th>
+                              )}
                             </tr>
                           </thead>
 
@@ -331,7 +337,10 @@ class APromotion extends Component {
                               <th>Giá trị hóa đơn nhỏ nhất</th>
                               <th>Giá trị giảm giá lớn nhất</th>
                               <th>Phần trăm</th>
-                              <th>Thao tác</th>
+                              {(permissionAdmins.includes("editPromotion") ||
+                                permissionAdmins.includes(
+                                  "deletePromotion"
+                                )) && <th>Thao tác</th>}
                             </tr>
                           </tfoot>
                         </table>

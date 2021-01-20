@@ -80,7 +80,7 @@ const APromotionEdit = (props) => {
         <Fragment>
           <section className="content-header">
             <h1>
-              Nhà bán
+              Chương trình khuyến mại
               {/* <small>Preview</small> */}
             </h1>
             <ol className="breadcrumb">

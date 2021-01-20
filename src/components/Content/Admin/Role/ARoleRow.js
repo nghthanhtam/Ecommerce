@@ -4,7 +4,7 @@ import { deleteRoleAdmin } from "../../../../state/actions/roleAdminActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
 const mapStateToProps = (state) => ({
-  permissions: state.auth.permissions,
+  permissionAdmins: state.authAdmin.permissions,
 });
 
 class ARoleRow extends Component {
@@ -31,38 +31,38 @@ class ARoleRow extends Component {
   };
 
   render() {
-    const { role, index, permissions } = this.props;
+    const { role, index, permissionAdmins } = this.props;
 
     return (
       <tr>
         <td>{index + 1}</td>
         <td>{role.name}</td>
         <td>{this.convertDate(role.createdAt)}</td>
-        {permissions.includes("editRole") &&
-          permissions.includes("deleteRole") && (
-            <td>
-              <div className="btn-group">
-                {permissions.includes("editRole") && (
-                  <button
-                    onClick={() => this.handleEdit(role.id)}
-                    type="button"
-                    className="btn btn-success"
-                  >
-                    Chỉnh sửa
-                  </button>
-                )}
-                {permissions.includes("deleteRole") && (
-                  <button
-                    onClick={() => this.handleDelete(role.id)}
-                    type="button"
-                    className="btn btn-danger"
-                  >
-                    Xóa
-                  </button>
-                )}
-              </div>
-            </td>
-          )}
+        {(permissionAdmins.includes("editAdminRole") ||
+          permissionAdmins.includes("deleteAdminRole")) && (
+          <td>
+            <div className="btn-group">
+              {permissionAdmins.includes("editAdminRole") && (
+                <button
+                  onClick={() => this.handleEdit(role.id)}
+                  type="button"
+                  className="btn btn-success"
+                >
+                  Chỉnh sửa
+                </button>
+              )}
+              {permissionAdmins.includes("deleteAdminRole") && (
+                <button
+                  onClick={() => this.handleDelete(role.id)}
+                  type="button"
+                  className="btn btn-danger"
+                >
+                  Xóa
+                </button>
+              )}
+            </div>
+          </td>
+        )}
       </tr>
     );
   }

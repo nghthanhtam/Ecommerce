@@ -189,42 +189,16 @@ const ARoleEdit = (props) => {
                             </div>
                           </div>
                           <div className="role-label">
-                            <h4 className="role-cate">Quản lý nhân viên</h4>
+                            <h4 className="role-cate">
+                              Quản lý nhân viên admin
+                            </h4>
                             <div>
                               <label className="label-wrapper">
                                 <input
                                   name="checked"
                                   type="checkbox"
-                                  value={6}
-                                  checked={values.checked.includes(6)}
-                                  onChange={(e) =>
-                                    handleCheck(e, setFieldValue, values)
-                                  }
-                                />
-                                <p>Tạo nhân viên</p>
-                              </label>
-                            </div>
-                            <div>
-                              <label className="label-wrapper">
-                                <input
-                                  name="checked"
-                                  type="checkbox"
-                                  value={7}
-                                  checked={values.checked.includes(7)}
-                                  onChange={(e) =>
-                                    handleCheck(e, setFieldValue, values)
-                                  }
-                                />
-                                <p>Chỉnh sửa nhân viên</p>
-                              </label>
-                            </div>
-                            <div>
-                              <label className="label-wrapper">
-                                <input
-                                  name="checked"
-                                  type="checkbox"
-                                  checked={values.checked.includes(8)}
-                                  value={8}
+                                  checked={values.checked.includes(72)}
+                                  value={72}
                                   onChange={(e) =>
                                     handleCheck(e, setFieldValue, values)
                                   }
@@ -237,8 +211,36 @@ const ARoleEdit = (props) => {
                                 <input
                                   name="checked"
                                   type="checkbox"
-                                  checked={values.checked.includes(9)}
-                                  value={9}
+                                  value={70}
+                                  checked={values.checked.includes(70)}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Tạo nhân viên</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  value={71}
+                                  checked={values.checked.includes(71)}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Chỉnh sửa nhân viên</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(73)}
+                                  value={73}
                                   onChange={(e) =>
                                     handleCheck(e, setFieldValue, values)
                                   }
@@ -328,6 +330,20 @@ const ARoleEdit = (props) => {
                                   }
                                 />
                                 <p>Sửa mã giảm giá</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(34)}
+                                  value={34}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Xóa mã giảm giá</p>
                               </label>
                             </div>
                             <div>
@@ -469,7 +485,7 @@ const ARoleEdit = (props) => {
                                 <input
                                   name="checked"
                                   type="checkbox"
-                                  checked={values.checked.includes(37)}
+                                  checked={values.checked.includes(56)}
                                   value={56}
                                   onChange={(e) =>
                                     handleCheck(e, setFieldValue, values)
@@ -533,8 +549,8 @@ const ARoleEdit = (props) => {
                                 <input
                                   name="checked"
                                   type="checkbox"
-                                  checked={values.checked.includes(37)}
-                                  value={56}
+                                  checked={values.checked.includes(61)}
+                                  value={61}
                                   onChange={(e) =>
                                     handleCheck(e, setFieldValue, values)
                                   }
@@ -547,13 +563,13 @@ const ARoleEdit = (props) => {
                                 <input
                                   name="checked"
                                   type="checkbox"
-                                  checked={values.checked.includes(57)}
-                                  value={57}
+                                  checked={values.checked.includes(62)}
+                                  value={62}
                                   onChange={(e) =>
                                     handleCheck(e, setFieldValue, values)
                                   }
                                 />
-                                <p>Duyệtcâu hỏi</p>
+                                <p>Duyệt câu hỏi</p>
                               </label>
                             </div>
                           </div>
@@ -602,13 +618,13 @@ const ARoleEdit = (props) => {
                                 <input
                                   name="checked"
                                   type="checkbox"
-                                  checked={values.checked.includes(10)}
-                                  value={10}
+                                  checked={values.checked.includes(15)}
+                                  value={15}
                                   onChange={(e) =>
                                     handleCheck(e, setFieldValue, values)
                                   }
                                 />
-                                <p>Cập nhật trạng thái đơn hàng</p>
+                                <p>Xem danh sách đơn hàng</p>
                               </label>
                             </div>
 
@@ -623,7 +639,36 @@ const ARoleEdit = (props) => {
                                     handleCheck(e, setFieldValue, values)
                                   }
                                 />
+                                <p>Cập nhật trạng thái đơn hàng</p>
+                              </label>
+                            </div>
+
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(14)}
+                                  value={14}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
                                 <p>Cập nhật thông tin giao hàng</p>
+                              </label>
+                            </div>
+                            <div>
+                              <label className="label-wrapper">
+                                <input
+                                  name="checked"
+                                  type="checkbox"
+                                  checked={values.checked.includes(78)}
+                                  value={78}
+                                  onChange={(e) =>
+                                    handleCheck(e, setFieldValue, values)
+                                  }
+                                />
+                                <p>Hủy mã giảm giá đơn hàng</p>
                               </label>
                             </div>
                           </div>
@@ -643,20 +688,7 @@ const ARoleEdit = (props) => {
                                 <p>Chỉnh sửa thông tin shop</p>
                               </label>
                             </div>
-                            <div>
-                              <label className="label-wrapper">
-                                <input
-                                  name="checked"
-                                  type="checkbox"
-                                  checked={values.checked.includes(78)}
-                                  value={78}
-                                  onChange={(e) =>
-                                    handleCheck(e, setFieldValue, values)
-                                  }
-                                />
-                                <p>Hủy mã giảm giá đơn hàng</p>
-                              </label>
-                            </div>
+
                             <div>
                               <label className="label-wrapper">
                                 <input

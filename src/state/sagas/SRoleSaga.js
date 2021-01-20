@@ -1,4 +1,4 @@
-import { takeEvery, put, call, select } from "redux-saga/effects";
+import { takeEvery, put, call, select, delay } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../actions/authActions";
 import {
@@ -12,6 +12,8 @@ import {
   ROLE_UPDATED,
   GET_ROLE_BY_ID,
   ROLE_RECEIVED,
+  EMPLOYEE_LOGOUT,
+  SHOW_MODAL,
 } from "../actions/types";
 
 function* fetchRoles(params) {
@@ -29,6 +31,19 @@ function* fetchRoles(params) {
     yield put({ type: ROLES_RECEIVED, payload: response });
   } catch (error) {
     console.log(error);
+    error = { ...error };
+    if (error.response.status == 401) {
+      yield put({
+        type: SHOW_MODAL,
+        payload: { show: true, modalName: "modalExpire" },
+      });
+      yield delay(2000);
+      yield put({
+        type: SHOW_MODAL,
+        payload: { show: false },
+      });
+      yield put({ type: EMPLOYEE_LOGOUT });
+    }
   }
 }
 

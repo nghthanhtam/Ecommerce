@@ -375,7 +375,6 @@ class AHome extends Component {
                                       <th>Địa chỉ</th>
                                       <th>Ngày đặt</th>
                                       <th>Tình trạng</th>
-                                      <th>Thao tác</th>
                                     </tr>
                                   </thead>
                                   <tbody>{this.renderPurchases()}</tbody>

@@ -9,6 +9,7 @@ import {
   USER_DELETED,
   USER_UPDATED,
   CLEAR_USER,
+  USER_PASS_UPDATED_ERROR,
 } from "../actions/types";
 
 const initialState = {
@@ -19,6 +20,7 @@ const initialState = {
   user: {},
   isAdded: false,
   userAdded: {},
+  isUpdatePassError: false,
 };
 
 export default function (state = initialState, action) {
@@ -78,8 +80,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isUpdated: true,
+        isUpdatePassError: false,
       };
-
+    case USER_PASS_UPDATED_ERROR:
+      return {
+        ...state,
+        isUpdatePassError: true,
+      };
     default:
       return state;
   }

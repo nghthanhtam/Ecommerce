@@ -103,9 +103,9 @@ class AddressBook extends React.Component {
                             ", " +
                             item.Ward.ward +
                             ", " +
-                            item.District.district +
+                            item.Ward.District.district +
                             ", " +
-                            item.City.city}
+                            item.Ward.District.City.city}
                         </p>
                       </div>
                       <div className="row-flex">

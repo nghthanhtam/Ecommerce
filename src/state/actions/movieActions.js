@@ -3,7 +3,7 @@ import {
   ADD_MOVIE,
   DELETE_MOVIE,
   UPDATE_MOVIE,
-  GET_EMPLOYEE_BY_ID,
+  GET_MOVIE_BY_ID,
 } from "./types";
 
 export const getMovies = (params) => ({
@@ -12,7 +12,7 @@ export const getMovies = (params) => ({
 });
 
 export const getMovieById = (id) => ({
-  type: GET_EMPLOYEE_BY_ID,
+  type: GET_MOVIE_BY_ID,
   id,
 });
 

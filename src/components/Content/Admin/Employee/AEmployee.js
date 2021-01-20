@@ -10,6 +10,7 @@ const mapStateToProps = (state) => ({
   admins: state.admin.admins,
   isLoaded: state.admin.isLoaded,
   totalDocuments: state.admin.totalDocuments,
+  permissionAdmins: state.authAdmin.permissions,
 });
 
 class AEmployee extends Component {
@@ -226,16 +227,13 @@ class AEmployee extends Component {
 
   render() {
     const { limit, page, start, end, query } = this.state;
-    const { totalDocuments } = this.props;
+    const { totalDocuments, permissionAdmins } = this.props;
     const { id } = this.props.match.params;
     return (
       <Fragment>
-        {/* {!isLoaded ? (
-          <Loader></Loader>
-        ) : ( */}
         <Fragment>
           <section className="content-header">
-            <h1>Nhân viên nhà bán {id}</h1>
+            <h1></h1>
             <ol className="breadcrumb">
               <li>
                 <a href="./admin">
@@ -243,7 +241,7 @@ class AEmployee extends Component {
                 </a>
               </li>
               <li>
-                <a href="/admin/employee">Nhân viên nhà bán</a>
+                <a href="/admin/employee">Nhân viên ban quản trị</a>
               </li>
             </ol>
           </section>
@@ -254,7 +252,9 @@ class AEmployee extends Component {
                 <div className="box">
                   <div className="box-header" style={{ marginTop: "5px" }}>
                     <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                      <h3 className="box-title">Quản lý nhân viên</h3>
+                      <h3 className="box-title">
+                        Quản lý nhân viên ban quản trị
+                      </h3>
                     </div>
                     <div className="col-md-4">
                       <AEmployeeModal limit={limit} page={page} />
@@ -284,13 +284,16 @@ class AEmployee extends Component {
                             <div
                               id="example1_filter"
                               className="dataTables_filter"
+                              style={{ float: "right" }}
                             >
                               <div>
-                                Tìm kiếm
+                                Tìm kiếm{" "}
                                 <input
                                   type="search"
                                   name="query"
-                                  style={{ margin: "0px 0px" }}
+                                  style={{
+                                    margin: "0px 0px",
+                                  }}
                                   className="form-control input-sm"
                                   placeholder="Nhập từ khóa... "
                                   aria-controls="example1"
@@ -316,7 +319,10 @@ class AEmployee extends Component {
                                 <th style={{ width: "10%" }}>Vai trò</th>
                                 <th style={{ width: "20%" }}>Họ tên</th>
                                 <th style={{ width: "15%" }}>Số điện thoại</th>
-                                <th style={{ width: "20%" }}>Thao tác</th>
+                                {(permissionAdmins.includes("editAdmin") ||
+                                  permissionAdmins.includes("deleteAdmin")) && (
+                                  <th style={{ width: "20%" }}>Thao tác</th>
+                                )}
                               </tr>
                             </thead>
 
@@ -329,7 +335,10 @@ class AEmployee extends Component {
                                 <th>Vai trò</th>
                                 <th>Họ tên</th>
                                 <th>Số điện thoại</th>
-                                <th>Hành động</th>
+                                {(permissionAdmins.includes("editAdmin") ||
+                                  permissionAdmins.includes("deleteAdmin")) && (
+                                  <th>Thao tác</th>
+                                )}
                               </tr>
                             </tfoot>
                           </table>

@@ -12,14 +12,9 @@ class UserProfile extends React.Component {
       { name: "Sổ địa chỉ", link: "/shopnow/user/address-book" },
       { name: "Nhận xét sản phẩm đã mua", link: "/shopnow/user/review" },
       { name: "Sản phẩm mua sau", link: "/shopnow/user/laterlist" },
-      // { name: "Sản phẩm yêu thích", link: "/shopnow/user/wishlist" },
-      { name: "Sản phẩm đã xem", link: "/shopnow/user/watchlist" },
+      // { name: "Sản phẩm đã xem", link: "/shopnow/user/watchlist" },
     ],
   };
-
-  componentDidMount() {
-    console.log(this.props);
-  }
 
   logout = () => {
     this.props.logout();
@@ -57,10 +52,10 @@ class UserProfile extends React.Component {
             </div>
           );
         })}
-        <div className="pro-item">
+        {/* <div className="pro-item">
           <div>Thông tin thanh toán</div>
           <i className="fa fa-angle-right"></i>
-        </div>
+        </div> */}
         <div onClick={this.logout} className="pro-item">
           <div>Đăng xuất</div>
         </div>

@@ -22,8 +22,6 @@ class AMovie extends Component {
     start: 1,
     end: 5,
     isNextBtnShow: true,
-    activeEmp: true,
-    deletedEmp: false,
   };
 
   componentDidMount() {
@@ -125,19 +123,20 @@ class AMovie extends Component {
         </td>
       </tr>
     ) : (
-      movies.map((eachMovie, index) => (
+      movies.map((movie, index) => (
         <AMovieRow
           history={this.props.history}
-          key={eachMovie.id}
-          movie={eachMovie}
+          key={movie.id}
+          movie={movie}
           index={index + start - 1}
         />
       ))
     );
   };
 
-  handleChoosePage = (e) => {
-    if (e === "...") return;
+  handleChoosePage = (e, pageNumber) => {
+    e.preventDefault();
+    if (pageNumber === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
 
@@ -145,15 +144,15 @@ class AMovie extends Component {
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
 
-    if (e === -1) {
-      e = page + 1;
-      if (e === pages) this.setState({ isNextBtnShow: false });
+    if (pageNumber === -1) {
+      pageNumber = page + 1;
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
     } else {
-      if (e === pages) this.setState({ isNextBtnShow: false });
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
       else this.setState({ isNextBtnShow: true });
     }
 
-    this.setState({ page: e }, () => {
+    this.setState({ page: pageNumber }, () => {
       const { limit, page, query } = this.state;
       this.props.getMovies({
         limit,
@@ -201,8 +200,8 @@ class AMovie extends Component {
               <a
                 className="paga-link"
                 name="page"
-                href="javascript:void(0);"
-                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+                href="#"
+                onClick={(e) => this.handleChoosePage(e, eachButton.pageNumber)}
               >
                 {eachButton.pageNumber}
               </a>
@@ -215,42 +214,13 @@ class AMovie extends Component {
               }
               name="currentPage"
               href="#"
-              onClick={() => this.handleChoosePage(-1)}
+              onClick={(e) => this.handleChoosePage(e, -1)}
             >
               {">>"}
             </a>
           </li>
         </>
       );
-    }
-  };
-
-  onCheckActiveEmp = (e) => {
-    const { activeEmp, limit, page, query, deletedEmp } = this.state;
-    if (e.target.name == "active") {
-      this.setState({ activeEmp: !activeEmp }, () => {
-        console.log(activeEmp);
-        this.props.getMovies({
-          limit,
-          page,
-          query,
-          idMovie: 1,
-          deletedEmp: this.state.deletedEmp,
-          activeEmp: this.state.activeEmp,
-        });
-      });
-    } else if (e.target.name == "deleted") {
-      this.setState({ deletedEmp: !deletedEmp }, () => {
-        console.log(activeEmp);
-        this.props.getMovies({
-          limit,
-          page,
-          query,
-          idMovie: 1,
-          deletedEmp: this.state.deletedEmp,
-          activeEmp: this.state.activeEmp,
-        });
-      });
     }
   };
 
@@ -268,7 +238,7 @@ class AMovie extends Component {
               </a>
             </li>
             <li>
-              <a href="/admin/movie">Mã giảm giá</a>
+              <a href="/admin/movie">Dánh sách phim</a>
             </li>
           </ol>
         </section>
@@ -278,7 +248,7 @@ class AMovie extends Component {
               <div className="box">
                 <div className="box-header" style={{ marginTop: "5px" }}>
                   <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                    <h3 className="box-title">Quản lý mã giảm giá</h3>
+                    <h3 className="box-title">Quản lý phim</h3>
                   </div>
 
                   <div className="col-md-4">
@@ -336,17 +306,9 @@ class AMovie extends Component {
                         >
                           <thead>
                             <tr>
-                              <th style={{ width: "8%" }}>Loại giảm giá</th>
-                              <th style={{ width: "10%" }}>Mô tả</th>
-                              <th style={{ width: "5%" }}>Mã giảm giá</th>
-                              <th style={{ width: "5%" }}>Thời gian </th>
-                              <th style={{ width: "15%" }}>
-                                Giá trị hóa đơn tối thiểu
-                              </th>
-                              <th style={{ width: "12%" }}>
-                                Mức giảm giá tối đa
-                              </th>
-                              <th style={{ width: "8%" }}>Phần trăm</th>
+                              <th style={{ width: "8%" }}>Thể loại phim</th>
+                              <th style={{ width: "10%" }}>Tên phpim</th>
+                              <th style={{ width: "5%" }}>Đạo diễn</th>
                               <th style={{ width: "10%" }}>Thao tác</th>
                             </tr>
                           </thead>
@@ -355,13 +317,9 @@ class AMovie extends Component {
 
                           <tfoot>
                             <tr>
-                              <th>Loại giảm giá</th>
-                              <th>Mô tả</th>
-                              <th>Mã giảm giá</th>
-                              <th>Thời gian </th>
-                              <th>Giá trị hóa đơn nhỏ nhất</th>
-                              <th>Giá trị giảm giá lớn nhất</th>
-                              <th>Phần trăm</th>
+                              <th>Thể loại phim</th>
+                              <th>Tên phim</th>
+                              <th>Đạo diễn</th>
                               <th>Thao tác</th>
                             </tr>
                           </tfoot>

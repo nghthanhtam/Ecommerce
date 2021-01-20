@@ -3,6 +3,10 @@ import { connect } from "react-redux";
 import { deletePromotion } from "../../../../state/actions/promotionActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
+const mapStateToProps = (state) => ({
+  permissionAdmins: state.authAdmin.permissions,
+});
+
 class APromotionRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
@@ -27,7 +31,7 @@ class APromotionRow extends Component {
   };
 
   render() {
-    const { promotion } = this.props;
+    const { promotion, permissionAdmins } = this.props;
 
     return (
       <tr>
@@ -41,28 +45,38 @@ class APromotionRow extends Component {
         <td>{promotion.minAmount}</td>
         <td>{promotion.maxDiscount}</td>
         <td>{promotion.percentage}%</td>
-        <td>
-          <div className="btn-group">
-            <button
-              onClick={() => this.handleEdit(promotion.id)}
-              type="button"
-              className="btn btn-success"
-            >
-              Sửa
-            </button>
 
-            <button
-              onClick={() => this.handleDelete(promotion.id)}
-              type="button"
-              className="btn btn-danger"
-            >
-              Xóa
-            </button>
-          </div>
-        </td>
+        {(permissionAdmins.includes("editPromotion") ||
+          permissionAdmins.includes("deletePromotion")) && (
+          <td>
+            <div className="btn-group">
+              {permissionAdmins.includes("editPromotion") && (
+                <button
+                  onClick={() => this.handleEdit(promotion.id)}
+                  type="button"
+                  className="btn btn-success"
+                >
+                  Sửa
+                </button>
+              )}
+
+              {permissionAdmins.includes("deletePromotion") && (
+                <button
+                  onClick={() => this.handleDelete(promotion.id)}
+                  type="button"
+                  className="btn btn-danger"
+                >
+                  Xóa
+                </button>
+              )}
+            </div>
+          </td>
+        )}
       </tr>
     );
   }
 }
 
-export default connect(null, { deletePromotion, pushHistory })(APromotionRow);
+export default connect(mapStateToProps, { deletePromotion, pushHistory })(
+  APromotionRow
+);

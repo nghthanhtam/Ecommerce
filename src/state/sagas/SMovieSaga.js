@@ -1,6 +1,6 @@
-import { takeEvery, put, call, select } from 'redux-saga/effects';
-import axios from 'axios';
-import { tokenConfig } from '../actions/authActions';
+import { takeEvery, put, call, select } from "redux-saga/effects";
+import axios from "axios";
+import { tokenAdminConfig } from "../actions/authAdminActions";
 import {
   GET_MOVIES,
   ADD_MOVIE,
@@ -10,20 +10,20 @@ import {
   MOVIE_DELETED,
   UPDATE_MOVIE,
   MOVIE_UPDATED,
-} from '../actions/types';
-
-import mongoose from 'mongoose';
+  GET_MOVIE_BY_ID,
+  MOVIE_RECEIVED,
+} from "../actions/types";
 
 function* fetchMovies(params) {
   try {
     const state = yield select(),
-      { limit, page, query, idShop } = params.pages;
-
+      { limit, page, query } = params.pages;
+    console.log(params.pages);
     const response = yield call(() =>
       axios
         .get(
           `${process.env.REACT_APP_BACKEND_PRODUCT}/api/movie?limit=${limit}&page=${page}&query=${query}`,
-          tokenConfig(state)
+          tokenAdminConfig(state)
         )
         .catch((er) => console.log(er.response))
     );
@@ -31,6 +31,28 @@ function* fetchMovies(params) {
     yield put({ type: MOVIES_RECEIVED, payload: response });
   } catch (error) {
     console.log(error);
+  }
+}
+
+function* fetchMovieById(params) {
+  try {
+    const state = yield select(),
+      { id } = params;
+    const response = yield call(() =>
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/movie/${id}`,
+        tokenAdminConfig(state)
+      )
+    );
+    yield put({ type: MOVIE_RECEIVED, payload: response });
+  } catch (error) {
+    console.log(error);
+    let err = { ...error };
+    if (err.response.status == 401) {
+      this.props.history.push({
+        pathname: "/admin/login",
+      });
+    }
   }
 }
 
@@ -42,7 +64,7 @@ function* addMovie(params) {
       axios.post(
         `${process.env.REACT_APP_BACKEND_PRODUCT}/api/movie/`,
         params.newMovie,
-        tokenConfig(state)
+        tokenAdminConfig(state)
       )
     );
 
@@ -63,7 +85,7 @@ function* updateMovie(params) {
       axios.put(
         `${process.env.REACT_APP_BACKEND_PRODUCT}/api/movie/${params.newMovie.id}`,
         params.newMovie,
-        tokenConfig(state)
+        tokenAdminConfig(state)
       )
     );
 
@@ -78,7 +100,7 @@ function* deleteMovie(params) {
     yield call(() =>
       axios.delete(
         `${process.env.REACT_APP_BACKEND_PRODUCT}/api/movie/${params.id}`,
-        tokenConfig(state)
+        tokenAdminConfig(state)
       )
     );
 
@@ -89,6 +111,7 @@ function* deleteMovie(params) {
 }
 
 export default function* sMovieSaga() {
+  yield takeEvery(GET_MOVIE_BY_ID, fetchMovieById);
   yield takeEvery(GET_MOVIES, fetchMovies);
   yield takeEvery(ADD_MOVIE, addMovie);
   yield takeEvery(UPDATE_MOVIE, updateMovie);

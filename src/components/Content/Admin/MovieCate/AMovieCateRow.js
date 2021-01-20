@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { deleteMovieCate } from "../../../../state/actions/movieCateActions";
 
+const mapStateToProps = (state) => ({
+  permissionAdmins: state.authAdmin.permissions,
+});
+
 class AMovieCateRow extends Component {
   convertDate = (date) => {
     const newDate = new Date(date);
@@ -25,34 +29,40 @@ class AMovieCateRow extends Component {
   };
 
   render() {
-    const { movieCate } = this.props;
+    const { movieCate, permissionAdmins } = this.props;
 
     return (
       <tr>
         <td>{movieCate.name}</td>
         <td>{movieCate.description}</td>
-        <td>
-          <div className="btn-group">
-            <button
-              onClick={() => this.handleEdit(movieCate.id)}
-              type="button"
-              className="btn btn-success"
-            >
-              Sửa
-            </button>
-
-            <button
-              onClick={() => this.handleDelete(movieCate.id)}
-              type="button"
-              className="btn btn-danger"
-            >
-              Xóa
-            </button>
-          </div>
-        </td>
+        {(permissionAdmins.includes("editMovieCategory") ||
+          permissionAdmins.includes("deleteMovieCategory")) && (
+          <td>
+            <div className="btn-group">
+              {permissionAdmins.includes("editMovieCategory") && (
+                <button
+                  onClick={() => this.handleEdit(movieCate.id)}
+                  type="button"
+                  className="btn btn-success"
+                >
+                  Sửa
+                </button>
+              )}
+              {permissionAdmins.includes("deleteMovieCategory") && (
+                <button
+                  onClick={() => this.handleDelete(movieCate.id)}
+                  type="button"
+                  className="btn btn-danger"
+                >
+                  Xóa
+                </button>
+              )}
+            </div>
+          </td>
+        )}
       </tr>
     );
   }
 }
 
-export default connect(null, { deleteMovieCate })(AMovieCateRow);
+export default connect(mapStateToProps, { deleteMovieCate })(AMovieCateRow);

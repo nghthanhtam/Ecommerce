@@ -5,3 +5,7 @@
   background-color: #e2e0e0 !important;
   color: rgb(204, 204, 204) !important;
 }
+.order-link {
+  color: blue;
+  cursor: pointer;
+}

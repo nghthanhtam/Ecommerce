@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
   return {
     history: state.history.history,
     auth: state.auth,
-    isLoaded: state.admin.isLoaded,
+    isLoaded: state.admin.isAdminLoaded,
     isRolesLoaded: state.roleAdmin.isLoaded,
     roleAdmins: state.roleAdmin.roleAdmins,
     isUpdated: state.admin.isUpdated,
@@ -39,9 +39,7 @@ const AEmployeeEdit = (props) => {
     setFieldValue("idRole", selectedItem.id);
   };
 
-  return !props.isLoaded && !props.isRolesLoaded ? (
-    <div>Loading...</div>
-  ) : (
+  return props.isLoaded && props.isRolesLoaded ? (
     <Formik
       initialValues={props.admin}
       onSubmit={(values, actions) => {
@@ -220,6 +218,8 @@ const AEmployeeEdit = (props) => {
         </Fragment>
       )}
     </Formik>
+  ) : (
+    <div>Loading...</div>
   );
 };
 

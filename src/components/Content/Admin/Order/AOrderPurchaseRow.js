@@ -8,6 +8,7 @@ import {
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
+  permissionAdmins: state.authAdmin.permissions,
 });
 
 class AOrderPurchaseRow extends Component {
@@ -105,7 +106,12 @@ class AOrderPurchaseRow extends Component {
           #{id}
         </td>
         <td
-          onClick={() => this.props.history.push(`/admin/shop`)}
+          onClick={() =>
+            this.props.history.push({
+              pathname: "/admin/shop/edit",
+              search: `?id=${idShop}`,
+            })
+          }
           style={{ color: "blue", cursor: "pointer" }}
         >
           {idShop}
@@ -139,45 +145,57 @@ class AOrderPurchaseRow extends Component {
                 <span className="sr-only">Toggle Dropdown</span>
               </button>
               <ul className="dropdown-menu" role="menu">
-                {statuses.map((item, index) => (
+                {this.props.permissionAdmins.includes("updateOrderStatus") &&
+                  statuses.map((item, index) => (
+                    <li
+                      key={index}
+                      className={
+                        (status == "in transit" && item.value == "received") ||
+                        status == item.value ||
+                        (status !== "pending" && item.value == "canceled")
+                          ? "disabled-link"
+                          : ""
+                      }
+                      onClick={(e) => this.handleAction(e, item)}
+                    >
+                      <a href="javascript:void(0);"> {item.label} </a>
+                    </li>
+                  ))}
+
+                {this.props.permissionAdmins.includes(
+                  "updateOrderShippingInformation"
+                ) && (
                   <li
-                    key={index}
-                    className={
-                      (status == "in transit" && item.value == "received") ||
-                      status == item.value ||
-                      (status !== "pending" && item.value == "canceled")
-                        ? "disabled-link"
-                        : ""
+                    onClick={(e) =>
+                      this.props.showModal({
+                        show: true,
+                        modalName: "modalShippingFee",
+                        details: {
+                          id,
+                          type: "admin",
+                          createdAt,
+                        },
+                      })
                     }
-                    onClick={(e) => this.handleAction(e, item)}
                   >
-                    <a href="javascript:void(0);"> {item.label} </a>
+                    <a href="javascript:void(0);">
+                      {" "}
+                      Cập nhật thông tin giao hàng{" "}
+                    </a>
                   </li>
-                ))}
-                <li
-                  onClick={(e) =>
-                    this.props.showModal({
-                      show: true,
-                      modalName: "modalShippingFee",
-                      details: {
-                        id,
-                        type: "seller",
-                        createdAt,
-                        pages: this.props.pages,
-                      },
-                    })
-                  }
-                >
-                  <a href="javascript:void(0);"> Cập nhật phí vận chuyển </a>
-                </li>
+                )}
               </ul>
-              <button
-                type="button"
-                className="btn btn-warning"
-                onClick={() => this.deletePromotionInfor(id)}
-              >
-                Xóa mã giảm giá
-              </button>
+              {this.props.permissionAdmins.includes(
+                "deleteOrderPromotionInfo"
+              ) && (
+                <button
+                  type="button"
+                  className="btn btn-warning"
+                  onClick={() => this.deletePromotionInfor(id)}
+                >
+                  Xóa mã giảm giá
+                </button>
+              )}
             </div>
           </td>
         )}

@@ -6,11 +6,13 @@ import {
   MOVIE_ADDED,
   MOVIE_UPDATED,
   MOVIE_RECEIVED,
+  UPDATE_MOVIE,
 } from "../actions/types";
 
 const initialState = {
   movies: [],
   movie: {},
+  isUpdated: false,
   totalDocuments: 0,
   isLoaded: false,
 };
@@ -20,7 +22,8 @@ export default function (state = initialState, action) {
     case GET_MOVIES:
       return {
         ...state,
-        //d: true,
+        isLoaded: false,
+        isUpdated: false,
       };
     case MOVIES_RECEIVED:
       return {
@@ -50,10 +53,15 @@ export default function (state = initialState, action) {
         ...state,
         movies: state.movies.filter((movie) => movie.id !== action.payload.id),
       };
-
+    case UPDATE_MOVIE:
+      return {
+        ...state,
+        isUpdated: false,
+      };
     case MOVIE_UPDATED:
       return {
         ...state,
+        isUpdated: true,
       };
 
     default:

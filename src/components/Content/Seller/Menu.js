@@ -47,24 +47,34 @@ class Menu extends React.Component {
                     <i className="fa fa-home" /> <span>Trang chủ</span>
                   </Link>
                 </li>
-                <li>
-                  <Link to="/admin/order">
-                    <i className="fa fa-cart-arrow-down" />{" "}
-                    <span>Đơn hàng</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/admin/product">
-                    <i className="fa fa-circle-o" /> <span>Sản phẩm</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/admin/promotion">
-                    <i className="fa fa-gift" /> <span>Mã giảm giá</span>
-                  </Link>
-                </li>
+                {permissionAdmins.includes("getOrders") && (
+                  <li>
+                    <Link to="/admin/order">
+                      <i className="fa fa-cart-arrow-down" />{" "}
+                      <span>Đơn hàng</span>
+                    </Link>
+                  </li>
+                )}
+
+                {(permissionAdmins.includes("getProducts") ||
+                  permissionAdmins.includes("getProductVars")) && (
+                  <li>
+                    <Link to="/admin/product">
+                      <i className="fa fa-circle-o" /> <span>Sản phẩm</span>
+                    </Link>
+                  </li>
+                )}
+
+                {permissionAdmins.includes("getPromotions") && (
+                  <li>
+                    <Link to="/admin/promotion">
+                      <i className="fa fa-gift" /> <span>Mã giảm giá</span>
+                    </Link>
+                  </li>
+                )}
+
                 <li className="treeview">
-                  <a href="javascript:void(0);">
+                  <a style={{ cursor: "pointer" }}>
                     <i className="fa fa-user" />
                     <span>Quản lý người dùng</span>
                     <span className="pull-right-container">
@@ -72,25 +82,31 @@ class Menu extends React.Component {
                     </span>
                   </a>
                   <ul className="treeview-menu">
-                    <li>
-                      <Link to="/admin/employee">
-                        <i className="fa fa-circle-o" /> Nhân viên
-                      </Link>
-                    </li>
+                    {permissionAdmins.includes("getAdmins") && (
+                      <li>
+                        <Link to="/admin/employee">
+                          <i className="fa fa-circle-o" /> Nhân viên
+                        </Link>
+                      </li>
+                    )}
+
                     <li>
                       <Link to="/admin/user">
                         <i className="fa fa-circle-o" /> Khách hàng
                       </Link>
                     </li>
-                    <li>
-                      <Link to="/admin/shop">
-                        <i className="fa fa-circle-o" /> Nhà bán
-                      </Link>
-                    </li>
+
+                    {permissionAdmins.includes("getShops") && (
+                      <li>
+                        <Link to="/admin/shop">
+                          <i className="fa fa-circle-o" /> Nhà bán
+                        </Link>
+                      </li>
+                    )}
                   </ul>
                 </li>
                 <li className="treeview">
-                  <a href="javascript:void(0);">
+                  <a style={{ cursor: "pointer" }}>
                     <i className="fa fa-film" />
                     <span>Quản lý phim</span>
                     <span className="pull-right-container">
@@ -98,18 +114,22 @@ class Menu extends React.Component {
                     </span>
                   </a>
                   <ul className="treeview-menu">
-                    <li>
-                      <Link to="/admin/movie">
-                        <i className="fa fa-circle-o" />
-                        Danh sách phim
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/admin/moviecate">
-                        <i className="fa fa-circle-o" />
-                        Thể loại phim
-                      </Link>
-                    </li>
+                    {permissionAdmins.includes("getMovie") && (
+                      <li>
+                        <Link to="/admin/movie">
+                          <i className="fa fa-circle-o" />
+                          Danh sách phim
+                        </Link>
+                      </li>
+                    )}
+                    {permissionAdmins.includes("getMovieCategory") && (
+                      <li>
+                        <Link to="/admin/moviecate">
+                          <i className="fa fa-circle-o" />
+                          Thể loại phim
+                        </Link>
+                      </li>
+                    )}
                   </ul>
                 </li>
                 <li className="treeview">
@@ -121,27 +141,36 @@ class Menu extends React.Component {
                     </span>
                   </a>
                   <ul className="treeview-menu">
-                    <li>
-                      <Link to="/admin/rating">
-                        <i className="fa fa-question" />
-                        Nhật xét
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/admin/comment">
-                        <i className="fa fa-reply"></i>Trả lời nhận xét
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/admin/question">
-                        <i className="fa fa-question" /> Câu hỏi
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/admin/answer">
-                        <i className="fa fa-reply" /> Trả lời câu hỏi
-                      </Link>
-                    </li>
+                    {permissionAdmins.includes("getRatings") && (
+                      <li>
+                        <Link to="/admin/rating">
+                          <i className="fa fa-question" />
+                          Bài đánh giá sản phẩm
+                        </Link>
+                      </li>
+                    )}
+                    {permissionAdmins.includes("getComments") && (
+                      <li>
+                        <Link to="/admin/comment">
+                          <i className="fa fa-reply"></i>Phản hồi các bài đánh
+                          giá
+                        </Link>
+                      </li>
+                    )}
+                    {permissionAdmins.includes("getQuestions") && (
+                      <li>
+                        <Link to="/admin/question">
+                          <i className="fa fa-question" /> Câu hỏi
+                        </Link>
+                      </li>
+                    )}
+                    {permissionAdmins.includes("getAnswers") && (
+                      <li>
+                        <Link to="/admin/answer">
+                          <i className="fa fa-reply" /> Trả lời câu hỏi
+                        </Link>
+                      </li>
+                    )}
                   </ul>
                 </li>
                 {permissionAdmins &&
@@ -153,27 +182,6 @@ class Menu extends React.Component {
                       </Link>
                     </li>
                   )}
-                <li className="treeview">
-                  <a href="#">
-                    <i className="fa fa-pie-chart" />
-                    <span>Thống kê</span>
-                    <span className="pull-right-container">
-                      <i className="fa fa-angle-left pull-right" />
-                    </span>
-                  </a>
-                  <ul className="treeview-menu">
-                    <li>
-                      <Link to="/admin/sale-report">
-                        <i className="fa fa-circle-o" /> Thống kê doanh thu
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/admin/warehouse-report">
-                        <i className="fa fa-circle-o" /> Thống kê tồn kho
-                      </Link>
-                    </li>
-                  </ul>
-                </li>
                 <li>
                   <a href="pages/mailbox/mailbox.html">
                     <i className="fa fa-envelope" /> <span>Mailbox</span>

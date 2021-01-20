@@ -179,7 +179,7 @@ function* updateShippingFee(params) {
     type == "admin"
       ? yield put({
           type: GET_ORDERS,
-          pages,
+          pages: { page: 1, limit: 1000, query: "" },
         })
       : yield put({
           type: GET_ORDERS_BY_SHOP,

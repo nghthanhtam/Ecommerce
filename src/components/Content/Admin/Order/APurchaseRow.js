@@ -4,6 +4,7 @@ import { showModal } from "../../../../state/actions/modalActions";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
+  permissionAdmins: state.authAdmin.permissions,
 });
 
 class AOrderRow extends Component {
@@ -41,42 +42,34 @@ class AOrderRow extends Component {
   render() {
     const {
       numberAndStreet,
-      idWard,
       recipient,
       phone,
       status,
       createdAt,
       id,
     } = this.props.purchase;
-    const { statuses } = this.state;
-
+    const { permissionAdmins } = this.props;
     return (
       <tr>
         <td
-          onClick={() =>
-            this.props.history.push({
-              pathname: `/admin/order/purchase/${id}`,
-              orderList: this.props.purchase.Orders,
-            })
+          onClick={() => {
+            if (permissionAdmins && permissionAdmins.includes("getOrders"))
+              this.props.history.push({
+                pathname: `/admin/order/purchase/${id}`,
+                orderList: this.props.purchase.Orders,
+              });
+          }}
+          className={
+            permissionAdmins &&
+            permissionAdmins.includes("getOrders") &&
+            "order-link"
           }
-          style={{ color: "blue", cursor: "pointer" }}
         >
           #{id}
         </td>
         <td>{recipient}</td>
         <td>{phone}</td>
-        <td>
-          {
-            numberAndStreet
-            //+
-            // ", " +
-            // Ward.ward +
-            // ", " +
-            // District.district +
-            // ", " +
-            // City.city
-          }
-        </td>
+        <td>{numberAndStreet}</td>
         <td>{this.convertDate(createdAt)}</td>
         <td>
           {status == "warning"

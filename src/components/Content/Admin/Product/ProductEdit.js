@@ -1,11 +1,10 @@
-import React, { Fragment, Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Fragment, Component } from "react";
+import { connect } from "react-redux";
 import Select from "react-select";
-import Loader from 'react-loader';
-import axios from 'axios';
+import axios from "axios";
 
-import { pushHistory } from '../../../../state/actions/historyActions';
-import { updateProductVar } from '../../../../state/actions/productVarActions';
+import { pushHistory } from "../../../../state/actions/historyActions";
+import { updateProductVar } from "../../../../state/actions/productVarActions";
 
 const mapStateToProps = (state, props) => {
   return {
@@ -16,10 +15,18 @@ const mapStateToProps = (state, props) => {
 
 class ProductEdit extends Component {
   state = {
-    id: '', name: '', SKU: '', marketPrice: 0, price: 0, status: '', Images: [],
-    statuses: [{ label: 'Đang chờ duyệt', value: 'pending' },
-    { label: 'Đang kinh doanh', value: 'active' },
-    { label: 'Ngừng kinh doanh', value: 'inactive' }],
+    id: "",
+    name: "",
+    SKU: "",
+    marketPrice: 0,
+    price: 0,
+    status: "",
+    Images: [],
+    statuses: [
+      { label: "Đang chờ duyệt", value: "pending" },
+      { label: "Đang kinh doanh", value: "active" },
+      { label: "Ngừng kinh doanh", value: "inactive" },
+    ],
   };
   componentDidMount() {
     const { id } = this.props.match.params;
@@ -30,7 +37,13 @@ class ProductEdit extends Component {
       )
       .then((response) => {
         let {
-          id, name, SKU, marketPrice, price, status, Images
+          id,
+          name,
+          SKU,
+          marketPrice,
+          price,
+          status,
+          Images,
         } = response.data;
         this.setState({ id, name, SKU, marketPrice, price, status, Images });
       })
@@ -40,13 +53,13 @@ class ProductEdit extends Component {
   tokenConfig = (token) => {
     const config = {
       headers: {
-        'Content-type': 'application/json',
+        "Content-type": "application/json",
       },
     };
 
     //Header
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   };
@@ -57,15 +70,15 @@ class ProductEdit extends Component {
 
   handleChangeSelect = (selectedItem, { name }) => {
     this.setState({ [name]: selectedItem.value });
-  }
+  };
 
   handleFileSelect = (e) => {
     const validateFile = (file) => {
       const validTypes = [
-        'image/jpeg',
-        'image/jpg',
-        'image/png',
-        'image/x-icon',
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/x-icon",
       ];
       if (validTypes.indexOf(file.type) === -1) {
         return false;
@@ -73,64 +86,80 @@ class ProductEdit extends Component {
       return true;
     };
 
-    let files = e.target.files
+    let files = e.target.files;
     if (files.length) {
       for (let i = 0; i < files.length; i++) {
         if (validateFile(files[i])) {
           files[i].filePath = URL.createObjectURL(files[i]);
           this.setState((prepState) => ({
-            Images: [...prepState.Images, files[i]]
+            Images: [...prepState.Images, files[i]],
           }));
         } else {
-          files[i]['invalid'] = true;
-          this.setState({ errorMessage: 'Định dạng tệp không phù hợp' });
+          files[i]["invalid"] = true;
+          this.setState({ errorMessage: "Định dạng tệp không phù hợp" });
         }
       }
     }
-  }
+  };
 
   handleSubmit = (e) => {
     const { id, name, SKU, marketPrice, price, status } = this.state;
     e.preventDefault();
 
     const newProductVar = {
-      id, name, SKU, marketPrice, price, status
+      id,
+      name,
+      SKU,
+      marketPrice,
+      price,
+      status,
     };
     this.props.updateProductVar(newProductVar);
     //Quay về trang chính
-    this.props.history.push('/product');
+    this.props.history.push("/product");
   };
 
   handleCancel = (e) => {
-    this.props.history.push('/product');
+    this.props.history.push("/product");
   };
 
   oncheckboxChange = (id) => {
-    this.setState((prepState) => {
-      let Images = [...prepState.Images];
-      Images.map((image) => {
-        if (image.id == id) image.isMain = true
-        else image.isMain = false
-      })
-      return {
-        Images,
-      };
-    }, () => console.log(this.state.Images));
-  }
+    this.setState(
+      (prepState) => {
+        let Images = [...prepState.Images];
+        Images.map((image) => {
+          if (image.id == id) image.isMain = true;
+          else image.isMain = false;
+        });
+        return {
+          Images,
+        };
+      },
+      () => console.log(this.state.Images)
+    );
+  };
 
   render() {
-    const { id, name, SKU, marketPrice, price, status, Images,
-      statuses } = this.state;
+    const {
+      id,
+      name,
+      SKU,
+      marketPrice,
+      price,
+      status,
+      Images,
+      statuses,
+    } = this.state;
 
     return (
       <Fragment>
         <div>
           <section className="content-header">
-            <ol className="breadcrumb" >
+            <ol className="breadcrumb">
               <li>
                 <a href="fake_url">
                   <i className="fa fa-dashboard" /> Trang chủ
-                  </a>
+                </a>
               </li>
               <li>
                 <a href="fake_url">Sản phẩm</a>
@@ -140,36 +169,78 @@ class ProductEdit extends Component {
               </li>
             </ol>
           </section>
-          <section className="content" style={{ width: '165vw', marginTop: '10px' }}>
+          <section
+            className="content"
+            style={{ width: "165vw", marginTop: "10px" }}
+          >
             <div className="row">
               <div className="col-md-6">
                 <div className="box box-info">
                   <div className="box-header with-border">
                     <h3 className="box-title">Cập nhật thông tin sản phẩm</h3>
                   </div>
-                  <form
-                    role="form"
-                    onSubmit={this.handleSubmit}>
+                  <form role="form" onSubmit={this.handleSubmit}>
                     <div className="box-body">
                       <div className="form-group">
                         <label for="id">ID</label>
-                        <input className="form-control" name="id" type="text" placeholder="Loading..." className="form-control" value={id} disabled onChange={this.handleChange} />
+                        <input
+                          className="form-control"
+                          name="id"
+                          type="text"
+                          placeholder="Loading..."
+                          className="form-control"
+                          value={id}
+                          disabled
+                          onChange={this.handleChange}
+                        />
                       </div>
                       <div className="form-group">
                         <label for="SKU">SKU</label>
-                        <input className="form-control" name="SKU" type="text" placeholder="Loading..." className="form-control" value={SKU} onChange={this.handleChange} />
+                        <input
+                          className="form-control"
+                          name="SKU"
+                          type="text"
+                          placeholder="Loading..."
+                          className="form-control"
+                          value={SKU}
+                          onChange={this.handleChange}
+                        />
                       </div>
                       <div className="form-group">
                         <label for="name">Tên sản phẩm</label>
-                        <input className="form-control" name="name" type="text" placeholder="Loading..." className="form-control" value={name} onChange={this.handleChange} />
+                        <input
+                          className="form-control"
+                          name="name"
+                          type="text"
+                          placeholder="Loading..."
+                          className="form-control"
+                          value={name}
+                          onChange={this.handleChange}
+                        />
                       </div>
                       <div className="form-group">
                         <label for="marketPrice">Giá niêm yết</label>
-                        <input className="form-control" name="marketPrice" type="number" placeholder="Loading..." className="form-control" value={marketPrice} onChange={this.handleChange} />
+                        <input
+                          className="form-control"
+                          name="marketPrice"
+                          type="number"
+                          placeholder="Loading..."
+                          className="form-control"
+                          value={marketPrice}
+                          onChange={this.handleChange}
+                        />
                       </div>
                       <div className="form-group">
                         <label for="price">Giá bán</label>
-                        <input className="form-control" name="price" type="number" placeholder="Loading..." className="form-control" value={price} onChange={this.handleChange} />
+                        <input
+                          className="form-control"
+                          name="price"
+                          type="number"
+                          placeholder="Loading..."
+                          className="form-control"
+                          value={price}
+                          onChange={this.handleChange}
+                        />
                       </div>
                       <div className="form-group">
                         <label for="price">Tình trạng</label>
@@ -179,11 +250,18 @@ class ProductEdit extends Component {
                           isSearchable={true}
                           options={statuses}
                           placeholder="Loading ..."
-                          value={statuses.filter(option => option.value === status)} />
+                          value={statuses.filter(
+                            (option) => option.value === status
+                          )}
+                        />
                       </div>
                       <div class="form-group">
                         <label for="exampleInputFile">Hình ảnh</label>
-                        <input type="file" id="exampleInputFile" onChange={this.handleFileSelect} />
+                        <input
+                          type="file"
+                          id="exampleInputFile"
+                          onChange={this.handleFileSelect}
+                        />
                       </div>
                       <div className="sku-grid">
                         {Images.length > 0 &&
@@ -192,9 +270,10 @@ class ProductEdit extends Component {
                               <label
                                 key={index}
                                 htmlFor={photo}
-                                className="skuproduct-card">
+                                className="skuproduct-card"
+                              >
                                 <img
-                                  style={{ width: '100%', height: '90%' }}
+                                  style={{ width: "100%", height: "90%" }}
                                   className="product-pic"
                                   src={photo.url}
                                   alt="sản phẩm"
@@ -204,7 +283,9 @@ class ProductEdit extends Component {
                                     className="color-checked"
                                     type="checkbox"
                                     checked={photo.isMain}
-                                    onChange={() => this.oncheckboxChange(photo.id)}
+                                    onChange={() =>
+                                      this.oncheckboxChange(photo.id)
+                                    }
                                   />
                                 </div>
                               </label>
@@ -222,12 +303,11 @@ class ProductEdit extends Component {
                       <button
                         type="button"
                         onClick={this.handleCancel}
-                        className="btn btn-default">
+                        className="btn btn-default"
+                      >
                         Hủy
                       </button>
-                      <button
-                        type="submit"
-                        className="btn btn-info pull-right">
+                      <button type="submit" className="btn btn-info pull-right">
                         Lưu
                       </button>
                     </div>
@@ -237,9 +317,11 @@ class ProductEdit extends Component {
             </div>
           </section>
         </div>
-      </Fragment >
+      </Fragment>
     );
   }
 }
 
-export default connect(mapStateToProps, { pushHistory, updateProductVar, })(ProductEdit);
+export default connect(mapStateToProps, { pushHistory, updateProductVar })(
+  ProductEdit
+);

@@ -5,6 +5,7 @@ import {
   GET_USER_BY_ID,
   UPDATE_USER,
   CLEAR_USER,
+  UPDATE_PASS,
 } from "./types";
 
 export const clearUser = () => ({
@@ -23,15 +24,20 @@ export const getUserById = (params) => ({
 
 export const deleteUser = (id) => ({
   type: DELETE_USER,
-  id: id,
+  id,
 });
 
 export const addUser = (newUser) => ({
   type: ADD_USER,
-  newUser: newUser,
+  newUser,
 });
 
 export const updateUser = (newUser) => ({
   type: UPDATE_USER,
-  newUser: newUser,
+  newUser,
+});
+
+export const updatePass = (params) => ({
+  type: UPDATE_PASS,
+  params,
 });

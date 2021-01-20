@@ -4,8 +4,9 @@ import { pushHistory } from "../../../../state/actions/historyActions";
 import {
   updateMovie,
   getMovieById,
+  getMovies,
 } from "../../../../state/actions/movieActions";
-import { getMovies } from "../../../../state/actions/movieActions";
+import { getMovieCates } from "../../../../state/actions/movieCateActions";
 import Select from "react-select";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -21,7 +22,7 @@ const mapStateToProps = (state, props) => {
     isUpdated: state.movie.isUpdated,
     movie: state.movie.movie,
     movieCates: state.movieCate.movieCates,
-    isLoadedPromoType: state.movieCate.isLoaded,
+    isLoadedMovieCat: state.movieCate.isLoaded,
   };
 };
 
@@ -31,23 +32,20 @@ const AMovieEdit = (props) => {
     const { getMovieById } = props;
     const id = qs.parse(props.location.search, { ignoreQueryPrefix: true }).id;
     getMovieById(id);
-    props.getMovies({ limit: 1000, page: 1 });
+    props.getMovieCates({ limit: 1000, page: 1, query: "" });
   }, [props.match.params.id]);
 
   useEffect(() => {
     if (props.isUpdated) {
       history.push("/admin/movie");
-      //props.getMovies({ limit: 1000, page: 1 });
     }
   }, [props.isUpdated]);
 
   const handleChangeSelect = (selectedItem, setFieldValue) => {
-    setFieldValue("idMovieType", selectedItem.id);
+    setFieldValue("idMovieCat", selectedItem.id);
   };
 
-  return !props.isLoaded && !props.isLoadedPromoType ? (
-    <div>Loading...</div>
-  ) : (
+  return props.isLoaded && props.isLoadedMovieCat ? (
     <Formik
       initialValues={props.movie}
       onSubmit={(values, actions) => {
@@ -55,17 +53,12 @@ const AMovieEdit = (props) => {
         props.updateMovie(values);
       }}
       validationSchema={Yup.object().shape({
-        //idMovieType: Yup.string().required("Bắt buộc nhập"),
+        //idMovieCat: Yup.string().required("Bắt buộc nhập"),
         name: Yup.string()
           .min(3, "Mô tả phải dài hơn 3 kí tự")
           .max(100, "Chỉ được phép nhập ít hơn 100 kí tự")
           .required("Bắt buộc nhập"),
-        couponCode: Yup.string().required("Bắt buộc nhập"),
-        timeStart: Yup.string().required("Bắt buộc nhập"),
-        timeEnd: Yup.string().required("Bắt buộc nhập"),
-        minAmount: Yup.string().required("Bắt buộc nhập"),
-        maxDiscount: Yup.string().required("Bắt buộc nhập"),
-        percentage: Yup.string().required("Bắt buộc nhập"),
+        author: Yup.string().required("Bắt buộc nhập"),
       })}
     >
       {({
@@ -108,12 +101,12 @@ const AMovieEdit = (props) => {
                     <div className="box-body">
                       <label
                         className={styles.formiklabel}
-                        htmlFor="idMovieType"
+                        htmlFor="idMovieCat"
                       >
-                        Loại giảm giá
+                        Thể loại phim
                       </label>
                       <Select
-                        name="idMovieType"
+                        name="idMovieCat"
                         onChange={(event) =>
                           handleChangeSelect(event, setFieldValue)
                         }
@@ -124,27 +117,27 @@ const AMovieEdit = (props) => {
                         placeholder="Loading..."
                         onBlur={handleBlur}
                         value={props.movieCates.filter(
-                          (option) => option.id === values.idMovieType
+                          (option) => option.id === values.idMovieCat
                         )}
                         className={
-                          errors.idMovieType && touched.idMovieType
+                          errors.idMovieCat && touched.idMovieCat
                             ? `${styles.formikinput} ${styles.error}`
                             : ""
                         }
                       />
-                      {touched.idMovieType && errors.idMovieType ? (
-                        <div className={styles.idMovieType}>
-                          {errors.idMovieType}
+                      {touched.idMovieCat && errors.idMovieCat ? (
+                        <div className={styles.idMovieCat}>
+                          {errors.idMovieCat}
                         </div>
                       ) : null}
 
                       <label className={styles.formiklabel} htmlFor="name">
                         {" "}
-                        Mô tả:
+                        Tên phim:
                       </label>
                       <input
                         type="text"
-                        placeholder="Nhập mô tả..."
+                        placeholder="Nhập tên phim..."
                         name="name"
                         value={values.name}
                         onChange={handleChange}
@@ -161,145 +154,25 @@ const AMovieEdit = (props) => {
                         </div>
                       ) : null}
 
-                      <label
-                        className={styles.formiklabel}
-                        htmlFor="couponCode"
-                      >
-                        Mã giảm giá:
+                      <label className={styles.formiklabel} htmlFor="author">
+                        Đạo diễn:
                       </label>
                       <input
                         type="text"
-                        placeholder="Nhập mã giảm giá..."
-                        name="couponCode"
-                        value={values.couponCode}
+                        placeholder="Nhập mã tên đạo diễn..."
+                        name="author"
+                        value={values.author}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         className={
-                          errors.couponCode && touched.couponCode
+                          errors.author && touched.author
                             ? `${styles.formikinput} ${styles.error}`
                             : styles.formikinput
                         }
                       />
-                      {touched.couponCode && errors.couponCode ? (
+                      {touched.author && errors.author ? (
                         <div className={styles.inputfeedback}>
-                          {errors.couponCode}
-                        </div>
-                      ) : null}
-
-                      <label className={styles.formiklabel} htmlFor="timeStart">
-                        Thời gian bắt đầu:
-                      </label>
-                      <input
-                        type="datetime-local"
-                        name="timeStart"
-                        placeholder="Chọn thời gian bắt đầu"
-                        value={values.timeStart}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                          errors.timeStart && touched.timeStart
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.timeStart && errors.timeStart ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.timeStart}
-                        </div>
-                      ) : null}
-
-                      <label className={styles.formiklabel} htmlFor="timeEnd">
-                        Thời gian kết thúc
-                      </label>
-                      <input
-                        type="datetime-local"
-                        name="timeEnd"
-                        placeholder="Chọn thời gian kết thúc..."
-                        value={values.timeEnd}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                          errors.timeEnd && touched.timeEnd
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.timeEnd && errors.timeEnd ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.timeEnd}
-                        </div>
-                      ) : null}
-
-                      <label className={styles.formiklabel} htmlFor="minAmount">
-                        Giá trị hóa đơn tối thiểu:
-                      </label>
-                      <input
-                        type="number"
-                        placeholder="Nhập giá trị hóa đơn tối thiểu..."
-                        name="minAmount"
-                        value={values.minAmount}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                          errors.minAmount && touched.minAmount
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.minAmount && errors.minAmount ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.minAmount}
-                        </div>
-                      ) : null}
-
-                      <label
-                        className={styles.formiklabel}
-                        htmlFor="maxDiscount"
-                      >
-                        Mức giảm giá tối đa:
-                      </label>
-                      <input
-                        type="number"
-                        id="maxDiscount"
-                        placeholder="Nhập mức giảm giá tối đa..."
-                        name="maxDiscount"
-                        value={values.maxDiscount}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                          errors.maxDiscount && touched.maxDiscount
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.maxDiscount && errors.maxDiscount ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.maxDiscount}
-                        </div>
-                      ) : null}
-
-                      <label
-                        className={styles.formiklabel}
-                        htmlFor="percentage"
-                      >
-                        Phần trăm giảm giá:
-                      </label>
-                      <input
-                        type="number"
-                        placeholder="Nhập phần trăm giảm giá..."
-                        name="percentage"
-                        value={values.percentage}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                          errors.percentage && touched.percentage
-                            ? `${styles.formikinput} ${styles.error}`
-                            : styles.formikinput
-                        }
-                      />
-                      {touched.percentage && errors.percentage ? (
-                        <div className={styles.inputfeedback}>
-                          {errors.percentage}
+                          {errors.author}
                         </div>
                       ) : null}
                     </div>
@@ -325,6 +198,8 @@ const AMovieEdit = (props) => {
         </Fragment>
       )}
     </Formik>
+  ) : (
+    <div>Loading...</div>
   );
 };
 
@@ -333,4 +208,5 @@ export default connect(mapStateToProps, {
   updateMovie,
   getMovieById,
   getMovies,
+  getMovieCates,
 })(AMovieEdit);

@@ -175,6 +175,7 @@ export const USER_UPDATE_AUTH = "USER_UPDATE_AUTH";
 export const USER_UPDATE_AUTH_SUCCESS = "USER_UPDATE_AUTH_SUCCESS";
 export const GET_USERS = "GET_USERS";
 export const CLEAR_USER = "CLEAR_USER";
+export const UPDATE_PASS = "UPDATE_PASS";
 export const USERS_RECEIVED = "USERS_RECEIVED";
 export const ADD_USER = "ADD_USER";
 export const USER_ADDED = "USER_ADDED";
@@ -185,6 +186,7 @@ export const USER_UPDATED = "USER_UPDATED";
 export const GET_USER = "GET_USER";
 export const GET_USER_BY_ID = "GET_USER_BY_ID";
 export const USER_RECEIVED = "USER_RECEIVED";
+export const USER_PASS_UPDATED_ERROR = "USER_PASS_UPDATED_ERROR";
 
 export const ADMIN_LOADED = "ADMIN_LOADED";
 export const ADMIN_LOGIN = "ADMIN_LOGIN";
@@ -205,7 +207,6 @@ export const DELETE_ADMIN = "DELETE_ADMIN";
 export const ADMIN_DELETED = "ADMIN_DELETED";
 export const UPDATE_ADMIN = "UPDATE_ADMIN";
 export const ADMIN_UPDATED = "ADMIN_UPDATED";
-export const GET_ADMIN = "GET_ADMIN";
 export const GET_ADMIN_BY_ID = "GET_ADMIN_BY_ID";
 export const ADMIN_RECEIVED = "ADMIN_RECEIVED";
 
@@ -336,6 +337,7 @@ export const PRODUCT_CATE_ADDED = "PRODUCT_CATE_ADDED";
 export const DELETE_PRODUCT_CATE = "DELETE_PRODUCT_CATE";
 export const PRODUCT_CATE_DELETED = "PRODUCT_CATE_DELETED";
 
+export const GET_MOVIE_BY_ID = "GET_MOVIE_BY_ID";
 export const GET_MOVIES = "GET_MOVIES";
 export const MOVIES_RECEIVED = "MOVIES_RECEIVED";
 export const UPDATE_MOVIE = "UPDATE_MOVIE";

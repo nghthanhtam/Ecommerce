@@ -7,7 +7,11 @@ import styles from "../../../../assets/css/helper.module.css";
 import { connect } from "react-redux";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { getUserById, updateUser } from "../../../../state/actions/userActions";
+import {
+  getUserById,
+  updateUser,
+  updatePass,
+} from "../../../../state/actions/userActions";
 
 const mapStateToProps = (state, props) => {
   return {
@@ -15,6 +19,7 @@ const mapStateToProps = (state, props) => {
     id: state.authUser.user.id,
     isLoaded: state.user.isLoaded,
     isUpdated: state.user.isUpdated,
+    isUpdatePassError: state.user.isUpdatePassError,
     user: state.user.user,
   };
 };
@@ -22,30 +27,56 @@ const mapStateToProps = (state, props) => {
 const Account = (props) => {
   const [disabled, setDisabled] = useState(true);
   const [isShow, setShow] = useState(false);
+  const [isChangePassword, setChangePassword] = useState(false);
+  const [isPassWrong, setIsPassWrong] = useState(false);
 
   useEffect(() => {
     props.getUserById({ id: props.id, type: "user" });
   }, [props.user.id]);
+
   useEffect(() => {
     if (!disabled) document.getElementById("username").focus();
   }, [disabled]);
+
   useEffect(() => {
-    if (props.isUpdated) {
+    if (props.isUpdated && !props.isUpdatePassError) {
       setDisabled(true);
       setShow(false);
     }
   }, [props.isUpdated]);
 
+  useEffect(() => {
+    if (props.isUpdatePassError) {
+      setIsPassWrong(true);
+    }
+  }, [props.isUpdatePassError]);
+
+  const onCheckChangePassword = (e) => {
+    setChangePassword(!isChangePassword);
+  };
+
+  const changeField = (e, setFieldValue) => {
+    const { name, value } = e.target;
+    setFieldValue("oldPassword", value);
+    setIsPassWrong(false);
+  };
+
   return !props.isLoaded ? (
     <div>Loading...</div>
   ) : (
     <Formik
-      initialValues={props.user}
+      initialValues={{
+        ...props.user,
+        newPassword: "",
+        oldPassword: "",
+        confirmPassword: "",
+      }}
       onSubmit={(values, actions) => {
+        console.log(values);
         if (!(values == props.user)) {
           values.type = "user";
-          console.log(values);
           props.updateUser(values);
+          props.updatePass(values);
         }
       }}
       validationSchema={Yup.object().shape({
@@ -66,6 +97,20 @@ const Account = (props) => {
           .max(200, "Chỉ được phép nhập ít hơn 200 kí tự")
           .email("Email không hợp lệ")
           .required("Bắt buộc nhập"),
+        newPassword: Yup.string().required("Bắt buộc nhập!"),
+        confirmPassword: Yup.string()
+          .required("Bắt buộc nhập!")
+          .test(
+            "passwords-match",
+            "Mật khẩu không trùng khớp. Xin hãy nhập lại!",
+            function (value) {
+              return this.parent.newPassword === value;
+            }
+          ),
+        // .matches(
+        //   /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/,
+        //   "Mật khẩu phải bao gồm ít nhất: 1 kí tự viết hoa, 1 kí tự viết thường, 1 kí tự số"
+        // ),
       })}
     >
       {({
@@ -75,6 +120,7 @@ const Account = (props) => {
         handleBlur,
         handleChange,
         handleSubmit,
+        setFieldValue,
       }) => (
         <div>
           <Header />
@@ -178,6 +224,112 @@ const Account = (props) => {
                   <div className={styles.inputfeedback}>{errors.email}</div>
                 ) : null}
 
+                <label className="changeps-label">
+                  <input
+                    name="createEmployee"
+                    type="checkbox"
+                    checked={isChangePassword}
+                    onChange={onCheckChangePassword}
+                  />
+                  <p>Đổi mật khẩu</p>
+                </label>
+
+                <div
+                  style={{
+                    display: isChangePassword ? "" : "none",
+                  }}
+                >
+                  <label className={styles.formiklabel} htmlFor="oldPassword">
+                    {" "}
+                    Mật khẩu hiện tại
+                  </label>
+                  <input
+                    type="password"
+                    disabled={disabled}
+                    name="oldPassword"
+                    onChange={(e) => changeField(e, setFieldValue)}
+                    onBlur={handleBlur}
+                    value={values.oldPassword}
+                    className={
+                      errors.oldPassword && touched.oldPassword
+                        ? `${styles.formikinput} ${styles.error}`
+                        : styles.formikinput
+                    }
+                  />
+                  {isPassWrong && (
+                    <div className={styles.inputfeedback}>
+                      Mật khẩu hiện tại chưa chính xác.
+                    </div>
+                  )}
+
+                  {touched.oldPassword && errors.oldPassword ? (
+                    <div className={styles.inputfeedback}>
+                      {errors.oldPassword}
+                    </div>
+                  ) : null}
+                </div>
+
+                <div
+                  style={{
+                    display: isChangePassword ? "" : "none",
+                  }}
+                >
+                  <label className={styles.formiklabel} htmlFor="newPassword">
+                    {" "}
+                    Mật khẩu mới
+                  </label>
+                  <input
+                    type="password"
+                    disabled={disabled}
+                    name="newPassword"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.newPassword}
+                    className={
+                      errors.newPassword && touched.newPassword
+                        ? `${styles.formikinput} ${styles.error}`
+                        : styles.formikinput
+                    }
+                  />
+                  {touched.newPassword && errors.newPassword ? (
+                    <div className={styles.inputfeedback}>
+                      {errors.newPassword}
+                    </div>
+                  ) : null}
+                </div>
+
+                <div
+                  style={{
+                    display: isChangePassword ? "" : "none",
+                  }}
+                >
+                  <label
+                    className={styles.formiklabel}
+                    htmlFor="confirmPassword"
+                  >
+                    {" "}
+                    Nhập lại mật khẩu mới
+                  </label>
+                  <input
+                    disabled={disabled}
+                    name="confirmPassword"
+                    type="password"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.confirmPassword}
+                    className={
+                      errors.confirmPassword && touched.confirmPassword
+                        ? `${styles.formikinput} ${styles.error}`
+                        : styles.formikinput
+                    }
+                  />
+                  {touched.confirmPassword && errors.confirmPassword ? (
+                    <div className={styles.inputfeedback}>
+                      {errors.confirmPassword}
+                    </div>
+                  ) : null}
+                </div>
+
                 {isShow ? (
                   <div
                     className="box-footer"
@@ -224,4 +376,8 @@ const Account = (props) => {
   );
 };
 
-export default connect(mapStateToProps, { getUserById, updateUser })(Account);
+export default connect(mapStateToProps, {
+  getUserById,
+  updateUser,
+  updatePass,
+})(Account);

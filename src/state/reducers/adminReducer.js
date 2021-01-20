@@ -13,6 +13,7 @@ const initialState = {
   admins: [],
   totalDocuments: 0,
   isLoaded: false,
+  isAdminLoaded: false,
   isUpdated: false,
 };
 
@@ -27,7 +28,7 @@ export default function (state = initialState, action) {
     case GET_ADMIN_BY_ID:
       return {
         ...state,
-        isLoaded: false,
+        isAdminLoaded: false,
       };
     case ADMINS_RECEIVED:
       return {
@@ -40,7 +41,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         admin: action.payload.data,
-        isLoaded: true,
+        isAdminLoaded: true,
       };
     case ADD_ADMIN:
       return {

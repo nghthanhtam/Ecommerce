@@ -10,7 +10,7 @@ import { Notify } from "react-redux-notify";
 import Header from "../components/Content/Admin/Header";
 import Footer from "../components/Content/Seller/Footer";
 import Menu from "../components/Content/Seller/Menu";
-import ProductVarEdit from "../components/Content/Seller/Product/ProductVarEdit";
+import ModalShippingFee from "../components/Content/Modal/ModalShippingFee";
 import AProductVarEdit from "../components/Content/Admin/Product/ProductVarEdit";
 import APurchase from "../components/Content/Admin/Order/APurchase";
 import AOrdersByPurchase from "../components/Content/Admin/Order/AOrdersByPurchase";
@@ -129,6 +129,7 @@ class RAdmin extends Component {
               {show && modalName == "modalExpire" && <ModalExpire />}
               {show && modalName == "modalCancel" && <ModalCancel />}
               {show && modalName == "productDetails" && <ModalProductDetails />}
+              {show && modalName == "modalShippingFee" && <ModalShippingFee />}
               <Header isAdmin={true} />
               <Menu isAdmin={true} />
               <div className="content-wrapper">
@@ -233,7 +234,7 @@ class RAdmin extends Component {
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
-                    path="/admin/shop/edit/:id"
+                    path="/admin/shop/edit"
                     component={AShopEdit}
                   ></PrivateRoute>
                   <PrivateRoute

@@ -29,7 +29,9 @@ export default function (state = initialState, action) {
     case LOGSELLERS_RECEIVED:
       return {
         ...state,
-        sellerLogs: action.payload.data.sellerLogs,
+        sellerLogs: action.payload.data.shopLogs.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        ),
         totalDocuments: action.payload.data.total,
         isLoaded: true,
       };

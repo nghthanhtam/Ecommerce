@@ -76,7 +76,8 @@ function* updateAuth(params) {
   }
 }
 
-function* fetchEmpById(params) {
+function* fetchAdminById(params) {
+  console.log("----------------", params);
   try {
     const state = yield select(),
       { id } = params;
@@ -94,7 +95,7 @@ function* fetchEmpById(params) {
     if (err.response.status == 401) {
       yield put({ type: ADMIN_LOGOUT });
       this.props.history.push({
-        pathname: "/seller/login",
+        pathname: "/admin/login",
       });
     }
   }
@@ -195,7 +196,7 @@ export default function* sAuthSaga() {
   yield takeEvery(ADMIN_LOGOUT, logout);
   yield takeEvery(ADMIN_UPDATE_AUTH, updateAuth);
   yield takeEvery(GET_ADMINS, fetchAdmins);
-  yield takeEvery(GET_ADMIN_BY_ID, fetchEmpById);
+  yield takeEvery(GET_ADMIN_BY_ID, fetchAdminById);
   yield takeEvery(ADD_ADMIN, addAdmin);
   yield takeEvery(UPDATE_ADMIN, updateAdmin);
   yield takeEvery(DELETE_ADMIN, deleteAdmin);

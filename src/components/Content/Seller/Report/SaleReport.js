@@ -155,6 +155,8 @@ class SaleReport extends Component {
       "Giảm giá",
       "Tổng tiền",
     ],
+    startDate: new Date(),
+    endDate: new Date(),
     reports: [],
   };
 
@@ -306,6 +308,7 @@ class SaleReport extends Component {
   onChangeSelectedMaterial = (selectedMember) => {
     this.setState({ idMaterial: selectedMember.value });
   };
+
   handleSelect = (ranges) => {
     this.setState({
       selectionRange: {
@@ -315,6 +318,7 @@ class SaleReport extends Component {
       },
     });
   };
+
   renderReports = () => {
     const { reports, selectedReport, selectedYear } = this.state;
     if (reports.length === 0) {
@@ -332,38 +336,121 @@ class SaleReport extends Component {
   };
 
   filter = () => {
-    //gọi api lấy ds record gồm count tổng các thuộc tính có sẵn trên table report
-    let { selectedReport, defaultHeaderList, selectedYear } = this.state,
+    let {
+        selectedReport,
+        defaultHeaderList,
+        selectedYear,
+        selectionRange,
+      } = this.state,
       addingColName = "";
     const { idShop, token } = this.props;
-    if (selectedReport === "SALE_SUMMARY") addingColName = "Tháng/Năm";
-    else if (selectedReport === "WEEKDAY") {
+    if (selectedReport === "SALE_SUMMARY") {
+      addingColName = "Tháng/Năm";
+
+      console.log(defaultHeaderList);
+      //set lại các cột mặc định -> thêm các cột tùy theo loại report dc chọn
+      this.setState({ headerList: defaultHeaderList }, () => {
+        this.setState(
+          (prepState) => ({
+            headerList: [addingColName, ...prepState.headerList],
+          }),
+          () => console.log(this.state.headerList)
+        );
+      });
+
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_ORDER}/api/report/${idShop}/getReportByMonth?year=${selectedYear}`,
+          {
+            headers: {
+              "Content-type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          this.setState({ reports: response.data });
+        })
+        .catch((er) => console.log(er.response));
+    } else if (selectedReport === "WEEKDAY") {
       addingColName = "Thứ";
-    } else if (selectedReport === "CITY") addingColName = "Tỉnh/Thành phố";
+    } else if (selectedReport === "CITY") {
+      addingColName = "Tỉnh/Thành phố";
 
-    console.log(defaultHeaderList);
-    //set lại các cột mặc định -> thêm các cột tùy theo loại report dc chọn
-    this.setState({ headerList: defaultHeaderList }, () => {
-      this.setState(
-        (prepState) => ({
+      this.setState({ headerList: defaultHeaderList }, () => {
+        this.setState((prepState) => ({
           headerList: [addingColName, ...prepState.headerList],
-        }),
-        () => console.log(this.state.headerList)
-      );
-    });
+        }));
+      });
 
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_ORDER}/api/report/${idShop}/getReportByMonth?year=${selectedYear}`,
-        {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        }
-      )
-      .then((response) => {
-        this.setState({ reports: response.data });
-      })
-      .catch((er) => console.log(er.response));
+      axios
+        .get(
+          `${
+            process.env.REACT_APP_BACKEND_ORDER
+          }/api/report/${idShop}/getReportByCity?startDate=${selectionRange.startDate
+            .toISOString()
+            .slice(0, 19)
+            .replace(
+              "T",
+              " "
+            )}&endDate=${selectionRange.endDate
+            .toISOString()
+            .slice(0, 19)
+            .replace("T", " ")}`,
+          {
+            headers: {
+              "Content-type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+          this.setState({ reports: response.data });
+        })
+        .catch((er) => console.log(er.response));
+    }
+  };
+
+  renderPageButtons = () => {
+    const { pages, page, isNextBtnShow } = this.state;
+    if (pages.length > 1) {
+      return (
+        <>
+          {pages.map((eachButton) => (
+            <li
+              key={eachButton.pageNumber}
+              className={
+                page === eachButton.pageNumber
+                  ? "paginae_button active"
+                  : "paginate_button "
+              }
+            >
+              <a
+                className="paga-link"
+                name="page"
+                href="javascript:void(0);"
+                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+              >
+                {eachButton.pageNumber}
+              </a>
+            </li>
+          ))}
+          <li className="paginate_button">
+            <a
+              className={
+                isNextBtnShow === true ? "paga-link" : "paga-link_hidden"
+              }
+              name="currentPage"
+              href="#"
+              onClick={() => this.handleChoosePage(-1)}
+            >
+              {">>"}
+            </a>
+          </li>
+        </>
+      );
+    }
   };
 
   render() {
@@ -374,7 +461,7 @@ class SaleReport extends Component {
       yearData,
       selectionRange,
       headerList,
-      defaultHeaderList,
+      selectedReport,
       select,
       sort,
       totalDocuments,
@@ -461,15 +548,17 @@ class SaleReport extends Component {
                                 placeholder="Chọn..."
                               ></Select>
                             </div>
-                            <div style={menuStyle}>
-                              <h4> Năm</h4>
-                              <Select
-                                onChange={this.onChangeSelectedYear}
-                                isSearchable={true}
-                                options={yearData}
-                                placeholder="Chọn năm..."
-                              ></Select>
-                            </div>
+                            {selectedReport == "SALE_SUMMARY" && (
+                              <div style={menuStyle}>
+                                <h4> Năm</h4>
+                                <Select
+                                  onChange={this.onChangeSelectedYear}
+                                  isSearchable={true}
+                                  options={yearData}
+                                  placeholder="Chọn năm..."
+                                ></Select>
+                              </div>
+                            )}
                           </div>
                           <div style={menuStyle}>
                             <h4> Sắp xếp theo</h4>
@@ -648,7 +737,7 @@ class SaleReport extends Component {
                           id="example1_paginate"
                         >
                           <ul className="pagination" style={{ float: "right" }}>
-                            {/* {this.renderPageButtons()} */}
+                            {this.renderPageButtons()}
                           </ul>
                         </div>
                       </div>
