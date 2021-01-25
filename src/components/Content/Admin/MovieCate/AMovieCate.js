@@ -10,6 +10,7 @@ const mapStateToProps = (state) => ({
   movieCates: state.movieCate.movieCates,
   isLoaded: state.movieCate.isLoaded,
   totalDocuments: state.movieCate.totalDocuments,
+  permissionAdmins: state.authAdmin.permissions,
 });
 
 class AMovieCate extends Component {
@@ -226,7 +227,7 @@ class AMovieCate extends Component {
 
   render() {
     const { limit, page, start, end, query } = this.state;
-    const { totalDocuments } = this.props;
+    const { totalDocuments, permissionAdmins } = this.props;
     return (
       <Fragment>
         <section className="content-header">
@@ -308,7 +309,14 @@ class AMovieCate extends Component {
                             <tr>
                               <th style={{ width: "8%" }}>Tên thể loại phim</th>
                               <th style={{ width: "10%" }}>Mô tả</th>
-                              <th style={{ width: "10%" }}>Thao tác</th>
+                              {(permissionAdmins.includes(
+                                "editMovieCategory"
+                              ) ||
+                                permissionAdmins.includes(
+                                  "deleteMovieCategory"
+                                )) && (
+                                <th style={{ width: "10%" }}>Thao tác</th>
+                              )}
                             </tr>
                           </thead>
 
@@ -318,7 +326,12 @@ class AMovieCate extends Component {
                             <tr>
                               <th>Tên thể loại phim</th>
                               <th>Mô tả</th>
-                              <th>Thao tác</th>
+                              {(permissionAdmins.includes(
+                                "editMovieCategory"
+                              ) ||
+                                permissionAdmins.includes(
+                                  "deleteMovieCategory"
+                                )) && <th>Thao tác</th>}
                             </tr>
                           </tfoot>
                         </table>

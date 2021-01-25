@@ -3,7 +3,7 @@ import {
   DELETE_CART,
   UPDATE_CART,
   GET_CARTS_BY_IDUSER,
-} from './types';
+} from "./types";
 
 export const getCartsByIdUser = (params) => ({
   type: GET_CARTS_BY_IDUSER,
@@ -12,15 +12,15 @@ export const getCartsByIdUser = (params) => ({
 
 export const deleteCart = (params) => ({
   type: DELETE_CART,
-  params
+  params,
 });
 
-export const addCart = (newCart) => ({
+export const addCart = (newItem) => ({
   type: ADD_CART,
-  newCart: newCart,
+  newItem,
 });
 
 export const updateCart = (newCart) => ({
   type: UPDATE_CART,
-  newCart: newCart,
+  newCart,
 });

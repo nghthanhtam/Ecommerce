@@ -10,7 +10,7 @@ import {
   LATERLIST_DELETED,
   UPDATE_LATERLIST,
   LATERLIST_UPDATED,
-  GET_RATINGS_BY_PRODUCT,
+  GET_CARTS_BY_IDUSER,
 } from "../actions/types";
 
 function* fetchLaterLists(params) {
@@ -39,20 +39,20 @@ function* fetchLaterLists(params) {
 
 function* addLaterList(params) {
   const state = yield select();
-
+  const { newItem } = params;
+  console.log(newItem);
   try {
     const response = yield call(() =>
       axios.post(
         `${process.env.REACT_APP_BACKEND_USER}/api/laterbuy/`,
-        params.newItem,
-        tokenUserConfig
+        newItem,
+        tokenUserConfig(state)
       )
     );
-
     yield put({ type: LATERLIST_ADDED, payload: response.data });
     yield put({
-      type: GET_RATINGS_BY_PRODUCT,
-      pages: { limit: 1000, page: 1, idUser: params.newItem.idUser },
+      type: GET_CARTS_BY_IDUSER,
+      pages: { limit: 1000, page: 1, idUser: newItem.idUser },
     });
   } catch (error) {
     console.log(error);

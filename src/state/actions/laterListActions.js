@@ -15,12 +15,12 @@ export const deleteLaterlist = (id) => ({
   id: id,
 });
 
-export const addLaterlist = (newCmt) => ({
+export const addLaterlist = (newItem) => ({
   type: ADD_LATERLIST,
-  newCmt: newCmt,
+  newItem,
 });
 
-export const updateLaterlist = (newCmt) => ({
+export const updateLaterlist = (newItem) => ({
   type: UPDATE_LATERLIST,
-  newCmt: newCmt,
+  newItem,
 });

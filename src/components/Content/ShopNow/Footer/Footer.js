@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="shop">SHOP</div>
         <div className="now">NOW</div>
       </div>
-      <div className="description">Like ShopNow để nhận ưu đãi mỗi ngày</div>
+      <div className="description">Ghé ShopNow để nhận ưu đãi mỗi ngày</div>
       <div className="social">
         <div>
           <i className="fa fa-facebook"></i>

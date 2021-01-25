@@ -62,11 +62,18 @@ class LaterList extends React.Component {
               }}
             >
               <UserProfile selectedLink="/shopnow/user/laterlist" />
-              <div className="later-order-list">
-                {laterLists.map((item) => {
-                  return <LaterListDetail key={item.id} item={item} />;
-                })}
-              </div>
+              {laterLists.length > 0 ? (
+                <div className="later-order-list">
+                  {laterLists.map((item) => {
+                    return <LaterListDetail key={item.id} item={item} />;
+                  })}
+                </div>
+              ) : (
+                <div className="laterbuy-noitem">
+                  <img src="../img/noitem.png" alt="photo" />
+                  <p>Không có sản phẩm nào trong danh sách mua sau!</p>
+                </div>
+              )}
             </div>
           ) : null}
         </div>

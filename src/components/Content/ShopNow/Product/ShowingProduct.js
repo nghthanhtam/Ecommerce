@@ -4,10 +4,12 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { connect } from "react-redux";
+import { addLaterlist } from "../../../../state/actions/laterListActions";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
   isLoaded: state.product.isLoaded,
+  idUser: state.authUser.user.id,
 });
 
 class ShowingProduct extends React.Component {
@@ -19,18 +21,13 @@ class ShowingProduct extends React.Component {
     this.setState({ mainPhoto: ele.url });
   };
 
-  // componentDidMount() {
-  //   const { item } = this.props
-  //   if (item.arrayImage.length > 0) this.setState({ mainPhoto: item.arrayImage[0].url })
-  // }
-
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { isLoaded, item } = this.props;
     if (prevProps.isLoaded !== isLoaded) console.log("changee");
   }
 
   render() {
-    const { item } = this.props;
+    const { item, addLaterlist, idUser } = this.props;
     const { mainPhoto } = this.state;
     const settings = {
       infinite: true,
@@ -50,7 +47,7 @@ class ShowingProduct extends React.Component {
           >
             <h1>{item.name}</h1>
             {item.marketPrice - Number(item.price) > 0 && (
-              <p>Saved: ${item.marketPrice - Number(item.price)}</p>
+              <p>Tiết kiệm: ${item.marketPrice - Number(item.price)}</p>
             )}
             <img
               className="product-pic"
@@ -83,7 +80,10 @@ class ShowingProduct extends React.Component {
           </div>
         </div>
         <div className="product-info">
-          <div className="product-btn">
+          <div
+            className="product-btn"
+            onClick={addLaterlist({ idProductVar: item.id, idUser })}
+          >
             <i className="las la-cart-plus"></i>Mua sau
           </div>
         </div>
@@ -92,4 +92,4 @@ class ShowingProduct extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, null)(ShowingProduct);
+export default connect(mapStateToProps, { addLaterlist })(ShowingProduct);

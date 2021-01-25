@@ -69,7 +69,16 @@
   padding: 5px 10px 0 0;
   margin: 0 0 0 10px;
 }
-
+.laterbuy-noitem {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  margin: 10px;
+  background-color: white;
+  width: 65%;
+}
 /* ORDER HISTORY */
 .orderhis-container {
   display: flex;

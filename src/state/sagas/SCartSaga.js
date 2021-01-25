@@ -1,7 +1,6 @@
 import { takeEvery, put, call, select } from "redux-saga/effects";
 import axios from "axios";
 import { tokenUserConfig } from "../actions/authUserActions";
-import { tokenConfig } from "../actions/authActions";
 import {
   GET_CARTS_BY_IDUSER,
   ADD_CART,
@@ -11,6 +10,7 @@ import {
   CART_DELETED,
   UPDATE_CART,
   CART_UPDATED,
+  GET_LATERLISTS,
 } from "../actions/types";
 
 function* fetchCartsByIdUser(params) {
@@ -27,31 +27,33 @@ function* fetchCartsByIdUser(params) {
         .catch((er) => console.log(er.response))
     );
 
-    let total = 0, totalCount = 0
-    const res = response.data
+    let total = 0,
+      totalCount = 0;
+    const res = response.data;
     if (res.shops) {
       //get total
-      res.shops.map(cart => {
-        cart.productVars.map(item => {
-          total += Number(item.price) * item.amount
-        })
-      })
+      res.shops.map((cart) => {
+        cart.productVars.map((item) => {
+          total += Number(item.price) * item.amount;
+        });
+      });
 
       //get totalCount
-      res.shops.map(cart => {
-        cart.productVars.map(item => {
-          totalCount += 1
-        })
-      })
+      res.shops.map((cart) => {
+        cart.productVars.map((item) => {
+          totalCount += 1;
+        });
+      });
     }
 
     yield put({
-      type: CARTS_RECEIVED, payload: {
+      type: CARTS_RECEIVED,
+      payload: {
         items: res.shops ? res.shops : [],
         promotions: res.promotions,
         total,
-        totalCount
-      }
+        totalCount,
+      },
     });
   } catch (error) {
     console.log(error);
@@ -59,19 +61,23 @@ function* fetchCartsByIdUser(params) {
 }
 
 function* addCart(params) {
-  const state = yield select();
+  const state = yield select(),
+    { newItem } = params;
   try {
-    const response = yield call(
-      () =>
-        axios.post(
-          `${process.env.REACT_APP_BACKEND_USER}/api/cart/`,
-          params.newCart,
-          tokenUserConfig(state)
-        )
+    const response = yield call(() =>
+      axios.post(
+        `${process.env.REACT_APP_BACKEND_USER}/api/cart/`,
+        newItem,
+        tokenUserConfig(state)
+      )
     );
 
     yield put({ type: CART_ADDED, payload: response.data });
-    yield put({ type: GET_CARTS_BY_IDUSER, pages: { limit: 10000, page: 1, idUser: params.newCart.idUser } });
+    // yield put({ type: GET_CARTS_BY_IDUSER, pages: { limit: 10000, page: 1, idUser: params.newItem.idUser } });
+    yield put({
+      type: GET_LATERLISTS,
+      pages: { limit: 10000, page: 1, idUser: newItem.idUser },
+    });
   } catch (error) {
     console.log(error.response);
   }
@@ -89,8 +95,10 @@ function* updateCart(params) {
       )
     );
     yield put({ type: CART_UPDATED, payload: response.data });
-    yield put({ type: GET_CARTS_BY_IDUSER, pages: { limit: 10000, page: 1, idUser: params.newCart.idUser } })
-
+    yield put({
+      type: GET_CARTS_BY_IDUSER,
+      pages: { limit: 10000, page: 1, idUser: params.newCart.idUser },
+    });
   } catch (error) {
     console.log(error.response);
   }
@@ -109,7 +117,8 @@ function* deleteCarts(params) {
 
     yield put({ type: CART_DELETED, payload: response.data });
     yield put({
-      type: GET_CARTS_BY_IDUSER, pages: { limit: 10000, page: 1, idUser: params.params.idUser },
+      type: GET_CARTS_BY_IDUSER,
+      pages: { limit: 10000, page: 1, idUser: params.params.idUser },
     });
   } catch (error) {
     console.log(error.response);

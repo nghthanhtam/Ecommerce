@@ -10,6 +10,7 @@ const mapStateToProps = (state) => ({
   movies: state.movie.movies,
   isLoaded: state.movie.isLoaded,
   totalDocuments: state.movie.totalDocuments,
+  permissionAdmins: state.authAdmin.permissions,
 });
 
 class AMovie extends Component {
@@ -226,7 +227,7 @@ class AMovie extends Component {
 
   render() {
     const { limit, page, start, end, query } = this.state;
-    const { totalDocuments } = this.props;
+    const { totalDocuments, permissionAdmins } = this.props;
     return (
       <Fragment>
         <section className="content-header">
@@ -309,7 +310,10 @@ class AMovie extends Component {
                               <th style={{ width: "8%" }}>Thể loại phim</th>
                               <th style={{ width: "10%" }}>Tên phpim</th>
                               <th style={{ width: "5%" }}>Đạo diễn</th>
-                              <th style={{ width: "10%" }}>Thao tác</th>
+                              {(permissionAdmins.includes("editMovie") ||
+                                permissionAdmins.includes("deleteMovie")) && (
+                                <th style={{ width: "10%" }}>Thao tác</th>
+                              )}
                             </tr>
                           </thead>
 
@@ -320,7 +324,10 @@ class AMovie extends Component {
                               <th>Thể loại phim</th>
                               <th>Tên phim</th>
                               <th>Đạo diễn</th>
-                              <th>Thao tác</th>
+                              {(permissionAdmins.includes("editMovie") ||
+                                permissionAdmins.includes("deleteMovie")) && (
+                                <th>Thao tác</th>
+                              )}
                             </tr>
                           </tfoot>
                         </table>

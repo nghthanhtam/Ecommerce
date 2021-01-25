@@ -6,13 +6,14 @@ import "../../../../assets/css/cart.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import { addCart } from "../../../../state/actions/cartActions";
+
 const mapStateToProps = (state) => ({
   history: state.history.history,
+  idUser: state.authUser.user.id,
 });
 
 class LaterListDetail extends React.Component {
-  state = {};
-
   convertPrice = (value) => {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -28,11 +29,14 @@ class LaterListDetail extends React.Component {
   };
 
   render() {
-    const { item } = this.props;
+    const { item, addCart, idUser } = this.props;
     return (
       <div className="order">
         <div className="order-pic">
-          <img alt="product" src={item.Images[0].url} />
+          <img
+            alt="product"
+            src={item.Images.length > 0 ? item.Images[0].url : ""}
+          />
         </div>
         <div className="order-content">
           <div className="order-title">{item.name}</div>
@@ -51,6 +55,9 @@ class LaterListDetail extends React.Component {
               style={{
                 color: "white",
                 backgroundColor: "#3571a7",
+              }}
+              onClick={() => {
+                addCart({ idProductVar: item.id, idUser, amount: 1 });
               }}
             >
               Thêm vào giỏ hàng
@@ -71,4 +78,4 @@ class LaterListDetail extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, {})(LaterListDetail);
+export default connect(mapStateToProps, { addCart })(LaterListDetail);
