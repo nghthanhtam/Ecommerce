@@ -4,12 +4,10 @@ import "../../../../assets/css/cart.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Redirect } from "react-router-dom";
-
-import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-
 import { connect } from "react-redux";
 import { pushHistory } from "../../../../state/actions/historyActions";
+import { resetOrderAdded } from "../../../../state/actions/orderActions";
 
 const mapStateToProps = (state) => ({
   ordersAdded: state.order.ordersAdded,
@@ -17,13 +15,24 @@ const mapStateToProps = (state) => ({
 });
 
 class OrderReceipt extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {
-      productList: [1, 2, 3, 4, 5, 6, 7, 8],
-      replyBoxHidden: false,
-    };
+  state = {
+    replyBoxHidden: false,
+  };
+
+  componentDidMount() {
+    this.props.resetOrderAdded();
   }
+
+  convertDate = (date) => {
+    const newDate = new Date(date);
+    let year = newDate.getFullYear();
+    let month = newDate.getMonth() + 1;
+    let dt = newDate.getDate();
+
+    dt = dt < 10 ? `0${dt}` : dt;
+    month = month < 10 ? `0${month}` : month;
+    return dt + "/" + month + "/" + year;
+  };
 
   convertPrice = (value) => {
     if (value) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -109,7 +118,7 @@ class OrderReceipt extends React.Component {
                           </div>
                           <div className="res-order">
                             <h4>Ngày đặt</h4>
-                            <p>19/12/2020</p>
+                            <p>{this.convertDate(o.createdAt)}</p>
                           </div>
                         </div>
                       );
@@ -164,4 +173,6 @@ class OrderReceipt extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { pushHistory })(OrderReceipt);
+export default connect(mapStateToProps, { pushHistory, resetOrderAdded })(
+  OrderReceipt
+);

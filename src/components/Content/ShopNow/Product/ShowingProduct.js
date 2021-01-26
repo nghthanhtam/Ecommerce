@@ -9,7 +9,6 @@ import { addLaterlist } from "../../../../state/actions/laterListActions";
 const mapStateToProps = (state) => ({
   history: state.history.history,
   isLoaded: state.product.isLoaded,
-  idUser: state.authUser.user.id,
 });
 
 class ShowingProduct extends React.Component {
@@ -27,7 +26,7 @@ class ShowingProduct extends React.Component {
   }
 
   render() {
-    const { item, addLaterlist, idUser } = this.props;
+    const { item } = this.props;
     const { mainPhoto } = this.state;
     const settings = {
       infinite: true,
@@ -82,9 +81,14 @@ class ShowingProduct extends React.Component {
         <div className="product-info">
           <div
             className="product-btn"
-            onClick={addLaterlist({ idProductVar: item.id, idUser })}
+            onClick={() =>
+              this.props.history.push({
+                pathname: `/shopnow/product-detail/idProduct/${item.id}/idShop/${item.idShop}`,
+              })
+            }
           >
-            <i className="las la-cart-plus"></i>Mua sau
+            {/* <i className="las la-cart-plus"></i> */}
+            Xem chi tiết
           </div>
         </div>
       </div>

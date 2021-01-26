@@ -73,7 +73,10 @@ function* addCart(params) {
     );
 
     yield put({ type: CART_ADDED, payload: response.data });
-    // yield put({ type: GET_CARTS_BY_IDUSER, pages: { limit: 10000, page: 1, idUser: params.newItem.idUser } });
+    yield put({
+      type: GET_CARTS_BY_IDUSER,
+      pages: { limit: 10000, page: 1, idUser: params.newItem.idUser },
+    });
     yield put({
       type: GET_LATERLISTS,
       pages: { limit: 10000, page: 1, idUser: newItem.idUser },

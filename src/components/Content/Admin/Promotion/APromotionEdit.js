@@ -138,6 +138,38 @@ const APromotionEdit = (props) => {
                         </div>
                       ) : null}
 
+                      <label
+                        className={styles.formiklabel}
+                        htmlFor="idPromotionType"
+                      >
+                        Thể loại sản phẩm được giảm
+                      </label>
+                      <Select
+                        name="idPromotionType"
+                        onChange={(event) =>
+                          handleChangeSelect(event, setFieldValue)
+                        }
+                        isSearchable={true}
+                        options={props.promotionTypes}
+                        getOptionLabel={(option) => option.name}
+                        getOptionValue={(option) => option.id}
+                        placeholder="Loading..."
+                        onBlur={handleBlur}
+                        value={props.promotionTypes.filter(
+                          (option) => option.id === values.idPromotionType
+                        )}
+                        className={
+                          errors.idPromotionType && touched.idPromotionType
+                            ? `${styles.formikinput} ${styles.error}`
+                            : ""
+                        }
+                      />
+                      {touched.idPromotionType && errors.idPromotionType ? (
+                        <div className={styles.idPromotionType}>
+                          {errors.idPromotionType}
+                        </div>
+                      ) : null}
+
                       <label className={styles.formiklabel} htmlFor="name">
                         {" "}
                         Mô tả:

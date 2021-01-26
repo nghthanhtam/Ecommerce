@@ -117,7 +117,6 @@ function* fetchUserOrders(params) {
 function* addOrder(params) {
   const state = yield select();
   const { newOrder } = params;
-  console.log(params);
   try {
     const response = yield call(() =>
       axios.post(
@@ -129,7 +128,7 @@ function* addOrder(params) {
     console.log("orderAdded: ", response);
     yield put({ type: ORDER_ADDED, payload: response });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
 
@@ -137,9 +136,9 @@ function* updateOrder(params) {
   const state = yield select();
   console.log(params);
   const { id, status, cancelReason, type, idUser } = params.newOrder;
-  let pages;
+  let pages, idShop;
+  if (params.newOrder.idShop) idShop = params.newOrder.idShop;
   if (params.newOrder.pages) pages = params.newOrder.pages;
-
   try {
     const response = yield call(() =>
       axios.put(
@@ -155,7 +154,7 @@ function* updateOrder(params) {
         })
       : yield put({
           type: GET_ORDERS_BY_SHOP,
-          pages: { ...pages, done: false },
+          pages: { ...pages, done: false, idShop },
         });
     yield put({ type: ORDER_UPDATED, payload: response.data });
   } catch (error) {

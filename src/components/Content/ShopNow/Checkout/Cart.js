@@ -70,7 +70,6 @@ class Cart extends React.Component {
   checkout = () => {};
 
   pickPromo = (selectedPromo) => {
-    console.log(selectedPromo);
     this.setState({ selectedPromo });
   };
 

@@ -7,6 +7,7 @@ import {
   ORDER_ADDED,
   ORDER_UPDATED,
   ORDER_DETS_RECEIVED,
+  RESET_ORDER,
 } from "../actions/types";
 
 const initialState = {
@@ -20,6 +21,11 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case RESET_ORDER:
+      return {
+        ...state,
+        isAdded: false,
+      };
     case GET_ORDERS_BY_SHOP:
       return {
         ...state,
@@ -33,7 +39,10 @@ export default function (state = initialState, action) {
     case ORDERS_RECEIVED:
       return {
         ...state,
-        orders: action.payload.data.items,
+        orders: action.payload.data.items.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        ),
         totalDocuments: action.payload.data.total,
         isLoaded: true,
       };

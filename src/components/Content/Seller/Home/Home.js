@@ -201,7 +201,7 @@ class Home extends Component {
 
   renderOrders = () => {
     const { orders, isLoaded } = this.props,
-      { start } = this.state;
+      { start, limit, page, query } = this.state;
     return !isLoaded ? (
       <tr>
         <td>
@@ -210,7 +210,12 @@ class Home extends Component {
       </tr>
     ) : (
       orders.map((order, index) => (
-        <OrderRowHome key={index} order={order} index={index + start - 1} />
+        <OrderRowHome
+          key={index}
+          order={order}
+          index={index + start - 1}
+          pages={{ limit, page, query }}
+        />
       ))
     );
   };
@@ -441,7 +446,7 @@ class Home extends Component {
                                       </th>
                                       <th
                                         style={{
-                                          width: "10%",
+                                          width: "12%",
                                           fontFamily: "Saira, sans-serif",
                                         }}
                                       >
@@ -539,6 +544,7 @@ Home.propTypes = {
   isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getOrdersByShop, getLogSellers })(
-  Home
-);
+export default connect(mapStateToProps, {
+  getOrdersByShop,
+  getLogSellers,
+})(Home);

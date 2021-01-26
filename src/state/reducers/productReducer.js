@@ -12,6 +12,8 @@ import {
   GET_PRODUCT_BY_ID,
   PRODUCTS_SORTED,
   GET_PRODUCTS_BY_FILTERS,
+  REC_PRODUCTS_RECEIVED,
+  GET_RECOMMENDED_PRODUCTS,
 } from "../actions/types";
 
 const initialState = {
@@ -19,6 +21,8 @@ const initialState = {
   isLoaded: false,
   totalDocuments: 0,
   isProductLoaded: false,
+  recProducts: [],
+  isRec: false,
 };
 
 export default function (state = initialState, action) {
@@ -28,7 +32,6 @@ export default function (state = initialState, action) {
         ...state,
         isLoaded: false,
       };
-
     case PRODUCTS_SORTED:
       switch (action.payload) {
         case "des":
@@ -94,6 +97,17 @@ export default function (state = initialState, action) {
         ...state,
         isLoaded: false,
       };
+    case GET_RECOMMENDED_PRODUCTS:
+      return {
+        ...state,
+        isRec: false,
+      };
+    case REC_PRODUCTS_RECEIVED:
+      return {
+        ...state,
+        recProducts: action.payload.data.items,
+        isRec: true,
+      };
     case GET_PRODUCTS_BY_IDSHOP:
       return {
         ...state,
@@ -134,7 +148,6 @@ export default function (state = initialState, action) {
         ...state,
         isLoaded: false,
       };
-
     case PRODUCT_UPDATED:
       return {
         ...state,

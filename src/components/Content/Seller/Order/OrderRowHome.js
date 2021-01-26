@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { showModal } from "../../../../state/actions/modalActions";
+import { updateOrder } from "../../../../state/actions/orderActions";
 import "./order.css";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
+  idShop: state.auth.role.idShop,
 });
 
 class OrderRow extends Component {
@@ -26,7 +28,7 @@ class OrderRow extends Component {
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return year + "-" + month + "-" + dt;
+    return dt + "/" + month + "/" + year;
   };
 
   handleEdit = (id) => {
@@ -39,6 +41,7 @@ class OrderRow extends Component {
 
   handleAction = (e, item) => {
     const { status, id } = this.props.order;
+    const { pages, idShop } = this.props;
     if (
       (status == "in transit" && item.value == "received") ||
       status == item.value
@@ -56,7 +59,8 @@ class OrderRow extends Component {
       this.props.updateOrder({
         id,
         status: item.value,
-        pages: this.props.pages,
+        pages,
+        idShop,
       });
     }
   };
@@ -149,4 +153,4 @@ class OrderRow extends Component {
   }
 }
 
-export default connect(mapStateToProps, { showModal })(OrderRow);
+export default connect(mapStateToProps, { showModal, updateOrder })(OrderRow);

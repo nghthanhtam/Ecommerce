@@ -146,20 +146,23 @@ class Header extends React.Component {
           />
         </div>
         <ul className="row-flex-center">
-          <li>
-            <Link
-              style={cartWrapper}
-              className="item"
-              to="/shopnow/checkout/cart"
-            >
-              <div style={{ color: "white" }}>Giỏ hàng</div>
-              {!totalCount ? (
-                <div style={cartInfor}>0</div>
-              ) : (
-                <div style={cartInfor}>{totalCount}</div>
-              )}
-            </Link>
-          </li>
+          {user && (
+            <li>
+              <Link
+                style={cartWrapper}
+                className="item"
+                to="/shopnow/checkout/cart"
+              >
+                <div style={{ color: "white" }}>Giỏ hàng</div>
+                {!totalCount ? (
+                  <div style={cartInfor}>0</div>
+                ) : (
+                  <div style={cartInfor}>{totalCount}</div>
+                )}
+              </Link>
+            </li>
+          )}
+
           <li>
             <Link className="item" to="/shopnow/user/laterlist">
               <div style={itemIcon}>
@@ -186,7 +189,7 @@ class Header extends React.Component {
                 <div style={itemIcon}>
                   <i className="fa fa-user"></i>
                 </div>
-                <div>Join</div>
+                <div>Đăng nhập</div>
               </div>
             )}
           </li>

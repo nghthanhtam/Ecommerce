@@ -24,6 +24,7 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.authUser.isAuthenticated,
   isProductsLoaded: state.product.isLoaded,
   products: state.product.products,
+  history: state.history.history,
 });
 
 class HomePage extends React.Component {
@@ -341,7 +342,10 @@ class HomePage extends React.Component {
                     <i className="fa fa-shopping-cart"></i> SIGN IN
                   </div>
                   OR
-                  <div className="cart-btn">
+                  <div
+                    className="cart-btn"
+                    onClick={() => this.props.history.push("/shopnow/register")}
+                  >
                     <i className="fa fa-handshake-o"></i>BE OUR PARTNER
                   </div>
                 </div>

@@ -62,7 +62,7 @@ class Payment extends React.Component {
 
   componentDidUpdate() {
     if (this.props.isAdded) {
-      setTimeout(() => this.props.history.push("/shopnow/order-receipt"), 1200);
+      setTimeout(() => this.props.history.push("/shopnow/order-receipt"), 800);
     }
   }
 
@@ -217,13 +217,14 @@ class Payment extends React.Component {
                       marginTop: "10px",
                       border: "1px solid #ccc",
                     }}
-                    onClick={() =>
-                      showModal({
-                        show: true,
-                        modalName: "addressEdit",
-                        details: { id: idAddress },
-                      })
-                    }
+                    onClick={() => {
+                      if (idAddress)
+                        showModal({
+                          show: true,
+                          modalName: "addressEdit",
+                          details: { id: idAddress },
+                        });
+                    }}
                   >
                     Sửa
                   </Button>

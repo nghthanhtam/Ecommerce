@@ -27,7 +27,7 @@ const SlotRow = ({
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return dt + "-" + month + "-" + year;
+    return dt + "/" + month + "/" + year;
   }
 
   return (
@@ -85,7 +85,7 @@ const SlotRow = ({
         <td>
           <div className="btn-group">
             <button type="button" className="btn btn-info">
-              Duyệt
+              Thao tác
             </button>
             <button
               type="button"

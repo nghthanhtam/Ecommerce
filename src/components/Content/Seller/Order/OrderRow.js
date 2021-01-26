@@ -6,6 +6,7 @@ import "./order.css";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
+  idShop: state.auth.role.idShop,
 });
 
 class OrderRow extends Component {
@@ -19,6 +20,11 @@ class OrderRow extends Component {
     disabledState: "",
   };
 
+  convertPrice = (value) => {
+    if (!value) return "Chưa cập nhật";
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "đ";
+  };
+
   convertDate = (date) => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
@@ -29,7 +35,7 @@ class OrderRow extends Component {
 
     month = month < 10 ? `0${month}` : month;
 
-    return dt + "-" + month + "-" + year;
+    return dt + "/" + month + "/" + year;
   };
 
   handleEdit = (id) => {
@@ -42,14 +48,13 @@ class OrderRow extends Component {
 
   handleAction = (e, item) => {
     const { status, id } = this.props.order;
-    console.log("aaaaaaaaaaaaa");
+    const { idShop, pages } = this.props;
     if (
       (status == "in transit" && item.value == "received") ||
       status == item.value
     )
       e.stopPropagation();
     else {
-      console.log("aaaaaaaaaaaaa");
       if (item.value == "canceled") {
         this.props.showModal({
           show: true,
@@ -64,7 +69,8 @@ class OrderRow extends Component {
         this.props.updateOrder({
           id,
           status: item.value,
-          pages: this.props.pages,
+          pages,
+          idShop,
         });
       }
     }
@@ -109,9 +115,9 @@ class OrderRow extends Component {
             ", " +
             City.city}
         </td>
-        <td>{totalAmount}</td>
+        <td>{this.convertPrice(totalAmount)}</td>
         <td>{this.convertDate(createdAt)}</td>
-        <td>{shippingFee}</td>
+        <td>{this.convertPrice(shippingFee)}</td>
         <td>
           {status == "pending"
             ? "Đang xử lý"

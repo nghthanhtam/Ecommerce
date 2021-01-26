@@ -16,7 +16,10 @@ import Loading from "../Loading/Loading";
 import Rating from "material-ui-rating";
 
 import { connect } from "react-redux";
-import { getProductById } from "../../../../state/actions/productActions";
+import {
+  getProductById,
+  getRecProducts,
+} from "../../../../state/actions/productActions";
 import { getProductVarById } from "../../../../state/actions/productVarActions";
 import { showModal } from "../../../../state/actions/modalActions";
 import {
@@ -47,6 +50,8 @@ const mapStateToProps = (state) => ({
   tokenUser: state.authUser.token,
   isAuthenticated: state.authUser.isAuthenticated,
   averageRating: state.rating.averageRating,
+  isRec: state.product.isRec,
+  recProducts: state.product.recProducts,
 });
 
 class ProductDetail extends React.Component {
@@ -83,6 +88,7 @@ class ProductDetail extends React.Component {
     this.props.getProductById({ idShop, idProduct });
     this.props.getRatingsByProduct({ idProduct, limit: 1000, page: 1 });
     this.props.getQuestionsByProduct({ idProduct, limit: 1000, page: 1 });
+    this.props.getRecProducts();
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -475,6 +481,8 @@ class ProductDetail extends React.Component {
       averageRating,
       questions,
       isQuestionsLoaded,
+      isRec,
+      recProducts,
     } = this.props;
     const settings = {
       infinite: true,
@@ -769,27 +777,31 @@ class ProductDetail extends React.Component {
                   </Slider>
                 </div>
               </div>
-              <div className="recommend-wrapper">
-                <h3 className="recommend-pane" style={{ marginLeft: "auto" }}>
-                  NHỮNG SẢN PHẨM KHÁC TƯƠNG TỰ
-                </h3>
-                <div className="sliderwrapper">
-                  <Slider
-                    style={{
-                      width: "107%",
-                      height: "380px",
-                    }}
-                    {...settings}
-                    slidesToShow={
-                      sameMovieProucts.length <= 5 ? sameMovieProucts.length : 5
-                    }
-                  >
-                    {sameMovieProucts.map((item, index) => {
-                      return <RecProduct item={item} key={index} />;
-                    })}
-                  </Slider>
+
+              {isRec && recProducts.length > 0 && (
+                <div className="recommend-wrapper">
+                  <h3 className="recommend-pane" style={{ marginLeft: "auto" }}>
+                    NHỮNG SẢN PHẨM KHÁC TƯƠNG TỰ
+                  </h3>
+                  <div className="sliderwrapper">
+                    <Slider
+                      style={{
+                        width: "107%",
+                        height: "380px",
+                      }}
+                      {...settings}
+                      arrows={sameMovieProucts.length <= 6 ? false : true}
+                      slidesToShow={
+                        recProducts.length <= 5 ? recProducts.length : 5
+                      }
+                    >
+                      {recProducts.map((item, index) => {
+                        return <RecProduct item={item} key={index} />;
+                      })}
+                    </Slider>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="mes-wrapper">
                 {tokenUser && isQuestionsLoaded && (
@@ -1191,4 +1203,5 @@ export default connect(mapStateToProps, {
   getQuestionsByProduct,
   addQuestion,
   addAnswer,
+  getRecProducts,
 })(ProductDetail);

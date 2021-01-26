@@ -29,6 +29,11 @@
   border-radius: 8px;
   margin-top: 30px;
 }
+.recproduct-card h1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .recproduct-card-hidden {
   width: 224px;
   height: 320px;

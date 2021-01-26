@@ -67,7 +67,7 @@ function* addAddress(params) {
       pages: { page: 1, limit: 1000, idUser: params.newAddress.idUser },
     });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
 
@@ -88,7 +88,7 @@ function* updateAddress(params) {
       pages: { limit: 1000, page: 1, idUser: params.newAddress.idUser },
     });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
 
@@ -104,7 +104,7 @@ function* deleteAddress(params) {
 
     yield put({ type: ADDRESS_DELETED, payload: { id: params.id } });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
 

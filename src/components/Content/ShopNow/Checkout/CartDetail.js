@@ -20,7 +20,14 @@ class CartDetail extends React.Component {
   };
 
   render() {
-    const { item, cItem, deleteCartItem, amountChange, idUser } = this.props;
+    const {
+      item,
+      cItem,
+      deleteCartItem,
+      amountChange,
+      idUser,
+      addLaterlist,
+    } = this.props;
     return (
       <div className="order">
         <div className="order-pic">

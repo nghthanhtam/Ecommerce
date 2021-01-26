@@ -2,6 +2,7 @@ import { takeEvery, put, call, select, delay } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../actions/authActions";
 import { tokenAdminConfig } from "../actions/authAdminActions";
+import { tokenUserConfig } from "../actions/authUserActions";
 import { noTokenConfig } from "../actions/authUserActions";
 import {
   GET_PRODUCTS,
@@ -19,6 +20,8 @@ import {
   UPDATE_PRODUCT_STATUS,
   PRODUCT_UPDATED,
   GET_PRODUCTS_BY_FILTERS,
+  REC_PRODUCTS_RECEIVED,
+  GET_RECOMMENDED_PRODUCTS,
 } from "../actions/types";
 
 function* sortProducts(params) {
@@ -94,6 +97,24 @@ function* fetchProducts(params) {
     );
 
     yield put({ type: PRODUCTS_RECEIVED, payload: response });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function* recProducts() {
+  const state = yield select();
+  try {
+    const response = yield call(() =>
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/recommendation/system`,
+          tokenUserConfig(state)
+        )
+        .catch((er) => console.log(er))
+    );
+    console.log(response);
+    yield put({ type: REC_PRODUCTS_RECEIVED, payload: response });
   } catch (error) {
     console.log(error);
   }
@@ -175,15 +196,6 @@ function* deleteProducts(params) {
   }
 }
 
-// function* updateProductAdd(params) {
-//   try {
-//     const { arrVariants } = params.params
-//     yield put({ type: PRODUCTADD_UPDATED, payload: arrVariants });
-//   } catch (error) {
-//     console.log({...error});
-//   }
-// }
-
 function* updateProductStt(params) {
   const state = yield select(),
     { id, status, pages } = params.params;
@@ -216,4 +228,5 @@ export default function* sProductSaga() {
   yield takeEvery(UPDATE_PRODUCT, updateProduct);
   yield takeEvery(UPDATE_PRODUCT_STATUS, updateProductStt);
   yield takeEvery(DELETE_PRODUCT, deleteProducts);
+  yield takeEvery(GET_RECOMMENDED_PRODUCTS, recProducts);
 }

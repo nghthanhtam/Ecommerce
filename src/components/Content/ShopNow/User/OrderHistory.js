@@ -27,11 +27,12 @@ class OrderHistory extends React.Component {
       { name: "Sản phẩm mua sau", link: "/user/later-list" },
     ],
     header: "header",
-    picLink: "./img/blue.png",
-    section: "section-blue",
     left: 0,
-
     selectedOrderId: "",
+  };
+
+  convertPrice = (value) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   componentDidMount() {
@@ -185,12 +186,16 @@ class OrderHistory extends React.Component {
                             <div className="orderhis-total">
                               <div className="orderhis-line">
                                 <p>Phí vận chuyển</p>
-                                <p>{item.shippingFee}đ</p>
+                                <p>
+                                  {item.shippingFee
+                                    ? `${item.shippingFee}đ`
+                                    : "chưa cập nhật"}
+                                </p>
                               </div>
                               <div className="orderhis-line">
                                 <h4>Tổng tiền </h4>
                                 <div style={{ fontWeight: "600" }}>
-                                  {item.totalAmount}
+                                  {this.convertPrice(item.totalAmount)}
                                 </div>
                               </div>
                             </div>

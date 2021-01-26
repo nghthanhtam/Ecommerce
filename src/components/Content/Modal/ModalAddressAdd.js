@@ -93,7 +93,7 @@ class ModalAddressAdd extends Component {
             idWard,
             numberAndStreet,
           });
-          console.log("abc");
+
           getDistricts({ limit: 1000, page: 1, idCity });
           getWards({ limit: 1000, page: 1, idDistrict });
         })

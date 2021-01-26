@@ -8,7 +8,12 @@ import {
   GET_ORDERDETS_BY_ORDERID,
   UPDATE_SHIPPINGFEE,
   DELETE_PROMOTIONINFOR,
+  RESET_ORDER,
 } from "./types";
+
+export const resetOrderAdded = () => ({
+  type: RESET_ORDER,
+});
 
 export const addOrder = (newOrder) => ({
   type: ADD_ORDER,

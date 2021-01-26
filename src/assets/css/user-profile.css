@@ -97,6 +97,8 @@
   flex: 1;
   padding: 10px;
   cursor: pointer;
+  width: 300px;
+  overflow: hidden;
 }
 .order-box {
   width: 260px;

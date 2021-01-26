@@ -7,12 +7,18 @@ import {
   GET_PRODUCT_BY_ID,
   UPDATE_PRODUCT_STATUS,
   SORT_PRODUCTS,
-  GET_PRODUCTS_BY_FILTERS
-} from './types';
+  GET_PRODUCTS_BY_FILTERS,
+  GET_RECOMMENDED_PRODUCTS,
+} from "./types";
 
 export const sortProducts = (sortField) => ({
   type: SORT_PRODUCTS,
-  sortField
+  sortField,
+});
+
+export const getRecProducts = (params) => ({
+  type: GET_RECOMMENDED_PRODUCTS,
+  pages: params,
 });
 
 export const getProductsByIdShop = (params) => ({
@@ -27,7 +33,7 @@ export const getProducts = (params) => ({
 
 export const getProductById = (params) => ({
   type: GET_PRODUCT_BY_ID,
-  params
+  params,
 });
 
 export const getProductsByFilters = (params) => ({
