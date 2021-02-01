@@ -18,12 +18,12 @@ export const getMovieCateById = (id) => ({
 
 export const deleteMovieCate = (id) => ({
   type: DELETE_MOVIE_CATE,
-  id: id,
+  id,
 });
 
 export const addMovieCate = (newMovieCate) => ({
   type: ADD_MOVIE_CATE,
-  newMovieCate: newMovieCate,
+  newMovieCate,
 });
 
 export const updateMovieCate = (newMovieCate) => ({

@@ -6,6 +6,8 @@ import {
   getPromotionById,
 } from "../../../../state/actions/promotionActions";
 import { getPromotionTypes } from "../../../../state/actions/promotionTypeActions";
+import { getProductCates } from "../../../../state/actions/productCateActions";
+import { getMovieCates } from "../../../../state/actions/movieCateActions";
 import Select from "react-select";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -13,14 +15,22 @@ import styles from "../../../../assets/css/helper.module.css";
 import { useHistory } from "react-router-dom";
 import qs from "qs";
 
+//1 - giảm toàn hóa đơn
+//2 - giảm theo loại sp
+//3 - giảm theo loại phim
+
 const mapStateToProps = (state, props) => {
   return {
     history: state.history.history,
     auth: state.auth,
     isLoaded: state.promotion.isLoaded,
+    isLoadedProductCates: state.productCate.isLoaded,
+    isLoadedMovieCates: state.movieCate.isLoaded,
     isUpdated: state.promotion.isUpdated,
     promotion: state.promotion.promotion,
     promotionTypes: state.promotionType.promotionTypes,
+    productCates: state.productCate.productCates,
+    movieCates: state.movieCate.movieCates,
     isLoadedPromoType: state.promotionType.isLoaded,
   };
 };
@@ -28,34 +38,55 @@ const mapStateToProps = (state, props) => {
 const APromotionEdit = (props) => {
   const history = useHistory();
   useEffect(() => {
-    const { getPromotionById } = props;
     const id = qs.parse(props.location.search, { ignoreQueryPrefix: true }).id;
-    getPromotionById(id);
-    props.getPromotionTypes({ limit: 1000, page: 1 });
+    props.getPromotionById(id);
+    props.getPromotionTypes({ limit: 1000, page: 1, query: "" });
+    props.getProductCates({ limit: 1000, page: 1, query: "" });
+    props.getMovieCates({ limit: 1000, page: 1, query: "" });
   }, [props.match.params.id]);
 
   useEffect(() => {
     if (props.isUpdated) {
       history.push("/admin/promotion");
-      //props.getPromotionTypes({ limit: 1000, page: 1 });
     }
   }, [props.isUpdated]);
 
-  const handleChangeSelect = (selectedItem, setFieldValue) => {
-    setFieldValue("idPromotionType", selectedItem.id);
+  const handleChangeSelect = (selectedItem, type, setFieldValue) => {
+    if (type == "promotionType")
+      setFieldValue("idPromotionType", selectedItem.id);
+    else {
+      if (!selectedItem) {
+        setFieldValue("arrayCat", []);
+        return;
+      }
+      setFieldValue(
+        "arrayCat",
+        selectedItem.map(({ id }) => id)
+      );
+    }
   };
 
-  return !props.isLoaded && !props.isLoadedPromoType ? (
+  return !props.isLoaded ||
+    !props.isLoadedPromoType ||
+    !props.isLoadedProductCates ||
+    !props.isLoadedMovieCates ? (
     <div>Loading...</div>
   ) : (
     <Formik
-      initialValues={props.promotion}
+      initialValues={{
+        ...props.promotion,
+        arrayCat:
+          props.promotion.PromotionProductCats &&
+          props.promotion.PromotionProductCats.length > 0
+            ? props.promotion.PromotionProductCats
+            : props.promotion.PromotionMovieCats,
+      }}
       onSubmit={(values, actions) => {
+        console.log(values);
         values = { ...values, pages: props.pages };
         props.updatePromotion(values);
       }}
       validationSchema={Yup.object().shape({
-        //idPromotionType: Yup.string().required("Bắt buộc nhập"),
         name: Yup.string()
           .min(3, "Mô tả phải dài hơn 3 kí tự")
           .max(100, "Chỉ được phép nhập ít hơn 100 kí tự")
@@ -66,6 +97,7 @@ const APromotionEdit = (props) => {
         minAmount: Yup.string().required("Bắt buộc nhập"),
         maxDiscount: Yup.string().required("Bắt buộc nhập"),
         percentage: Yup.string().required("Bắt buộc nhập"),
+        arrayCat: Yup.array().required("Chọn ít nhất 1 thể loại!"),
       })}
     >
       {({
@@ -79,10 +111,7 @@ const APromotionEdit = (props) => {
       }) => (
         <Fragment>
           <section className="content-header">
-            <h1>
-              Chương trình khuyến mại
-              {/* <small>Preview</small> */}
-            </h1>
+            <h1>Chương trình khuyến mại</h1>
             <ol className="breadcrumb">
               <li>
                 <a href="/admin">
@@ -114,8 +143,8 @@ const APromotionEdit = (props) => {
                       </label>
                       <Select
                         name="idPromotionType"
-                        onChange={(event) =>
-                          handleChangeSelect(event, setFieldValue)
+                        onChange={(e) =>
+                          handleChangeSelect(e, "promotionType", setFieldValue)
                         }
                         isSearchable={true}
                         options={props.promotionTypes}
@@ -128,7 +157,7 @@ const APromotionEdit = (props) => {
                         )}
                         className={
                           errors.idPromotionType && touched.idPromotionType
-                            ? `${styles.formikinput} ${styles.error}`
+                            ? `${styles.formikinput}`
                             : ""
                         }
                       />
@@ -138,36 +167,71 @@ const APromotionEdit = (props) => {
                         </div>
                       ) : null}
 
-                      <label
-                        className={styles.formiklabel}
-                        htmlFor="idPromotionType"
-                      >
-                        Thể loại sản phẩm được giảm
-                      </label>
-                      <Select
-                        name="idPromotionType"
-                        onChange={(event) =>
-                          handleChangeSelect(event, setFieldValue)
-                        }
-                        isSearchable={true}
-                        options={props.promotionTypes}
-                        getOptionLabel={(option) => option.name}
-                        getOptionValue={(option) => option.id}
-                        placeholder="Loading..."
-                        onBlur={handleBlur}
-                        value={props.promotionTypes.filter(
-                          (option) => option.id === values.idPromotionType
-                        )}
-                        className={
-                          errors.idPromotionType && touched.idPromotionType
-                            ? `${styles.formikinput} ${styles.error}`
-                            : ""
-                        }
-                      />
-                      {touched.idPromotionType && errors.idPromotionType ? (
-                        <div className={styles.idPromotionType}>
-                          {errors.idPromotionType}
-                        </div>
+                      {values.idPromotionType == 2 ? (
+                        <>
+                          {" "}
+                          <label
+                            className={styles.formiklabel}
+                            htmlFor="arrayCat"
+                          >
+                            Thể loại sản phẩm được giảm
+                          </label>
+                          <Select
+                            onChange={(e) =>
+                              handleChangeSelect(e, "arrayCat", setFieldValue)
+                            }
+                            defaultValue={props.productCates.filter((el) =>
+                              values.PromotionProductCats.map(
+                                ({ idProductCat }) => idProductCat
+                              ).includes(el.id)
+                            )}
+                            isMulti
+                            name="arrayCat"
+                            options={props.productCates}
+                            getOptionLabel={(option) => option.description}
+                            getOptionValue={(option) => option.id}
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                          />
+                          {touched.arrayCat && errors.arrayCat ? (
+                            <div className={styles.inputfeedback}>
+                              {errors.arrayCat}
+                            </div>
+                          ) : null}
+                        </>
+                      ) : null}
+
+                      {values.idPromotionType == 3 ? (
+                        <>
+                          <label
+                            className={styles.formiklabel}
+                            htmlFor="arrayCat"
+                          >
+                            Thể loại phim được giảm
+                          </label>
+                          <Select
+                            onChange={(e) =>
+                              handleChangeSelect(e, "arrayCat", setFieldValue)
+                            }
+                            defaultValue={props.movieCates.filter((el) =>
+                              values.PromotionMovieCats.map(
+                                ({ idMovieCat }) => idMovieCat
+                              ).includes(el.id)
+                            )}
+                            isMulti
+                            name="arrayCat"
+                            options={props.movieCates}
+                            getOptionLabel={(option) => option.name}
+                            getOptionValue={(option) => option.id}
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                          />
+                          {touched.arrayCat && errors.arrayCat ? (
+                            <div className={styles.inputfeedback}>
+                              {errors.arrayCat}
+                            </div>
+                          ) : null}
+                        </>
                       ) : null}
 
                       <label className={styles.formiklabel} htmlFor="name">
@@ -365,4 +429,6 @@ export default connect(mapStateToProps, {
   updatePromotion,
   getPromotionById,
   getPromotionTypes,
+  getProductCates,
+  getMovieCates,
 })(APromotionEdit);

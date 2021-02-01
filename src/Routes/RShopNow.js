@@ -28,6 +28,7 @@ import Login from "../components/Content/ShopNow/Auth/Login";
 import UserRegister from "../components/Content/ShopNow/Register/UserRegister";
 import UserRegisterSuccess from "../components/Content/ShopNow/Register/UserRegisterSuccess";
 import ModalVerify from "../components/Content/Modal/ModalVerify";
+import ModalMovieCat from "../components/Content/Modal/ModalMovieCat";
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -90,6 +91,8 @@ class RShopNow extends Component {
     return (
       <Fragment>
         {show && modalName == "modalVerify" && <ModalVerify />}
+        {show && modalName == "modalMovieCat" && <ModalMovieCat />}
+        {/* {true && <ModalMovieCat />} */}
         {show && modalName == "login" && <Login />}
         <Switch>
           <Route exact path="/shopnow/register-user">

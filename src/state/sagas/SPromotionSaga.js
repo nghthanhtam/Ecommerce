@@ -12,7 +12,10 @@ import {
   UPDATE_PROMOTION,
   PROMOTION_UPDATED,
   GET_PROMOTION_BY_ID,
+  SHOW_NOTI,
 } from "../actions/types";
+import { ADD_NOTIFICATION } from "react-redux-notify";
+import { NOTI_SUCCESS } from "./NotificationObject";
 
 function* fetchPromotions(params) {
   try {
@@ -80,6 +83,11 @@ function* addPromotion(params) {
     );
 
     yield put({ type: PROMOTION_ADDED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
     yield put({
       type: GET_PROMOTIONS,
       pages: params.newPromotion.pages,
@@ -101,6 +109,11 @@ function* updatePromotion(params) {
     );
 
     yield put({ type: PROMOTION_UPDATED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
   } catch (error) {
     console.log(error.response);
   }

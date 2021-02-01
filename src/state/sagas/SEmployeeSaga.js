@@ -149,8 +149,13 @@ function* updateEmployee(params) {
     );
 
     yield put({ type: EMPLOYEE_UPDATED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_SUCCESS,
+    });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
 

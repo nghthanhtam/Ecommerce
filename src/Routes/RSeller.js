@@ -7,7 +7,6 @@ import { updateAuth } from "../state/actions/authActions";
 import { updateAuthUser } from "../state/actions/authUserActions";
 import { updateAuthAdmin } from "../state/actions/authAdminActions";
 import { PrivateRoute } from "../components/Content/Seller/PrivateRoute";
-import { Notify } from "react-redux-notify";
 
 import Header from "../components/Content/Seller/Header";
 import Footer from "../components/Content/Seller/Footer";

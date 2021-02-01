@@ -6,19 +6,42 @@ import Select from "react-select";
 import { Formik } from "formik";
 import styles from "../../../../assets/css/helper.module.css";
 import { getPromotionTypes } from "../../../../state/actions/promotionTypeActions";
+import { getProductCates } from "../../../../state/actions/productCateActions";
+import { getMovieCates } from "../../../../state/actions/movieCateActions";
+
+//1 - giảm toàn hóa đơn
+//2 - giảm theo loại sp
+//3 - giảm theo loại phim
 
 const mapStateToProps = (state) => ({
   promotionTypes: state.promotionType.promotionTypes,
   isLoaded: state.promotionType.isLoaded,
+  isLoadedProductCates: state.productCate.isLoaded,
+  isLoadedMovieCates: state.movieCate.isLoaded,
+  productCates: state.productCate.productCates,
+  movieCates: state.movieCate.movieCates,
 });
 
 const APromotionModal = (props) => {
   useEffect(() => {
     props.getPromotionTypes({ limit: 1000, page: 1 });
+    props.getProductCates({ limit: 1000, page: 1, query: "" });
+    props.getMovieCates({ limit: 1000, page: 1, query: "" });
   }, []);
 
-  const handleChangeSelect = (selectedItem, setFieldValue) => {
-    setFieldValue("idPromotionType", selectedItem.id);
+  const handleChangeSelect = (selectedItem, type, setFieldValue) => {
+    if (type == "promotionType")
+      setFieldValue("idPromotionType", selectedItem.id);
+    else {
+      if (!selectedItem) {
+        setFieldValue("arrayCat", []);
+        return;
+      }
+      setFieldValue(
+        "arrayCat",
+        selectedItem.map(({ id }) => id)
+      );
+    }
   };
 
   return (
@@ -31,6 +54,7 @@ const APromotionModal = (props) => {
         minAmount: 0,
         maxDiscount: 0,
         percentage: 0,
+        idPromotionType: "",
       }}
       onSubmit={(values, actions) => {
         values = { ...values, pages: props.pages };
@@ -111,7 +135,11 @@ const APromotionModal = (props) => {
                         <Select
                           name="idPromotionType"
                           onChange={(event) =>
-                            handleChangeSelect(event, setFieldValue)
+                            handleChangeSelect(
+                              event,
+                              "promotionType",
+                              setFieldValue
+                            )
                           }
                           name="idPromotionType"
                           isSearchable={true}
@@ -137,6 +165,58 @@ const APromotionModal = (props) => {
                         </div>
                       ) : null}
                     </div>
+
+                    {values.idPromotionType == 2 &&
+                    props.isLoadedProductCates ? (
+                      <div className="form-group">
+                        <label htmlFor="arrayCat" className="col-form-label">
+                          Thể loại sản phẩm được giảm:
+                        </label>
+                        <Select
+                          onChange={(e) =>
+                            handleChangeSelect(e, "arrayCat", setFieldValue)
+                          }
+                          isMulti
+                          name="arrayCat"
+                          options={props.productCates}
+                          getOptionLabel={(option) => option.name}
+                          getOptionValue={(option) => option.id}
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                        />
+                        {touched.arrayCat && errors.arrayCat ? (
+                          <div className={styles.inputfeedback}>
+                            {errors.arrayCat}
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : null}
+
+                    {values.idPromotionType == 3 && props.isLoadedMovieCates ? (
+                      <div className="form-group">
+                        <label htmlFor="arrayCat" className="col-form-label">
+                          Thể loại phim được giảm:
+                        </label>
+                        <Select
+                          onChange={(e) =>
+                            handleChangeSelect(e, "arrayCat", setFieldValue)
+                          }
+                          isMulti
+                          name="arrayCat"
+                          options={props.movieCates}
+                          getOptionLabel={(option) => option.name}
+                          getOptionValue={(option) => option.id}
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                        />
+                        {touched.arrayCat && errors.arrayCat ? (
+                          <div className={styles.inputfeedback}>
+                            {errors.arrayCat}
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : null}
+
                     <div className="form-group">
                       <label htmlFor="name" className="col-form-label">
                         Mô tả:
@@ -344,6 +424,9 @@ const APromotionModal = (props) => {
   );
 };
 
-export default connect(mapStateToProps, { addPromotion, getPromotionTypes })(
-  APromotionModal
-);
+export default connect(mapStateToProps, {
+  addPromotion,
+  getPromotionTypes,
+  getProductCates,
+  getMovieCates,
+})(APromotionModal);

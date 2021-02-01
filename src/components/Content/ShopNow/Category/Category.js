@@ -2,9 +2,7 @@ import React from "react";
 import "../../../../assets/css/category.css";
 import { pushHistory } from "../../../../state/actions/historyActions";
 import { connect } from "react-redux";
-import { Link, Route } from "react-router-dom";
-import { getProductsByMovieCate } from "../../../../state/actions/productActions";
-import ProductList from "../Product/ProductList";
+import { Link } from "react-router-dom";
 
 class Category extends React.Component {
   render() {
@@ -12,7 +10,7 @@ class Category extends React.Component {
     return (
       <div className="cate-wrapper">
         <div className="card">
-          <img src={cate.imageUrl} alt="blue" />
+          <img src={cate.imageUrl} alt="photo" />
           <div className="info-cate">
             <h3>{cate.name}</h3>
             <p>{cate.description}</p>
@@ -20,7 +18,7 @@ class Category extends React.Component {
               to={{ pathname: `./shopnow/product-list/idMovieCat/${cate.id}` }}
               className="btn"
             >
-              Xem thêm{" "}
+              Xem thêm
             </Link>
           </div>
         </div>

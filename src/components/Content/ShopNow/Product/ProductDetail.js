@@ -52,6 +52,7 @@ const mapStateToProps = (state) => ({
   averageRating: state.rating.averageRating,
   isRec: state.product.isRec,
   recProducts: state.product.recProducts,
+  history: state.history.history,
 });
 
 class ProductDetail extends React.Component {
@@ -80,10 +81,13 @@ class ProductDetail extends React.Component {
     bigPhoto: "",
     errorMsg: "",
     nameObj: "",
+    recproducts: [],
   };
 
   componentDidMount() {
+    console.log("abccc");
     const { idProduct, idShop } = this.props.match.params;
+    window.scrollTo(0, 0);
     this.setState({ idProduct });
     this.props.getProductById({ idShop, idProduct });
     this.props.getRatingsByProduct({ idProduct, limit: 1000, page: 1 });
@@ -140,25 +144,10 @@ class ProductDetail extends React.Component {
             );
           });
       } catch (error) {
-        console.log(error.response);
+        console.log(error);
       }
     }
-    // if (!isProVarLoaded && isProductLoaded) {
-    //   getProductVarById(product.productVars[0].id);
-    //   if (product.product.idProductCat == 1 && nameObj == "") {
-    //     //book
-    //     this.setState({
-    //       nameObj: {
-    //         author: "Tác giả",
-    //         publisher: "Nhà xuất bản",
-    //         language: "Ngôn ngữ",
-    //       },
-    //     });
-    //   } else if (product.product.idProductCat == 3 && nameObj == "") {
-    //     //clothes
-    //     this.setState({ nameObj: { origin: "Xuất xứ" } });
-    //   }
-    // }
+
     if (!prevProps.isProductLoaded && isProductLoaded) {
       this.setState((prevState) => ({
         selectedProductVar: {
@@ -169,6 +158,25 @@ class ProductDetail extends React.Component {
           marketPrice: product.productVars[0].marketPrice,
         },
       }));
+    }
+
+    const { isRec, recProducts } = this.props;
+    if (prevProps.isRec !== isRec && isRec) {
+      let tempArr = [...recProducts];
+
+      if (recProducts.length > 0 && recProducts.length < 5) {
+        const arrLength = recProducts.length;
+        for (let i = 0; i < 5 - arrLength + 1; i++) {
+          tempArr.push({
+            id: "",
+            name: "",
+            brand: "",
+            arrayImage: "",
+            price: "",
+          });
+        }
+      }
+      this.setState({ recproducts: tempArr });
     }
   };
 
@@ -467,6 +475,7 @@ class ProductDetail extends React.Component {
       bigPhoto,
       errorMsg,
       sameMovieProucts,
+      recproducts,
     } = this.state;
     const {
       showModal,
@@ -482,7 +491,6 @@ class ProductDetail extends React.Component {
       questions,
       isQuestionsLoaded,
       isRec,
-      recProducts,
     } = this.props;
     const settings = {
       infinite: true,
@@ -520,7 +528,7 @@ class ProductDetail extends React.Component {
           }}
         >
           <div className="nohome-section"></div>
-          {isProductLoaded && (
+          {isProductLoaded && isRec && (
             <div className="container">
               <div className="card1">
                 <div className="image1">
@@ -778,24 +786,25 @@ class ProductDetail extends React.Component {
                 </div>
               </div>
 
-              {isRec && recProducts.length > 0 && (
+              {isRec && recproducts.length > 0 && (
                 <div className="recommend-wrapper">
                   <h3 className="recommend-pane" style={{ marginLeft: "auto" }}>
-                    NHỮNG SẢN PHẨM KHÁC TƯƠNG TỰ
+                    NHỮNG SẢN PHẨM BẠN CÓ THỂ THÍCH
                   </h3>
                   <div className="sliderwrapper">
                     <Slider
                       style={{
                         width: "107%",
-                        height: "380px",
+                        height: "370px",
+                        marginLeft: "-35px",
                       }}
                       {...settings}
-                      arrows={sameMovieProucts.length <= 6 ? false : true}
+                      arrows={recproducts.length <= 6 ? false : true}
                       slidesToShow={
-                        recProducts.length <= 5 ? recProducts.length : 5
+                        recproducts.length <= 5 ? recproducts.length : 5
                       }
                     >
-                      {recProducts.map((item, index) => {
+                      {recproducts.map((item, index) => {
                         return <RecProduct item={item} key={index} />;
                       })}
                     </Slider>
@@ -960,7 +969,7 @@ class ProductDetail extends React.Component {
                     <div className="review-wrapper">
                       <p>ĐÁNH GIÁ</p>
                       <div className="review-score">
-                        {averageRating ? averageRating : 0}/5
+                        {averageRating ? Math.floor(averageRating) : 0}/5
                       </div>
                       <Rating
                         precision={0.5}

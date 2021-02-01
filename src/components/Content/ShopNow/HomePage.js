@@ -48,6 +48,9 @@ class HomePage extends React.Component {
   };
 
   componentDidMount() {
+    console.log(
+      `-------------------------${process.env.REACT_APP_BACKEND_EMPLOYEE}-----------------------`
+    );
     const { getMovieCates, getProductsByFilters } = this.props;
     getMovieCates({ limit: 1000, page: 1, query: "" });
     getProductsByFilters({
@@ -97,7 +100,7 @@ class HomePage extends React.Component {
   };
 
   render() {
-    const { productList, keywords } = this.state;
+    const { keywords } = this.state;
     const {
       movieCates,
       isLoadedMovieCate,
@@ -266,7 +269,7 @@ class HomePage extends React.Component {
 
               {isProductsLoaded && (
                 <>
-                  <TitlePane title="Sản phẩm bạn quan tâm" />
+                  <TitlePane title="Sản phẩm bạn có thể thích" />
                   <div className="list-wrapper">
                     <div className="grid-home">
                       {products.map((item, index) => {
@@ -279,7 +282,7 @@ class HomePage extends React.Component {
 
               {isProductsLoaded && (
                 <>
-                  <TitlePane title="DEAL HOT hôm nay" />
+                  <TitlePane title="Sản phẩm từ các bộ phim đang HOT" />
                   <div className="list-wrapper">
                     <div className="grid-home">
                       {products.map((item, index) => {
