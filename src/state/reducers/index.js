@@ -22,7 +22,6 @@ import ratingReducer from "./ratingReducer";
 import commentReducer from "./commentReducer";
 import answerReducer from "./answerReducer";
 import stockHisReducer from "./stockHistoryReducer";
-import memberReducer from "./memberReducer";
 import cartReducer from "./cartReducer";
 import cityReducer from "./cityReducer";
 import districtReducer from "./districtReducer";
@@ -50,7 +49,6 @@ export default combineReducers({
   authUser: authUserReducer,
   history: historyReducer,
   role: roleReducer,
-  member: memberReducer,
   product: productReducer,
   variantVal: variantValReducer,
   shop: shopReducer,

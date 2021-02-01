@@ -21,7 +21,6 @@ import OrderDetail from "../components/Content/Seller/Order/OrderDetail";
 import EmployeeEdit from "../components/Content/Seller/Employee/EmployeeEdit";
 import StorageReport from "../components/Content/Seller/Report/StorageReport";
 import SaleReport from "../components/Content/Seller/Report/SaleReport";
-import DailyCheck from "../components/Content/Seller/Report/DailyCheck";
 import SupplierInfor from "../components/Content/Seller/SupplierInfor/SupplierInfor";
 import SupplierEdit from "../components/Content/Seller/Supplier/SupplierEdit";
 import ErrorPage from "../components/Content/Seller/ErrorPage/ErrorSellerPage";
@@ -192,11 +191,6 @@ class RSeller extends Component {
                     path="/seller/supplier/edit/:id"
                     component={SupplierEdit}
                   ></PrivateRoute>
-                  <Route
-                    exact
-                    path="/seller/dailycheck"
-                    component={DailyCheck}
-                  ></Route>
                   <Route
                     exact
                     path="/seller/warehouse-report"
