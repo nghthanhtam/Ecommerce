@@ -23,20 +23,9 @@ class AOrderRow extends Component {
     let year = newDate.getFullYear();
     let month = newDate.getMonth() + 1;
     let dt = newDate.getDate();
-
     dt = dt < 10 ? `0${dt}` : dt;
-
     month = month < 10 ? `0${month}` : month;
-
-    return dt + "-" + month + "-" + year;
-  };
-
-  handleEdit = (id) => {
-    this.props.history.push(`/seller/order/edit/${id}`);
-  };
-
-  handleDelete = (id) => {
-    this.props.deleteEmployee(id);
+    return dt + "/" + month + "/" + year;
   };
 
   render() {
@@ -56,7 +45,6 @@ class AOrderRow extends Component {
             if (permissionAdmins && permissionAdmins.includes("getOrders"))
               this.props.history.push({
                 pathname: `/admin/order/purchase/${id}`,
-                orderList: this.props.purchase.Orders,
               });
           }}
           className={

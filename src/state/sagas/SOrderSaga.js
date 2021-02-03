@@ -18,6 +18,8 @@ import {
   UPDATE_SHIPPINGFEE,
   GET_ORDERS,
   DELETE_PROMOTIONINFOR,
+  GET_ORDERS_BY_PURCHASE,
+  ORDERS_BY_PURCHASE_RECEIVED,
 } from "../actions/types";
 
 function* fetchOrders(params) {
@@ -55,7 +57,17 @@ function* fetchOrderDetsByOrderId(params) {
       )
     );
 
-    yield put({ type: ORDER_DETS_RECEIVED, payload: response });
+    let total = 0;
+    if (response) {
+      response.data.ProductVars.map((oDet) => {
+        total += oDet.price * oDet.quantity - oDet.discountAmount;
+      });
+    }
+
+    yield put({
+      type: ORDER_DETS_RECEIVED,
+      payload: { item: response, total },
+    });
   } catch (error) {
     console.log(error);
     let err = { ...error };
@@ -85,6 +97,32 @@ function* fetchOrdersByShop(params) {
     if (err.response.status == 401) {
       this.props.history.push({
         pathname: "/login",
+      });
+    }
+  }
+}
+
+function* fetchOrdersByPurchase(params) {
+  try {
+    const state = yield select(),
+      { limit, page, id } = params.pages;
+    const response = yield call(() =>
+      axios.get(
+        `${process.env.REACT_APP_BACKEND_ORDER}/api/order/purchase/${id}?limit=${limit}&page=${page}`,
+        tokenAdminConfig(state)
+      )
+    );
+
+    yield put({
+      type: ORDERS_BY_PURCHASE_RECEIVED,
+      payload: response,
+    });
+  } catch (error) {
+    console.log(error);
+    let err = { ...error };
+    if (err.response.status == 401) {
+      this.props.history.push({
+        pathname: "/admin/login",
       });
     }
   }
@@ -136,21 +174,32 @@ function* updateOrder(params) {
   const state = yield select();
   console.log(params);
   const { id, status, cancelReason, type, idUser } = params.newOrder;
-  let pages, idShop;
+  let pages, idShop, idPurchase;
   if (params.newOrder.idShop) idShop = params.newOrder.idShop;
   if (params.newOrder.pages) pages = params.newOrder.pages;
+  if (params.newOrder.idPurchase) idPurchase = params.newOrder.idPurchase;
+
   try {
     const response = yield call(() =>
       axios.put(
         `${process.env.REACT_APP_BACKEND_ORDER}/api/order/${id}/status`,
         { status, cancelReason },
-        type == "user" ? tokenUserConfig(state) : tokenConfig(state)
+        type == "user"
+          ? tokenUserConfig(state)
+          : type == "admin"
+          ? tokenAdminConfig(state)
+          : tokenConfig(state)
       )
     );
     type == "user"
       ? yield put({
           type: GET_USER_ORDERS,
           pages: { limit: 1000, page: 1, idUser },
+        })
+      : type == "admin"
+      ? yield put({
+          type: GET_ORDERS_BY_PURCHASE,
+          pages: { id: idPurchase, limit: 1000, pages: 1 },
         })
       : yield put({
           type: GET_ORDERS_BY_SHOP,
@@ -221,6 +270,7 @@ function* deletePromotionInfor(params) {
 }
 
 export default function* sOrderSaga() {
+  yield takeEvery(GET_ORDERS_BY_PURCHASE, fetchOrdersByPurchase);
   yield takeEvery(DELETE_PROMOTIONINFOR, deletePromotionInfor);
   yield takeEvery(GET_ORDERDETS_BY_ORDERID, fetchOrderDetsByOrderId);
   yield takeEvery(GET_ORDERS_BY_SHOP, fetchOrdersByShop);

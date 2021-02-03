@@ -7,14 +7,12 @@ import "../../../../assets/css/product.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import RecProduct from "./RecProduct";
 import ModalShopList from "../../Modal/ModalShopList";
 import Loading from "../Loading/Loading";
 import Rating from "material-ui-rating";
-
 import { connect } from "react-redux";
 import {
   getProductById,
@@ -82,17 +80,18 @@ class ProductDetail extends React.Component {
     errorMsg: "",
     nameObj: "",
     recproducts: [],
+    questionMsg: false,
+    ratingMsg: false,
   };
 
   componentDidMount() {
-    console.log("abccc");
     const { idProduct, idShop } = this.props.match.params;
     window.scrollTo(0, 0);
     this.setState({ idProduct });
     this.props.getProductById({ idShop, idProduct });
     this.props.getRatingsByProduct({ idProduct, limit: 1000, page: 1 });
     this.props.getQuestionsByProduct({ idProduct, limit: 1000, page: 1 });
-    this.props.getRecProducts();
+    if (this.props.user) this.props.getRecProducts();
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -136,12 +135,9 @@ class ProductDetail extends React.Component {
                 });
               }
             }
-            this.setState(
-              {
-                sameMovieProucts: tempArr,
-              },
-              () => console.log(tempArr)
-            );
+            this.setState({
+              sameMovieProucts: tempArr,
+            });
           });
       } catch (error) {
         console.log(error);
@@ -256,7 +252,6 @@ class ProductDetail extends React.Component {
   };
 
   sendQuestion = () => {
-    console.log("avadf");
     const { question, idProduct } = this.state;
     const { user, addQuestion } = this.props;
     addQuestion({
@@ -265,6 +260,12 @@ class ProductDetail extends React.Component {
       question,
       type: "user",
     });
+
+    this.setState({ questionMsg: true });
+    setTimeout(() => {
+      this.setState({ questionMsg: false });
+    }, 2000);
+
     this.setState({ question: "" });
     this.setState({ replyBoxHidden: false });
   };
@@ -281,12 +282,17 @@ class ProductDetail extends React.Component {
       arrImages: selectedFiles,
       type: "user",
     });
+    this.setState({ ratingMsg: true });
+    setTimeout(() => {
+      this.setState({ ratingMsg: false });
+    }, 2000);
     this.setState({ title: "", review: "", selectedFiles: [], rate: "" });
   };
 
   sendAnswer = (idQuestion) => {
     const { answer, idProduct } = this.state;
     const { user } = this.props;
+
     this.props.addAnswer({
       idUser: user.id,
       idQuestion,
@@ -476,6 +482,8 @@ class ProductDetail extends React.Component {
       errorMsg,
       sameMovieProucts,
       recproducts,
+      questionMsg,
+      ratingMsg,
     } = this.state;
     const {
       showModal,
@@ -528,7 +536,7 @@ class ProductDetail extends React.Component {
           }}
         >
           <div className="nohome-section"></div>
-          {isProductLoaded && isRec && (
+          {isProductLoaded && (
             <div className="container">
               <div className="card1">
                 <div className="image1">
@@ -838,6 +846,12 @@ class ProductDetail extends React.Component {
                           style={{ height: "120px" }}
                         ></textarea>
                       </div>
+                      {questionMsg && (
+                        <p style={{ color: "green", fontWeight: "500" }}>
+                          Bạn chờ admin duyệt nhé!
+                        </p>
+                      )}
+
                       <div className="row-flex">
                         <Button
                           variant="contained"
@@ -875,8 +889,8 @@ class ProductDetail extends React.Component {
                                   <>
                                     <div>{answer.answer}</div>
                                     <div className="reply-date">
-                                      {answer.idUser} đă trả lời -{" "}
-                                      {this.convertDate(question.createdAt)}
+                                      {answer.User.username} đă trả lời -{" "}
+                                      {this.convertDate(answer.createdAt)}
                                     </div>
                                   </>
                                 )}
@@ -975,6 +989,7 @@ class ProductDetail extends React.Component {
                         precision={0.5}
                         name="simple-controlled"
                         value={5}
+                        readOnly
                       />
                       <div>({totalRating} nhận xét)</div>
                     </div>
@@ -1028,6 +1043,12 @@ class ProductDetail extends React.Component {
                           style={{ height: "120px" }}
                         ></textarea>
                       </div>
+                      {ratingMsg && (
+                        <div style={{ color: "green", fontWeight: "500" }}>
+                          Bạn chờ admin duyệt nhé!
+                        </div>
+                      )}
+
                       <div className="form-group">
                         <p
                           style={{
@@ -1092,23 +1113,26 @@ class ProductDetail extends React.Component {
                         <div className="reply-wrapper">
                           <div className="comments">{rating.title}</div>
                           <p>{rating.review}</p>
-                          <div className="sku-grid">
-                            {rating.RatingImages.map((image, index) => {
-                              return (
-                                <Fragment key={index}>
-                                  {image.idRating == rating.id && (
-                                    <div key={index} className="rating-image">
-                                      <img
-                                        className="rating-pic"
-                                        src={image.url}
-                                        alt="product"
-                                      />
-                                    </div>
-                                  )}
-                                </Fragment>
-                              );
-                            })}
-                          </div>
+                          {rating.RatingImages.length > 0 && (
+                            <div className="sku-grid">
+                              {rating.RatingImages.map((image, index) => {
+                                return (
+                                  <Fragment key={index}>
+                                    {image.idRating == rating.id && (
+                                      <div key={index} className="rating-image">
+                                        <img
+                                          className="rating-pic"
+                                          src={image.url}
+                                          alt="photo"
+                                        />
+                                      </div>
+                                    )}
+                                  </Fragment>
+                                );
+                              })}
+                            </div>
+                          )}
+
                           <div className="review">
                             <Rating
                               name="size-small"
@@ -1167,7 +1191,7 @@ class ProductDetail extends React.Component {
                           ) : null}
                           {rating.Comments.map((cmt, cindex) => {
                             return (
-                              <Fragment>
+                              <div style={{ marginBottom: "10px" }}>
                                 {cmt.idRating == rating.id &&
                                   cmt.status == "accepted" && (
                                     <div className="reply-answer" key={cindex}>
@@ -1183,7 +1207,7 @@ class ProductDetail extends React.Component {
                                       <div>{cmt.User.username}</div>
                                     </div>
                                   )}
-                              </Fragment>
+                              </div>
                             );
                           })}
                         </div>

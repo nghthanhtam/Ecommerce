@@ -34,16 +34,9 @@ class AOrderPurchaseRow extends Component {
     return dt + "/" + month + "/" + year;
   };
 
-  handleEdit = (id) => {
-    this.props.history.push(`/seller/order/edit/${id}`);
-  };
-
-  handleDelete = (id) => {
-    this.props.deleteEmployee(id);
-  };
-
   handleAction = (e, item) => {
-    const { status, id } = this.props.order;
+    const { status, id } = this.props.order,
+      { idPurchase, order } = this.props;
     if (
       (status == "in transit" && item.value == "received") ||
       status == item.value
@@ -55,18 +48,18 @@ class AOrderPurchaseRow extends Component {
           show: true,
           modalName: "modalCancel",
           details: {
-            pages: this.props.pages,
-            order: this.props.order,
-            type: "seller",
+            order,
+            type: "admin",
           },
         });
       } else {
         this.props.updateOrder({
+          idPurchase,
           id,
           status: item.value,
-          pages: this.props.pages,
+          type: "admin",
         });
-        window.location.reload();
+        // window.location.reload();
       }
     }
   };
@@ -96,9 +89,7 @@ class AOrderPurchaseRow extends Component {
         <td
           onClick={() =>
             this.props.history.push({
-              pathname: `/seller/order/edit/${id}`,
-              //totalAmount,
-              totalAmount: 20000,
+              pathname: `/admin/order/details/${id}`,
             })
           }
           style={{ color: "blue", cursor: "pointer" }}

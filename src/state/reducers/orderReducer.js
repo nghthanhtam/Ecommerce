@@ -8,10 +8,13 @@ import {
   ORDER_UPDATED,
   ORDER_DETS_RECEIVED,
   RESET_ORDER,
+  GET_ORDERS_BY_PURCHASE,
+  ORDERS_BY_PURCHASE_RECEIVED,
 } from "../actions/types";
 
 const initialState = {
   orders: [],
+  total: 0,
   totalDocuments: 0,
   isLoaded: false,
   isOrderDetsLoaded: false,
@@ -36,6 +39,11 @@ export default function (state = initialState, action) {
         ...state,
         isLoaded: false,
       };
+    case GET_ORDERS_BY_PURCHASE:
+      return {
+        ...state,
+        isLoaded: false,
+      };
     case ORDERS_RECEIVED:
       return {
         ...state,
@@ -46,10 +54,20 @@ export default function (state = initialState, action) {
         totalDocuments: action.payload.data.total,
         isLoaded: true,
       };
+    case ORDERS_BY_PURCHASE_RECEIVED:
+      return {
+        ...state,
+        orders: action.payload.data.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        ),
+        isLoaded: true,
+      };
     case ORDER_DETS_RECEIVED:
       return {
         ...state,
-        order: action.payload.data,
+        total: action.payload.total,
+        order: action.payload.item.data,
         isOrderDetsLoaded: true,
       };
     case ADD_ORDER:

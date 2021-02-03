@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { pushHistory } from "../../../state/actions/historyActions";
+import { showModal } from "../../../state/actions/modalActions";
 
 const mapStateToProps = (state) => ({
   permissionAdmins: state.authAdmin.permissions,
@@ -13,11 +14,40 @@ const SlotRow = ({
   cate,
   pages,
   permissionAdmins,
+  showModal,
 }) => {
   const [statuses, setStatuses] = useState([
     { value: "accepted", label: "Duyệt" },
     { value: "declined", label: "Không duyệt" },
   ]);
+
+  const handleUpdate = (status) => {
+    if (status.value !== "reply")
+      updateItemStatus({
+        id: item.id,
+        status: status.value,
+        pages,
+      });
+    else
+      showModal({
+        show: true,
+        modalName: "modalReply",
+        details: {
+          type: cate == "rating" ? "comment" : "answer",
+          idRating: item.id,
+          idQuestion: item.id,
+        },
+      });
+  };
+
+  useEffect(() => {
+    if (cate == "rating" || cate == "question")
+      setStatuses([
+        { value: "accepted", label: "Duyệt" },
+        { value: "declined", label: "Không duyệt" },
+        { value: "reply", label: "Phản hồi" },
+      ]);
+  }, []);
 
   function convertDate(date) {
     const newDate = new Date(date);
@@ -97,12 +127,7 @@ const SlotRow = ({
             </button>
             <ul className="dropdown-menu" role="menu">
               {statuses.map((s, index) => (
-                <li
-                  key={index}
-                  onClick={() => {
-                    updateItemStatus({ id: item.id, status: s.value, pages });
-                  }}
-                >
+                <li key={index} onClick={() => handleUpdate(s)}>
                   <a href="javascript:void(0);"> {s.label} </a>
                 </li>
               ))}
@@ -114,4 +139,4 @@ const SlotRow = ({
   );
 };
 
-export default connect(mapStateToProps, { pushHistory })(SlotRow);
+export default connect(mapStateToProps, { pushHistory, showModal })(SlotRow);

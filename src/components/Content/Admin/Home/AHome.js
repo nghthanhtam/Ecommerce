@@ -383,25 +383,28 @@ class AHome extends Component {
                               </div>
                             </div>
                             <div className="row">
-                              <div className="col-sm-5">
-                                <div
-                                  className="dataTables_info"
-                                  id="example1_info"
-                                  role="status"
-                                  aria-live="polite"
-                                >
-                                  Hiển thị{" "}
-                                  {query == ""
-                                    ? start +
-                                      " đến " +
-                                      (totalDocuments < end
-                                        ? totalDocuments
-                                        : end) +
-                                      " trong "
-                                    : ""}{" "}
-                                  {totalDocuments} kết quả
+                              {totalDocuments !== 0 && (
+                                <div className="col-sm-5">
+                                  <div
+                                    className="dataTables_info"
+                                    id="example1_info"
+                                    role="status"
+                                    aria-live="polite"
+                                  >
+                                    Hiển thị từ{" "}
+                                    {query == ""
+                                      ? start +
+                                        " đến " +
+                                        (totalDocuments < end
+                                          ? totalDocuments
+                                          : end) +
+                                        " trong "
+                                      : ""}{" "}
+                                    {totalDocuments} kết quả
+                                  </div>
                                 </div>
-                              </div>
+                              )}
+
                               <div className="col-sm-7">
                                 <div
                                   className="dataTables_paginate paging_simple_numbers"

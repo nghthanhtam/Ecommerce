@@ -12,19 +12,20 @@ class AOrderDetailRow extends Component {
   };
 
   handleEdit = (id) => {
-    this.props.pushHistory(`/seller/order/edit/${id}`);
-  };
-
-  handleDelete = (id) => {
-    this.props.deleteEmployee(id);
+    this.props.pushHistory(`/admin/productvar/edit/${id}`);
   };
 
   render() {
-    const { orderDet, index } = this.props;
+    const { orderDet } = this.props;
 
     return (
       <tr>
-        <td>{index + 1}</td>
+        <td
+          style={{ color: "blue", cursor: "pointer" }}
+          onClick={() => this.handleEdit(orderDet.id)}
+        >
+          #{orderDet.id}
+        </td>
         <td>{orderDet.SKU}</td>
         <td>
           <img

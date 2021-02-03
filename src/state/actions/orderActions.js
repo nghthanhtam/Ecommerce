@@ -9,6 +9,7 @@ import {
   UPDATE_SHIPPINGFEE,
   DELETE_PROMOTIONINFOR,
   RESET_ORDER,
+  GET_ORDERS_BY_PURCHASE,
 } from "./types";
 
 export const resetOrderAdded = () => ({
@@ -22,6 +23,11 @@ export const addOrder = (newOrder) => ({
 
 export const getOrders = (params) => ({
   type: GET_ORDERS,
+  pages: params,
+});
+
+export const getOrdersByPurchase = (params) => ({
+  type: GET_ORDERS_BY_PURCHASE,
   pages: params,
 });
 

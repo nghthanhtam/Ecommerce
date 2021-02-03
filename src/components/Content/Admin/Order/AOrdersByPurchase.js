@@ -1,16 +1,26 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { getOrderDets } from "../../../../state/actions/orderActions";
+import {
+  getOrderDets,
+  getOrdersByPurchase,
+} from "../../../../state/actions/orderActions";
 import AOrderPurchaseRow from "./AOrderPurchaseRow";
 import { Redirect } from "react-router-dom";
 
 const mapStateToProps = (state) => ({
   isLoaded: state.order.isLoaded,
   history: state.history.history,
+  isLoaded: state.order.isLoaded,
+  orders: state.order.orders,
 });
 
 class AOrdersByPurchase extends React.Component {
   state = {};
+
+  componentDidMount = () => {
+    const { id } = this.props.match.params;
+    this.props.getOrdersByPurchase({ id, limit: 1000, page: 1 });
+  };
 
   convertPrice = (value) => {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -45,19 +55,23 @@ class AOrdersByPurchase extends React.Component {
   };
 
   renderOrders = () => {
-    const { orderList } = this.props.location;
-    if (!orderList) {
-      console.log(this.props.history);
+    const { isLoaded, orders } = this.props,
+      { id } = this.props.match.params;
+    if (!orders) {
       return <Redirect to="/admin/order" />;
     }
-    return orderList.map((o, index) => (
-      <AOrderPurchaseRow
-        history={this.props.history}
-        key={index}
-        order={o}
-        index={index + 1}
-      />
-    ));
+    return (
+      isLoaded &&
+      orders.map((o, index) => (
+        <AOrderPurchaseRow
+          history={this.props.history}
+          key={index}
+          order={o}
+          index={index + 1}
+          idPurchase={id}
+        />
+      ))
+    );
   };
 
   render() {
@@ -152,4 +166,6 @@ class AOrdersByPurchase extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { getOrderDets })(AOrdersByPurchase);
+export default connect(mapStateToProps, { getOrderDets, getOrdersByPurchase })(
+  AOrdersByPurchase
+);

@@ -11,10 +11,11 @@ import Header from "../components/Content/Admin/Header";
 import Footer from "../components/Content/Seller/Footer";
 import Menu from "../components/Content/Seller/Menu";
 import ModalShippingFee from "../components/Content/Modal/ModalShippingFee";
+import ModalReply from "../components/Content/Modal/ModalReply";
 import AProductVarEdit from "../components/Content/Admin/Product/ProductVarEdit";
 import APurchase from "../components/Content/Admin/Order/APurchase";
 import AOrdersByPurchase from "../components/Content/Admin/Order/AOrdersByPurchase";
-import OrderDetail from "../components/Content/Admin/Order/AOrderDetail";
+import AOrderDetail from "../components/Content/Admin/Order/AOrderDetail";
 import APromotion from "../components/Content/Admin/Promotion/APromotion";
 import APromotionEdit from "../components/Content/Admin/Promotion/APromotionEdit";
 import PropTypes from "prop-types";
@@ -126,6 +127,7 @@ class RAdmin extends Component {
           {adminToken && (
             <Fragment>
               {showNoti && <Notify position="BottomRight" />}
+              {show && modalName == "modalReply" && <ModalReply />}
               {show && modalName == "modalExpire" && <ModalExpire />}
               {show && modalName == "modalCancel" && <ModalCancel />}
               {show && modalName == "productDetails" && <ModalProductDetails />}
@@ -264,8 +266,8 @@ class RAdmin extends Component {
                   ></PrivateRoute>
                   <PrivateRoute
                     exact
-                    path="/admin/order/warningdetails/:id"
-                    component={OrderDetail}
+                    path="/admin/order/details/:id"
+                    component={AOrderDetail}
                   ></PrivateRoute>
                   <PrivateRoute
                     exact

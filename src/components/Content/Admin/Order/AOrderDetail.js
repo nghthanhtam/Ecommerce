@@ -3,13 +3,14 @@ import { connect } from "react-redux";
 import { pushHistory } from "../../../../state/actions/historyActions";
 import { getOrderDets } from "../../../../state/actions/orderActions";
 import Loader from "react-loader";
-import OrderDetailRow from "./AOrderDetailRow";
+import AOrderDetailRow from "./AOrderDetailRow";
 
 const mapStateToProps = (state) => ({
   isLoaded: state.order.isLoaded,
   history: state.history.history,
   order: state.order.order,
   isOrderDetsLoaded: state.order.isOrderDetsLoaded,
+  total: state.order.total,
 });
 
 class AOrderDetail extends Component {
@@ -21,30 +22,7 @@ class AOrderDetail extends Component {
   }
 
   convertPrice = (value) => {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
-  tokenConfig = (token) => {
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-      },
-    };
-
-    //Header
-    if (token) {
-      config.headers["x-auth-token"] = token;
-    }
-
-    return config;
-  };
-
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
-  handleCancel = (e) => {
-    this.props.history.push("/home");
+    if (value) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   renderSelect = () => {
@@ -78,7 +56,7 @@ class AOrderDetail extends Component {
       </tr>
     ) : (
       order.ProductVars.map((o, index) => (
-        <OrderDetailRow
+        <AOrderDetailRow
           history={this.props.history}
           key={index}
           orderDet={o}
@@ -89,8 +67,7 @@ class AOrderDetail extends Component {
   };
 
   render() {
-    const { isOrderDetsLoaded, order } = this.props;
-    const { totalAmount } = this.props.location;
+    const { isOrderDetsLoaded, order, total } = this.props;
     return (
       <Fragment>
         {isOrderDetsLoaded && (
@@ -120,7 +97,7 @@ class AOrderDetail extends Component {
                     <div className="box-header" style={{ marginTop: "5px" }}>
                       <div style={{ paddingLeft: "5px" }} className="col-md-8">
                         <h3 className="box-title">
-                          Tổng tiền: {this.convertPrice(totalAmount)}đ{" "}
+                          Tổng tiền: {this.convertPrice(total)}đ{" "}
                         </h3>
                       </div>
 
@@ -135,36 +112,7 @@ class AOrderDetail extends Component {
                         className="dataTables_wrapper form-inline dt-bootstrap"
                       >
                         <div className="row">
-                          <div>
-                            {/* <div className="col-sm-6">
-                          <div
-                            className="dataTables_length"
-                            id="example1_length"
-                          >
-                            <label>
-                              Hiển thị
-                              {this.renderSelect()}
-                              kết quả
-                            </label>
-                          </div>
-                        </div> */}
-                            {/* <div className="col-sm-6">
-                          <div id="example1_filter" className="dataTables_filter" >
-                            <label style={{ float: 'right' }}>
-                              Tìm kiếm
-                                              <input
-                                type="search"
-                                name="query"
-                                style={{ margin: '0px 5px' }}
-                                className="form-control input-sm"
-                                placeholder="Nhập từ khóa...  "
-                                aria-controls="example1"
-                                onChange={this.handleOnChange}
-                                value={query} />
-                            </label>
-                          </div>
-                        </div> */}
-                          </div>
+                          <div></div>
                         </div>
 
                         <div className="row">
@@ -175,7 +123,7 @@ class AOrderDetail extends Component {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: "5%" }}>#</th>
+                                  <th style={{ width: "8%" }}>Mã sản phẩm</th>
                                   <th style={{ width: "10%" }}>SKU</th>
                                   <th style={{ width: "8%" }}>Hình ảnh</th>
                                   <th style={{ width: "15%" }}>Tên sản phẩm</th>
@@ -186,34 +134,10 @@ class AOrderDetail extends Component {
 
                               <tbody>{this.renderOrders()}</tbody>
 
-                              <tfoot>
-                                <tr>
-                                  <th>#</th>
-                                  <th>SKU </th>
-                                  <th>Hình ảnh</th>
-                                  <th>Tên sản phẩm</th>
-                                  <th>Đơn giá</th>
-                                  <th>Số lượng mua</th>
-                                </tr>
-                              </tfoot>
+                              <tfoot></tfoot>
                             </table>
                           </div>
                         </div>
-                        {/* <div className="row">
-
-                      <div className="col-sm-7">
-                        <div
-                          className="dataTables_paginate paging_simple_numbers"
-                          id="example1_paginate">
-                          <ul
-                            className="pagination"
-                            style={{ float: 'right' }}
-                          >
-                            {this.renderPageButtons()}
-                          </ul>
-                        </div>
-                      </div>
-                    </div> */}
                       </div>
                       {/*/.col (left) */}
                     </div>

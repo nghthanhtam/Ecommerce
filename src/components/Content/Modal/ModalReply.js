@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { pushHistory } from "../../../state/actions/historyActions";
 import { showModal } from "../../../state/actions/modalActions";
-import { updateOrder } from "../../../state/actions/orderActions";
+import { addComment } from "../../../state/actions/commentActions";
+import { addAnswer } from "../../../state/actions/answerActions";
 
 const mapStateToProps = (state) => ({
   history: state.history,
@@ -11,17 +12,17 @@ const mapStateToProps = (state) => ({
   details: state.modal.details,
 });
 
-class ModalCancel extends Component {
+class ModalReply extends Component {
   state = {
-    cancelReason: "",
+    replyContent: "",
     msg: null,
     inputErrors: false,
   };
 
-  validateCancelReason = (fullname) => {
+  validate = (value) => {
     return !new RegExp(
       /[^a-z0-9A-Z_-_ ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽếềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]/u
-    ).test(fullname);
+    ).test(value);
   };
 
   handleChange = (e) => {
@@ -30,38 +31,40 @@ class ModalCancel extends Component {
 
     //Validation
     let isPassed = true;
-    isPassed = this.validateCancelReason(value);
+    //isPassed = this.validate(value);
     const inputErrors = isPassed ? false : true;
     if (!isPassed) msg = "Bạn chỉ được nhập chữ cái, số và gạch dưới";
 
-    if (value === "") msg = "";
     this.setState({ [name]: value, msg, inputErrors });
   };
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { details, showModal, updateOrder, user } = this.props;
-    const { cancelReason } = this.state;
-    if (details) {
-      const newOrder = {
-        ...details.order,
-        status: "canceled",
-        cancelReason: cancelReason,
-        type: details.type,
-        id: details.order.id,
+    const { showModal, user, details, addComment, addAnswer } = this.props;
+    const { replyContent } = this.state;
+    console.log(details);
+    if (details.type == "comment") {
+      const newReply = {
+        idRating: details.idRating,
         idUser: user.id,
-        pages: details.pages ? details.pages : {},
+        content: replyContent,
       };
-
-      updateOrder(newOrder);
-      showModal({ show: false });
-      //window.location.reload()
+      addComment(newReply);
+    } else {
+      const newReply = {
+        idQuestion: details.idQuestion,
+        idUser: user.id,
+        answer: replyContent,
+      };
+      addAnswer(newReply);
     }
+
+    showModal({ show: false });
   };
 
   render() {
-    const { cancelReason, inputErrors } = this.state;
-    const { showModal, details } = this.props;
+    const { replyContent, inputErrors } = this.state;
+    const { showModal } = this.props;
     return (
       <div className="modal-wrapper">
         <div
@@ -83,8 +86,8 @@ class ModalCancel extends Component {
             ×
           </button>
           <div className="login-box-body">
-            <h3 className="login-box-msg">Lý do hủy đơn hàng </h3>
-            {details && <p>{details.msg}</p>}
+            <h3 className="login-box-msg">Phản hồi của ShopNow </h3>
+
             {this.state.msg ? (
               <div className="alert alert-danger alert-dismissible">
                 <button
@@ -102,13 +105,13 @@ class ModalCancel extends Component {
 
             <form onSubmit={this.handleSubmit}>
               <div className="form-group has-feedback">
-                <input
+                <textarea
                   type="text"
-                  name="cancelReason"
+                  name="replyContent"
                   className="form-control"
-                  placeholder="Lý do hủy đơn"
+                  placeholder="Nội dung phản hồi"
                   required
-                  value={cancelReason}
+                  value={replyContent}
                   onChange={this.handleChange}
                 />
               </div>
@@ -120,7 +123,7 @@ class ModalCancel extends Component {
                     className="btn btn-primary btn-block btn-flat"
                     disabled={!inputErrors ? false : true}
                   >
-                    Lưu
+                    Gửi
                   </button>
                   <button
                     className="btn btn-default btn-block btn-flat"
@@ -142,5 +145,6 @@ class ModalCancel extends Component {
 export default connect(mapStateToProps, {
   pushHistory,
   showModal,
-  updateOrder,
-})(ModalCancel);
+  addComment,
+  addAnswer,
+})(ModalReply);
