@@ -17,21 +17,6 @@ class ProductRow extends Component {
     ],
   };
 
-  convertDate = (date) => {
-    const newDate = new Date(date);
-    let year = newDate.getFullYear();
-    let month = newDate.getMonth() + 1;
-    let dt = newDate.getDate();
-
-    dt = dt < 10 ? `0${dt}` : dt;
-    month = month < 10 ? `0${month}` : month;
-    return dt + "/" + month + "/" + year;
-  };
-
-  componentDidMount = () => {
-    console.log(this.props.product);
-  };
-
   chooseAction = (id, status) => {
     const { pages, showModal, product } = this.props;
     pages.arrayStatus = ["pending"];
@@ -49,7 +34,7 @@ class ProductRow extends Component {
   };
 
   render() {
-    const { id, name, idMovie, idShop, brand, status } = this.props.product;
+    const { id, name, idShop, brand, status, Movie } = this.props.product;
     const { index } = this.props;
     const { statuses } = this.state;
 
@@ -59,8 +44,7 @@ class ProductRow extends Component {
           <td>{index + 1}</td>
           <td>{name}</td>
           <td>{brand}</td>
-          <td>{idMovie}</td>
-          <td>{idShop}</td>
+          <td>{Movie.name}</td>
           {status == "pending" ? (
             <>
               <td style={{ color: "grey" }}>

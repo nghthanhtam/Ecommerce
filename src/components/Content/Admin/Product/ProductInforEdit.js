@@ -1,58 +1,101 @@
-import React, { Fragment, Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Fragment, Component } from "react";
+import { connect } from "react-redux";
 import Select from "react-select";
-import axios from 'axios';
+import axios from "axios";
 
-import { pushHistory } from '../../../../state/actions/historyActions';
-import { updateProduct } from '../../../../state/actions/productActions';
-import { getProductCates } from '../../../../state/actions/productCateActions';
+import { pushHistory } from "../../../../state/actions/historyActions";
+import { updateProduct } from "../../../../state/actions/productActions";
+import { getProductCates } from "../../../../state/actions/productCateActions";
+import { getMovies } from "../../../../state/actions/movieActions";
 
 const mapStateToProps = (state, props) => {
   return {
     history: state.history.history,
     token: state.authAdmin.token,
     productCates: state.productCate.productCates,
+    movies: state.movie.movies,
     isProductCatesLoaded: state.productCate.isLoaded,
+    isMoviesLoaded: state.movie.isLoaded,
   };
 };
 
 class ProductInforEdit extends Component {
   state = {
-    id: '', name: '', brand: '', idMovie: 0, idShop: 0, status: '', idProductCat: '', description: '',
+    id: "",
+    name: "",
+    brand: "",
+    idMovie: "",
+    idShop: "",
+    status: "",
+    idProductCat: "",
+    description: "",
     Details: [],
-    nameObj: {}
+    nameObj: {},
   };
 
   componentDidMount() {
     const { id } = this.props.match.params;
-    this.props.getProductCates({ limit: 1000, page: 1, query: '' })
+    this.props.getProductCates({ limit: 1000, page: 1, query: "" });
+    this.props.getMovies({ limit: 1000, page: 1, query: "" });
     axios
       .get(
         `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/${id}`,
         this.tokenConfig(this.props.token)
       )
       .then((r) => {
-        let { id, name, brand, idMovie, idProductCat, description, idShop, status, Details } = r.data;
-        this.setState({ id, name, brand, idMovie, idShop, status, idProductCat, description, Details }, () => console.log(Details));
+        let {
+          id,
+          name,
+          brand,
+          idMovie,
+          idProductCat,
+          description,
+          idShop,
+          status,
+          Details,
+        } = r.data;
+        this.setState(
+          {
+            id,
+            name,
+            brand,
+            idMovie,
+            idShop,
+            status,
+            idProductCat,
+            description,
+            Details,
+          },
+          () => console.log(Details)
+        );
 
-        this.setState({ nameObj: { author: 'Tác giả', publisher: 'Nhà xuất bản', language: 'Ngôn ngữ' } })
-        // if (r.data.ProductCat.name == 'book') this.setState({ nameObj: { author: 'Tác giả', publisher: 'Nhà xuất bản', language: 'Ngôn ngữ' } })
-        // else if (r.data.ProductCat.name == 'clothes') this.setState({ nameObj: { origin: 'Xuất xứ' } })
-
+        this.setState({
+          nameObj: {
+            author: "Tác giả",
+            publisher: "Nhà xuất bản",
+            language: "Ngôn ngữ",
+          },
+        });
       })
       .catch((er) => console.log(er));
   }
 
+  onChangeSelect = (selectedItem, type) => {
+    if (type == "idMovie") this.setState({ idMovie: selectedItem.id });
+    if (type == "idProductCat")
+      this.setState({ idProductCat: selectedItem.id });
+  };
+
   tokenConfig = (token) => {
     const config = {
       headers: {
-        'Content-type': 'application/json',
+        "Content-type": "application/json",
       },
     };
 
     //Header
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   };
@@ -62,56 +105,88 @@ class ProductInforEdit extends Component {
   };
 
   handleDetChange = (e) => {
-    const { value, name } = e.target
+    const { value, name } = e.target;
     this.setState((prepState) => {
       let Details = [...prepState.Details];
-      Details.map(d => {
-        if (d.detail == name) { d.value = value }
-      })
+      Details.map((d) => {
+        if (d.detail == name) {
+          d.value = value;
+        }
+      });
       return {
         Details,
       };
     });
-  }
+  };
 
   handleChangeSelect = (selectedItem, { name }) => {
     this.setState({ [name]: selectedItem.value });
-  }
+  };
 
   handleSubmit = (e) => {
-    const { id, name, brand, idMovie, idProductCat, description, Details, } = this.state;
+    const {
+      id,
+      name,
+      brand,
+      idMovie,
+      idProductCat,
+      description,
+      Details,
+    } = this.state;
     e.preventDefault();
-    let details = {}
-    Details.map(d => {
-      details[d.detail] = d.value
-    })
+    let details = {};
+    Details.map((d) => {
+      details[d.detail] = d.value;
+    });
     console.log(details);
     const newProduct = {
-      id, name, brand, idMovie, idProductCat, description, details
+      id,
+      name,
+      brand,
+      idMovie,
+      idProductCat,
+      description,
+      details,
     };
     this.props.updateProduct(newProduct);
 
     //Quay về trang chính
-    this.props.history.push('/admin/product');
+    this.props.history.push("/admin/product");
   };
 
   handleCancel = (e) => {
-    this.props.history.push('/admin/product');
+    this.props.history.push("/admin/product");
   };
 
   render() {
-    const { id, name, brand, idMovie, idProductCat, description, Details, nameObj } = this.state;
-    const { productCates, isProductCatesLoaded } = this.props
+    const {
+      id,
+      name,
+      brand,
+      idMovie,
+      idProductCat,
+      description,
+      Details,
+      nameObj,
+    } = this.state;
+    const {
+      productCates,
+      isProductCatesLoaded,
+      isMoviesLoaded,
+      movies,
+    } = this.props;
     return (
       <Fragment>
-        {!isProductCatesLoaded ? <div>Loading...</div> :
+        {!isProductCatesLoaded || !isMoviesLoaded ? (
+          <div>Loading...</div>
+        ) : (
           <div>
             <section className="content-header">
-              <ol className="breadcrumb" >
+              <ol className="breadcrumb">
                 <li>
                   <a href="/admin/home">
                     <i className="fa fa-dashboard" /> Trang chủ
-                </a>
+                  </a>
                 </li>
                 <li>
                   <a href="javascript:void(0);">Thông tin sản phẩm</a>
@@ -122,7 +197,10 @@ class ProductInforEdit extends Component {
               </ol>
             </section>
             {/* Main content */}
-            <section className="content" style={{ width: '165vw', marginTop: '10px' }}>
+            <section
+              className="content"
+              style={{ width: "165vw", marginTop: "10px" }}
+            >
               <div className="row">
                 <div className="col-md-6">
                   <div className="box box-info">
@@ -135,55 +213,122 @@ class ProductInforEdit extends Component {
                       <div className="box-body">
                         <div className="form-group">
                           <label htmlFor="id">ID</label>
-                          <input className="form-control" name="id" type="number" placeholder="Loading..." className="form-control" value={id} disabled onChange={this.handleChange} />
+                          <input
+                            className="form-control"
+                            name="id"
+                            type="number"
+                            placeholder="Loading..."
+                            className="form-control"
+                            value={id}
+                            disabled
+                            onChange={this.handleChange}
+                          />
                         </div>
                         <div className="form-group">
                           <label htmlFor="name">Tên sản phẩm</label>
-                          <input className="form-control" name="name" type="text" placeholder="Loading..." className="form-control" value={name} onChange={this.handleChange} />
+                          <input
+                            className="form-control"
+                            name="name"
+                            type="text"
+                            placeholder="Loading..."
+                            className="form-control"
+                            value={name}
+                            onChange={this.handleChange}
+                          />
                         </div>
                         <div className="form-group">
-                          <label htmlFor="brand">Thương  hiệu</label>
-                          <input className="form-control" name="brand" type="text" placeholder="Loading..." className="form-control" value={brand} onChange={this.handleChange} />
+                          <label htmlFor="brand">Thương hiệu</label>
+                          <input
+                            className="form-control"
+                            name="brand"
+                            type="text"
+                            placeholder="Loading..."
+                            className="form-control"
+                            value={brand}
+                            onChange={this.handleChange}
+                          />
                         </div>
                         <div className="form-group">
                           <label htmlFor="idMovie">Tên phim</label>
-                          <input className="form-control" name="idMovie" type="text" placeholder="Loading..." className="form-control" value={idMovie} onChange={this.handleChange} />
+                          <Select
+                            styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 3000,
+                              }),
+                            }}
+                            name="idMovie"
+                            onChange={(e) => this.onChangeSelect(e, "idMovie")}
+                            isSearchable={true}
+                            options={movies}
+                            placeholder="Loading..."
+                            getOptionLabel={(option) => option.name}
+                            getOptionValue={(option) => option.id}
+                            value={movies.filter(
+                              (option) => option.id == idMovie
+                            )}
+                          />
                         </div>
                         <div className="form-group">
-                          <label htmlFor="idProductCat">Thể loại sản phẩm</label>
+                          <label htmlFor="idProductCat">
+                            Thể loại sản phẩm
+                          </label>
                           <Select
-                            styles={{ menu: provided => ({ ...provided, zIndex: 3000 }) }}
+                            styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 3000,
+                              }),
+                            }}
                             name="idProductCat"
-                            onChange={this.onChangeSelect}
+                            onChange={(e) =>
+                              this.onChangeSelect(e, "idProductCat")
+                            }
                             isSearchable={true}
                             options={productCates}
                             placeholder="Loading..."
                             getOptionLabel={(option) => option.description}
                             getOptionValue={(option) => option.id}
-                            value={productCates.filter(option => option.id === idProductCat)}
+                            value={productCates.filter(
+                              (option) => option.id === idProductCat
+                            )}
                           />
                         </div>
                         <div className="form-group">
                           <label htmlFor="description">Mô tả</label>
-                          <textarea className="form-control" name="description" type="text" placeholder="Loading..." className="form-control" value={description} onChange={this.handleChange} />
+                          <textarea
+                            className="form-control"
+                            name="description"
+                            type="text"
+                            placeholder="Loading..."
+                            className="form-control"
+                            value={description}
+                            onChange={this.handleChange}
+                          />
                         </div>
-                        {Details.map(d => {
-                          return (
-                            Object.keys(nameObj).map((item, index) => {
-                              return (
-                                <Fragment key={index}>
-                                  {item == d.detail &&
-                                    (
-                                      <div className="form-group">
-                                        <label htmlFor="idShop">{nameObj[item]}:</label>
-                                        <input className="form-control" name={item} type="text" placeholder="Loading..." className="form-control" value={d.value} onChange={this.handleDetChange} />
-                                      </div>
-                                    )
-                                  }
-                                </Fragment>
-                              )
-                            })
-                          )
+                        {Details.map((d) => {
+                          return Object.keys(nameObj).map((item, index) => {
+                            return (
+                              <Fragment key={index}>
+                                {item == d.detail && (
+                                  <div className="form-group">
+                                    <label htmlFor="idShop">
+                                      {nameObj[item]}:
+                                    </label>
+                                    <input
+                                      className="form-control"
+                                      name={item}
+                                      type="text"
+                                      placeholder="Loading..."
+                                      className="form-control"
+                                      value={d.value}
+                                      onChange={this.handleDetChange}
+                                    />
+                                  </div>
+                                )}
+                              </Fragment>
+                            );
+                          });
                         })}
                       </div>
                       {/* /.box-body */}
@@ -191,12 +336,14 @@ class ProductInforEdit extends Component {
                         <button
                           type="button"
                           onClick={this.handleCancel}
-                          className="btn btn-default">
+                          className="btn btn-default"
+                        >
                           Hủy
                         </button>
                         <button
                           type="submit"
-                          className="btn btn-info pull-right">
+                          className="btn btn-info pull-right"
+                        >
                           Lưu
                         </button>
                       </div>
@@ -205,10 +352,16 @@ class ProductInforEdit extends Component {
                 </div>
               </div>
             </section>
-          </div>}
-      </Fragment >
+          </div>
+        )}
+      </Fragment>
     );
   }
 }
 
-export default connect(mapStateToProps, { pushHistory, updateProduct, getProductCates })(ProductInforEdit);
+export default connect(mapStateToProps, {
+  pushHistory,
+  updateProduct,
+  getProductCates,
+  getMovies,
+})(ProductInforEdit);

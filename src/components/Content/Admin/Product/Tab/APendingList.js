@@ -31,7 +31,7 @@ class APendingList extends React.Component {
       limit,
       page,
       query,
-      arrayStatus: ["pending", "declined"],
+      arrayStatus: ["pending"],
     });
   }
 
@@ -275,7 +275,7 @@ class APendingList extends React.Component {
                         <th style={{ width: "15%" }}>Đơn giá</th>
                         <th style={{ width: "15%" }}>Số lượng tồn</th>
                         <th style={{ width: "15%" }}>Trạng thái</th>
-                        <th style={{ width: "15%" }}>Thao tác</th>
+                        <th style={{ width: "15%" }}></th>
                       </tr>
                     </thead>
                     <tbody>{this.renderProducts()}</tbody>
@@ -288,7 +288,7 @@ class APendingList extends React.Component {
                         <th>Đơn giá</th>
                         <th>Số lượng tồn</th>
                         <th>Trạng thái</th>
-                        <th>Thao tác</th>
+                        <th style={{ width: "15%" }}></th>
                       </tr>
                     </tfoot>
                   </table>

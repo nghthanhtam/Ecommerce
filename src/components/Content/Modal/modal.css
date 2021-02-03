@@ -115,3 +115,21 @@
   width: 100%;
   height: 100%;
 }
+.photolist {
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+}
+.photo-productvar {
+  width: 135px;
+  height: 155px;
+  position: relative;
+  text-transform: uppercase;
+  transition: 0.5s;
+  border-radius: 8px;
+  margin-top: -10px;
+}
+.photo-productvar img {
+  width: 100%;
+  height: 100%;
+}

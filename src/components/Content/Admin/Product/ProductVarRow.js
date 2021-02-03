@@ -10,25 +10,22 @@ const mapStateToProps = (state) => ({
 });
 
 class ProductRow extends Component {
-  convertDate = (date) => {
-    const newDate = new Date(date);
-    let year = newDate.getFullYear();
-    let month = newDate.getMonth() + 1;
-    let dt = newDate.getDate();
-
-    dt = dt < 10 ? `0${dt}` : dt;
-    month = month < 10 ? `0${month}` : month;
-    return year + "-" + month + "-" + dt;
+  state = {
+    statuses: [
+      { value: "active", label: "Duyệt" },
+      { value: "declined", label: "Không duyệt" },
+      { value: "photoCheck", label: "Xem danh sách ảnh" },
+    ],
   };
 
-  approve = () => {
+  approve = (status) => {
     const { productVar, pages } = this.props;
-    productVar = {
+    let newProductVar = {
       ...productVar,
-      status: "active",
+      status,
       pages,
     };
-    this.props.updateProductVarStatus(productVar);
+    this.props.updateProductVarStatus(newProductVar);
   };
 
   convertPrice = (value) => {
@@ -46,6 +43,7 @@ class ProductRow extends Component {
       Images,
     } = this.props.productVar;
     const { index } = this.props;
+    const { statuses } = this.state;
 
     return (
       <Fragment>
@@ -59,11 +57,10 @@ class ProductRow extends Component {
               height="200px"
               width="200px"
             />{" "}
-            {SKU}
           </td>
           <td>{name}</td>
           <td>{SKU}</td>
-          <td>{this.convertPrice(price)} VND</td>
+          <td>{this.convertPrice(price)}đ</td>
           <td>{idShop}</td>
 
           {(status == "active" || status == "inactive") && (
@@ -96,13 +93,24 @@ class ProductRow extends Component {
               </td>
               <td>
                 <div className="btn-group">
-                  <button
-                    onClick={() => this.approve()}
-                    type="button"
-                    className="btn btn-success"
-                  >
-                    Duyệt
+                  <button type="button" className="btn btn-info">
+                    Thao tác
                   </button>
+                  <button
+                    type="button"
+                    className="btn btn-info dropdown-toggle"
+                    data-toggle="dropdown"
+                  >
+                    <span className="caret"></span>
+                    <span className="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul className="dropdown-menu" role="menu">
+                    {statuses.map((s, index) => (
+                      <li key={index} onClick={() => this.approve(s.value)}>
+                        <a href="javascript:void(0);"> {s.label} </a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </td>
             </>

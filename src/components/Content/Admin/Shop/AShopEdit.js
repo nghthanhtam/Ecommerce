@@ -23,6 +23,7 @@ const AShopEdit = (props) => {
   useEffect(() => {
     const { getShopById } = props;
     const id = qs.parse(props.location.search, { ignoreQueryPrefix: true }).id;
+
     getShopById(id);
   }, [props.match.params.id]);
 
