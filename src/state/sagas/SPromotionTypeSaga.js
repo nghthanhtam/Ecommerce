@@ -25,7 +25,6 @@ function* fetchPromotionTypes(params) {
         tokenAdminConfig(state)
       )
     );
-    console.log(response);
     yield put({ type: PROMOTIONTYPES_RECEIVED, payload: response });
   } catch (error) {
     console.log(error);

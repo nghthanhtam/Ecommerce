@@ -29,9 +29,8 @@ const mapStateToProps = (state, props) => {
 const AMovieEdit = (props) => {
   const history = useHistory();
   useEffect(() => {
-    const { getMovieById } = props;
     const id = qs.parse(props.location.search, { ignoreQueryPrefix: true }).id;
-    getMovieById(id);
+    props.getMovieById(id);
     props.getMovieCates({ limit: 1000, page: 1, query: "" });
   }, [props.match.params.id]);
 
@@ -45,7 +44,9 @@ const AMovieEdit = (props) => {
     setFieldValue("idMovieCat", selectedItem.id);
   };
 
-  return props.isLoaded && props.isLoadedMovieCat ? (
+  return !props.isLoaded || !props.isLoadedMovieCat ? (
+    <div>Loading...</div>
+  ) : (
     <Formik
       initialValues={props.movie}
       onSubmit={(values, actions) => {
@@ -198,8 +199,6 @@ const AMovieEdit = (props) => {
         </Fragment>
       )}
     </Formik>
-  ) : (
-    <div>Loading...</div>
   );
 };
 

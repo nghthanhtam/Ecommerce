@@ -12,6 +12,7 @@ import Footer from "../components/Content/Seller/Footer";
 import Menu from "../components/Content/Seller/Menu";
 import ModalShippingFee from "../components/Content/Modal/ModalShippingFee";
 import ModalReply from "../components/Content/Modal/ModalReply";
+import ModalProductVarPhotos from "../components/Content/Modal/ModalProductVarPhotos";
 import AProductVarEdit from "../components/Content/Admin/Product/ProductVarEdit";
 import APurchase from "../components/Content/Admin/Order/APurchase";
 import AOrdersByPurchase from "../components/Content/Admin/Order/AOrdersByPurchase";
@@ -127,6 +128,9 @@ class RAdmin extends Component {
           {adminToken && (
             <Fragment>
               {showNoti && <Notify position="BottomRight" />}
+              {show && modalName == "modalProductVarPhotos" && (
+                <ModalProductVarPhotos />
+              )}
               {show && modalName == "modalReply" && <ModalReply />}
               {show && modalName == "modalExpire" && <ModalExpire />}
               {show && modalName == "modalCancel" && <ModalCancel />}

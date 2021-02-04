@@ -13,6 +13,7 @@ import {
   PROMOTION_UPDATED,
   GET_PROMOTION_BY_ID,
   SHOW_NOTI,
+  PROMOTION_ERROR,
 } from "../actions/types";
 import { ADD_NOTIFICATION } from "react-redux-notify";
 import { NOTI_SUCCESS } from "./NotificationObject";
@@ -93,7 +94,12 @@ function* addPromotion(params) {
       pages: params.newPromotion.pages,
     });
   } catch (error) {
-    console.log(error.response);
+    let err = { ...error };
+    console.log(err);
+    if (err.response.status == 400)
+      yield put({
+        type: PROMOTION_ERROR,
+      });
   }
 }
 

@@ -7,6 +7,7 @@ import {
   MOVIE_UPDATED,
   MOVIE_RECEIVED,
   UPDATE_MOVIE,
+  GET_MOVIE_BY_ID,
 } from "../actions/types";
 
 const initialState = {
@@ -32,11 +33,18 @@ export default function (state = initialState, action) {
         totalDocuments: action.payload.data.total,
         isLoaded: true,
       };
+    case GET_MOVIE_BY_ID:
+      return {
+        ...state,
+        isLoaded: false,
+        isUpdated: false,
+      };
     case MOVIE_RECEIVED:
       return {
         ...state,
         movie: action.payload.data,
         isLoaded: true,
+        isUpdated: false,
       };
     case ADD_MOVIE:
       return {

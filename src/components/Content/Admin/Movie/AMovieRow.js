@@ -24,7 +24,7 @@ class AMovieRow extends Component {
 
     return (
       <tr>
-        <td>{movie.idMovieCat}</td>
+        <td>{movie.MovieCat.name}</td>
         <td>{movie.name}</td>
         <td>{movie.author}</td>
         {(permissionAdmins.includes("editMovie") ||

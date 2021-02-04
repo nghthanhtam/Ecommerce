@@ -15,18 +15,6 @@ class ModalProductVarPhotos extends Component {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  changeShop = (idShop) => {
-    this.props.showModal({ show: false });
-    this.props.details.changeShop(idShop);
-    this.props.history.push(
-      `/shopnow/product-detail/idProduct/2/idShop/${idShop}`
-    );
-  };
-
-  visitShop = (idShop, shopName) => {
-    this.props.history.push(`/shopnow/shop/${idShop}/${shopName}`);
-  };
-
   render() {
     const { showModal, details } = this.props;
     return (
@@ -35,6 +23,7 @@ class ModalProductVarPhotos extends Component {
           style={{
             background: "#fff",
             padding: "10px",
+            alignContent: "center",
           }}
           className="shoplist-box"
         >
@@ -63,15 +52,15 @@ class ModalProductVarPhotos extends Component {
                 </button>
               </div>
             ) : null}
-            {details.photos.map((photo) => {
-              return (
-                <div className="photolist">
+            <div className="photolist">
+              {details.photos.map((photo, index) => {
+                return (
                   <div key={index} className="photo-productvar">
-                    <img src={image.url} alt="photo" />
+                    <img src={photo.url} alt="photo" />
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

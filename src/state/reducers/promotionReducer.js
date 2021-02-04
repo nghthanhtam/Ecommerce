@@ -8,6 +8,7 @@ import {
   PROMOTION_UPDATED,
   PROMOTION_RECEIVED,
   GET_PROMOTION_BY_ID,
+  PROMOTION_ERROR,
 } from "../actions/types";
 
 const initialState = {
@@ -16,6 +17,8 @@ const initialState = {
   totalDocuments: 0,
   isLoaded: false,
   isUpdated: false,
+  isAdded: false,
+  error: null,
 };
 
 export default function (state = initialState, action) {
@@ -59,7 +62,8 @@ export default function (state = initialState, action) {
     case PROMOTION_ADDED:
       return {
         ...state,
-        isLoaded: true,
+        isAdded: true,
+        error: null,
       };
 
     case PROMOTION_DELETED:
@@ -74,6 +78,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isUpdated: true,
+        error: null,
       };
 
     case UPDATE_PROMOTION:
@@ -82,6 +87,12 @@ export default function (state = initialState, action) {
         isUpdated: false,
       };
 
+    case PROMOTION_ERROR:
+      return {
+        ...state,
+        isLoaded: true,
+        error: "Mã giảm giá đã tồn tại",
+      };
     default:
       return state;
   }

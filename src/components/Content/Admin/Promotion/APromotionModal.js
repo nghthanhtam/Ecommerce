@@ -20,6 +20,8 @@ const mapStateToProps = (state) => ({
   isLoadedMovieCates: state.movieCate.isLoaded,
   productCates: state.productCate.productCates,
   movieCates: state.movieCate.movieCates,
+  error: state.promotion.error,
+  isAdded: state.promotion.isAdded,
 });
 
 const APromotionModal = (props) => {
@@ -28,6 +30,12 @@ const APromotionModal = (props) => {
     props.getProductCates({ limit: 1000, page: 1, query: "" });
     props.getMovieCates({ limit: 1000, page: 1, query: "" });
   }, []);
+
+  useEffect(() => {
+    if (props.isAdded && !props.error) {
+      document.getElementById("closeBtn").click();
+    }
+  }, props.error);
 
   const handleChangeSelect = (selectedItem, type, setFieldValue) => {
     if (type == "promotionType")
@@ -51,28 +59,35 @@ const APromotionModal = (props) => {
         couponCode: "",
         timeStart: "",
         timeEnd: "",
-        minAmount: 0,
-        maxDiscount: 0,
-        percentage: 0,
+        minAmount: "",
+        maxDiscount: "",
+        percentage: "",
         idPromotionType: "",
       }}
       onSubmit={(values, actions) => {
         values = { ...values, pages: props.pages };
         props.addPromotion(values);
-        document.getElementById("triggerButton").click();
       }}
       validationSchema={Yup.object().shape({
-        //idPromotionType: Yup.string().required("Bắt buộc nhập"),
+        idPromotionType: Yup.string().required("Bắt buộc nhập"),
         name: Yup.string()
           .min(3, "Mô tả phải dài hơn 3 kí tự")
           .max(100, "Chỉ được phép nhập ít hơn 100 kí tự")
           .required("Bắt buộc nhập"),
         couponCode: Yup.string().required("Bắt buộc nhập"),
-        timeStart: Yup.string().required("Bắt buộc nhập"),
-        timeEnd: Yup.string().required("Bắt buộc nhập"),
+        timeStart: Yup.date().required("Bắt buộc nhập"),
+        timeEnd: Yup.date()
+          .required("Bắt buộc nhập")
+          .min(
+            new Date(),
+            "Thời điểm kết thúc giảm giá không được trước thời điểm hiện tại"
+          ),
         minAmount: Yup.number().required("Bắt buộc nhập"),
         maxDiscount: Yup.number().required("Bắt buộc nhập"),
-        percentage: Yup.number().required("Bắt buộc nhập"),
+        percentage: Yup.number()
+          .required("Bắt buộc nhập")
+          .max(100, "Giá trị phần trăm chi từ 1% đến 100%"),
+        // arrayCat: Yup.array().required("Chọn ít nhất 1 thể loại!"),
       })}
     >
       {({
@@ -141,7 +156,6 @@ const APromotionModal = (props) => {
                               setFieldValue
                             )
                           }
-                          name="idPromotionType"
                           isSearchable={true}
                           options={props.promotionTypes}
                           getOptionLabel={(option) => option.name}
@@ -151,11 +165,6 @@ const APromotionModal = (props) => {
                           value={props.promotionTypes.filter(
                             (option) => option.id === values.idPromotionType
                           )}
-                          className={
-                            errors.idPromotionType && touched.idPromotionType
-                              ? `${styles.formikinput} ${styles.error}`
-                              : ""
-                          }
                         />
                       )}
 
@@ -264,6 +273,9 @@ const APromotionModal = (props) => {
                           {errors.couponCode}
                         </div>
                       ) : null}
+                      {props.error && (
+                        <div style={{ color: "red" }}>{props.error}</div>
+                      )}
                     </div>
                     <div className="form-group">
                       <label htmlFor="timeStart" className="col-form-label">
@@ -320,7 +332,7 @@ const APromotionModal = (props) => {
                       <input
                         type="number"
                         className="form-control"
-                        placeholder="Nhập giá trị hóa đơn tối thiểu..."
+                        placeholder="0"
                         name="minAmount"
                         value={values.minAmount}
                         onChange={handleChange}
@@ -345,7 +357,7 @@ const APromotionModal = (props) => {
                         type="number"
                         className="form-control"
                         id="maxDiscount"
-                        placeholder="Nhập mức giảm giá tối đa..."
+                        placeholder="0"
                         name="maxDiscount"
                         value={values.maxDiscount}
                         onChange={handleChange}
@@ -369,7 +381,7 @@ const APromotionModal = (props) => {
                       <input
                         type="number"
                         className="form-control"
-                        placeholder="Nhập phần trăm giảm giá..."
+                        placeholder="0"
                         name="percentage"
                         value={values.percentage}
                         onChange={handleChange}
@@ -389,11 +401,12 @@ const APromotionModal = (props) => {
                   </div>
                   <div className="modal-footer">
                     <button
+                      id="closeBtn"
                       type="button"
                       className="btn btn-secondary"
                       data-dismiss="modal"
                     >
-                      Close
+                      Đóng
                     </button>
                     <button
                       type="submit"

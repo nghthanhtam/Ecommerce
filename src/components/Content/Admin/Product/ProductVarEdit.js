@@ -33,7 +33,6 @@ class ProductVarEdit extends Component {
   };
 
   componentDidMount() {
-    console.log(process.env.REACT_APP_CLOUD_NAME);
     const { id } = this.props.match.params;
 
     axios

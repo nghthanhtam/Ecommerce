@@ -59,10 +59,7 @@ const APromotionEdit = (props) => {
         setFieldValue("arrayCat", []);
         return;
       }
-      setFieldValue(
-        "arrayCat",
-        selectedItem.map(({ id }) => id)
-      );
+      setFieldValue("arrayCat", selectedItem);
     }
   };
 
@@ -82,7 +79,7 @@ const APromotionEdit = (props) => {
             : props.promotion.PromotionMovieCats,
       }}
       onSubmit={(values, actions) => {
-        console.log(values);
+        values.arrayCat = values.arrayCat.map(({ id }) => id);
         values = { ...values, pages: props.pages };
         props.updatePromotion(values);
       }}

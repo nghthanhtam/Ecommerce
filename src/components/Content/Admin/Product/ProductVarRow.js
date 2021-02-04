@@ -18,8 +18,16 @@ class ProductRow extends Component {
     ],
   };
 
-  approve = (status) => {
-    const { productVar, pages } = this.props;
+  handleAction = (status) => {
+    const { productVar, pages, showModal } = this.props;
+    if (status == "photoCheck") {
+      showModal({
+        show: true,
+        details: { photos: productVar.Images },
+        modalName: "modalProductVarPhotos",
+      });
+      return;
+    }
     let newProductVar = {
       ...productVar,
       status,
@@ -106,7 +114,10 @@ class ProductRow extends Component {
                   </button>
                   <ul className="dropdown-menu" role="menu">
                     {statuses.map((s, index) => (
-                      <li key={index} onClick={() => this.approve(s.value)}>
+                      <li
+                        key={index}
+                        onClick={() => this.handleAction(s.value)}
+                      >
                         <a href="javascript:void(0);"> {s.label} </a>
                       </li>
                     ))}

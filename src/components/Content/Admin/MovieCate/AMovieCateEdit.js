@@ -242,10 +242,12 @@ const AMovieCateEdit = (props) => {
                           </label>
                         </div>
                       )}
-
                       {errUploadMsg !== "" ? (
                         <p style={{ color: "red" }}>{errUploadMsg}</p>
                       ) : null}
+                      {imageUrl == "" && (
+                        <p style={{ color: "red" }}>Bạn chưa chọn ảnh</p>
+                      )}
                     </div>
                     <div className="box-footer">
                       <button
@@ -257,7 +259,11 @@ const AMovieCateEdit = (props) => {
                       >
                         Hủy
                       </button>
-                      <button type="submit" className="btn btn-info pull-right">
+                      <button
+                        type="submit"
+                        className="btn btn-info pull-right"
+                        disabled={imageUrl == ""}
+                      >
                         Lưu
                       </button>
                     </div>
