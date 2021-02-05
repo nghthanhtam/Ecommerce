@@ -100,6 +100,7 @@ const SlotRow = ({
       {cate == "rating" && (
         <>
           <td>{item.idProduct}</td>
+          <td>{item.rate}</td>
           <td>
             <div style={{ fontWeight: "500" }}>{item.title}</div>
             {item.review}

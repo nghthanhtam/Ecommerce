@@ -11,12 +11,16 @@ const mapStateToProps = (state) => ({
 });
 
 class CartDetail extends React.Component {
-  state = {};
+  state = { amount: 0 };
 
   showDiscount = () => {
     const { item } = this.props;
     let discount = ((item.marketPrice - item.price) / item.marketPrice) * 100;
     return Math.ceil(discount * Math.pow(10, 2)) / Math.pow(10, 2);
+  };
+
+  onChange = (e) => {
+    console.log(e.target.value);
   };
 
   render() {
@@ -89,8 +93,8 @@ class CartDetail extends React.Component {
               textAlign: "center",
               border: "1px solid #ccc",
             }}
-            value={item.amount}
-            onChange={this.onChange}
+            defaultValue={item.amount}
+            onBlur={(e) => amountChange(e.target.value, item.idCart, item.id)}
           />
           <div
             className="plus-btn"

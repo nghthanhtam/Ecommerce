@@ -14,20 +14,33 @@ const mapStateToProps = (state) => ({
 class ShowingProduct extends React.Component {
   state = {
     mainPhoto: "",
+    mainPrice: "",
+  };
+
+  convertPrice = (value) => {
+    console.log(value);
+    if (value) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    else return 0;
   };
 
   handleVariantPhotos = (ele) => {
-    this.setState({ mainPhoto: ele.url });
+    let productVar = this.props.item.ProductVars.filter((obj) => {
+      return obj.id == ele.idProductVar;
+    });
+    this.setState({ mainPhoto: ele.url, mainPrice: productVar[0].price });
   };
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { isLoaded, item } = this.props;
-    if (prevProps.isLoaded !== isLoaded) console.log("changee");
-  }
+  initPrice = () => {
+    const { item } = this.props;
+    let productVar = item.ProductVars.filter((obj) => {
+      return obj.id == item.arrayImage[0].idProductVar;
+    });
+    return productVar[0].price;
+  };
 
   render() {
     const { item } = this.props;
-    const { mainPhoto } = this.state;
+    const { mainPhoto, mainPrice } = this.state;
     const settings = {
       infinite: true,
       speed: 800,
@@ -36,7 +49,7 @@ class ShowingProduct extends React.Component {
     };
     return (
       <div className="product-card">
-        <div style={{ height: "335px" }}>
+        <div style={{ height: "315px" }}>
           <div
             onClick={() =>
               this.props.history.push({
@@ -77,6 +90,12 @@ class ShowingProduct extends React.Component {
               })}
             </Slider>
           </div>
+        </div>
+        <div className="showing-price">
+          {mainPrice
+            ? this.convertPrice(Number(mainPrice))
+            : this.convertPrice(Number(this.initPrice()))}
+          đ
         </div>
         <div className="product-info">
           <div

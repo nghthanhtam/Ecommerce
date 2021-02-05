@@ -165,9 +165,9 @@ class HomePage extends React.Component {
                           với những vật dụng mang màu sắc của nhân vật phim ảnh
                           mà bạn yêu thích.
                         </p>
-                        <Link className="item" to="/shopnow">
+                        {/* <Link className="item" to="/shopnow">
                           Tham quan các cửa hàng
-                        </Link>
+                        </Link> */}
                       </div>
                       <div className="imgBox">
                         <img src={this.state.picLink} alt="blue" />

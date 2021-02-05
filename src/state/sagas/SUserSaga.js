@@ -45,7 +45,7 @@ function* fetchUserById(params) {
   try {
     const state = yield select(),
       { id, type } = params.params;
-
+    console.log(params);
     const response = yield call(() =>
       axios.get(
         `${process.env.REACT_APP_BACKEND_USER}/api/user/${id}`,

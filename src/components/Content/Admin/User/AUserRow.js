@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { deleteUser } from '../../../../state/actions/userActions';
-import { pushHistory } from '../../../../state/actions/historyActions';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { deleteUser } from "../../../../state/actions/userActions";
+import { pushHistory } from "../../../../state/actions/historyActions";
 
 class AUserRow extends Component {
   convertDate = (date) => {
@@ -12,16 +12,16 @@ class AUserRow extends Component {
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return year + '-' + month + '-' + dt;
+    return year + "-" + month + "-" + dt;
   };
 
   handleEdit = (id) => {
     this.props.pushHistory(`/admin/user/edit/${id}`);
   };
 
-  handleDelete = (id) => {
-    this.props.deleteUser(id);
-  };
+  // handleDelete = (id) => {
+  //   this.props.deleteUser(id);
+  // };
 
   render() {
     const { user, index } = this.props;
@@ -43,14 +43,13 @@ class AUserRow extends Component {
               Sửa
             </button>
 
-            <button
+            {/* <button
               onClick={() => this.handleDelete(user.id)}
               type="button"
               className="btn btn-danger"
             >
               Xóa
-            </button>
-
+            </button> */}
           </div>
         </td>
       </tr>

@@ -1,9 +1,13 @@
-import React, { Component, Fragment } from 'react';
-import SlotRow from '../../Slots/SlotRow';
-import { connect } from 'react-redux';
-import { getRatings, deleteRating, updateRatingStatus } from '../../../../state/actions/ratingActions';
-import PropTypes from 'prop-types';
-import Loader from 'react-loader';
+import React, { Component, Fragment } from "react";
+import SlotRow from "../../Slots/SlotRow";
+import { connect } from "react-redux";
+import {
+  getRatings,
+  deleteRating,
+  updateRatingStatus,
+} from "../../../../state/actions/ratingActions";
+import PropTypes from "prop-types";
+import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
   ratings: state.rating.ratings,
@@ -17,7 +21,7 @@ class ARating extends Component {
     limit: 5,
     page: 1,
     pages: [],
-    query: '',
+    query: "",
     start: 1,
     end: 5,
     isNextBtnShow: true,
@@ -29,7 +33,7 @@ class ARating extends Component {
       limit,
       page,
       query,
-      status: 'pending'
+      status: "pending",
     });
   }
 
@@ -45,8 +49,8 @@ class ARating extends Component {
     const { totalDocuments } = this.props;
     if (totalDocuments == 0) return;
 
-    let newQuery = '';
-    if (query === '') newQuery = 'undefined';
+    let newQuery = "";
+    if (query === "") newQuery = "undefined";
     else newQuery = query;
 
     let pages = Math.floor(totalDocuments / limit);
@@ -64,7 +68,7 @@ class ARating extends Component {
         { pageNumber: 1 },
         { pageNumber: 2 },
         { pageNumber: 3 },
-        { pageNumber: '...' },
+        { pageNumber: "..." },
         { pageNumber: newArray.length },
       ];
     }
@@ -74,7 +78,7 @@ class ARating extends Component {
   handleOnChange = (e) => {
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === 'query') {
+      if (e.target.name === "query") {
         this.setState({ page: 1 }, () => {
           this.rerenderPage();
         });
@@ -123,22 +127,22 @@ class ARating extends Component {
         </td>
       </tr>
     ) : (
-        ratings.map((rating, index) => (
-          <SlotRow
-            cate='rating'
-            key={index}
-            item={rating}
-            index={index + start - 1}
-            deleteItem={deleteRating}
-            updateItemStatus={updateRatingStatus}
-            pages={{ limit, page, query, status: 'pending' }}
-          />
-        ))
-      );
+      ratings.map((rating, index) => (
+        <SlotRow
+          cate="rating"
+          key={index}
+          item={rating}
+          index={index + start - 1}
+          deleteItem={deleteRating}
+          updateItemStatus={updateRatingStatus}
+          pages={{ limit, page, query, status: "pending" }}
+        />
+      ))
+    );
   };
 
   handleChoosePage = (e) => {
-    if (e === '...') return
+    if (e === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),
@@ -154,13 +158,13 @@ class ARating extends Component {
     }
 
     this.setState({ page: e }, () => {
-      const { limit, page, query, } = this.state;
+      const { limit, page, query } = this.state;
       this.props.getRatings({
         limit,
         page,
         query,
         isUser: true,
-        status: 'pending'
+        status: "pending",
       });
       this.getStartEndDocuments();
     });
@@ -173,7 +177,7 @@ class ARating extends Component {
         onChange={this.handleOnChange}
         name="limit"
         aria-controls="example1"
-        style={{ margin: '0px 5px' }}
+        style={{ margin: "0px 5px" }}
         className="form-control input-sm"
         value={limit}
       >
@@ -196,8 +200,10 @@ class ARating extends Component {
               key={eachButton.pageNumber}
               className={
                 page === eachButton.pageNumber
-                  ? 'paginae_button active'
-                  : 'paginate_button '}   >
+                  ? "paginae_button active"
+                  : "paginate_button "
+              }
+            >
               <a
                 className="paga-link"
                 name="page"
@@ -211,13 +217,13 @@ class ARating extends Component {
           <li className="paginate_button">
             <a
               className={
-                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
+                isNextBtnShow === true ? "paga-link" : "paga-link_hidden"
               }
               name="currentPage"
               href="javascript:void(0);"
               onClick={() => this.handleChoosePage(-1)}
             >
-              {'>>'}
+              {">>"}
             </a>
           </li>
         </>
@@ -232,9 +238,7 @@ class ARating extends Component {
       <Fragment>
         <Fragment>
           <section className="content-header">
-            <h1>
-              Duyệt đánh giá người dùng
-            </h1>
+            <h1>Duyệt đánh giá người dùng</h1>
             <ol className="breadcrumb">
               <li>
                 <a href="/admin">
@@ -276,10 +280,10 @@ class ARating extends Component {
                             <div
                               id="example1_filter"
                               className="dataTables_filter"
-                              style={{ float: 'right' }}
+                              style={{ float: "right" }}
                             >
                               <label>
-                                Tìm kiếm{' '}
+                                Tìm kiếm{" "}
                                 <input
                                   type="search"
                                   name="query"
@@ -303,11 +307,14 @@ class ARating extends Component {
                           >
                             <thead>
                               <tr>
-                                <th style={{ width: '5%' }}>#</th>
-                                <th style={{ width: '10%' }}>Người viết</th>
-                                <th style={{ width: '20%' }}>Sản phẩm được đánh giá</th>
-                                <th style={{ width: '30%' }}>Nội dung</th>
-                                <th style={{ width: '10%' }}>Ngày viết</th>
+                                <th style={{ width: "5%" }}>#</th>
+                                <th style={{ width: "10%" }}>Người viết</th>
+                                <th style={{ width: "20%" }}>
+                                  Sản phẩm được đánh giá
+                                </th>
+                                <th style={{ width: "12%" }}>Điểm đánh giá</th>
+                                <th style={{ width: "28%" }}>Nội dung</th>
+                                <th style={{ width: "10%" }}>Ngày viết</th>
                               </tr>
                             </thead>
 
@@ -318,6 +325,7 @@ class ARating extends Component {
                                 <th>#</th>
                                 <th>Người viết</th>
                                 <th>Sản phẩm được đánh giá</th>
+                                <th>Điểm đánh giá</th>
                                 <th>Nội dung</th>
                                 <th>Ngày viết</th>
                               </tr>
@@ -333,20 +341,24 @@ class ARating extends Component {
                             role="status"
                             aria-live="polite"
                           >
-                            Hiển thị{' '}
-                            {query == ''
-                              ? start + ' đến ' + (totalDocuments < end ? totalDocuments : end) + ' trong '
-                              : ''}{' '}
+                            Hiển thị{" "}
+                            {query == ""
+                              ? start +
+                                " đến " +
+                                (totalDocuments < end ? totalDocuments : end) +
+                                " trong "
+                              : ""}{" "}
                             {totalDocuments} kết quả
                           </div>
                         </div>
                         <div className="col-sm-7">
                           <div
                             className="dataTables_paginate paging_simple_numbers"
-                            id="example1_paginate">
+                            id="example1_paginate"
+                          >
                             <ul
                               className="pagination"
-                              style={{ float: 'right' }}
+                              style={{ float: "right" }}
                             >
                               {this.renderPageButtons()}
                             </ul>
@@ -377,4 +389,8 @@ ARating.propTypes = {
   totalDocuments: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, { getRatings, deleteRating, updateRatingStatus })(ARating);
+export default connect(mapStateToProps, {
+  getRatings,
+  deleteRating,
+  updateRatingStatus,
+})(ARating);

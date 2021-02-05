@@ -108,7 +108,7 @@ class Login extends Component {
           </div>
           {/* /.login-logo */}
           <div className="login-box-body">
-            <p className="login-box-msg">Sign in to start your session</p>
+            <p className="login-box-msg">Đăng nhập để mua hàng bạn nhé</p>
             {this.state.msg ? (
               <div className="alert alert-danger alert-dismissible">
                 <button
@@ -167,24 +167,24 @@ class Login extends Component {
               </div>
             </form>
             <div className="social-auth-links text-center">
-              <p>- OR -</p>
+              <p>- hoặc -</p>
               <a
                 href="#"
                 className="btn btn-block btn-social btn-facebook btn-flat"
               >
-                <i className="fa fa-facebook"></i> Sign in using Facebook
+                <i className="fa fa-facebook"></i> Đăng nhập bằng Facebook
               </a>
               <a
                 href="#"
                 className="btn btn-block btn-social btn-google btn-flat"
               >
-                <i className="fa fa-google-plus"></i> Sign in using Google+
+                <i className="fa fa-google-plus"></i> Đăng nhập bằng Google+
               </a>
               <a
                 href="/shopnow/register-user"
                 className="btn btn-block btn-warning btn-flat"
               >
-                Create an account
+                Tạo tài khoản
               </a>
             </div>
             {/* /.social-auth-links */}

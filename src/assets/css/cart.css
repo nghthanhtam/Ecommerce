@@ -344,7 +344,19 @@
   align-items: center;
   transition: 0.3s linear;
 }
-.btn-home:hover {
+.verify-btnhome {
+  border-radius: 8px;
+  padding: 8px;
+  height: 40px;
+  border: 1px solid #ccc;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s linear;
+}
+.btn-home:hover,
+.verify-btnhome:hover {
   background-color: #3571a7;
   color: white;
   cursor: pointer;

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
+import { showModal } from "../../../state/actions/modalActions";
+import { connect } from "react-redux";
 
 class ModalVerify extends Component {
-  state = {};
-
   render() {
     return (
       <div className="modal-wrapper">
@@ -24,10 +24,18 @@ class ModalVerify extends Component {
           <h2>Xác nhận email của bạn!</h2>
           <div>Một tin nhắn xác nhận đã được gửi đến email mà bạn đăng ký</div>
           <div>Hãy truy cập vào hòm thư điện tử để xác nhận nhé</div>
+          <div style={{ marginTop: "10px" }}>
+            <a
+              className="verify-btnhome"
+              onClick={() => this.props.showModal({ show: false })}
+            >
+              Quay lại trang chủ
+            </a>
+          </div>
         </div>
       </div>
     );
   }
 }
 
-export default ModalVerify;
+export default connect(null, { showModal })(ModalVerify);

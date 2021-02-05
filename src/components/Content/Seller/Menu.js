@@ -183,16 +183,6 @@ class Menu extends React.Component {
                     </li>
                   )}
                 <li>
-                  <a href="pages/mailbox/mailbox.html">
-                    <i className="fa fa-envelope" /> <span>Mailbox</span>
-                    <span className="pull-right-container">
-                      <small className="label pull-right bg-yellow">12</small>
-                      <small className="label pull-right bg-green">16</small>
-                      <small className="label pull-right bg-red">5</small>
-                    </span>
-                  </a>
-                </li>
-                <li>
                   <Link to="/admin/logadmin">
                     <i className="fa fa-sticky-note-o" />{" "}
                     <span>Nhật kí hoạt động</span>

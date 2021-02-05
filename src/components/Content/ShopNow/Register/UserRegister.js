@@ -37,7 +37,11 @@ class UserRegister extends React.Component {
         validationSchema: Yup.object({
           fullname: Yup.string()
             .max(255, "Chỉ được phép nhập ít hơn 255 kí tự")
-            .required("Bắt buộc nhập!"),
+            .required("Bắt buộc nhập!")
+            .matches(
+              /^[a-zA-Z0-9_ Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ&.-]+$/,
+              "Họ tên không được bao gồm các kí tự đặc biệt"
+            ),
           phone: Yup.string()
             .max(10, "Chỉ được phép nhập ít hơn 10 kí tự")
             .required("Bắt buộc nhập!")
@@ -49,10 +53,14 @@ class UserRegister extends React.Component {
             .max(50, "Chỉ được phép nhập ít hơn 50 kí tự")
             .required("Bắt buộc nhập!")
             .matches(
-              /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/,
-              "Mật khẩu phải bao gồm ít nhất: 1 kí tự viết hoa, 1 kí tự viết thường, 1 kí tự số"
+              /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{6,}$/,
+              "Mật khẩu gồm 6 kí tự, bao gồm ít nhất: 1 kí tự viết hoa, 1 kí tự viết thường, 1 kí tự số"
             ),
           username: Yup.string()
+            .matches(
+              /^[a-zA-Z0-9_ Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ&.-]+$/,
+              "Tên đăng nhập không được bao gồm các kí tự đặc biệt"
+            )
             .max(255, "Chỉ được phép nhập ít hơn 255 kí tự")
             .required("Bắt buộc nhập!"),
           email: Yup.string()

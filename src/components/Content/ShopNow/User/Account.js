@@ -35,7 +35,7 @@ const Account = (props) => {
   }, [props.user.id]);
 
   useEffect(() => {
-    if (!disabled) document.getElementById("username").focus();
+    if (!disabled) document.getElementById("fullname").focus();
   }, [disabled]);
 
   useEffect(() => {
@@ -51,7 +51,16 @@ const Account = (props) => {
     }
   }, [props.isUpdatePassError]);
 
-  const onCheckChangePassword = (e) => {
+  const onCheckChangePassword = (setFieldValue) => {
+    if (!isChangePassword) {
+      setFieldValue("oldPassword", "");
+      setFieldValue("confirmPassword", "");
+      setFieldValue("newPassword", "");
+    } else {
+      setFieldValue("oldPassword", "user");
+      setFieldValue("newPassword", "user");
+      setFieldValue("confirmPassword", "user");
+    }
     setChangePassword(!isChangePassword);
   };
 
@@ -67,16 +76,16 @@ const Account = (props) => {
     <Formik
       initialValues={{
         ...props.user,
-        newPassword: "",
+        newPassword: "user",
         oldPassword: "",
-        confirmPassword: "",
+        confirmPassword: "user",
       }}
       onSubmit={(values, actions) => {
         console.log(values);
         if (!(values == props.user)) {
           values.type = "user";
           props.updateUser(values);
-          props.updatePass(values);
+          if (isChangePassword) props.updatePass(values);
         }
       }}
       validationSchema={Yup.object().shape({
@@ -98,8 +107,11 @@ const Account = (props) => {
           .email("Email không hợp lệ")
           .required("Bắt buộc nhập"),
         newPassword: Yup.string().required("Bắt buộc nhập!"),
+        oldPassword: Yup.string().required("Bắt buộc nhập!"),
         confirmPassword: Yup.string()
-          .required("Bắt buộc nhập!")
+          .required("Bắt buộc nhập!", function (value) {
+            return true;
+          })
           .test(
             "passwords-match",
             "Mật khẩu không trùng khớp. Xin hãy nhập lại!",
@@ -143,7 +155,7 @@ const Account = (props) => {
               <UserProfile selectedLink="/shopnow/user/account" />
 
               <form className="acc-container" onSubmit={handleSubmit}>
-                <label className={styles.formiklabel} htmlFor="username">
+                {/* <label className={styles.formiklabel} htmlFor="username">
                   {" "}
                   Tên đăng nhập
                 </label>
@@ -163,13 +175,14 @@ const Account = (props) => {
                 />
                 {touched.username && errors.username ? (
                   <div className={styles.inputfeedback}>{errors.username}</div>
-                ) : null}
+                ) : null} */}
                 <label className={styles.formiklabel} htmlFor="fullname">
                   {" "}
                   Họ tên
                 </label>
                 <input
                   disabled={disabled}
+                  id="fullname"
                   name="fullname"
                   type="text"
                   onChange={handleChange}
@@ -226,10 +239,10 @@ const Account = (props) => {
 
                 <label className="changeps-label">
                   <input
-                    name="createEmployee"
+                    disabled={disabled}
                     type="checkbox"
                     checked={isChangePassword}
-                    onChange={onCheckChangePassword}
+                    onChange={() => onCheckChangePassword(setFieldValue)}
                   />
                   <p>Đổi mật khẩu</p>
                 </label>
@@ -360,6 +373,10 @@ const Account = (props) => {
                       onClick={() => {
                         setDisabled(false);
                         setShow(!isShow);
+                        setChangePassword(false);
+                        setFieldValue("oldPassword", "user");
+                        setFieldValue("newPassword", "user");
+                        setFieldValue("confirmPassword", "user");
                       }}
                     >
                       Chỉnh sửa

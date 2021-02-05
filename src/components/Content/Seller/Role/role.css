@@ -10,15 +10,36 @@
 .label-wrapper p {
   font-weight: 400;
 }
+.moviecat-wrapper input {
+  margin-left: 0px;
+  margin-top: -20px;
+}
+.moviecat-wrapper {
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+}
+.moviecat-wrapper input {
+  margin-right: 5px;
+}
+.moviecat-wrapper p {
+  font-weight: 400;
+}
 .role-cate {
   padding: 0;
+  margin: 0;
   margin-bottom: 8px;
+}
+.caterole-label {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  margin-left: 5px;
 }
 .role-label {
   display: flex;
   flex-direction: column;
   margin-top: 10px;
-  margin-left: 5px;
 }
 .changeps-label {
   display: flex;

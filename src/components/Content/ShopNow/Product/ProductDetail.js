@@ -82,6 +82,7 @@ class ProductDetail extends React.Component {
     recproducts: [],
     questionMsg: false,
     ratingMsg: false,
+    idQuestionBeing: "",
   };
 
   componentDidMount() {
@@ -152,6 +153,7 @@ class ProductDetail extends React.Component {
           status: "active", // update the value of specific key
           price: product.productVars[0].price,
           marketPrice: product.productVars[0].marketPrice,
+          stockAmount: product.productVars[0].stockAmount,
         },
       }));
     }
@@ -180,9 +182,9 @@ class ProductDetail extends React.Component {
     let { replyBoxHidden } = this.state;
     this.setState({ replyBoxHidden: !replyBoxHidden });
   };
-  answerClick = () => {
+  answerCancel = (idQuestionBeing) => {
     let { answerBoxHidden } = this.state;
-    this.setState({ answerBoxHidden: !answerBoxHidden });
+    this.setState({ answerBoxHidden: !answerBoxHidden, idQuestionBeing });
   };
   handleChange = (e) => {
     const { name, value } = e.target;
@@ -396,6 +398,15 @@ class ProductDetail extends React.Component {
             );
             this.setState({ bigPhoto: bigPhotoArr[0].url });
           } else {
+            this.setState({
+              selectedProductVar: {
+                status: "inactive", // update the value of specific key
+                price: 0,
+                marketPrice: 0,
+                stockAmount: 0,
+              },
+              bigPhoto: "abc",
+            });
             let selectedVariantsText = "";
             for (let i in oldVariants) {
               let arr, name;
@@ -418,6 +429,7 @@ class ProductDetail extends React.Component {
 
   addToCart = () => {
     const { selectedProductVar, variants, amount } = this.state;
+
     const { addCart, user, product } = this.props;
     if (variants.length == product.variants.length) {
       addCart({
@@ -484,6 +496,7 @@ class ProductDetail extends React.Component {
       recproducts,
       questionMsg,
       ratingMsg,
+      idQuestionBeing,
     } = this.state;
     const {
       showModal,
@@ -687,28 +700,54 @@ class ProductDetail extends React.Component {
                       }}
                     >
                       <div
-                        className="minus-btn"
-                        onClick={() => this.onChangeAmount(-1)}
-                      >
-                        <i className="fa fa-minus"></i>
-                      </div>
-                      <input
                         style={{
-                          width: "50px",
-                          height: "36px",
-                          textAlign: "center",
-                          border: "1px solid #ccc",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "flex-start",
                         }}
-                        name="amount"
-                        value={amount}
-                        onChange={this.handleChange}
-                      />
-
-                      <div
-                        className="plus-btn"
-                        onClick={() => this.onChangeAmount(1)}
                       >
-                        <i className="fa fa-plus"></i>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginBottom: "3px",
+                          }}
+                        >
+                          <div
+                            className="minus-btn"
+                            onClick={() => this.onChangeAmount(-1)}
+                          >
+                            <i className="fa fa-minus"></i>
+                          </div>
+                          <input
+                            style={{
+                              width: "50px",
+                              height: "36px",
+                              textAlign: "center",
+                              border: "1px solid #ccc",
+                            }}
+                            name="amount"
+                            value={amount}
+                            onChange={this.handleChange}
+                          />
+                          <div
+                            className="plus-btn"
+                            onClick={() => this.onChangeAmount(1)}
+                          >
+                            <i className="fa fa-plus"></i>
+                          </div>
+                        </div>
+                        {selectedProductVar && (
+                          <div
+                            style={{
+                              color: "grey",
+                              fontSize: "16px",
+                            }}
+                          >
+                            {selectedProductVar.stockAmount} sản phẩm có sẵn
+                          </div>
+                        )}
                       </div>
                     </div>
                     {selectedProductVar !== "" &&
@@ -770,6 +809,12 @@ class ProductDetail extends React.Component {
                   </div>
                 </div>
               </div>
+              {product.product.description !== "" && (
+                <div className="card2">
+                  <h3>MÔ TẢ SẢN PHẨM</h3>
+                  <p>{product.product.description}</p>
+                </div>
+              )}
               <div className="recommend-wrapper">
                 <h3 style={{ marginLeft: "auto" }} className="recommend-pane">
                   NHỮNG SẢN PHẨM KHÁC CÙNG PHIM
@@ -886,13 +931,13 @@ class ProductDetail extends React.Component {
                             return (
                               <Fragment key={aindex}>
                                 {answer.status == "accepted" && (
-                                  <>
+                                  <div style={{ margin: "10px 10px 10px 0" }}>
                                     <div>{answer.answer}</div>
                                     <div className="reply-date">
                                       {answer.User.username} đă trả lời -{" "}
                                       {this.convertDate(answer.createdAt)}
                                     </div>
-                                  </>
+                                  </div>
                                 )}
                               </Fragment>
                             );
@@ -900,11 +945,11 @@ class ProductDetail extends React.Component {
 
                           <div
                             className="reply-btn"
-                            onClick={() => this.answerClick()}
+                            onClick={() => this.answerCancel(question.id)}
                           >
                             Trả lời
                           </div>
-                          {answerBoxHidden ? (
+                          {answerBoxHidden && idQuestionBeing == question.id ? (
                             <div style={{ width: "100%" }}>
                               <textarea
                                 onChange={this.handleChange}
@@ -935,7 +980,7 @@ class ProductDetail extends React.Component {
                                     margin: "5px 5px 5px 0",
                                     border: "1px solid #ccc",
                                   }}
-                                  onClick={() => this.answerClick()}
+                                  onClick={() => this.answerCancel()}
                                 >
                                   Hủy bỏ
                                 </Button>
@@ -988,7 +1033,7 @@ class ProductDetail extends React.Component {
                       <Rating
                         precision={0.5}
                         name="simple-controlled"
-                        value={5}
+                        value={averageRating ? Math.floor(averageRating) : 0}
                         readOnly
                       />
                       <div>({totalRating} nhận xét)</div>

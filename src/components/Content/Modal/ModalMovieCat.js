@@ -63,13 +63,13 @@ const ModalMovieCat = (props) => {
                   <h4 className="title-cate">
                     Chọn thể loại phim mà bạn thích:
                   </h4>
-                  <div className="role-label">
+                  <div className="caterole-label">
                     <div className="list-wrapper">
                       <div className="moviecate-grid">
                         {props.movieCates.map((cate, index) => {
                           return (
                             <div key={cate.id} className="cate-wrapper">
-                              <label className="label-wrapper">
+                              <label className="moviecat-wrapper">
                                 <input
                                   name="checked"
                                   type="checkbox"
@@ -89,20 +89,6 @@ const ModalMovieCat = (props) => {
                                   </div>
                                 </div>
                               </label>
-                              {/* <label className="label-wrapper">
-                                <div className="cate-card">
-                                  <input
-                                    name="checked"
-                                    type="checkbox"
-                                    value={cate.id}
-                                    checked={values.checked.includes(cate.id)}
-                                    onChange={(e) =>
-                                      handleCheck(e, setFieldValue, values)
-                                    }
-                                  />
-                                  <img src={cate.imageUrl} alt="photo" />
-                                </div>
-                              </label> */}
                             </div>
                           );
                         })}
