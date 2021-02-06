@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { pushHistory } from '../../../../state/actions/historyActions';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { pushHistory } from "../../../../state/actions/historyActions";
 
 const mapStateToProps = (state) => ({
   history: state.history.history,
@@ -8,7 +8,8 @@ const mapStateToProps = (state) => ({
 
 class OrderRow extends Component {
   convertPrice = (value) => {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    if (value) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    else return 0;
   };
 
   handleEdit = (id) => {
@@ -26,7 +27,15 @@ class OrderRow extends Component {
       <tr>
         <td>{index + 1}</td>
         <td>{orderDet.SKU}</td>
-        <td><img src={orderDet.Images[0].url} alt="hình ảnh" border='4' height='100' width='80' /></td>
+        <td>
+          <img
+            src={orderDet.Images[0].url}
+            alt="hình ảnh"
+            border="4"
+            height="100"
+            width="80"
+          />
+        </td>
         <td>{orderDet.name}</td>
         <td>{this.convertPrice(orderDet.price)}</td>
         <td>{orderDet.quantity}</td>
@@ -35,4 +44,4 @@ class OrderRow extends Component {
   }
 }
 
-export default connect(mapStateToProps, { pushHistory, })(OrderRow);
+export default connect(mapStateToProps, { pushHistory })(OrderRow);

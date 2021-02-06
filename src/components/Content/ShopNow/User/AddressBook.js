@@ -7,6 +7,7 @@ import {
   addAddress,
   updateAddress,
   getAddresses,
+  deleteAddress,
 } from "../../../../state/actions/addressActions";
 import { showModal } from "../../../../state/actions/modalActions";
 
@@ -56,7 +57,7 @@ class AddressBook extends React.Component {
   };
 
   render() {
-    const { show, modalName, showModal, addresses } = this.props;
+    const { show, modalName, showModal, addresses, deleteAddress } = this.props;
     return (
       <div>
         <Header />
@@ -113,17 +114,25 @@ class AddressBook extends React.Component {
                         <p>{item.phone}</p>
                       </div>
                     </div>
-                    <div
-                      className="edit-text"
-                      onClick={() =>
-                        showModal({
-                          show: true,
-                          modalName: "addressEdit",
-                          details: { id: item.id },
-                        })
-                      }
-                    >
-                      Chỉnh sửa
+                    <div style={{ display: "flex", marginLeft: "auto" }}>
+                      <div
+                        className="edit-text"
+                        onClick={() =>
+                          showModal({
+                            show: true,
+                            modalName: "addressEdit",
+                            details: { id: item.id },
+                          })
+                        }
+                      >
+                        Chỉnh sửa
+                      </div>
+                      <div
+                        className="edit-text"
+                        onClick={() => deleteAddress(item.id)}
+                      >
+                        Xóa
+                      </div>
                     </div>
                   </div>
                 );
@@ -143,7 +152,5 @@ export default connect(mapStateToProps, {
   addAddress,
   updateAddress,
   getAddresses,
+  deleteAddress,
 })(AddressBook);
-// getCities,
-//   getDistricts,
-//   getWards,

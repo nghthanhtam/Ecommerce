@@ -98,7 +98,7 @@ function* deleteAddress(params) {
     yield call(() =>
       axios.delete(
         `${process.env.REACT_APP_BACKEND_USER}/api/address/${params.id}`,
-        tokenConfig(state)
+        tokenUserConfig(state)
       )
     );
 

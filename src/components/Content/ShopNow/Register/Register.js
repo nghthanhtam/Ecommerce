@@ -74,7 +74,11 @@ class Register extends React.Component {
             .required("Bắt buộc nhập!"),
           username: Yup.string()
             .max(255, "Chỉ được phép nhập ít hơn 255 kí tự")
-            .required("Bắt buộc nhập!"),
+            .required("Bắt buộc nhập!")
+            .matches(
+              /^[a-zA-Z0-9]+([a-zA-Z0-9](_|-| )[a-zA-Z0-9])*[a-zA-Z0-9]+$/,
+              "Không được bao gồm kí tự đặc biệt và khoảng trắng"
+            ),
           busLicenseId: Yup.string()
             .max(25, "Chỉ được phép nhập ít hơn 25 kí tự")
             .required("Bắt buộc nhập!"),
@@ -399,7 +403,8 @@ class Register extends React.Component {
               <div className="reg-text">
                 <p className="reg-title">Đăng ký bán hàng cùng ShopNow</p>
                 <p>
-                  Cảm ơn đối tác đã tin tưởng và lựa chọn đồng hành cùng Tiki!
+                  Cảm ơn đối tác đã tin tưởng và lựa chọn đồng hành cùng
+                  ShopNow!
                 </p>
                 <p>
                   Vui lòng hoàn tất thông tin để tạo tài khoản đăng nhập Trung

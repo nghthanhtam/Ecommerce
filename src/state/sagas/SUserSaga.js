@@ -132,7 +132,7 @@ function* deleteUser(params) {
 
     yield put({ type: USER_DELETED, payload: { id: params.id } });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 }
 

@@ -8,6 +8,7 @@ import { getShopById, updateShop } from "../../../../state/actions/shopActions";
 
 const mapStateToProps = (state) => ({
   shop: state.shop.shop,
+  errMsg: state.shop.errMsg,
   idShop: state.auth.role.idShop,
   isLoaded: state.shop.isLoaded,
   isUpdated: state.shop.isUpdated,
@@ -30,15 +31,6 @@ const SupplierInfor = (props) => {
       setShow(false);
     }
   }, [props.isUpdated]);
-
-  const changeName = (event, setFieldValue) => {
-    const { name, value } = event.target;
-    setFieldValue([name], value);
-
-    let url = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    url = url.replace(/\s+/g, "-");
-    setFieldValue("url", url);
-  };
 
   return !props.isLoaded ? (
     <div>Loading...</div>
@@ -105,22 +97,15 @@ const SupplierInfor = (props) => {
                           Tên gian hàng
                         </div>
                         <input
+                          required
                           id="name"
                           className="form-control"
-                          disabled={disabled}
+                          disabled
                           name="name"
                           type="text"
-                          onChange={(e) => changeName(e, setFieldValue)}
                           onBlur={handleBlur}
                           value={values.name}
-                          style={{
-                            borderColor:
-                              errors.name && touched.name ? "red" : "",
-                          }}
                         />
-                        {errors.name && touched.name ? (
-                          <div className="errors">{errors.name}</div>
-                        ) : null}
 
                         <p className="label-text" htmlFor="id">
                           Mã gian hàng

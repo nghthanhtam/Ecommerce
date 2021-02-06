@@ -29,16 +29,19 @@ class OrderHistory extends React.Component {
     header: "header",
     left: 0,
     selectedOrderId: "",
+    cancelErrMsg: "",
   };
 
   convertPrice = (value) => {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if (value) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return 0;
   };
 
   componentDidMount() {
     window.addEventListener("scroll", this.handleScroll);
     const { getUserOrders, user } = this.props;
     getUserOrders({ limit: 1000, page: 1, idUser: user.id });
+    this.setState({ cancelErrMsg: "" });
   }
 
   componentWillUnmount() {
@@ -66,6 +69,19 @@ class OrderHistory extends React.Component {
 
   cancel = (item) => {
     let msg = "";
+    for (let i in item.Purchase.Orders) {
+      let orders = item.Purchase.Orders;
+      if (
+        orders[i].id !== item.id &&
+        (orders[i].status == "delivered" || orders[i].status == "in transit")
+      ) {
+        this.setState({
+          cancelErrMsg: `Vì lý do đơn hàng #${orders[i].id} đang hoặc đã được giao hàng. Bạn không thể hủy đơn hiện tại vì nó làm ảnh hưởng đến mã giảm giá chung.`,
+        });
+        return;
+      }
+    }
+
     if (item.Purchase.Orders.length > 1) {
       msg =
         "Đơn hàng này được giao cùng với " +
@@ -74,6 +90,7 @@ class OrderHistory extends React.Component {
         item.Purchase.Orders.length +
         " đơn hàng sẽ được hủy cùng nhau.";
     }
+
     this.props.showModal({
       show: true,
       modalName: "modalCancel",
@@ -82,7 +99,7 @@ class OrderHistory extends React.Component {
   };
 
   render() {
-    const { selectedOrderId } = this.state;
+    const { selectedOrderId, cancelErrMsg, estimatedDeliveryTime } = this.state;
     const { orders, isLoaded, show, modalName } = this.props;
     return (
       <div>
@@ -149,18 +166,24 @@ class OrderHistory extends React.Component {
                         </div>
                         <div className="orderhis-line">
                           <p>Ngày giao hàng </p>
-                          <p>
-                            {new Date(item.estimatedDeliveryTime).getDate()}/
-                            {new Date(item.estimatedDeliveryTime).getMonth() +
-                              1}
-                            /
-                            {new Date(item.estimatedDeliveryTime).getFullYear()}
-                          </p>
+                          {estimatedDeliveryTime ? (
+                            <p>
+                              {new Date(item.estimatedDeliveryTime).getDate()}/
+                              {new Date(item.estimatedDeliveryTime).getMonth() +
+                                1}
+                              /
+                              {new Date(
+                                item.estimatedDeliveryTime
+                              ).getFullYear()}
+                            </p>
+                          ) : (
+                            <p>Chưa cập nhật</p>
+                          )}
                         </div>
                         <div className="orderhis-line">
                           <h4>Tổng tiền </h4>
                           <div style={{ fontWeight: "600" }}>
-                            {this.convertPrice(item.totalPrice)}
+                            {this.convertPrice(item.totalAmount)}đ
                           </div>
                         </div>
                       </div>
@@ -300,6 +323,11 @@ class OrderHistory extends React.Component {
                               </table>
                             </div>
                           </div>
+                          {cancelErrMsg !== "" && (
+                            <div style={{ color: "red", marginBottom: "5px" }}>
+                              {cancelErrMsg}
+                            </div>
+                          )}
                           {item.status !== "canceled" &&
                             item.status == "pending" && (
                               <button

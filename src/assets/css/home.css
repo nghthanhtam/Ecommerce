@@ -341,6 +341,15 @@
   align-items: center;
   cursor: pointer;
 }
+.remove-lateritem {
+  color: #3571a7;
+  font-weight: 500;
+  margin-left: 5px;
+  cursor: pointer;
+}
+.remove-lateritem:hover {
+  text-decoration: underline;
+}
 .row-flex-center {
   display: flex;
   align-items: center;

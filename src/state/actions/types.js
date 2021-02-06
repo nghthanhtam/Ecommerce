@@ -126,6 +126,7 @@ export const UPDATE_SHOP = "UPDATE_SHOP";
 export const UPDATE_SHOP_STATUS = "UPDATE_SHOP_STATUS";
 export const SHOP_UPDATED = "SHOP_UPDATED";
 export const SHOP_STT_UPDATED = "SHOP_STT_UPDATED";
+export const ERROR_SHOP_UPDATED = "ERROR_SHOP_UPDATED";
 export const ADD_SHOP = "ADD_SHOP";
 export const SHOP_ADDED = "SHOP_ADDED";
 export const DELETE_SHOP = "DELETE_SHOP";

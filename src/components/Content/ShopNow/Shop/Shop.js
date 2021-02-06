@@ -45,6 +45,7 @@ class Shop extends React.Component {
     window.addEventListener("scroll", this.handleScroll);
     const { getProductsByIdShop, getShopById } = this.props;
     const { limit, page, query } = this.state;
+    // console.log(this.props.location);
     if (this.props.match) {
       const { idShop } = this.props.match.params;
       getProductsByIdShop({

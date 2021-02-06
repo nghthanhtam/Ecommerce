@@ -83,6 +83,7 @@ class ProductDetail extends React.Component {
     questionMsg: false,
     ratingMsg: false,
     idQuestionBeing: "",
+    stockErrorMsg: "",
   };
 
   componentDidMount() {
@@ -429,8 +430,17 @@ class ProductDetail extends React.Component {
 
   addToCart = () => {
     const { selectedProductVar, variants, amount } = this.state;
-
     const { addCart, user, product } = this.props;
+    if (selectedProductVar.stockAmount < amount) {
+      this.setState({
+        stockErrorMsg:
+          "Bạn không thể thêm sản phẩm vì đã đạt tới giới hạn đặt hàng.",
+      });
+      return;
+    }
+    this.setState({
+      stockErrorMsg: "",
+    });
     if (variants.length == product.variants.length) {
       addCart({
         idProductVar: selectedProductVar.id,
@@ -497,6 +507,7 @@ class ProductDetail extends React.Component {
       questionMsg,
       ratingMsg,
       idQuestionBeing,
+      stockErrorMsg,
     } = this.state;
     const {
       showModal,
@@ -709,8 +720,6 @@ class ProductDetail extends React.Component {
                         <div
                           style={{
                             display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
                             marginBottom: "3px",
                           }}
                         >
@@ -742,7 +751,7 @@ class ProductDetail extends React.Component {
                           <div
                             style={{
                               color: "grey",
-                              fontSize: "16px",
+                              fontSize: "15px",
                             }}
                           >
                             {selectedProductVar.stockAmount} sản phẩm có sẵn
@@ -760,6 +769,9 @@ class ProductDetail extends React.Component {
                       <div className="cart-btn-stop">Ngưng kinh doanh</div>
                     )}
                   </div>
+                  {stockErrorMsg !== "" && (
+                    <p style={{ color: "red" }}>{stockErrorMsg}</p>
+                  )}
                   <div style={{ display: "flex" }}>
                     <div className="label-prodet">
                       Tên nhà bán:
@@ -767,7 +779,7 @@ class ProductDetail extends React.Component {
                         className="link-shop"
                         onClick={() =>
                           this.props.history.push(
-                            `/shopnow/shop/${product.shop.id}/${product.shop.name}`
+                            `/shopnow/shop/${product.shop.id}/${product.shop.url}`
                           )
                         }
                       >

@@ -5,7 +5,7 @@ import "font-awesome/css/font-awesome.min.css";
 import "../../../../assets/css/cart.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
+import { deleteLaterlist } from "../../../../state/actions/laterListActions";
 import { addCart } from "../../../../state/actions/cartActions";
 
 const mapStateToProps = (state) => ({
@@ -26,6 +26,10 @@ class LaterListDetail extends React.Component {
 
   visitShop = (idShop, shopName) => {
     this.props.history.push(`/shopnow/shop/${idShop}/${shopName}`);
+  };
+
+  removeFromList = () => {
+    this.props.deleteLaterlist(this.props.item.id);
   };
 
   render() {
@@ -50,7 +54,7 @@ class LaterListDetail extends React.Component {
             </div>
           </div>
 
-          <div className="row-flex">
+          <div className="row-flex-center">
             <Button
               style={{
                 color: "white",
@@ -62,6 +66,9 @@ class LaterListDetail extends React.Component {
             >
               Thêm vào giỏ hàng
             </Button>
+            <div onClick={this.removeFromList} className="remove-lateritem">
+              Xóa
+            </div>
           </div>
         </div>
         <div className="order-price">
@@ -78,4 +85,6 @@ class LaterListDetail extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { addCart })(LaterListDetail);
+export default connect(mapStateToProps, { addCart, deleteLaterlist })(
+  LaterListDetail
+);

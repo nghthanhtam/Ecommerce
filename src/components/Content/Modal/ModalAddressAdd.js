@@ -36,6 +36,7 @@ class ModalAddressAdd extends Component {
     idCity: "",
     idDistrict: "",
     idWard: "",
+    numberAndStreet: "",
     address: "",
     phone: "",
     msg: null,
@@ -67,7 +68,6 @@ class ModalAddressAdd extends Component {
     // document.body.className = currentUrl === '/login' && 'hold-transition login-page';
     const { getCities, getDistricts, getWards, details } = this.props;
     let id = "";
-
     getCities({ limit: 1000, page: 1 });
     if (details) id = details.id;
     if (id !== "") {
@@ -77,25 +77,29 @@ class ModalAddressAdd extends Component {
           this.tokenConfig(this.props.userToken)
         )
         .then((response) => {
-          let {
-            fullname,
-            phone,
-            idCity,
-            idDistrict,
-            idWard,
-            numberAndStreet,
-          } = response.data;
-          this.setState({
-            fullname,
-            phone,
-            idCity,
-            idDistrict,
-            idWard,
-            numberAndStreet,
-          });
-
-          getDistricts({ limit: 1000, page: 1, idCity });
-          getWards({ limit: 1000, page: 1, idDistrict });
+          let { fullname, phone, Ward, numberAndStreet } = response.data;
+          this.setState(
+            {
+              fullname,
+              phone,
+              idWard: Ward.id,
+              idDistrict: Ward.District.id,
+              idCity: Ward.District.City.id,
+              numberAndStreet,
+            },
+            () => {
+              getDistricts({
+                limit: 1000,
+                page: 1,
+                idCity: Ward.District.City.id,
+              });
+              getWards({
+                limit: 1000,
+                page: 1,
+                idDistrict: Ward.District.id,
+              });
+            }
+          );
         })
         .catch((er) => console.log(er.response));
     }
@@ -114,7 +118,7 @@ class ModalAddressAdd extends Component {
   handleChange = (e) => {
     const { name, value } = e.target;
     let msg = "";
-
+    console.log(value);
     if (name == "idCity")
       this.props.getDistricts({ limit: 1000, page: 1, idCity: value });
     if (name == "idDistrict")
@@ -135,19 +139,13 @@ class ModalAddressAdd extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const {
-      fullname,
-      idCity,
-      idDistrict,
-      idWard,
-      numberAndStreet,
-      phone,
-    } = this.state;
+    const { fullname, idWard, numberAndStreet, phone } = this.state;
     const { user, details, updateAddress, addAddress, showModal } = this.props;
+
     const newAddress = {
       fullname,
-      idCity,
-      idDistrict,
+      // idCity,
+      // idDistrict,
       idWard,
       numberAndStreet,
       phone,
@@ -256,13 +254,13 @@ class ModalAddressAdd extends Component {
               </div>
               <div className="form-group">
                 <select
-                  defaultValue={0}
+                  required
                   className="form-control"
                   name="idCity"
-                  value={idCity !== "" ? idCity : 0}
+                  value={idCity !== "" ? idCity : ""}
                   onChange={this.handleChange}
                 >
-                  <option value="0" disabled>
+                  <option value="" disabled>
                     Chọn thành phố / tỉnh
                   </option>
                   {isCityLoaded &&
@@ -277,13 +275,13 @@ class ModalAddressAdd extends Component {
               </div>
               <div className="form-group">
                 <select
-                  defaultValue={0}
+                  required
                   className="form-control"
                   name="idDistrict"
-                  value={idDistrict !== "" ? idDistrict : 0}
+                  value={idDistrict !== "" ? idDistrict : ""}
                   onChange={this.handleChange}
                 >
-                  <option value="0" disabled>
+                  <option value="" disabled>
                     Chọn quận / huyện
                   </option>
                   {isDistrictLoaded &&
@@ -298,13 +296,13 @@ class ModalAddressAdd extends Component {
               </div>
               <div className="form-group">
                 <select
-                  defaultValue={0}
+                  required
                   className="form-control"
                   name="idWard"
-                  value={idWard !== "" ? idWard : 0}
+                  value={idWard !== "" ? idWard : ""}
                   onChange={this.handleChange}
                 >
-                  <option value="0" disabled>
+                  <option value="" disabled>
                     Chọn phường / xã
                   </option>
                   {isWardLoaded &&

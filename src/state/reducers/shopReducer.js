@@ -10,6 +10,7 @@ import {
   GET_SHOP_BY_ID,
   SHOP_STT_UPDATED,
   CLEAR_SHOP,
+  ERROR_SHOP_UPDATED,
 } from "../actions/types";
 
 const initialState = {
@@ -20,6 +21,7 @@ const initialState = {
   isUpdated: false,
   isAdded: false,
   shopAdded: {},
+  errMsg: "",
 };
 
 export default function (state = initialState, action) {
@@ -85,6 +87,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
       };
+    case ERROR_SHOP_UPDATED:
+      return {
+        ...state,
+        errMsg: "Số điện thoại trùng",
+        isUpdated: true,
+      };
+
     case UPDATE_SHOP:
       return {
         ...state,

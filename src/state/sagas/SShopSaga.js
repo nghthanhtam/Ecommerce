@@ -19,6 +19,7 @@ import {
   SHOW_NOTI,
   UPDATE_SHOP_STATUS,
   SHOP_STT_UPDATED,
+  ERROR_SHOP_UPDATED,
 } from "../actions/types";
 import { ADD_NOTIFICATION } from "react-redux-notify";
 import { NOTI_SUCCESS } from "./NotificationObject";
@@ -127,6 +128,10 @@ function* updateShop(params) {
     });
   } catch (error) {
     console.log(error);
+    let err = { ...error };
+    if (err.response.status == 400) {
+      yield put({ type: ERROR_SHOP_UPDATED });
+    }
   }
 }
 
