@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -10,6 +11,7 @@ import request from "superagent";
 const mapStateToProps = (state) => ({
   isLoaded: state.product.isLoaded,
   token: state.auth.token,
+  history: state.history.history,
 });
 
 class ProductAddNextPage extends Component {
@@ -255,151 +257,151 @@ class ProductAddNextPage extends Component {
 
     return (
       <Fragment>
-        {isTransition && <Loading />}
-        {/* Content Header (Page header) */}
-        <section className="content-header">
-          <h1>
-            Đăng ký sản phẩm mới
-            {/* <small>Preview</small> */}
-          </h1>
-          <ol className="breadcrumb">
-            <li>
-              <a href="fake_url">
-                <i className="fa fa-dashboard" /> Trang chủ
-              </a>
-            </li>
-            <li>
-              <a href="fake_url">Đăng ký sản phẩm mới</a>
-            </li>
-            <li>
-              <a href="fake_url">Chọn hình ảnh</a>
-            </li>
-          </ol>
-        </section>
-        {/* Main content */}
-        <section className="content">
-          <div className="row">
-            {/* left column */}
-            <div className="col-md-12">
-              <div className="box">
-                <div className="box-header" style={{ marginTop: "5px" }}>
-                  <div style={{ marginBottom: "20px" }}>
-                    <label>Chọn hình ảnh cho sản phẩm</label>
-                    <br />
-                    <span>1. Kích thước yêu cầu: 500 x 500</span>
-                    <br />
-                    <span>
-                      2. Hình ảnh phải được xóa nền và không được chứa chữ
-                    </span>
-                    <br />
-                    <span>
-                      3. Hình ảnh được tick là hình đại diện cho mỗi nhóm thuộc
-                      tính
-                    </span>
-                  </div>
-
-                  {arrProductVar.map((product, pindex) => {
-                    return (
-                      <div key={pindex}>
-                        <p
-                          style={{
-                            background: "#f5f5f5",
-                            padding: "10px",
-                            fontSize: "16px",
-                            fontWeight: "700",
-                          }}
-                        >
-                          {product.name}
-                        </p>
-                        <div
-                          className="productadd-grid"
-                          onDragOver={dragOver}
-                          onDragEnter={dragEnter}
-                          onDragLeave={dragLeave}
-                          onDrop={(e) => fileDrop(e, pindex)}
-                        >
-                          {product.images.length > 0 &&
-                            product.images.map((item, index) => {
-                              return (
-                                <label
-                                  key={index}
-                                  htmlFor={item}
-                                  className="skuproduct-card"
-                                >
-                                  <img
-                                    style={{ width: "100%", height: "90%" }}
-                                    className="product-pic"
-                                    src={item.url}
-                                    alt="product"
-                                  />
-                                  <div className="product-info">
-                                    <input
-                                      className="color-checked"
-                                      type="checkbox"
-                                      onChange={() =>
-                                        this.handleCheckImages(item, pindex)
-                                      }
-                                      checked={item.isMain}
-                                    />
-                                  </div>
-                                </label>
-                              );
-                            })}
-                          <div className="upload-area">
-                            <i className="fa fa-upload fa-3x" />
-                            <p className="upload-text">
-                              Kéo và thả ảnh vào để tải ảnh lên
-                            </p>
-                            {errorMessage}
-                          </div>
-                        </div>
+        {!arrProductVar ? (
+          <Redirect to="/seller/add-product" />
+        ) : (
+          <Fragment>
+            {isTransition && <Loading />}
+            <section className="content-header">
+              <h1>Đăng ký sản phẩm mới</h1>
+              <ol className="breadcrumb">
+                <li>
+                  <a href="fake_url">
+                    <i className="fa fa-dashboard" /> Trang chủ
+                  </a>
+                </li>
+                <li>
+                  <a href="fake_url">Đăng ký sản phẩm mới</a>
+                </li>
+                <li>
+                  <a href="fake_url">Chọn hình ảnh</a>
+                </li>
+              </ol>
+            </section>
+            {/* Main content */}
+            <section className="content">
+              <div className="row">
+                {/* left column */}
+                <div className="col-md-12">
+                  <div className="box">
+                    <div className="box-header" style={{ marginTop: "5px" }}>
+                      <div style={{ marginBottom: "20px" }}>
+                        <label>Chọn hình ảnh cho sản phẩm</label>
+                        <br />
+                        <span>1. Kích thước yêu cầu: 500 x 500</span>
+                        <br />
+                        <span>
+                          2. Hình ảnh phải được xóa nền và không được chứa chữ
+                        </span>
+                        <br />
+                        <span>
+                          3. Hình ảnh được tick chọn là hình đại diện cho mỗi
+                          thuộc tính
+                        </span>
                       </div>
-                    );
-                  })}
 
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div style={{ color: "red", marginRight: "5px" }}>
-                      {errUploadMsg}
+                      {arrProductVar &&
+                        arrProductVar.map((product, pindex) => {
+                          return (
+                            <div key={pindex}>
+                              <p
+                                style={{
+                                  background: "#f5f5f5",
+                                  padding: "10px",
+                                  fontSize: "16px",
+                                  fontWeight: "700",
+                                }}
+                              >
+                                {product.name}
+                              </p>
+                              <div
+                                className="productadd-grid"
+                                onDragOver={dragOver}
+                                onDragEnter={dragEnter}
+                                onDragLeave={dragLeave}
+                                onDrop={(e) => fileDrop(e, pindex)}
+                              >
+                                {product.images.length > 0 &&
+                                  product.images.map((item, index) => {
+                                    return (
+                                      <label
+                                        key={index}
+                                        htmlFor={item}
+                                        className="skuproduct-card"
+                                      >
+                                        <img
+                                          style={{
+                                            width: "100%",
+                                            height: "90%",
+                                          }}
+                                          className="product-pic"
+                                          src={item.url}
+                                          alt="product"
+                                        />
+                                        <div className="product-info">
+                                          <input
+                                            className="color-checked"
+                                            type="checkbox"
+                                            onChange={() =>
+                                              this.handleCheckImages(
+                                                item,
+                                                pindex
+                                              )
+                                            }
+                                            checked={item.isMain}
+                                          />
+                                        </div>
+                                      </label>
+                                    );
+                                  })}
+                                <div className="upload-area">
+                                  <i className="fa fa-upload fa-3x" />
+                                  <p className="upload-text">
+                                    Kéo và thả ảnh vào để tải ảnh lên
+                                  </p>
+                                  {errorMessage}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          alignItems: "center",
+                        }}
+                      >
+                        <div style={{ color: "red", marginRight: "5px" }}>
+                          {errUploadMsg}
+                        </div>
+                        <button
+                          style={{ width: "100px", marginRight: "5px" }}
+                          type="button"
+                          className="btn btn-block btn-default"
+                          onClick={this.back}
+                        >
+                          Quay lại
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-warning"
+                          onClick={this.upload}
+                          disabled={isUploading}
+                        >
+                          Yêu cầu phê duyệt
+                        </button>
+                      </div>
                     </div>
-                    <button
-                      style={{ width: "100px", marginRight: "5px" }}
-                      type="button"
-                      className="btn btn-block btn-default"
-                      onClick={this.back}
-                    >
-                      Quay lại
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-warning"
-                      onClick={this.upload}
-                      disabled={isUploading}
-                    >
-                      Yêu cầu phê duyệt
-                    </button>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-        {/* /.content */}
+            </section>
+          </Fragment>
+        )}
       </Fragment>
     );
   }
 }
-
-// ProductAddNextPage.propTypes = {
-//   getCategories: PropTypes.func.isRequired,
-//   categories: PropTypes.array.isRequired,
-//   isLoaded: PropTypes.bool.isRequired,
-// };
-
 export default connect(mapStateToProps)(ProductAddNextPage);
-//export default ProductAddNextPage;

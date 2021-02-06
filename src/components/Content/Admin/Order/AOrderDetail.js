@@ -1,6 +1,5 @@
 import React, { Fragment, Component } from "react";
 import { connect } from "react-redux";
-import { pushHistory } from "../../../../state/actions/historyActions";
 import { getOrderDets } from "../../../../state/actions/orderActions";
 import Loader from "react-loader";
 import AOrderDetailRow from "./AOrderDetailRow";
@@ -154,6 +153,4 @@ class AOrderDetail extends Component {
   }
 }
 
-export default connect(mapStateToProps, { pushHistory, getOrderDets })(
-  AOrderDetail
-);
+export default connect(mapStateToProps, { getOrderDets })(AOrderDetail);

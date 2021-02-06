@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import { login } from '../../../../state/actions/authActions';
-import { pushHistory } from '../../../../state/actions/historyActions';
-import PropTypes from 'prop-types';
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import { login } from "../../../../state/actions/authActions";
+import { pushHistory } from "../../../../state/actions/historyActions";
+import PropTypes from "prop-types";
 
 const mapStateToProps = (state) => ({
   error: state.error,
@@ -12,8 +12,8 @@ const mapStateToProps = (state) => ({
 
 class Login extends Component {
   state = {
-    username: '',
-    password: '',
+    username: "",
+    password: "",
     msg: null,
     inputErrors: false,
   };
@@ -23,17 +23,19 @@ class Login extends Component {
     error: PropTypes.object.isRequired,
     pushHistory: PropTypes.func.isRequired,
   };
+
   componentDidMount() {
     const currentUrl = window.location.pathname;
     document.body.className =
-      currentUrl === '/login' && 'hold-transition login-page';
+      currentUrl === "/login" && "hold-transition login-page";
   }
+
   componentDidUpdate(prevProps) {
     const { error } = this.props;
 
     if (error !== prevProps.error) {
       // Check for register error
-      if (error.id === 'LOGIN_FAIL') {
+      if (error.id === "LOGIN_FAIL") {
         this.setState({ msg: error.msg });
       } else {
         this.setState({ msg: null });
@@ -51,20 +53,20 @@ class Login extends Component {
 
   handleChange = (e) => {
     const { name, value } = e.target;
-    let msg = '';
+    let msg = "";
 
     //Validation
     const isPassed =
-      name === 'username'
+      name === "username"
         ? this.validateUsername(value)
         : this.validatePassword(value);
     const inputErrors = isPassed ? false : true;
-    if (name === 'username' && !isPassed)
-      msg = 'Username can contain only letters, numbers and underscores';
-    if (name === 'password' && !isPassed)
-      msg = 'Password must contain only letters numbers';
+    if (name === "username" && !isPassed)
+      msg = "Username can contain only letters, numbers and underscores";
+    if (name === "password" && !isPassed)
+      msg = "Password must contain only letters numbers";
 
-    if (value === '') msg = '';
+    if (value === "") msg = "";
     this.setState({ [name]: value, msg, inputErrors });
   };
 
@@ -136,8 +138,8 @@ class Login extends Component {
                     className="btn btn-primary btn-block btn-flat"
                     disabled={
                       !this.state.inputErrors &&
-                        this.state.password !== '' &&
-                        this.state.username !== ''
+                      this.state.password !== "" &&
+                      this.state.username !== ""
                         ? false
                         : true
                     }
@@ -156,6 +158,5 @@ class Login extends Component {
     );
   }
 }
-
 
 export default connect(mapStateToProps, { login, pushHistory })(Login);

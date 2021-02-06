@@ -32,6 +32,7 @@ class ProductAdd extends Component {
   state = {
     //similar products
     products: [],
+    searchQuery: "",
 
     images: [],
     errorMessage: "",
@@ -315,13 +316,13 @@ class ProductAdd extends Component {
 
     //search for similar products
     if (name == "name") {
-      if (value == "") value = undefined;
-      this.props.getProducts({
-        limit: 50,
-        page: 1,
-        query: value,
-        arrayStatus: ["accepted"],
-      });
+      this.setState({ searchQuery: value });
+      // this.props.getProducts({
+      //   limit: 50,
+      //   page: 1,
+      //   query: value,
+      //   arrayStatus: ["accepted"],
+      // });
     }
 
     if (value !== "") {
@@ -438,6 +439,18 @@ class ProductAdd extends Component {
     });
   };
 
+  searchSimilarProducts = () => {
+    const { searchQuery } = this.state;
+    if (searchQuery !== "") {
+      this.props.getProducts({
+        limit: 50,
+        page: 1,
+        query: searchQuery,
+        arrayStatus: ["accepted"],
+      });
+    }
+  };
+
   render() {
     const {
         variantList,
@@ -456,6 +469,8 @@ class ProductAdd extends Component {
         size,
         origin,
         products,
+        searchQuery,
+        idProduct,
       } = this.state,
       {
         movies,
@@ -514,6 +529,16 @@ class ProductAdd extends Component {
                             onChange={this.onChangeProductInfor}
                           />
                         </div>
+                        {searchQuery !== "" && (
+                          <button
+                            style={{ marginTop: "5px" }}
+                            type="button"
+                            className="btn btn-default"
+                            onClick={this.searchSimilarProducts}
+                          >
+                            Tìm kiếm
+                          </button>
+                        )}
                       </div>
                       {isProductLoaded && products.length > 0 && (
                         <div style={{ margin: "5px 0 25px 0" }}>
@@ -551,6 +576,7 @@ class ProductAdd extends Component {
                         <label>Sản phẩm thuộc về phim</label>
                         <div className={requiredMovie}>
                           <Select
+                            isDisabled={idProduct !== undefined}
                             styles={{
                               menu: (provided) => ({
                                 ...provided,
@@ -580,6 +606,7 @@ class ProductAdd extends Component {
                         <label>Danh mục</label>
                         <div className={requiredCate}>
                           <Select
+                            isDisabled={idProduct !== undefined}
                             styles={{
                               menu: (provided) => ({
                                 ...provided,
@@ -604,6 +631,7 @@ class ProductAdd extends Component {
                       <div className="form-group">
                         <label>Thương hiệu</label>
                         <input
+                          disabled={idProduct !== undefined}
                           className="form-control"
                           id="exampleInputEmail1"
                           placeholder="Nhập tên thương hiệu ..."
@@ -619,6 +647,7 @@ class ProductAdd extends Component {
                         >
                           <label htmlFor="exampleInputEmail1">Xuất xứ</label>
                           <input
+                            disabled={idProduct !== undefined}
                             className="form-control"
                             name="origin"
                             placeholder="Nhập xuất xứ ..."
@@ -635,6 +664,7 @@ class ProductAdd extends Component {
                           >
                             <label htmlFor="exampleInputEmail1">Xuất xứ</label>
                             <input
+                              disabled={idProduct !== undefined}
                               className="form-control"
                               name="origin"
                               placeholder="Nhập xuất xứ ..."
@@ -647,6 +677,7 @@ class ProductAdd extends Component {
                               Kích thước
                             </label>
                             <input
+                              disabled={idProduct !== undefined}
                               className="form-control"
                               name="size"
                               placeholder="Nhập kích thước..."
@@ -667,6 +698,7 @@ class ProductAdd extends Component {
                               Tên tác giả
                             </label>
                             <input
+                              disabled={idProduct !== undefined}
                               className="form-control"
                               name="author"
                               placeholder="Nhập tên tác giả ..."
@@ -682,6 +714,7 @@ class ProductAdd extends Component {
                               Nhà xuất bản
                             </label>
                             <input
+                              disabled={idProduct !== undefined}
                               className="form-control"
                               name="publisher"
                               placeholder="Nhập nhà xuất bản ..."
@@ -692,6 +725,7 @@ class ProductAdd extends Component {
                           <div className="form-group" style={{ width: "50%" }}>
                             <label htmlFor="exampleInputEmail1">Ngôn ngữ</label>
                             <input
+                              disabled={idProduct !== undefined}
                               className="form-control"
                               placeholder="Nhập ngôn ngữ ..."
                               name="language"
@@ -705,6 +739,7 @@ class ProductAdd extends Component {
                       <div className="form-group">
                         <label>Mô tả sản phẩm </label>
                         <SunEditor
+                          disabled={idProduct !== undefined}
                           name="description"
                           setContents={description}
                           onChange={this.onChangeProductInfor}
