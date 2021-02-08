@@ -127,3 +127,14 @@
   grid-column-gap: 12px;
   grid-row-gap: 12px;
 }
+.btn-addempty {
+  font-size: 14px;
+  color: #204d74;
+  opacity: 0.6;
+}
+.upload-text {
+  display: inline-block;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

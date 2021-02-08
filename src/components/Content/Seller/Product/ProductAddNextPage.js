@@ -17,8 +17,8 @@ const mapStateToProps = (state) => ({
 class ProductAddNextPage extends Component {
   state = {
     images: [],
-    errorMessage: "",
     errUploadMsg: "",
+    uploadingMsg: "",
     propValueList: [],
     isPriceBoardHidden: true,
     variantList: [],
@@ -30,7 +30,7 @@ class ProductAddNextPage extends Component {
     const { images, arrProductVar } = this.props.location;
     if (images) this.setState({ images });
 
-    //luu arrProductVar thanh 1 state vi phai thay doi selectedfiles cua no arrProductVar
+    //saving arrProductVar (props) in arrProductVarState (state) means changing arrProductVarState can also change arrProductVar
     this.setState({ arrProductVarState: arrProductVar });
   };
 
@@ -54,6 +54,23 @@ class ProductAddNextPage extends Component {
         details,
       },
     });
+  };
+
+  deletePhoto = (photo, pindex) => {
+    //pindex: productvar index
+    this.setState(
+      (prepState) => {
+        let arrProductVarState = [...prepState.arrProductVarState];
+        arrProductVarState[pindex].images.map((image, index) => {
+          if (image.publicId == photo.publicId)
+            arrProductVarState[pindex].images.splice(index, 1);
+        });
+        return {
+          arrProductVarState,
+        };
+      },
+      () => console.log(this.state.arrProductVarState)
+    );
   };
 
   upload = () => {
@@ -88,19 +105,19 @@ class ProductAddNextPage extends Component {
         });
       }
     });
-
+    //check if images in each productVar has 4 photos
+    for (let i in arrProductVarState) {
+      if (arrProductVarState.length < 4) {
+        this.setState({
+          errUploadMsg: "Các thuộc tính chưa đủ 4 ảnh. Kiểm tra lại bạn nhé!",
+        });
+        return;
+      }
+    }
     console.log("arrProductVar: ", arrProductVar);
     console.log("arrVariants: ", validateArrVariants);
     console.log("product: ", product);
     console.log("images: ", images);
-
-    // const formData = new FormData();
-    // images.forEach((file) => {
-    //   formData.append("photos", file);
-    // });
-    // formData.append("arrProductVar", JSON.stringify(arrProductVar));
-    // formData.append("arrVariants", JSON.stringify(validateArrVariants));
-    // if (!idProduct) formData.append("product", JSON.stringify(product));
 
     const dataInput = {
       arrProductVar: arrProductVarState,
@@ -111,8 +128,6 @@ class ProductAddNextPage extends Component {
 
     const config = {
       headers: {
-        // "Content-Type":
-        //   'multipart/form-data; charset=utf-8; boundary="another cool boundary";',
         "Content-type": "application/json",
         Authorization: `Bearer ${this.props.token}`,
       },
@@ -157,10 +172,10 @@ class ProductAddNextPage extends Component {
 
   render() {
     const {
-      errorMessage,
       isTransition,
       isUploading,
       errUploadMsg,
+      uploadingMsg,
     } = this.state;
     const { arrProductVar } = this.props.location;
     const dragOver = (e) => {
@@ -191,7 +206,11 @@ class ProductAddNextPage extends Component {
       for (let i = 0; i < files.length; i++) {
         if (validateFile(files[i])) {
           const fileName = files[i].name;
-          this.setState({ isUploading: true, errUploadMsg: "" });
+          this.setState({
+            isUploading: true,
+            errUploadMsg: "",
+            uploadingMsg: "Đang tải ảnh lên...",
+          });
           request
             .post(url)
             .field("upload_preset", "ml_default")
@@ -223,6 +242,7 @@ class ProductAddNextPage extends Component {
                   };
                 });
 
+                //for back fucntion
                 this.setState((prepState) => ({
                   images: [
                     ...prepState.images,
@@ -234,22 +254,27 @@ class ProductAddNextPage extends Component {
                     },
                   ],
                 }));
+                //for back fucntion
+                this.setState({ uploadingMsg: "" });
               } else {
                 this.setState({
                   errUploadMsg: "Không thể upload ảnh " + fileName,
+                  uploadingMsg: "",
                 });
               }
             });
         } else {
           files[i]["invalid"] = true;
-          this.setState({ errorMessage: "File type not permitted" });
+          this.setState({ errUploadMsg: "Định dạng không được hỗ trợ" });
         }
       }
     };
 
     const fileDrop = (e, index) => {
       e.preventDefault();
-      const files = e.dataTransfer.files;
+      let files;
+      if (e.target.files) files = e.target.files;
+      else files = e.dataTransfer.files;
       if (files.length) {
         handleFiles(files, index);
       }
@@ -298,6 +323,10 @@ class ProductAddNextPage extends Component {
                           3. Hình ảnh được tick chọn là hình đại diện cho mỗi
                           thuộc tính
                         </span>
+                        <br />
+                        <span>
+                          4. Mỗi thuộc tính sản phẩm phải có ít nhất 4 ảnh
+                        </span>
                       </div>
 
                       {arrProductVar &&
@@ -329,6 +358,19 @@ class ProductAddNextPage extends Component {
                                         htmlFor={item}
                                         className="skuproduct-card"
                                       >
+                                        <button
+                                          onClick={() =>
+                                            this.deletePhoto(item, pindex)
+                                          }
+                                          className="close"
+                                          style={{
+                                            marginBottom: "auto",
+                                            marginTop: "-10px",
+                                            padding: 0,
+                                          }}
+                                        >
+                                          <span aria-hidden="true">×</span>
+                                        </button>
                                         <img
                                           style={{
                                             width: "100%",
@@ -356,10 +398,21 @@ class ProductAddNextPage extends Component {
                                   })}
                                 <div className="upload-area">
                                   <i className="fa fa-upload fa-3x" />
-                                  <p className="upload-text">
-                                    Kéo và thả ảnh vào để tải ảnh lên
-                                  </p>
-                                  {errorMessage}
+                                  <div className="upload-text">
+                                    <div>Kéo thả ảnh vào hoặc nhấn</div>
+                                    <div
+                                      style={{
+                                        width: "50px",
+                                        marginLeft: "-8px",
+                                      }}
+                                    >
+                                      <input
+                                        disabled={uploadingMsg !== ""}
+                                        type="file"
+                                        onChange={(e) => fileDrop(e, pindex)}
+                                      />
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -373,9 +426,13 @@ class ProductAddNextPage extends Component {
                           alignItems: "center",
                         }}
                       >
+                        <div style={{ color: "grey", marginRight: "5px" }}>
+                          {uploadingMsg}
+                        </div>
                         <div style={{ color: "red", marginRight: "5px" }}>
                           {errUploadMsg}
                         </div>
+
                         <button
                           style={{ width: "100px", marginRight: "5px" }}
                           type="button"

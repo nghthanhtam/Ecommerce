@@ -75,10 +75,22 @@ class ProductModal extends Component {
       }
       objList.push(obj);
     }
-
+    console.log(objList);
     this.props.onsaveProp(objList);
     // Close modal
     document.getElementById("triggerButton").click();
+  };
+
+  addEmptyVariantValues = (index) => {
+    this.setState((prepState) => {
+      let propValuesList = [...prepState.propValuesList];
+      for (let i = 0; i < 3; i++) {
+        propValuesList[index].values.push({ label: "", value: "" });
+      }
+      return {
+        propValuesList,
+      };
+    });
   };
 
   onSelectChange = (e, { name }, v) => {
@@ -98,7 +110,7 @@ class ProductModal extends Component {
           };
         },
         () => {
-          console.log(this.state.propValuesList);
+          console.log("--", this.state.propValuesList);
         }
       );
       this.setState({ nameCLear: name });
@@ -123,7 +135,7 @@ class ProductModal extends Component {
     ) {
       this.setState((prepState) => {
         let propValuesList = [...prepState.propValuesList];
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 3; i++) {
           propValuesList[Number(name[0])].values.push({ label: "", value: "" });
         }
         return {
@@ -174,8 +186,8 @@ class ProductModal extends Component {
     if (variantList.length > 0) {
       let tempArr = [...variantList];
       for (let i in tempArr) {
-        if (tempArr[i].values.length < 4) {
-          for (let j = 0; j < 4 - tempArr[i].values.length + 1; j++) {
+        if (tempArr[i].values.length < 3) {
+          for (let j = 0; j < 3 - tempArr[i].values.length + 1; j++) {
             tempArr[i].values.push({ label: "", value: "" });
           }
         }
@@ -188,7 +200,6 @@ class ProductModal extends Component {
           {
             name: { label: "", value: "" },
             values: [
-              { label: "", value: "" },
               { label: "", value: "" },
               { label: "", value: "" },
               { label: "", value: "" },
@@ -252,6 +263,13 @@ class ProductModal extends Component {
                 />
               );
             })}
+          <button
+            type="button"
+            className="close btn-addempty"
+            onClick={() => this.addEmptyVariantValues(index)}
+          >
+            <span aria-hidden="true">+ Thêm ô giá trị</span>
+          </button>
         </div>
       </div>
     );
@@ -267,7 +285,6 @@ class ProductModal extends Component {
             {
               name: "",
               values: [
-                { label: "", value: "" },
                 { label: "", value: "" },
                 { label: "", value: "" },
                 { label: "", value: "" },
@@ -337,17 +354,6 @@ class ProductModal extends Component {
                     />
                     2 thuộc tính
                   </label>
-                  <button
-                    type="button"
-                    className="close"
-                    style={{
-                      fontSize: "14px",
-                      color: "#204d74",
-                      opacity: "0.6",
-                    }}
-                  >
-                    <span aria-hidden="true">+ Thêm giá trị</span>
-                  </button>
                 </span>
               </div>
               <div className="modal-body">

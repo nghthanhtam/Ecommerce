@@ -68,6 +68,7 @@ class ProductAdd extends Component {
     language: "",
     origin: "",
     size: "",
+    variantsErrMsg: "",
   };
 
   componentDidUpdate(prevProps) {
@@ -290,6 +291,7 @@ class ProductAdd extends Component {
   };
 
   removeItem = (index) => {
+    if (index == 0) return;
     this.setState((prepState) => {
       let skuProductList = [...prepState.skuProductList];
       skuProductList.splice(index, 1);
@@ -362,6 +364,18 @@ class ProductAdd extends Component {
       if (language == "") delete details.language;
       if (origin == "") delete details.origin;
       if (size == "") delete details.size;
+
+      if (variantList.length == 0) {
+        console.log("aaaaa");
+        this.setState({
+          variantsErrMsg:
+            "Bạn phải nhập ít nhất 1 thuộc tính (màu sắc, kích thước,... của sản phẩm",
+        });
+        return;
+      } else
+        this.setState({
+          variantsErrMsg: "",
+        });
 
       this.props.history.push({
         pathname: "/seller/add-product/photos",
@@ -471,6 +485,7 @@ class ProductAdd extends Component {
         products,
         searchQuery,
         idProduct,
+        variantsErrMsg,
       } = this.state,
       {
         movies,
@@ -936,6 +951,13 @@ class ProductAdd extends Component {
                             </div>
                           </div>
                         </div>
+                        {variantsErrMsg !== "" && (
+                          <div
+                            style={{ color: "red", margin: "-20px 0 0 10px" }}
+                          >
+                            {variantsErrMsg}
+                          </div>
+                        )}
                       </section>
 
                       <button
@@ -943,7 +965,7 @@ class ProductAdd extends Component {
                         style={{ float: "right" }}
                         className="btn btn-primary"
                         data-toggle="modal"
-                        onClick={() => this.onSubmit()}
+                        onClick={this.onSubmit}
                       >
                         Tiếp theo
                       </button>
