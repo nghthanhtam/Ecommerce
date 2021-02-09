@@ -61,41 +61,51 @@ class RoleModal extends Component {
     if (target.type == "checkbox") {
       const statePermission = [...this.state.permissions],
         { all } = { ...this.state };
+      value = e.target.checked;
       if (name == "all") {
-        this.setState({
-          all: !all,
-          createRole: !all,
-          editShop: !all,
-          createRole: !all,
-          editRole: !all,
-          getRoles: !all,
-          deleteRole: !all,
-          createEmployee: !all,
-          editEmployee: !all,
-          getEmployees: !all,
-          deleteEmployee: !all,
-          updateOrderStatus: !all,
-          getDoneOrders: !all,
-          getUndoneOrders: !all,
-          updateOrderShippingInformatio: !all,
-          createPayslip: !all,
-          editPayslip: !all,
-          getPayslips: !all,
-          deletePayslip: !all,
-          getGrossRevenue: !all,
-          getExpenses: !all,
-          createProductVar: !all,
-          editProductVar: !all,
-          getProductVars: !all,
-          createStockAmount: !all,
-          editStockAmount: !all,
-          getStockAmount: !all,
-          deleteStockAmount: !all,
-          getShopLogs: !all,
-        });
-        let permissionIds = permissions.map(({ id }) => id);
-        this.setState({ permissions: permissionIds });
+        this.setState(
+          {
+            all: !all,
+            createRole: !all,
+            editShop: !all,
+            createRole: !all,
+            editRole: !all,
+            getRoles: !all,
+            deleteRole: !all,
+            createEmployee: !all,
+            editEmployee: !all,
+            getEmployees: !all,
+            deleteEmployee: !all,
+            updateOrderStatus: !all,
+            getDoneOrders: !all,
+            getUndoneOrders: !all,
+            updateOrderShippingInformatio: !all,
+            createPayslip: !all,
+            editPayslip: !all,
+            getPayslips: !all,
+            deletePayslip: !all,
+            getGrossRevenue: !all,
+            getExpenses: !all,
+            createProductVar: !all,
+            editProductVar: !all,
+            getProductVars: !all,
+            createStockAmount: !all,
+            editStockAmount: !all,
+            getStockAmount: !all,
+            deleteStockAmount: !all,
+            getShopLogs: !all,
+          },
+          () => {
+            if (!this.state.all)
+              this.setState({ inputErrors: true, permissions: [] });
+            else {
+              let permissionIds = permissions.map(({ id }) => id);
+              this.setState({ permissions: permissionIds });
+            }
+          }
+        );
       } else {
+        this.setState({ [name]: value });
         for (let i in permissions) {
           if (permissions[i].permission == name) {
             if (
@@ -138,12 +148,12 @@ class RoleModal extends Component {
     const { idShop, addRole, pages } = this.props;
     const { name, permissions } = this.state;
     e.preventDefault();
-    if (!permissions.length > 0) {
+    if (permissions.length == 0) {
       let msg = "Chọn ít nhất 1 phân quyền";
       this.setState({ msg, inputErrors: true });
       return;
     }
-    console.log(pages);
+
     const newPer = {
       idShop,
       name,
@@ -155,7 +165,40 @@ class RoleModal extends Component {
     document.getElementById("triggerButton").click();
   };
 
-  onCancel = (e) => {};
+  onCancel = (e) => {
+    this.setState({
+      permissions: [],
+      name: "",
+      all: false,
+      editShop: false,
+      createRole: false,
+      editRole: false,
+      getRoles: false,
+      deleteRole: false,
+      createEmployee: false,
+      editEmployee: false,
+      getEmployees: false,
+      deleteEmployee: false,
+      updateOrderStatus: false,
+      getDoneOrders: false,
+      getUndoneOrders: false,
+      updateOrderShippingInformatio: false,
+      createPayslip: false,
+      editPayslip: false,
+      getPayslips: false,
+      deletePayslip: false,
+      getGrossRevenue: false,
+      getExpenses: false,
+      createProductVar: false,
+      editProductVar: false,
+      getProductVars: false,
+      createStockAmount: false,
+      editStockAmount: false,
+      getStockAmount: false,
+      deleteStockAmount: false,
+      getShopLogs: false,
+    });
+  };
 
   renderCheckboxes = () => {
     return (
@@ -185,17 +228,7 @@ class RoleModal extends Component {
                 <p>Chính sửa phân quyền</p>
               </label>
             </div>
-            <div>
-              <label className="label-wrapper">
-                <input
-                  name="getRoles"
-                  type="checkbox"
-                  checked={this.state.getRoles}
-                  onChange={this.onChange}
-                />
-                <p>Xem danh sách phân quyền</p>
-              </label>
-            </div>
+
             <div>
               <label className="label-wrapper">
                 <input
@@ -585,7 +618,7 @@ class RoleModal extends Component {
                   data-dismiss="modal"
                   onClick={this.onCancel}
                 >
-                  Close
+                  Đóng
                 </button>
                 <button
                   type="button"

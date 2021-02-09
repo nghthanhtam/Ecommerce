@@ -44,7 +44,7 @@ const PayslipModal = (props) => {
     <Formik
       initialValues={{
         title: "",
-        totalAmount: 0,
+        totalAmount: "",
       }}
       onSubmit={(values, actions) => {
         console.log(values);
@@ -64,7 +64,9 @@ const PayslipModal = (props) => {
           .min(3, "Tiêu đề phải dài hơn 3 kí tự")
           .max(100, "Chỉ được phép nhập ít hơn 200 kí tự")
           .required("Bắt buộc nhập"),
-        totalAmount: Yup.number().required("Bắt buộc nhập"),
+        totalAmount: Yup.number()
+          .required("Bắt buộc nhập")
+          .min(1000, "Tổng chi phải lớn hơn 1000đ"),
       })}
     >
       {({
@@ -175,7 +177,7 @@ const PayslipModal = (props) => {
                       <input
                         type="number"
                         className="form-control"
-                        placeholder="Nhập mã giảm giá..."
+                        placeholder="Nhập tổng chi..."
                         name="totalAmount"
                         value={values.totalAmount}
                         onChange={handleChange}

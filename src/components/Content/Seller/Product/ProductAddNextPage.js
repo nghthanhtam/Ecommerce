@@ -107,7 +107,7 @@ class ProductAddNextPage extends Component {
     });
     //check if images in each productVar has 4 photos
     for (let i in arrProductVarState) {
-      if (arrProductVarState.length < 4) {
+      if (arrProductVarState[i].images.length < 4) {
         this.setState({
           errUploadMsg: "Các thuộc tính chưa đủ 4 ảnh. Kiểm tra lại bạn nhé!",
         });

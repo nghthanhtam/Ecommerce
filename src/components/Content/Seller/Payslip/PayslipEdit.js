@@ -76,7 +76,9 @@ const PayslipEdit = (props) => {
           .min(3, "Tiêu đề phải dài hơn 3 kí tự")
           .max(100, "Chỉ được phép nhập ít hơn 200 kí tự")
           .required("Bắt buộc nhập"),
-        totalAmount: Yup.number().required("Bắt buộc nhập"),
+        totalAmount: Yup.number()
+          .required("Bắt buộc nhập")
+          .min(1000, "Tổng chi phải lớn hơn 1000đ"),
       })}
     >
       {({

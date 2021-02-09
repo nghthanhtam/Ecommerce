@@ -790,7 +790,7 @@ class ARoleModal extends Component {
                   data-dismiss="modal"
                   onClick={this.onCancel}
                 >
-                  Close
+                  Đóng
                 </button>
                 <button
                   type="button"

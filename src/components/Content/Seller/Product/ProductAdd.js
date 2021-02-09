@@ -52,9 +52,12 @@ class ProductAdd extends Component {
         images: [],
       },
     ],
+
     requiredName: "",
     requiredMovie: "",
     requiredCate: "",
+    requiredBrand: "",
+    requiredDes: "",
 
     //product state
     name: "",
@@ -312,6 +315,7 @@ class ProductAdd extends Component {
   onChangeProductInfor = (e) => {
     if (!e.target) {
       this.setState({ description: e }); //description is textarea so its returned value is special
+      if (e !== "") this.setState({ requiredDes: "" });
       return;
     }
     let { name, value } = e.target;
@@ -319,16 +323,11 @@ class ProductAdd extends Component {
     //search for similar products
     if (name == "name") {
       this.setState({ searchQuery: value });
-      // this.props.getProducts({
-      //   limit: 50,
-      //   page: 1,
-      //   query: value,
-      //   arrayStatus: ["accepted"],
-      // });
     }
 
     if (value !== "") {
       if (name == "name") this.setState({ requiredName: "" });
+      else if (name == "brand") this.setState({ requiredBrand: "" });
     }
     this.setState({ [name]: value });
   };
@@ -407,6 +406,12 @@ class ProductAdd extends Component {
     if (!idProductCat) {
       this.setState({ requiredCate: "required" });
     }
+    if (!brand) {
+      this.setState({ requiredBrand: "required" });
+    }
+    if (description !== "<p>​<br></p>") {
+      this.setState({ requiredDes: "required" });
+    }
   };
 
   removeProp = (variant) => {
@@ -435,7 +440,6 @@ class ProductAdd extends Component {
 
   //dùng hàm này để chọn bán sp đã có sẵn
   pickProduct = (item) => {
-    console.log(item);
     this.setState({ idProduct: item.id });
 
     //get available product to sell
@@ -472,6 +476,8 @@ class ProductAdd extends Component {
         requiredName,
         requiredMovie,
         requiredCate,
+        requiredBrand,
+        requiredDes,
         name,
         description,
         brand,
@@ -493,7 +499,6 @@ class ProductAdd extends Component {
         isMovieLoaded,
         isProductCatesLoaded,
         isProductLoaded,
-        totalDocuments,
       } = this.props,
       settings = {
         infinite: true,
@@ -645,22 +650,23 @@ class ProductAdd extends Component {
                       </div>
                       <div className="form-group">
                         <label>Thương hiệu</label>
-                        <input
-                          disabled={idProduct !== undefined}
-                          className="form-control"
-                          id="exampleInputEmail1"
-                          placeholder="Nhập tên thương hiệu ..."
-                          name="brand"
-                          value={brand}
-                          onChange={this.onChangeProductInfor}
-                        />
+                        <div className={requiredBrand}>
+                          <input
+                            disabled={idProduct !== undefined}
+                            className="form-control"
+                            placeholder="Nhập tên thương hiệu ..."
+                            name="brand"
+                            value={brand}
+                            onChange={this.onChangeProductInfor}
+                          />
+                        </div>
                       </div>
                       {idProductCat == 3 && (
                         <div
                           className="form-group"
                           style={{ width: "50%", paddingRight: "20px" }}
                         >
-                          <label htmlFor="exampleInputEmail1">Xuất xứ</label>
+                          <label htmlFor="origin">Xuất xứ</label>
                           <input
                             disabled={idProduct !== undefined}
                             className="form-control"
@@ -739,6 +745,7 @@ class ProductAdd extends Component {
                           </div>
                           <div className="form-group" style={{ width: "50%" }}>
                             <label htmlFor="exampleInputEmail1">Ngôn ngữ</label>
+
                             <input
                               disabled={idProduct !== undefined}
                               className="form-control"
@@ -753,14 +760,16 @@ class ProductAdd extends Component {
 
                       <div className="form-group">
                         <label>Mô tả sản phẩm </label>
-                        <SunEditor
-                          disabled={idProduct !== undefined}
-                          name="description"
-                          setContents={description}
-                          onChange={this.onChangeProductInfor}
-                          height="300"
-                          placeholder="Nhập mô tả chi tiết sản phẩm ở đây..."
-                        />
+                        <div className={requiredDes}>
+                          <SunEditor
+                            disabled={idProduct !== undefined}
+                            name="description"
+                            setContents={description}
+                            onChange={this.onChangeProductInfor}
+                            height="300"
+                            placeholder="Nhập mô tả chi tiết sản phẩm ở đây..."
+                          />
+                        </div>
                       </div>
 
                       <div className="form-group">
