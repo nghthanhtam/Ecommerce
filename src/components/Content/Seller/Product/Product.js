@@ -117,7 +117,7 @@ class Product extends Component {
               </li>
               <li onClick={() => this.onTabClick("active")}>
                 <a href="#list" data-toggle="tab">
-                  Dánh sách sản phẩm
+                  Danh sách sản phẩm
                 </a>
               </li>
 

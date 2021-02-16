@@ -1,40 +1,40 @@
-import React, { Fragment, Component } from 'react';
-import { connect } from 'react-redux';
-import { pushHistory } from '../../../../state/actions/historyActions';
-import { getOrderDets } from '../../../../state/actions/orderActions';
-import Loader from 'react-loader';
-import OrderDetailRow from './OrderDetailRow'
+import React, { Fragment, Component } from "react";
+import { connect } from "react-redux";
+import { pushHistory } from "../../../../state/actions/historyActions";
+import { getOrderDets } from "../../../../state/actions/orderActions";
+import Loader from "react-loader";
+import OrderDetailRow from "./OrderDetailRow";
 
 const mapStateToProps = (state) => ({
   isLoaded: state.order.isLoaded,
   history: state.history.history,
   order: state.order.order,
-  isOrderDetsLoaded: state.order.isOrderDetsLoaded
+  isOrderDetsLoaded: state.order.isOrderDetsLoaded,
 });
 
 class OrderDetail extends Component {
-  state = {
-  };
+  state = {};
 
   componentDidMount() {
     const { id } = this.props.match.params;
-    this.props.getOrderDets(id)
+    this.props.getOrderDets(id);
   }
 
   convertPrice = (value) => {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    if (value) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return 0;
   };
 
   tokenConfig = (token) => {
     const config = {
       headers: {
-        'Content-type': 'application/json',
+        "Content-type": "application/json",
       },
     };
 
     //Header
     if (token) {
-      config.headers['x-auth-token'] = token;
+      config.headers["x-auth-token"] = token;
     }
 
     return config;
@@ -45,7 +45,7 @@ class OrderDetail extends Component {
   };
 
   handleCancel = (e) => {
-    this.props.history.push('/home');
+    this.props.history.push("/home");
   };
 
   renderSelect = () => {
@@ -55,7 +55,7 @@ class OrderDetail extends Component {
         onChange={this.handleOnChange}
         name="limit"
         aria-controls="example1"
-        style={{ margin: '0px 5px' }}
+        style={{ margin: "0px 5px" }}
         className="form-control input-sm"
         value={limit}
       >
@@ -78,28 +78,26 @@ class OrderDetail extends Component {
         </td>
       </tr>
     ) : (
-        order.ProductVars.map((o, index) => (
-          <OrderDetailRow
-            history={this.props.history}
-            key={index}
-            orderDet={o}
-            index={index + 1}
-          />
-        ))
-      );
+      order.ProductVars.map((o, index) => (
+        <OrderDetailRow
+          history={this.props.history}
+          key={index}
+          orderDet={o}
+          index={index + 1}
+        />
+      ))
+    );
   };
 
   render() {
-    const { isOrderDetsLoaded, order } = this.props
-    const { totalAmount } = this.props.location
+    const { isOrderDetsLoaded, order } = this.props;
+    const { totalAmount } = this.props.location;
     return (
       <Fragment>
-        {isOrderDetsLoaded &&
+        {isOrderDetsLoaded && (
           <Fragment>
             <section className="content-header">
-              <h1>
-                Chi tiết đơn hàng #{order.id}
-              </h1>
+              <h1>Chi tiết đơn hàng #{order.id}</h1>
               <ol className="breadcrumb">
                 <li>
                   <a href="/home">
@@ -120,9 +118,11 @@ class OrderDetail extends Component {
                 {/* left column */}
                 <div className="col-md-12">
                   <div className="box">
-                    <div className="box-header" style={{ marginTop: '5px' }}>
-                      <div style={{ paddingLeft: '5px' }} className="col-md-8">
-                        <h3 className="box-title">Tổng tiền: {this.convertPrice(totalAmount)}đ </h3>
+                    <div className="box-header" style={{ marginTop: "5px" }}>
+                      <div style={{ paddingLeft: "5px" }} className="col-md-8">
+                        <h3 className="box-title">
+                          Tổng tiền: {this.convertPrice(totalAmount)}đ{" "}
+                        </h3>
                       </div>
 
                       {/* <div className="col-md-4">
@@ -176,12 +176,12 @@ class OrderDetail extends Component {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: '5%' }}>#</th>
-                                  <th style={{ width: '10%' }}>SKU</th>
-                                  <th style={{ width: '8%' }}>Hình ảnh</th>
-                                  <th style={{ width: '15%' }}>Tên sản phẩm</th>
-                                  <th style={{ width: '10%' }}>Đơn giá</th>
-                                  <th style={{ width: '10%' }}>Số lượng mua</th>
+                                  <th style={{ width: "5%" }}>#</th>
+                                  <th style={{ width: "10%" }}>SKU</th>
+                                  <th style={{ width: "8%" }}>Hình ảnh</th>
+                                  <th style={{ width: "15%" }}>Tên sản phẩm</th>
+                                  <th style={{ width: "10%" }}>Đơn giá</th>
+                                  <th style={{ width: "10%" }}>Số lượng mua</th>
                                 </tr>
                               </thead>
 
@@ -190,7 +190,7 @@ class OrderDetail extends Component {
                               <tfoot>
                                 <tr>
                                   <th>#</th>
-                                  <th>SKU  </th>
+                                  <th>SKU </th>
                                   <th>Hình ảnh</th>
                                   <th>Tên sản phẩm</th>
                                   <th>Đơn giá</th>
@@ -224,11 +224,13 @@ class OrderDetail extends Component {
               </div>
             </section>
             {/* /.content */}
-          </Fragment>}
-
+          </Fragment>
+        )}
       </Fragment>
     );
   }
 }
 
-export default connect(mapStateToProps, { pushHistory, getOrderDets })(OrderDetail);
+export default connect(mapStateToProps, { pushHistory, getOrderDets })(
+  OrderDetail
+);

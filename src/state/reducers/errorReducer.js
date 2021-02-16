@@ -1,7 +1,7 @@
 import { ERRORS_CLEARED, ERRORS_RETURNED } from "../actions/types";
 
 const initalState = {
-  msg: {},
+  msg: "",
   status: null,
   id: null,
 };
@@ -9,14 +9,15 @@ const initalState = {
 export default function (state = initalState, action) {
   switch (action.type) {
     case ERRORS_RETURNED:
+      console.log(action.payload);
       return {
-        msg: action.payload.msg.msg,
+        msg: action.payload.msg,
         status: action.payload.status,
         id: action.payload.id,
       };
     case ERRORS_CLEARED:
       return {
-        msg: {},
+        msg: "",
         status: null,
         id: null,
       };

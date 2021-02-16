@@ -14,6 +14,8 @@ import {
   GET_PRODUCTS_BY_FILTERS,
   REC_PRODUCTS_RECEIVED,
   GET_RECOMMENDED_PRODUCTS,
+  GET_TRENDING_PRODUCTS,
+  TRENDING_PRODUCTS_RECEIVED,
 } from "../actions/types";
 
 const initialState = {
@@ -23,6 +25,8 @@ const initialState = {
   isProductLoaded: false,
   recProducts: [],
   isRec: false,
+  isTrendingProductsLoaded: false,
+  trendingProducts: [],
 };
 
 export default function (state = initialState, action) {
@@ -107,6 +111,17 @@ export default function (state = initialState, action) {
         ...state,
         recProducts: action.payload.data.items,
         isRec: true,
+      };
+    case GET_TRENDING_PRODUCTS:
+      return {
+        ...state,
+        isTrendingProductsLoaded: false,
+      };
+    case TRENDING_PRODUCTS_RECEIVED:
+      return {
+        ...state,
+        trendingProducts: action.payload.data.items,
+        isTrendingProductsLoaded: true,
       };
     case GET_PRODUCTS_BY_IDSHOP:
       return {

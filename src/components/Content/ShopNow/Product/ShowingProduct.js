@@ -18,7 +18,6 @@ class ShowingProduct extends React.Component {
   };
 
   convertPrice = (value) => {
-    console.log(value);
     if (value) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     else return 0;
   };
@@ -27,7 +26,10 @@ class ShowingProduct extends React.Component {
     let productVar = this.props.item.ProductVars.filter((obj) => {
       return obj.id == ele.idProductVar;
     });
-    this.setState({ mainPhoto: ele.url, mainPrice: productVar[0].price });
+    this.setState({
+      mainPhoto: ele.url,
+      mainPrice: productVar[0] ? productVar[0].price : this.state.mainPrice,
+    });
   };
 
   initPrice = () => {

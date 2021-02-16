@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect } from "react";
 import { connect } from "react-redux";
 import { getMovieCates } from "../../../state/actions/movieCateActions";
+import { addSurvey } from "../../../state/actions/userActions";
 import { showModal } from "../../../state/actions/modalActions";
 import { Formik } from "formik";
-import styles from "../../../assets/css/helper.module.css";
 import * as Yup from "yup";
 
 const mapStateToProps = (state) => {
@@ -11,6 +11,7 @@ const mapStateToProps = (state) => {
     history: state.history.history,
     isLoaded: state.movieCate.isLoaded,
     movieCates: state.movieCate.movieCates,
+    isSurVeyAdded: state.user.isSurVeyAdded,
   };
 };
 
@@ -36,7 +37,7 @@ const ModalMovieCat = (props) => {
       initialValues={{ checked: [] }}
       onSubmit={(values, actions) => {
         const { checked } = values;
-        console.log(checked);
+        props.addSurvey({ arrayCat: checked });
       }}
       validationSchema={Yup.object().shape({
         checked: Yup.array().required("Bạn chưa chọn thể loại phim yêu thích!"),
@@ -49,7 +50,6 @@ const ModalMovieCat = (props) => {
               className="login-box"
               style={{
                 width: "730px",
-                height: "450px",
                 background: "#fff",
                 padding: "20px 40px 20px 30px",
                 display: "flex",
@@ -63,6 +63,10 @@ const ModalMovieCat = (props) => {
                   <h4 className="title-cate">
                     Chọn thể loại phim mà bạn thích:
                   </h4>
+                  <p style={{ fontSize: "15px", marginTop: "-8px" }}>
+                    Chúng tôi không hề mong muốn bạn rời đi mà không có món hàng
+                    nào trên tay!
+                  </p>
                   <div className="caterole-label">
                     <div className="list-wrapper">
                       <div className="moviecate-grid">
@@ -141,5 +145,6 @@ const ModalMovieCat = (props) => {
 
 export default connect(mapStateToProps, {
   getMovieCates,
+  addSurvey,
   showModal,
 })(ModalMovieCat);

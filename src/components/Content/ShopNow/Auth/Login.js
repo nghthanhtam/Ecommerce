@@ -129,7 +129,7 @@ class Login extends Component {
                   type="username"
                   name="username"
                   className="form-control"
-                  placeholder="Username"
+                  placeholder="Tên đăng nhập"
                   value={this.state.username}
                   onChange={this.handleChange}
                 />
@@ -140,7 +140,7 @@ class Login extends Component {
                   type="password"
                   name="password"
                   className="form-control"
-                  placeholder="Password"
+                  placeholder="Mật khẩu"
                   value={this.state.password}
                   onChange={this.handleChange}
                 />
@@ -160,7 +160,7 @@ class Login extends Component {
                         : true
                     }
                   >
-                    Sign In
+                    Đăng nhập
                   </button>
                 </div>
                 {/* /.col */}

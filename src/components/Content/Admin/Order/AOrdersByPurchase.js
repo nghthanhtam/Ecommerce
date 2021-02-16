@@ -22,10 +22,6 @@ class AOrdersByPurchase extends React.Component {
     this.props.getOrdersByPurchase({ id, limit: 1000, page: 1 });
   };
 
-  convertPrice = (value) => {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };

@@ -9,6 +9,7 @@ import {
   SORT_PRODUCTS,
   GET_PRODUCTS_BY_FILTERS,
   GET_RECOMMENDED_PRODUCTS,
+  GET_TRENDING_PRODUCTS,
 } from "./types";
 
 export const sortProducts = (sortField) => ({
@@ -39,6 +40,10 @@ export const getProductById = (params) => ({
 export const getProductsByFilters = (params) => ({
   type: GET_PRODUCTS_BY_FILTERS,
   pages: params,
+});
+
+export const getTrendingProducts = (params) => ({
+  type: GET_TRENDING_PRODUCTS,
 });
 
 export const deleteProduct = (id) => ({

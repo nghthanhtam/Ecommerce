@@ -29,6 +29,7 @@ import UserRegister from "../components/Content/ShopNow/Register/UserRegister";
 import UserRegisterSuccess from "../components/Content/ShopNow/Register/UserRegisterSuccess";
 import ModalVerify from "../components/Content/Modal/ModalVerify";
 import ModalMovieCat from "../components/Content/Modal/ModalMovieCat";
+import ModalExpire from "../components/Content/Modal/ModalExpire";
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -41,22 +42,8 @@ const mapStateToProps = (state) => ({
   adminToken: state.authAdmin.token,
   show: state.modal.show,
   modalName: state.modal.modalName,
+  user: state.authUser.user,
 });
-
-const roles = {
-  employee: "employeeManagement",
-  role: "roleManagement",
-  member: "memberManagement",
-  product: "productManagement",
-  user: "userManagement",
-  invoice: "invoiceManagement",
-  supplier: "supplierManagement",
-  payslip: "payslipManagement",
-  order: "orderManagement",
-  material: "materialManagement",
-  materialReceiptNote: "materialReceiptNoteManagement",
-  SuperAdmin: "SuperAdmin",
-};
 
 class RShopNow extends Component {
   state = {};
@@ -87,12 +74,13 @@ class RShopNow extends Component {
   };
 
   render() {
-    const { userToken, show, modalName } = this.props;
+    const { userToken, show, modalName, user } = this.props;
     return (
       <Fragment>
         {show && modalName == "modalVerify" && <ModalVerify />}
         {show && modalName == "modalMovieCat" && <ModalMovieCat />}
-        {/* {true && <ModalMovieCat />} */}
+        {show && modalName == "modalExpire" && <ModalExpire />}
+        {user && !user.finishedSurvey && <ModalMovieCat />}
         {show && modalName == "login" && <Login />}
         <Switch>
           <Route exact path="/shopnow/register-user">

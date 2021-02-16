@@ -14,13 +14,10 @@ const mapStateToProps = (state) => ({
 });
 
 class Register extends React.Component {
-  state = {};
-
   componentDidMount() {
     this.props.clearShop();
   }
   componentDidUpdate(prevState, prevProps) {
-    console.log("componentDidUpdate");
     const { isAdded, history } = this.props;
     if (isAdded && prevProps.isAdded !== isAdded)
       history.push("/shopnow/register-success");

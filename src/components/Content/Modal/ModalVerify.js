@@ -28,6 +28,7 @@ class ModalVerify extends Component {
             <a
               className="verify-btnhome"
               onClick={() => this.props.showModal({ show: false })}
+              href="/shopnow"
             >
               Quay lại trang chủ
             </a>

@@ -1,67 +1,76 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { addUser } from '../../../../state/actions/userActions';
-import * as Yup from 'yup';
-import { Formik } from 'formik';
-import styles from '../../../../assets/css/helper.module.css'
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { addUser } from "../../../../state/actions/userActions";
+import * as Yup from "yup";
+import { Formik } from "formik";
+import styles from "../../../../assets/css/helper.module.css";
 
 const mapStateToProps = (state) => ({
   user: state.user,
 });
 
 const AUserModal = (props) => {
-
   const changeName = (event, setFieldValue) => {
     const { name, value } = event.target;
     setFieldValue(name, value);
     //if user name changes
-    if (name === 'name') {
-      let url = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      url = url.replace(/\s+/g, '-');
-      setFieldValue('url', url);
+    if (name === "name") {
+      let url = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      url = url.replace(/\s+/g, "-");
+      setFieldValue("url", url);
     }
-  }
+  };
 
   return (
     <Formik
       initialValues={{
-        username: '',
-        password: '',
-        fullname: '',
-        phone: '',
-        email: '',
+        username: "",
+        password: "",
+        fullname: "",
+        phone: "",
+        email: "",
+        isDeactivated: false,
       }}
       onSubmit={(values, actions) => {
-        props.addUser(values)
+        props.addUser(values);
       }}
       validationSchema={Yup.object().shape({
         username: Yup.string()
-          .max(200, 'Chỉ được phép nhập ít hơn 200 kí tự')
-          .required('Bắt buộc nhập'),
+          .max(200, "Chỉ được phép nhập ít hơn 200 kí tự")
+          .required("Bắt buộc nhập"),
         password: Yup.string()
-          .max(30, 'Chỉ được phép nhập ít hơn 30 kí tự')
-          .required('Bắt buộc nhập'),
+          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
+          .required("Bắt buộc nhập"),
         fullname: Yup.string()
-          .max(30, 'Chỉ được phép nhập ít hơn 30 kí tự')
-          .required('Bắt buộc nhập'),
+          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
+          .required("Bắt buộc nhập"),
         phone: Yup.string()
-          .max(30, 'Chỉ được phép nhập ít hơn 30 kí tự')
-          .required('Bắt buộc nhập')
+          .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
+          .required("Bắt buộc nhập")
           .matches(
             /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
-            'Số điện thoại không hợp lệ'),
+            "Số điện thoại không hợp lệ"
+          ),
         email: Yup.string()
-          .max(100, 'Chỉ được phép nhập ít hơn 100 kí tự')
-          .email('Email không hợp lệ')
-          .required('Bắt buộc nhập'),
+          .max(100, "Chỉ được phép nhập ít hơn 100 kí tự")
+          .email("Email không hợp lệ")
+          .required("Bắt buộc nhập"),
       })}
     >
-      {({ values, touched, errors, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
+      {({
+        values,
+        touched,
+        errors,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+        setFieldValue,
+      }) => (
         <React.Fragment>
           <button
             type="button"
             id="triggerButton"
-            style={{ float: 'right' }}
+            style={{ float: "right" }}
             className="btn btn-primary"
             data-toggle="modal"
             data-target="#exampleModalCenter"
@@ -83,7 +92,7 @@ const AUserModal = (props) => {
                     <span>
                       <h3 className="modal-title" id="exampleModalLongTitle">
                         Thêm khách hàng mới
-                    </h3>
+                      </h3>
                     </span>
                     <span>
                       <button
@@ -109,12 +118,16 @@ const AUserModal = (props) => {
                         value={values.username}
                         onChange={(event) => changeName(event, setFieldValue)}
                         onBlur={handleBlur}
-                        className={errors.username && touched.username
-                          ? `${styles.formikinput} ${styles.error}`
-                          : styles.formikinput}
+                        className={
+                          errors.username && touched.username
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
                       />
                       {touched.username && errors.username ? (
-                        <div className={styles.inputfeedback}>{errors.username}</div>
+                        <div className={styles.inputfeedback}>
+                          {errors.username}
+                        </div>
                       ) : null}
                     </div>
                     <div className="form-group">
@@ -129,12 +142,16 @@ const AUserModal = (props) => {
                         value={values.password}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={errors.password && touched.password
-                          ? `${styles.formikinput} ${styles.error}`
-                          : styles.formikinput}
+                        className={
+                          errors.password && touched.password
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
                       />
                       {touched.password && errors.password ? (
-                        <div className={styles.inputfeedback}>{errors.password}</div>
+                        <div className={styles.inputfeedback}>
+                          {errors.password}
+                        </div>
                       ) : null}
                     </div>
                     <div className="form-group">
@@ -149,12 +166,16 @@ const AUserModal = (props) => {
                         value={values.fullname}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={errors.fullname && touched.fullname
-                          ? `${styles.formikinput} ${styles.error}`
-                          : styles.formikinput}
+                        className={
+                          errors.fullname && touched.fullname
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
                       />
                       {touched.fullname && errors.fullname ? (
-                        <div className={styles.inputfeedback}>{errors.fullname}</div>
+                        <div className={styles.inputfeedback}>
+                          {errors.fullname}
+                        </div>
                       ) : null}
                     </div>
                     <div className="form-group">
@@ -170,12 +191,16 @@ const AUserModal = (props) => {
                         value={values.phone}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={errors.phone && touched.phone
-                          ? `${styles.formikinput} ${styles.error}`
-                          : styles.formikinput}
+                        className={
+                          errors.phone && touched.phone
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
                       />
                       {touched.phone && errors.phone ? (
-                        <div className={styles.inputfeedback}>{errors.phone}</div>
+                        <div className={styles.inputfeedback}>
+                          {errors.phone}
+                        </div>
                       ) : null}
                     </div>
                     <div className="form-group">
@@ -191,12 +216,16 @@ const AUserModal = (props) => {
                         value={values.email}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={errors.email && touched.email
-                          ? `${styles.formikinput} ${styles.error}`
-                          : styles.formikinput}
+                        className={
+                          errors.email && touched.email
+                            ? `${styles.formikinput} ${styles.error}`
+                            : styles.formikinput
+                        }
                       />
                       {touched.email && errors.email ? (
-                        <div className={styles.inputfeedback}>{errors.email}</div>
+                        <div className={styles.inputfeedback}>
+                          {errors.email}
+                        </div>
                       ) : null}
                     </div>
                   </div>
@@ -204,21 +233,27 @@ const AUserModal = (props) => {
                     <button
                       type="button"
                       className="btn btn-secondary"
-                      data-dismiss="modal">
+                      data-dismiss="modal"
+                    >
                       Close
                     </button>
                     <button
                       type="submit"
                       className="btn btn-primary"
                       disabled={
-                        !errors.name && !errors.busLicenseId && !errors.city && !errors.phone ? false : true
-                      } >
+                        !errors.name &&
+                        !errors.busLicenseId &&
+                        !errors.city &&
+                        !errors.phone
+                          ? false
+                          : true
+                      }
+                    >
                       Thêm khách hàng
-                  </button>
+                    </button>
                   </div>
                 </div>
               </form>
-
             </div>
           </div>
         </React.Fragment>

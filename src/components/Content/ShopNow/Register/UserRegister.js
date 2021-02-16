@@ -1,38 +1,64 @@
-import React, { useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { addUser, clearUser } from "../../../../state/actions/userActions";
 import { showModal } from "../../../../state/actions/modalActions";
+import Loading from "../Loading/Loading";
 
 const mapStateToProps = (state) => ({
   isAdded: state.user.isAdded,
+  userAdded: state.user.userAdded,
+  error: state.error,
 });
 
 class UserRegister extends React.Component {
-  state = {};
-
+  state = { phoneErrMsg: "", usernameErrMsg: "", isTransition: false };
   componentDidMount() {
     this.props.clearUser();
     this.props.showModal({ show: false });
   }
 
-  componentDidUpdate(prevState, prevProps) {
-    const { isAdded, showModal } = this.props;
-    if (isAdded && prevProps.isAdded !== isAdded)
+  componentDidUpdate(prevProps, prevState) {
+    const { isAdded, showModal, error } = this.props;
+    if (isAdded && prevProps.isAdded !== isAdded) {
+      this.setState({ isTransition: false });
       showModal({ show: true, modalName: "modalVerify" });
+    }
+    if (error && prevProps.error !== error) {
+      if (error.id == "ERROR_USERNAME") {
+        this.setState({ isTransition: false, usernameErrMsg: error.msg });
+      } else if (error.id == "ERROR_PHONE") {
+        this.setState({ isTransition: false, phoneErrMsg: error.msg });
+      } else if (error.id == "ERROR_EMAIL") {
+        this.setState({ isTransition: false, emailErrMsg: error.msg });
+      }
+    }
+  }
+
+  isEmptyObject(value) {
+    return (
+      value && Object.keys(value).length === 0 && value.constructor === Object
+    );
   }
 
   render() {
-    const SignupForm = () => {
+    const {
+        phoneErrMsg,
+        usernameErrMsg,
+        emailErrMsg,
+        isTransition,
+      } = this.state,
+      { userAdded } = this.props;
+    const SignupForm = (props) => {
       const formik = useFormik({
         initialValues: {
-          fullname: "",
-          username: "",
-          password: "",
-          email: "",
-          phone: "",
+          fullname: this.isEmptyObject(userAdded) ? "" : userAdded.fullname,
+          username: this.isEmptyObject(userAdded) ? "" : userAdded.username,
+          password: this.isEmptyObject(userAdded) ? "" : userAdded.password,
+          email: this.isEmptyObject(userAdded) ? "" : userAdded.email,
+          phone: this.isEmptyObject(userAdded) ? "" : userAdded.phone,
         },
         validationSchema: Yup.object({
           fullname: Yup.string()
@@ -53,8 +79,8 @@ class UserRegister extends React.Component {
             .max(50, "Chỉ được phép nhập ít hơn 50 kí tự")
             .required("Bắt buộc nhập!")
             .matches(
-              /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{6,}$/,
-              "Mật khẩu gồm 6 kí tự, bao gồm ít nhất: 1 kí tự viết hoa, 1 kí tự viết thường, 1 kí tự số"
+              /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+              "Mật khẩu gồm 8 kí tự, bao gồm ít nhất: 1 kí tự viết hoa, 1 kí tự viết thường, 1 kí tự số, không bao gồm kí tự đặc biệt"
             ),
           username: Yup.string()
             .matches(
@@ -79,13 +105,19 @@ class UserRegister extends React.Component {
           };
           newUser.type = "user";
           this.props.addUser(newUser);
+          this.setState({
+            isTransition: true,
+            phoneErrMsg: "",
+            emailErrMsg: "",
+            usernameErrMsg: "",
+          });
         },
       });
 
-      const handleChange = (event) => {
-        const { name, value } = event.target;
-        formik.setFieldValue(name, value);
-      };
+      // const handleChange = (e) => {
+      //   const { name, value } = e.target;
+      //   formik.setFieldValue([name], value);
+      // };
 
       return (
         <form
@@ -107,7 +139,7 @@ class UserRegister extends React.Component {
                   className="form-control"
                   name="fullname"
                   type="text"
-                  onChange={handleChange}
+                  onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.fullname}
                 />
@@ -125,10 +157,16 @@ class UserRegister extends React.Component {
                   className="form-control"
                   name="phone"
                   type="text"
-                  onChange={handleChange}
+                  onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.phone}
                 />
+                {phoneErrMsg !== "" &&
+                  formik.values.phone != "" &&
+                  !formik.errors.phone &&
+                  !formik.touched.phone && (
+                    <div className="errors">{phoneErrMsg}</div>
+                  )}
                 {formik.errors.phone && formik.touched.phone ? (
                   <div className="errors">{formik.errors.phone}</div>
                 ) : null}
@@ -143,10 +181,16 @@ class UserRegister extends React.Component {
                   id="email"
                   name="email"
                   type="email"
-                  onChange={handleChange}
+                  onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
                 />
+                {emailErrMsg !== "" &&
+                  formik.values.emailErrMsg != "" &&
+                  !formik.errors.email &&
+                  !formik.touched.email && (
+                    <div className="errors">{emailErrMsg}</div>
+                  )}
                 {formik.errors.email && formik.touched.email ? (
                   <div className="errors">{formik.errors.email}</div>
                 ) : null}
@@ -160,10 +204,16 @@ class UserRegister extends React.Component {
                   className="form-control"
                   name="username"
                   type="text"
-                  onChange={handleChange}
+                  onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.username}
                 />
+                {usernameErrMsg !== "" &&
+                  formik.values.username != "" &&
+                  !formik.errors.username &&
+                  !formik.touched.username && (
+                    <div className="errors">{usernameErrMsg}</div>
+                  )}
                 {formik.errors.username && formik.touched.username ? (
                   <div className="errors">{formik.errors.username}</div>
                 ) : null}
@@ -177,7 +227,7 @@ class UserRegister extends React.Component {
                   className="form-control"
                   name="password"
                   type="password"
-                  onChange={handleChange}
+                  onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.password}
                 />
@@ -195,29 +245,32 @@ class UserRegister extends React.Component {
     };
 
     return (
-      <div>
-        <div className="reg-container">
-          <div className="reg-card">
-            <div className="reg-title-wrapper">
-              <div className="reguser-text">
-                <p className="reg-title">Tạo tài khoản mua hàng</p>
-                <p>
-                  Cảm ơn đối tác đã tin tưởng và lựa chọn đồng hành cùng
-                  ShopNow!
-                </p>
+      <Fragment>
+        {isTransition && <Loading />}
+        <div>
+          <div className="reg-container">
+            <div className="reg-card">
+              <div className="reg-title-wrapper">
+                <div className="reguser-text">
+                  <p className="reg-title">Tạo tài khoản mua hàng</p>
+                  <p>
+                    Cảm ơn đối tác đã tin tưởng và lựa chọn đồng hành cùng
+                    ShopNow!
+                  </p>
+                </div>
+                <div className="reg-ava">
+                  <img src="./img/spiderman.png" alt="ava" />
+                </div>
               </div>
-              <div className="reg-ava">
-                <img src="./img/spiderman.png" alt="ava" />
-              </div>
+              <SignupForm />
+              <p className="reg-commit">
+                Khi bạn nhấn Đăng ký, bạn đã đồng ý thực hiện mọi giao dịch mua
+                bán theo điều kiện sử dụng và chính sách của ShopNow.
+              </p>
             </div>
-            <SignupForm />
-            <p className="reg-commit">
-              Khi bạn nhấn Đăng ký, bạn đã đồng ý thực hiện mọi giao dịch mua
-              bán theo điều kiện sử dụng và chính sách của ShopNow.
-            </p>
           </div>
         </div>
-      </div>
+      </Fragment>
     );
   }
 }

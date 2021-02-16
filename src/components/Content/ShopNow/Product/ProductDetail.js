@@ -73,7 +73,7 @@ class ProductDetail extends React.Component {
     idProduct: "",
     selectedProductVar: "",
     selectedFiles: [],
-    rate: "",
+    rate: 0,
     amount: 1,
     variants: [],
     bigPhoto: "",
@@ -289,7 +289,7 @@ class ProductDetail extends React.Component {
     setTimeout(() => {
       this.setState({ ratingMsg: false });
     }, 2000);
-    this.setState({ title: "", review: "", selectedFiles: [], rate: "" });
+    this.setState({ title: "", review: "", selectedFiles: [], rate: 0 });
   };
 
   sendAnswer = (idQuestion) => {
@@ -783,7 +783,7 @@ class ProductDetail extends React.Component {
                           )
                         }
                       >
-                        {product.shop.name}
+                        {product.shop && product.shop.name}
                       </span>
                     </div>
                     {product.otherShops.length > 0 && (
@@ -1248,7 +1248,10 @@ class ProductDetail extends React.Component {
                           ) : null}
                           {rating.Comments.map((cmt, cindex) => {
                             return (
-                              <div style={{ marginBottom: "10px" }}>
+                              <div
+                                key={cindex}
+                                style={{ marginBottom: "10px" }}
+                              >
                                 {cmt.idRating == rating.id &&
                                   cmt.status == "accepted" && (
                                     <div className="reply-answer" key={cindex}>

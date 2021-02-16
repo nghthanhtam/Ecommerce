@@ -22,7 +22,7 @@ const mapStateToProps = (state) => ({
   products: state.product.products,
   isMovieLoaded: state.movie.isLoaded,
   isProductCatesLoaded: state.productCate.isLoaded,
-  isProductLoaded: state.product.isLoaded,
+  isProductsLoaded: state.product.isLoaded,
   totalDocuments: state.product.totalDocuments,
   idShop: state.auth.role.idShop,
   token: state.auth.token,
@@ -75,9 +75,9 @@ class ProductAdd extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const { isProductLoaded, products } = this.props;
+    const { isProductsLoaded, products } = this.props;
 
-    if (prevProps.isProductLoaded !== isProductLoaded && isProductLoaded) {
+    if (prevProps.isProductsLoaded !== isProductsLoaded && isProductsLoaded) {
       let tempArr = [...products];
 
       if (products.length > 0 && products.length < 5) {
@@ -498,7 +498,7 @@ class ProductAdd extends Component {
         productCates,
         isMovieLoaded,
         isProductCatesLoaded,
-        isProductLoaded,
+        isProductsLoaded,
       } = this.props,
       settings = {
         infinite: true,
@@ -507,7 +507,7 @@ class ProductAdd extends Component {
         slidesToShow: 5,
         className: "slider",
       };
-
+    const searchProducts = this.props.products;
     return (
       <Fragment>
         {!isMovieLoaded || !isProductCatesLoaded ? (
@@ -549,6 +549,13 @@ class ProductAdd extends Component {
                             onChange={this.onChangeProductInfor}
                           />
                         </div>
+                        {searchQuery !== "" &&
+                          searchProducts.length == 0 &&
+                          isProductsLoaded && (
+                            <p style={{ color: "grey" }}>
+                              Không tìm thấy kết quả phù hợp
+                            </p>
+                          )}
                         {searchQuery !== "" && (
                           <button
                             style={{ marginTop: "5px" }}
@@ -560,7 +567,7 @@ class ProductAdd extends Component {
                           </button>
                         )}
                       </div>
-                      {isProductLoaded && products.length > 0 && (
+                      {isProductsLoaded && searchProducts.length > 0 && (
                         <div style={{ margin: "5px 0 25px 0" }}>
                           <label htmlFor="exampleInputEmail1">
                             Sản phẩm có thể trùng
@@ -615,12 +622,12 @@ class ProductAdd extends Component {
                             getOptionValue={(option) => option.id}
                           />
                         </div>
-                        <p style={{ marginTop: "5px" }}>
+                        {/* <p style={{ marginTop: "5px" }}>
                           Không tìm thấy bộ phim phù hợp với sản phẩm?{" "}
                           <span style={{ color: "#337ab7", cursor: "pointer" }}>
                             Yêu cầu thêm phim mới
                           </span>
-                        </p>
+                        </p> */}
                       </div>
                       <div className="form-group">
                         <label>Danh mục</label>

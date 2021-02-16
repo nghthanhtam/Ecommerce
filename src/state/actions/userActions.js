@@ -6,7 +6,13 @@ import {
   UPDATE_USER,
   CLEAR_USER,
   UPDATE_PASS,
+  ADD_SURVEY,
 } from "./types";
+
+export const addSurvey = (newItem) => ({
+  type: ADD_SURVEY,
+  newItem,
+});
 
 export const clearUser = () => ({
   type: CLEAR_USER,

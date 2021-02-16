@@ -1,17 +1,17 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import ProductRow from './ProductVarRow';
-import APendingList from './Tab/APendingList'
-import AActiveList from './Tab/AActiveList'
-import AProductInforList from './Tab/AProductInforList'
-import APendingProductInforList from './Tab/APendingProductInforList'
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import ProductRow from "./ProductVarRow";
+import APendingList from "./Tab/APendingList";
+import AActiveList from "./Tab/AActiveList";
+import AProductInforList from "./Tab/AProductInforList";
+import APendingProductInforList from "./Tab/APendingProductInforList";
 
-import { getProductVarsByIdShop } from '../../../../state/actions/productVarActions';
-import { showNoti } from '../../../../state/actions/notificationActions';
-import 'react-notifications/lib/notifications.css';
-import { NotificationContainer } from 'react-notifications';
-import Loader from 'react-loader';
+import { getProductVarsByIdShop } from "../../../../state/actions/productVarActions";
+import { showNoti } from "../../../../state/actions/notificationActions";
+import "react-notifications/lib/notifications.css";
+import { NotificationContainer } from "react-notifications";
+import Loader from "react-loader";
 
 const mapStateToProps = (state) => ({
   productVars: state.productVar.productVars,
@@ -19,7 +19,7 @@ const mapStateToProps = (state) => ({
   totalDocuments: state.product.totalDocuments,
   totalDocuments: state.productVar.totalDocuments,
   show: state.modal.show,
-  modalName: state.modal.modalName
+  modalName: state.modal.modalName,
 });
 
 class Product extends Component {
@@ -27,21 +27,22 @@ class Product extends Component {
     sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
     limit: 5,
     page: 1,
-    query: '',
+    query: "",
     pages: [],
     start: 1,
     end: 5,
     isNextBtnShow: true,
-    block: <AActiveList />
+    block: <AActiveList />,
   };
 
   //set lai end khi danh sach chi co 1 trang, va so luong sp khong du limit cua trang do
   componentDidUpdate = (prevProps, prevState, snapshot) => {
-    const { totalDocuments } = this.props, { end } = this.state
+    const { totalDocuments } = this.props,
+      { end } = this.state;
     if (totalDocuments < 5 && end !== totalDocuments) {
-      this.setState({ end: totalDocuments })
+      this.setState({ end: totalDocuments });
     }
-  }
+  };
 
   renderProducts = (getActive) => {
     const { productVars, isLoaded } = this.props;
@@ -53,16 +54,16 @@ class Product extends Component {
         </td>
       </tr>
     ) : (
-        productVars.map((p, index) => (
-          <ProductRow
-            history={this.props.history}
-            key={index}
-            productVar={p}
-            index={index + start - 1}
-            getActive={getActive}
-          />
-        ))
-      );
+      productVars.map((p, index) => (
+        <ProductRow
+          history={this.props.history}
+          key={index}
+          productVar={p}
+          index={index + start - 1}
+          getActive={getActive}
+        />
+      ))
+    );
   };
 
   getPages = () => {
@@ -70,8 +71,8 @@ class Product extends Component {
     const { totalDocuments } = this.props;
     if (totalDocuments == 0) return;
 
-    let newQuery = '';
-    if (query === '') newQuery = 'undefined';
+    let newQuery = "";
+    if (query === "") newQuery = "undefined";
     else newQuery = query;
 
     let pages = Math.floor(totalDocuments / limit);
@@ -89,7 +90,7 @@ class Product extends Component {
         { pageNumber: 1 },
         { pageNumber: 2 },
         { pageNumber: 3 },
-        { pageNumber: '...' },
+        { pageNumber: "..." },
         { pageNumber: newArray.length },
       ];
     }
@@ -99,7 +100,7 @@ class Product extends Component {
   handleOnChange = (e) => {
     e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      if (e.target.name === 'query') {
+      if (e.target.name === "query") {
         this.setState({ page: 1 }, () => {
           this.rerenderPage();
         });
@@ -132,14 +133,14 @@ class Product extends Component {
     this.props.getProducts({
       limit,
       page,
-      query
+      query,
     });
     this.getPages();
     this.getStartEndDocuments();
   };
 
   handleChoosePage = (e) => {
-    if (e === '...') return
+    if (e === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),
@@ -157,7 +158,7 @@ class Product extends Component {
       this.props.getProducts({
         limit,
         page,
-        query
+        query,
       });
       this.getStartEndDocuments();
     });
@@ -174,9 +175,16 @@ class Product extends Component {
               key={eachButton.pageNumber}
               className={
                 page === eachButton.pageNumber
-                  ? 'paginae_button active'
-                  : 'paginate_button'}>
-              <a className="paga-link" name="currentPage" href="javascript:void(0);" onClick={() => this.handleChoosePage(eachButton.pageNumber)}>
+                  ? "paginae_button active"
+                  : "paginate_button"
+              }
+            >
+              <a
+                className="paga-link"
+                name="currentPage"
+                href="javascript:void(0);"
+                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+              >
                 {eachButton.pageNumber}
               </a>
             </li>
@@ -184,13 +192,13 @@ class Product extends Component {
           <li className="paginate_button">
             <a
               className={
-                isNextBtnShow === true ? 'paga-link' : 'paga-link_hidden'
+                isNextBtnShow === true ? "paga-link" : "paga-link_hidden"
               }
               name="currentPage"
               href="javascript:void(0);"
               onClick={() => this.handleChoosePage(-1)}
             >
-              {'>>'}
+              {">>"}
             </a>
           </li>
         </>
@@ -200,18 +208,19 @@ class Product extends Component {
 
   createNotification = () => {
     this.props.showNoti(this.state.notiType);
-    this.setState({ notiType: '' });
+    this.setState({ notiType: "" });
   };
 
   onTabClick = (name) => {
-    const { propValueList, productList } = this.state
-    const { products } = this.props
+    const { propValueList, productList } = this.state;
+    const { products } = this.props;
 
-    if (name == 'pending') this.setState({ block: <APendingList /> })
-    else if (name == 'active') this.setState({ block: <AActiveList /> })
-    else if (name == 'infor') this.setState({ block: <AProductInforList /> })
-    else if (name == 'infor-pending') this.setState({ block: <APendingProductInforList /> })
-  }
+    if (name == "pending") this.setState({ block: <APendingList /> });
+    else if (name == "active") this.setState({ block: <AActiveList /> });
+    else if (name == "infor") this.setState({ block: <AProductInforList /> });
+    else if (name == "infor-pending")
+      this.setState({ block: <APendingProductInforList /> });
+  };
 
   render() {
     return (
@@ -233,33 +242,31 @@ class Product extends Component {
           </ol>
         </section>
         {/* Main content */}
-        <section className="content" >
+        <section className="content">
           <div className="nav-tabs-custom">
             <ul className="nav nav-tabs">
-              <li onClick={() => this.onTabClick('active')} className="active">
+              <li onClick={() => this.onTabClick("active")} className="active">
                 <a href="#list" data-toggle="tab">
-                  Dánh sách sản phẩm
+                  Danh sách sản phẩm
                 </a>
               </li>
-              <li onClick={() => this.onTabClick('pending')}>
+              <li onClick={() => this.onTabClick("pending")}>
                 <a href="#pendinglist" data-toggle="tab">
                   Chờ duyệt
                 </a>
               </li>
-              <li onClick={() => this.onTabClick('infor-pending')}>
+              <li onClick={() => this.onTabClick("infor-pending")}>
                 <a href="#-pending" data-toggle="tab">
                   Thông tin sản phẩm chờ duyệt
                 </a>
               </li>
-              <li onClick={() => this.onTabClick('infor')}>
+              <li onClick={() => this.onTabClick("infor")}>
                 <a href="#infor" data-toggle="tab">
                   Thông tin sản phẩm đã duyệt
                 </a>
               </li>
             </ul>
-            <div className="tab-content">
-              {this.state.block}
-            </div>
+            <div className="tab-content">{this.state.block}</div>
           </div>
         </section>
 
@@ -275,4 +282,6 @@ Product.propTypes = {
   isLoaded: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, { getProductVarsByIdShop, showNoti })(Product);
+export default connect(mapStateToProps, { getProductVarsByIdShop, showNoti })(
+  Product
+);

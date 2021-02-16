@@ -11,7 +11,7 @@ import {
 const initialState = {
   productCates: [],
   isLoaded: false,
-  totalDocuments: 0
+  totalDocuments: 0,
 };
 
 export default function (state = initialState, action) {
@@ -19,7 +19,7 @@ export default function (state = initialState, action) {
     case GET_PRODUCT_CATES:
       return {
         ...state,
-        //isLoaded: true,
+        isLoaded: false,
       };
     case PRODUCT_CATES_RECEIVED:
       return {

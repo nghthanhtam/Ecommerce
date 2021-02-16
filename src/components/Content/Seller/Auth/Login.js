@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 const mapStateToProps = (state) => ({
   error: state.error,
-  history: state.history,
+  history: state.history.history,
   isAuthenticated: state.auth.isAuthenticated,
 });
 
@@ -86,12 +86,12 @@ class Login extends Component {
         <div className="login-box">
           <div className="login-logo">
             <a href="/login">
-              <b>Admin</b>LTE
+              <b>Nhà bán</b> | của tôi
             </a>
           </div>
           {/* /.login-logo */}
           <div className="login-box-body">
-            <p className="login-box-msg">Sign in to start your session</p>
+            <p className="login-box-msg">Đăng nhập để bắt đầu bán hàng</p>
             {this.state.msg ? (
               <div className="alert alert-danger alert-dismissible">
                 <button
@@ -144,7 +144,7 @@ class Login extends Component {
                         : true
                     }
                   >
-                    Sign In
+                    Đăng nhập
                   </button>
                 </div>
                 {/* /.col */}

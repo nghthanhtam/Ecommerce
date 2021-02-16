@@ -22,6 +22,8 @@ import {
   GET_PRODUCTS_BY_FILTERS,
   REC_PRODUCTS_RECEIVED,
   GET_RECOMMENDED_PRODUCTS,
+  GET_TRENDING_PRODUCTS,
+  TRENDING_PRODUCTS_RECEIVED,
 } from "../actions/types";
 
 function* sortProducts(params) {
@@ -102,7 +104,24 @@ function* fetchProducts(params) {
   }
 }
 
-function* recProducts() {
+function* getTrendingProducts() {
+  const state = yield select();
+  try {
+    const response = yield call(() =>
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/search/trending`,
+          tokenUserConfig(state)
+        )
+        .catch((er) => console.log(er))
+    );
+    yield put({ type: TRENDING_PRODUCTS_RECEIVED, payload: response });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function* getRecProducts() {
   const state = yield select();
   try {
     const response = yield call(() =>
@@ -113,7 +132,6 @@ function* recProducts() {
         )
         .catch((er) => console.log(er))
     );
-    console.log(response);
     yield put({ type: REC_PRODUCTS_RECEIVED, payload: response });
   } catch (error) {
     console.log(error);
@@ -228,5 +246,6 @@ export default function* sProductSaga() {
   yield takeEvery(UPDATE_PRODUCT, updateProduct);
   yield takeEvery(UPDATE_PRODUCT_STATUS, updateProductStt);
   yield takeEvery(DELETE_PRODUCT, deleteProducts);
-  yield takeEvery(GET_RECOMMENDED_PRODUCTS, recProducts);
+  yield takeEvery(GET_RECOMMENDED_PRODUCTS, getRecProducts);
+  yield takeEvery(GET_TRENDING_PRODUCTS, getTrendingProducts);
 }

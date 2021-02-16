@@ -56,7 +56,7 @@ function* login(params) {
     yield put({
       type: ERRORS_RETURNED,
       payload: {
-        msg: error.response.data,
+        msg: error.response.data.msg,
         status: error.response.status,
         id: "ADMIN_LOGIN_FAIL",
       },

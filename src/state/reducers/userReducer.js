@@ -10,6 +10,9 @@ import {
   USER_UPDATED,
   CLEAR_USER,
   USER_PASS_UPDATED_ERROR,
+  ERRORS_RETURNED,
+  SURVEY_ADDED,
+  ADD_SURVEY,
 } from "../actions/types";
 
 const initialState = {
@@ -21,6 +24,8 @@ const initialState = {
   isAdded: false,
   userAdded: {},
   isUpdatePassError: false,
+  error: null,
+  isSurVeyAdded: false,
 };
 
 export default function (state = initialState, action) {
@@ -34,6 +39,8 @@ export default function (state = initialState, action) {
     case GET_USERS:
       return {
         ...state,
+        isLoaded: false,
+        isUpdated: false,
       };
     case GET_USER_BY_ID:
       return {
@@ -54,10 +61,21 @@ export default function (state = initialState, action) {
         user: action.payload.data,
         isLoaded: true,
       };
+    case ADD_SURVEY:
+      return {
+        ...state,
+        isSurVeyAdded: false,
+      };
+    case SURVEY_ADDED:
+      return {
+        ...state,
+        isSurVeyAdded: true,
+      };
     case ADD_USER:
       return {
         ...state,
         isLoaded: false,
+        isAdded: false,
       };
     case USER_ADDED:
       return {
@@ -86,6 +104,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isUpdatePassError: true,
+      };
+    case ERRORS_RETURNED:
+      return {
+        ...state,
+        userAdded: action.payload.newUser,
       };
     default:
       return state;

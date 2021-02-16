@@ -40,6 +40,10 @@ class ProductRow extends Component {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  componentDidMount = () => {
+    console.log(this.props.productVar);
+  };
+
   render() {
     const {
       name,
@@ -59,8 +63,8 @@ class ProductRow extends Component {
           <td>{index + 1}</td>
           <td>
             <img
-              src={Images[0].url}
-              alt=""
+              src={Images[0] ? Images[0].url : ""}
+              alt="photo"
               border="3"
               height="200px"
               width="200px"

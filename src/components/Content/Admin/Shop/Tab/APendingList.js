@@ -9,7 +9,6 @@ const mapStateToProps = (state) => ({
   shops: state.shop.shops,
   isLoaded: state.shop.isLoaded,
   totalDocuments: state.shop.totalDocuments,
-  idShop: state.auth.role.idShop,
   details: state.modal.details,
 });
 
@@ -232,7 +231,7 @@ class APendingList extends React.Component {
   };
 
   render() {
-    const { limit, page, start, end, query } = this.state;
+    const { start, end, query } = this.state;
     const { totalDocuments } = this.props;
     return (
       <div className="row">

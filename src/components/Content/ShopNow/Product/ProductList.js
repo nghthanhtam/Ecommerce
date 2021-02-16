@@ -98,6 +98,7 @@ class ProductList extends React.Component {
         page,
         arrayFilter,
       });
+      console.log("arrayFilter: ", arrayFilter);
       return;
     }
 

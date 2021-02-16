@@ -7,6 +7,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { getMovieCates } from "../../../state/actions/movieCateActions";
+import { getTrendingProducts } from "../../../state/actions/productActions";
 import { showModal } from "../../../state/actions/modalActions";
 import Category from "./Category/Category";
 import TitlePane from "./TitlePane/TitlePane";
@@ -25,20 +26,22 @@ const mapStateToProps = (state) => ({
   isProductsLoaded: state.product.isLoaded,
   products: state.product.products,
   history: state.history.history,
+  isTrendingProductsLoaded: state.product.isTrendingProductsLoaded,
+  trendingProducts: state.product.trendingProducts,
 });
 
 class HomePage extends React.Component {
   state = {
     productList: [1, 2, 3, 4, 5, 6, 7, 8],
     keywords: [
-      { color: "kw-blue" },
-      { color: "kw-violet" },
-      { color: "kw-red" },
-      { color: "kw-green" },
-      { color: "kw-blue" },
-      { color: "kw-violet" },
-      { color: "kw-red" },
-      { color: "kw-green" },
+      { color: "kw-blue", value: "marvel" },
+      { color: "kw-violet", value: "iphone" },
+      { color: "kw-red", value: "iphone" },
+      { color: "kw-green", value: "zara" },
+      { color: "kw-blue", value: "psycho pass" },
+      { color: "kw-violet", value: "iphone" },
+      { color: "kw-red", value: "iphone" },
+      { color: "kw-green", value: "iphone" },
     ],
     header: "header",
     picLink: "./img/blue.png",
@@ -48,16 +51,18 @@ class HomePage extends React.Component {
   };
 
   componentDidMount() {
-    console.log(
-      `-------------------------${process.env.REACT_APP_BACKEND_EMPLOYEE}-----------------------`
-    );
-    const { getMovieCates, getProductsByFilters } = this.props;
+    const {
+      getMovieCates,
+      getProductsByFilters,
+      getTrendingProducts,
+    } = this.props;
     getMovieCates({ limit: 1000, page: 1, query: "" });
     getProductsByFilters({
       limit: 10,
       page: 1,
       arrayFilter: [{ name: "idCategory", value: 1 }],
     });
+    getTrendingProducts();
 
     this.timer = setInterval(() => {
       this.setState((prevState) => ({
@@ -106,6 +111,8 @@ class HomePage extends React.Component {
       isLoadedMovieCate,
       products,
       isProductsLoaded,
+      isTrendingProductsLoaded,
+      trendingProducts,
     } = this.props;
 
     const settings = {
@@ -280,12 +287,12 @@ class HomePage extends React.Component {
                 </>
               )}
 
-              {isProductsLoaded && (
+              {isTrendingProductsLoaded && (
                 <>
-                  <TitlePane title="Sản phẩm từ các bộ phim đang HOT" />
+                  <TitlePane title="Sản phẩm từ phim đang HOT" />
                   <div className="list-wrapper">
                     <div className="grid-home">
-                      {products.map((item, index) => {
+                      {trendingProducts.map((item, index) => {
                         return <ShowingProduct key={index} item={item} />;
                       })}
                     </div>
@@ -301,7 +308,7 @@ class HomePage extends React.Component {
                 }}
               >
                 <div className="container-kw">
-                  <div className="title-kw">HOT KEYWORDS</div>
+                  <div className="title-kw">TỪ KHÓA HOT</div>
                   <div className="sliderwrapper">
                     <Slider
                       style={{
@@ -388,4 +395,5 @@ export default connect(mapStateToProps, {
   getMovieCates,
   showModal,
   getProductsByFilters,
+  getTrendingProducts,
 })(HomePage);

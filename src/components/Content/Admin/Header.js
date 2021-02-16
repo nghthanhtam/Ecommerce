@@ -34,7 +34,7 @@ class Header extends Component {
       <div>
         <header className="main-header">
           {/* Logo */}
-          <a href="index2.html" className="logo">
+          <a href={isAdmin ? "/admin" : "/seller"} className="logo">
             {/* mini logo for sidebar mini 50x50 pixels */}
             <span className="logo-mini">
               <b>A</b>LT

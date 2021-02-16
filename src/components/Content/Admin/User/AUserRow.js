@@ -40,7 +40,7 @@ class AUserRow extends Component {
               type="button"
               className="btn btn-success"
             >
-              Sửa
+              Chỉnh sửa
             </button>
 
             {/* <button

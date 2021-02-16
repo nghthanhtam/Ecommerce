@@ -11,7 +11,6 @@ import { useHistory } from "react-router-dom";
 const mapStateToProps = (state, props) => {
   return {
     history: state.history.history,
-    auth: state.auth,
     isLoaded: state.user.isLoaded,
     isUpdated: state.user.isUpdated,
     user: state.user.user,
@@ -34,6 +33,12 @@ const AUserEdit = (props) => {
     if (props.isUpdated) history.push("/admin/user");
   }, [props.isUpdated]);
 
+  const onChangeSelect = (selectedItem, setFieldValue) => {
+    if (selectedItem.value == "active") {
+      setFieldValue("isDeactivated", false);
+    } else setFieldValue("isDeactivated", true);
+  };
+
   return !props.isLoaded ? (
     <div>Loading...</div>
   ) : (
@@ -49,13 +54,13 @@ const AUserEdit = (props) => {
         username: Yup.string()
           .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
           .required("Required"),
-        password: Yup.string()
-          .max(50, "Chỉ được phép nhập ít hơn 50 kí tự")
-          .required("Bắt buộc nhập!")
-          .matches(
-            /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/,
-            "Mật khẩu phải bao gồm ít nhất: 1 kí tự viết hoa, 1 kí tự viết thường, 1 kí tự số"
-          ),
+        // password: Yup.string()
+        //   .max(50, "Chỉ được phép nhập ít hơn 50 kí tự")
+        //   .required("Bắt buộc nhập!")
+        //   .matches(
+        //     /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/,
+        //     "Mật khẩu phải bao gồm ít nhất: 1 kí tự viết hoa, 1 kí tự viết thường, 1 kí tự số"
+        //   ),
         phone: Yup.string()
           .max(30, "Chỉ được phép nhập ít hơn 30 kí tự")
           .required("Required")
@@ -75,6 +80,7 @@ const AUserEdit = (props) => {
         handleBlur,
         handleChange,
         handleSubmit,
+        setFieldValue,
       }) => (
         <Fragment>
           <section className="content-header">
@@ -123,7 +129,6 @@ const AUserEdit = (props) => {
                           {errors.fullname}
                         </div>
                       ) : null}
-
                       <label className={styles.formiklabel} htmlFor="username">
                         {" "}
                         Tên đăng nhập
@@ -144,7 +149,6 @@ const AUserEdit = (props) => {
                           {errors.username}
                         </div>
                       ) : null}
-
                       {/* <label className={styles.formiklabel} htmlFor="password">
                         {" "}
                         Mật khẩu
@@ -166,7 +170,6 @@ const AUserEdit = (props) => {
                           {errors.password}
                         </div>
                       ) : null} */}
-
                       <label className={styles.formiklabel} htmlFor="email">
                         {" "}
                         Email
@@ -188,7 +191,6 @@ const AUserEdit = (props) => {
                           {errors.email}
                         </div>
                       ) : null}
-
                       <label className={styles.formiklabel} htmlFor="phone">
                         {" "}
                         Số điện thoại
@@ -211,17 +213,28 @@ const AUserEdit = (props) => {
                         </div>
                       ) : null}
 
-                      {/* <label htmlFor="price">Trạng thái hoạt dộng</label>
+                      <label
+                        className={styles.formiklabel}
+                        htmlFor="isDeactivated"
+                      >
+                        {" "}
+                        Trạng thái hoạt dộng
+                      </label>
                       <Select
-                        name="status"
-                        onChange={this.handleChangeSelect}
+                        name="isDeactivated"
+                        onChange={(e) => onChangeSelect(e, setFieldValue)}
                         isSearchable={true}
                         options={statuses}
                         placeholder="Loading ..."
-                        value={statuses.filter(
-                          (option) => option.value === status
-                        )}
-                      /> */}
+                        value={statuses.filter((option) => {
+                          if (
+                            (!values.isDeactivated &&
+                              option.value == "active") ||
+                            (values.isDeactivated && option.value == "inactive")
+                          )
+                            return option;
+                        })}
+                      />
                     </div>
 
                     <div className="box-footer">
