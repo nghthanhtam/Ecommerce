@@ -38,11 +38,16 @@ class EmployeeModal extends Component {
     let isPassed = true;
     if (name == "fullname") isPassed = this.validateName(value);
     else if (name == "phone") isPassed = this.validatePhone(value);
+    else if (name == "password") isPassed = this.validatePassword(value);
+
     let inputErrors = isPassed ? false : true;
     if (!isPassed && name == "fullname")
       msg = "Tên chỉ bao gồm chữ cái, số, gạch dưới và khoảng trắng";
     else if (!isPassed && name == "phone") {
       msg = "Số điện thoại chưa hợp lệ";
+    } else if (!isPassed && name == "password") {
+      msg =
+        "Mật khẩu gồm 8 kí tự, bao gồm ít nhất: 1 kí tự viết hoa, 1 kí tự viết thường, 1 kí tự số, không bao gồm kí tự đặc biệt";
     }
     this.setState({ [name]: value, msg, inputErrors });
   };
@@ -55,6 +60,10 @@ class EmployeeModal extends Component {
     return !new RegExp(
       /[^a-z0-9A-Z_-_ ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽếềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]/u
     ).test(fullname);
+  };
+
+  validatePassword = (password) => {
+    return new RegExp(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/).test(password);
   };
 
   resetField() {
@@ -218,7 +227,7 @@ class EmployeeModal extends Component {
                       <input
                         type="text"
                         className="form-control"
-                        id="username"
+                        name="username"
                         placeholder="Nhập tên đăng nhập..."
                         name="username"
                         value={username}
@@ -232,9 +241,8 @@ class EmployeeModal extends Component {
                       <input
                         type="password"
                         className="form-control"
-                        id="password"
-                        placeholder="Nhập mật khẩu..."
                         name="password"
+                        placeholder="Nhập mật khẩu..."
                         value={password}
                         onChange={this.onChange}
                       />
@@ -261,9 +269,8 @@ class EmployeeModal extends Component {
                       <input
                         type="text"
                         className="form-control"
-                        id="phone"
-                        placeholder="Nhập số điện thoại..."
                         name="phone"
+                        placeholder="Nhập số điện thoại..."
                         value={phone}
                         onChange={this.onChange}
                       />
@@ -275,7 +282,6 @@ class EmployeeModal extends Component {
                       <input
                         type="text"
                         className="form-control"
-                        id="identityCard"
                         placeholder="Nhập số CMND..."
                         name="identityCard"
                         value={identityCard}

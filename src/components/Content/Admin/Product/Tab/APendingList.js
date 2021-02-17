@@ -272,8 +272,8 @@ class APendingList extends React.Component {
                         <th>Hình ảnh</th>
                         <th style={{ width: "20%" }}>Tên sản phẩm</th>
                         <th style={{ width: "10%" }}>SKU</th>
+                        <th style={{ width: "12%" }}>Mã cửa hàng</th>
                         <th style={{ width: "15%" }}>Đơn giá</th>
-                        <th style={{ width: "15%" }}>Số lượng tồn</th>
                         <th style={{ width: "15%" }}>Trạng thái</th>
                         <th style={{ width: "15%" }}></th>
                       </tr>
@@ -285,8 +285,8 @@ class APendingList extends React.Component {
                         <th>Hình ảnh</th>
                         <th>Tên sản phẩm</th>
                         <th>SKU</th>
+                        <th>Mã cửa hàng</th>
                         <th>Đơn giá</th>
-                        <th>Số lượng tồn</th>
                         <th>Trạng thái</th>
                         <th style={{ width: "15%" }}></th>
                       </tr>

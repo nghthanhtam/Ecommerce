@@ -5,6 +5,8 @@ import Loader from "react-loader";
 import "./home.css";
 import { getOrdersByShop } from "../../../../state/actions/orderActions";
 import { getLogSellers } from "../../../../state/actions/logSellerActions";
+import { getEmployeesByShop } from "../../../../state/actions/employeeActions";
+import { getProductVarsByIdShop } from "../../../../state/actions/productVarActions";
 import OrderRowHome from "../Order/OrderRowHome";
 
 const mapStateToProps = (state) => ({
@@ -14,6 +16,10 @@ const mapStateToProps = (state) => ({
   idShop: state.auth.role.idShop,
   sellerLogs: state.logSeller.sellerLogs,
   isLogSellerLoaded: state.logSeller.isLoaded,
+  totalProductVars: state.productVar.totalDocuments,
+  isProductVarsLoaded: state.productVar.isLoaded,
+  totalEmployees: state.employee.totalDocuments,
+  isEmpsLoaded: state.employee.isLoaded,
 });
 
 class Home extends Component {
@@ -31,9 +37,31 @@ class Home extends Component {
 
   componentDidMount = () => {
     const { limit, page, query } = this.state;
-    const { idShop, getOrdersByShop, getLogSellers } = this.props;
+    const {
+      idShop,
+      getOrdersByShop,
+      getLogSellers,
+      getProductVarsByIdShop,
+      getEmployeesByShop,
+    } = this.props;
     getOrdersByShop({ limit, page, query, idShop, done: false });
     getLogSellers({ limit, page, query, idShop });
+    getProductVarsByIdShop({
+      idShop,
+      type: "seller",
+      limit: 1000,
+      page: 1,
+      query: "",
+      arrayStatus: ["active"],
+    });
+    getEmployeesByShop({
+      limit: 1000,
+      page: 1,
+      query: "",
+      idShop,
+      activeEmp: true,
+      deletedEmp: false,
+    });
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -246,11 +274,19 @@ class Home extends Component {
       isLogSellerLoaded,
       totalDocuments,
       sellerLogs,
+      totalProductVars,
+      totalEmployees,
+      isEmpsLoaded,
+      isProductVarsLoaded,
+      orders,
     } = this.props;
     const { start, end, query } = this.state;
     return (
       <Fragment>
-        {!isLoaded && !isLogSellerLoaded ? (
+        {!isLoaded ||
+        !isLogSellerLoaded ||
+        !isEmpsLoaded ||
+        !isProductVarsLoaded ? (
           <Loader></Loader>
         ) : (
           <React.Fragment>
@@ -261,7 +297,7 @@ class Home extends Component {
                 <ol className="breadcrumb">
                   <li>
                     <a href="xd">
-                      <i className="fa fa-dashboard" /> Home
+                      <i className="fa fa-dashboard" /> Trang chủ
                     </a>
                   </li>
                   <li className="active">Dashboard</li>
@@ -275,7 +311,7 @@ class Home extends Component {
                     {/* small box */}
                     <div className="small-box bg-aqua">
                       <div className="inner">
-                        <h3>20</h3>
+                        <h3>{totalProductVars ? totalProductVars : 0}</h3>
                         <p>Sản phẩm đang bán</p>
                       </div>
                       <div className="icon">
@@ -292,8 +328,8 @@ class Home extends Component {
                     {/* small box */}
                     <div className="small-box bg-red">
                       <div className="inner">
-                        <h3>65</h3>
-                        <p>Đơn hàng đang xử lý</p>
+                        <h3>{totalDocuments ? totalDocuments : 0}</h3>
+                        <p>Đơn hàng đang chờ xử lý</p>
                       </div>
                       <div className="icon">
                         <i className="ion ion-pie-graph" />
@@ -326,7 +362,7 @@ class Home extends Component {
                     {/* small box */}
                     <div className="small-box bg-yellow">
                       <div className="inner">
-                        <h3>20</h3>
+                        <h3>{totalEmployees ? totalEmployees : 0}</h3>
                         <p>Nhân viên</p>
                       </div>
                       <div className="icon">
@@ -547,4 +583,6 @@ Home.propTypes = {
 export default connect(mapStateToProps, {
   getOrdersByShop,
   getLogSellers,
+  getProductVarsByIdShop,
+  getEmployeesByShop,
 })(Home);

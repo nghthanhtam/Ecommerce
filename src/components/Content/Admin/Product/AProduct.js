@@ -257,7 +257,7 @@ class Product extends Component {
               </li>
               <li onClick={() => this.onTabClick("infor-pending")}>
                 <a href="#-pending" data-toggle="tab">
-                  Thông tin sản phẩm chờ duyệt
+                  Thông tin sản phẩm mới chờ duyệt
                 </a>
               </li>
               <li onClick={() => this.onTabClick("infor")}>

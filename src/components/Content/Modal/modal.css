@@ -99,37 +99,49 @@
   z-index: 1001;
 }
 .shoplist-box {
-  width: 400px;
-  min-height: 240px;
+  background-color: #ffffff;
+  width: 240px;
+  min-height: 450px;
   max-height: 4400px;
   position: absolute;
   left: 35%;
   top: 10%;
+  padding: 0;
+  margin: 0;
+}
+.photolist-box {
+  background-color: #ffffff;
+  width: 25%;
+  height: 500px;
+  position: absolute;
+  left: 35%;
+  top: 10%;
+  padding: 15px 10px;
+}
+.photo-box {
+  margin-left: 30px;
+  min-height: 350px;
+  max-height: 350px;
+  left: 35%;
+  top: 10%;
+  width: 270px;
   overflow-y: scroll;
+}
+.photo-productvar {
+  width: 245px;
+  height: 245px;
+  text-transform: uppercase;
+  border-radius: 8px;
+}
+.photo-productvar img {
+  width: 100%;
+  height: 100%;
 }
 .verify-img {
   width: 180px;
   height: 180px;
 }
 .verify-img img {
-  width: 100%;
-  height: 100%;
-}
-.photolist {
-  display: inline-block;
-  align-items: center;
-  justify-content: center;
-}
-.photo-productvar {
-  width: 135px;
-  height: 155px;
-  position: relative;
-  text-transform: uppercase;
-  transition: 0.5s;
-  border-radius: 8px;
-  margin-top: -10px;
-}
-.photo-productvar img {
   width: 100%;
   height: 100%;
 }

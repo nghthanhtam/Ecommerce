@@ -6,12 +6,14 @@ import {
   EMPLOYEE_ADDED,
   EMPLOYEE_UPDATED,
   EMPLOYEE_RECEIVED,
+  UPDATE_EMPLOYEE,
 } from "../actions/types";
 
 const initialState = {
   employees: [],
   totalDocuments: 0,
   isLoaded: false,
+  isUpdated: false,
 };
 
 export default function (state = initialState, action) {
@@ -19,6 +21,8 @@ export default function (state = initialState, action) {
     case GET_EMPLOYEES:
       return {
         ...state,
+        isLoaded: false,
+        isUpdated: false,
       };
     case EMPLOYEES_RECEIVED:
       return {
@@ -52,9 +56,15 @@ export default function (state = initialState, action) {
         ),
       };
 
+    case UPDATE_EMPLOYEE:
+      return {
+        ...state,
+        isUpdated: false,
+      };
     case EMPLOYEE_UPDATED:
       return {
         ...state,
+        isUpdated: true,
       };
 
     default:

@@ -19,16 +19,9 @@ class ModalProductVarPhotos extends Component {
     const { showModal, details } = this.props;
     return (
       <div className="modal-wrapper">
-        <div
-          style={{
-            background: "#fff",
-            padding: "10px",
-            alignContent: "center",
-          }}
-          className="shoplist-box"
-        >
+        <div className="photolist-box">
           <button
-            onClick={() => this.props.showModal({ show: false })}
+            onClick={() => showModal({ show: false })}
             style={{ float: "right", marginTop: "-10px" }}
             type="button"
             className="close"
@@ -38,21 +31,8 @@ class ModalProductVarPhotos extends Component {
             ×
           </button>
           <div className="login-box-body">
-            <h2 className="login-box-msg">Danh sách hình ảnh</h2>
-            {this.state.msg ? (
-              <div className="alert alert-danger alert-dismissible">
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="alert"
-                  aria-hidden="true"
-                  onClick={() => showModal({ show: false })}
-                >
-                  ×
-                </button>
-              </div>
-            ) : null}
-            <div className="photolist">
+            <h3 className="login-box-msg">Danh sách hình ảnh</h3>
+            <div className="photo-box">
               {details.photos.map((photo, index) => {
                 return (
                   <div key={index} className="photo-productvar">

@@ -279,8 +279,8 @@ class AActiveList extends React.Component {
                           <th style={{ width: "20%" }}>Hình ảnh</th>
                           <th style={{ width: "20%" }}>Tên sản phẩm</th>
                           <th style={{ width: "10%" }}>SKU</th>
+                          <th style={{ width: "12%" }}>Mã cửa hàng</th>
                           <th style={{ width: "10%" }}>Đơn giá</th>
-                          <th style={{ width: "12%" }}>Tên nhà bán</th>
                           <th style={{ width: "15%" }}>Thao tác</th>
                         </tr>
                       </thead>
@@ -291,8 +291,8 @@ class AActiveList extends React.Component {
                           <th>Hình ảnh</th>
                           <th>Tên sản phẩm</th>
                           <th>SKU</th>
+                          <th> Mã cửa hàng</th>
                           <th>Đơn giá</th>
-                          <th style={{ width: "12%" }}>Tên nhà bán</th>
                           <th>Thao tác</th>
                         </tr>
                       </tfoot>

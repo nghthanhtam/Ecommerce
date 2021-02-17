@@ -40,10 +40,6 @@ class ProductRow extends Component {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  componentDidMount = () => {
-    console.log(this.props.productVar);
-  };
-
   render() {
     const {
       name,
@@ -53,6 +49,7 @@ class ProductRow extends Component {
       status,
       idShop,
       Images,
+      stockAmount,
     } = this.props.productVar;
     const { index } = this.props;
     const { statuses } = this.state;
@@ -72,8 +69,19 @@ class ProductRow extends Component {
           </td>
           <td>{name}</td>
           <td>{SKU}</td>
+          <td
+            style={{ color: "blue", cursor: "pointer" }}
+            onClick={() =>
+              this.props.history.push({
+                pathname: "/admin/shop/edit",
+                search: `?id=${idShop}`,
+              })
+            }
+          >
+            #{idShop}
+          </td>
           <td>{this.convertPrice(price)}đ</td>
-          <td>{idShop}</td>
+          {/* <td>{stockAmount}</td> */}
 
           {(status == "active" || status == "inactive") && (
             <td>

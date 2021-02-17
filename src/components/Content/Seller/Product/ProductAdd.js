@@ -797,6 +797,7 @@ class ProductAdd extends Component {
                                 onClick={() => this.removeProp(variant)}
                                 className="tag-close"
                               >
+                                {" "}
                                 ×
                               </div>
                             </div>

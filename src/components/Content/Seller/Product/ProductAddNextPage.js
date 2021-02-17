@@ -399,19 +399,20 @@ class ProductAddNextPage extends Component {
                                 <div className="upload-area">
                                   <i className="fa fa-upload fa-3x" />
                                   <div className="upload-text">
-                                    <div>Kéo thả ảnh vào hoặc nhấn</div>
-                                    <div
-                                      style={{
-                                        width: "50px",
-                                        marginLeft: "-8px",
-                                      }}
-                                    >
-                                      <input
-                                        disabled={uploadingMsg !== ""}
-                                        type="file"
-                                        onChange={(e) => fileDrop(e, pindex)}
-                                      />
-                                    </div>
+                                    <div>Tải ảnh lên</div>
+                                  </div>
+                                  <div
+                                    style={{
+                                      width: "50px",
+                                      marginLeft: "-130px",
+                                    }}
+                                  >
+                                    <input
+                                      multiple
+                                      disabled={uploadingMsg !== ""}
+                                      type="file"
+                                      onChange={(e) => fileDrop(e, pindex)}
+                                    />
                                   </div>
                                 </div>
                               </div>

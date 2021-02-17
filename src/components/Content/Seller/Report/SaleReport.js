@@ -5,16 +5,17 @@ import Select from "react-select";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRangePicker } from "react-date-range";
-import {
-  BarChart,
-  Bar,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-} from "recharts";
 import ReportRow from "./ReportRow";
+import { Bar, Doughnut } from "react-chartjs-2";
+// import {
+//   BarChart,
+//   Bar,
+//   CartesianGrid,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   Legend,
+// } from "recharts";
 
 const mapStateToProps = (state) => ({
   idShop: state.auth.role.idShop,
@@ -155,6 +156,7 @@ class SaleReport extends Component {
       "Giảm giá",
       "Tổng tiền",
     ],
+    colLabels: [],
     startDate: new Date(),
     endDate: new Date(),
     reports: [],
@@ -291,7 +293,9 @@ class SaleReport extends Component {
     this.setState({ selectedStatus: selectedItem.value });
   };
   onSelectedReport = (selectedItem) => {
-    this.setState({ selectedReport: selectedItem.value });
+    this.setState({ reports: [] }, () =>
+      this.setState({ selectedReport: selectedItem.value })
+    );
   };
   onSelectedSort = (selectedItem) => {
     this.setState({ selectedSort: selectedItem.value });
@@ -324,9 +328,9 @@ class SaleReport extends Component {
     if (reports.length === 0) {
       return "Không có báo cáo nào";
     } else {
-      return reports.map((report) => (
+      return reports.map((report, index) => (
         <ReportRow
-          key={report.id}
+          key={index}
           report={report}
           selectedReport={selectedReport}
           selectedYear={selectedYear}
@@ -344,19 +348,38 @@ class SaleReport extends Component {
       } = this.state,
       addingColName = "";
     const { idShop, token } = this.props;
+    this.setState({ reports: [] });
     if (selectedReport === "SALE_SUMMARY") {
       addingColName = "Tháng/Năm";
 
-      console.log(defaultHeaderList);
       //set lại các cột mặc định -> thêm các cột tùy theo loại report dc chọn
-      this.setState({ headerList: defaultHeaderList }, () => {
-        this.setState(
-          (prepState) => ({
-            headerList: [addingColName, ...prepState.headerList],
-          }),
-          () => console.log(this.state.headerList)
-        );
-      });
+      this.setState(
+        {
+          headerList: defaultHeaderList,
+          colLabels: [
+            "Tháng 1",
+            "Tháng 2",
+            "Tháng 3",
+            "Tháng 4",
+            "Tháng 5",
+            "Tháng 6",
+            "Tháng 7",
+            "Tháng 8",
+            "Tháng 9",
+            "Tháng 10",
+            "Tháng 11",
+            "Tháng 12",
+          ],
+        },
+        () => {
+          this.setState(
+            (prepState) => ({
+              headerList: [addingColName, ...prepState.headerList],
+            }),
+            () => console.log(this.state.headerList)
+          );
+        }
+      );
 
       axios
         .get(
@@ -369,6 +392,7 @@ class SaleReport extends Component {
           }
         )
         .then((response) => {
+          console.log(response.data);
           this.setState({ reports: response.data });
         })
         .catch((er) => console.log(er.response));
@@ -378,9 +402,12 @@ class SaleReport extends Component {
       addingColName = "Tỉnh/Thành phố";
 
       this.setState({ headerList: defaultHeaderList }, () => {
-        this.setState((prepState) => ({
-          headerList: [addingColName, ...prepState.headerList],
-        }));
+        this.setState(
+          (prepState) => ({
+            headerList: [addingColName, ...prepState.headerList],
+          }),
+          () => console.log("headerList: ", this.state.headerList)
+        );
       });
 
       axios
@@ -462,9 +489,9 @@ class SaleReport extends Component {
       selectionRange,
       headerList,
       selectedReport,
-      select,
+      colLabels,
       sort,
-      totalDocuments,
+      reports,
     } = this.state;
 
     return (
@@ -482,7 +509,7 @@ class SaleReport extends Component {
                       }}
                     >
                       <div>
-                        <button
+                        {/* <button
                           style={{
                             width: "100px",
                             float: "right",
@@ -492,7 +519,7 @@ class SaleReport extends Component {
                           className="btn btn-block btn-success"
                         >
                           Export
-                        </button>
+                        </button> */}
                         <button
                           type="button"
                           style={{
@@ -501,7 +528,7 @@ class SaleReport extends Component {
                           }}
                           className="btn btn-block btn-primary"
                         >
-                          Clear
+                          Xóa
                         </button>
                         <button
                           onClick={this.filter}
@@ -509,26 +536,10 @@ class SaleReport extends Component {
                           style={{ width: "100px", float: "right" }}
                           className="btn btn-block btn-info"
                         >
-                          Filter
+                          Lập báo cáo
                         </button>
                       </div>
                       <div className="row-flex">
-                        <div
-                          style={{
-                            background: "#f5f5f5",
-                            padding: "10px",
-                            margin: "10px",
-                          }}
-                        >
-                          <h4>Ngày tạo đơn hàng</h4>
-                          <div>
-                            <DateRangePicker
-                              showSelectionPreview={true}
-                              ranges={[selectionRange]}
-                              onChange={this.handleSelect}
-                            />
-                          </div>
-                        </div>
                         <div
                           className="column-flex"
                           style={{
@@ -601,10 +612,107 @@ class SaleReport extends Component {
                             </div>
                           </div>
                         </div>
+                        {selectedReport == "CITY" && (
+                          <div
+                            style={{
+                              background: "#f5f5f5",
+                              padding: "10px",
+                              margin: "10px",
+                            }}
+                          >
+                            <h4>Ngày tạo đơn hàng</h4>
+                            <div>
+                              <DateRangePicker
+                                showSelectionPreview={true}
+                                ranges={[selectionRange]}
+                                onChange={this.handleSelect}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
+                {reports.length > 0 && selectedReport == "SALE_SUMMARY" && (
+                  <Bar
+                    data={{
+                      labels: colLabels,
+                      datasets: [
+                        {
+                          label: "Tổng số đơn hàng",
+                          backgroundColor: [
+                            "#3e95cd",
+                            "#8e5ea2",
+                            "#3cba9f",
+                            "#e8c3b9",
+                            "#c45850",
+                            "#c45850",
+                            "#c45750",
+                            "#c45851",
+                            "#c45850",
+                            "#c45850",
+                            "#c45850",
+                            "#c45850",
+                          ],
+                          data: reports.map(({ total }) => total),
+                        },
+                      ],
+                    }}
+                    options={{
+                      scales: {
+                        yAxes: [
+                          {
+                            ticks: {
+                              reverse: false,
+                              stepSize: 1,
+                            },
+                          },
+                        ],
+                      },
+                      legend: { display: false },
+                      title: {
+                        display: true,
+                        text: "Thống kê doanh thu mỗi tháng trong năm",
+                      },
+                    }}
+                  />
+                )}
+
+                {reports.length > 0 && selectedReport == "CITY" && (
+                  <Doughnut
+                    data={{
+                      labels: [
+                        "Africa",
+                        "Asia",
+                        "Europe",
+                        "Latin America",
+                        "North America",
+                      ],
+                      datasets: [
+                        {
+                          label: "Population (millions)",
+                          backgroundColor: [
+                            "#3e95cd",
+                            "#8e5ea2",
+                            "#3cba9f",
+                            "#e8c3b9",
+                            "#c45850",
+                          ],
+                          data: [2478, 5267, 734, 784, 433],
+                        },
+                      ],
+                    }}
+                    option={{
+                      title: {
+                        display: true,
+                        text: "Predicted world population (millions) in 2050",
+                      },
+                    }}
+                  />
+                )}
+
+                <br />
 
                 <div className="box-body">
                   <div
@@ -722,14 +830,14 @@ class SaleReport extends Component {
                     </div>
                     <div className="row">
                       <div className="col-sm-5">
-                        <div
+                        {/* <div
                           className="dataTables_info"
                           id="example1_info"
                           role="status"
                           aria-live="polite"
                         >
                           Hiển thị 1 đến {select} trong {totalDocuments} mục
-                        </div>
+                        </div> */}
                       </div>
                       <div className="col-sm-7">
                         <div

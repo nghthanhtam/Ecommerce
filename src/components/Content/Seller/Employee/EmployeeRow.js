@@ -3,23 +3,10 @@ import { connect } from "react-redux";
 import { deleteEmployee } from "../../../../state/actions/employeeActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
+const mapStateToProps = (state) => ({
+  permissions: state.auth.permissions,
+});
 class EmployeeRow extends Component {
-  convertDate = (date) => {
-    const newDate = new Date(date);
-    let year = newDate.getFullYear();
-    let month = newDate.getMonth() + 1;
-    let dt = newDate.getDate();
-
-    dt = dt < 10 ? `0${dt}` : dt;
-
-    month = month < 10 ? `0${month}` : month;
-    // if (month < 10) {
-    //   month = "0" + month;
-    // }
-
-    return year + "-" + month + "-" + dt;
-  };
-
   handleEdit = (id) => {
     this.props.pushHistory(`/seller/employee/edit/${id}`);
   };
@@ -29,7 +16,7 @@ class EmployeeRow extends Component {
   };
 
   render() {
-    const { employee, index } = this.props;
+    const { employee, index, permissions } = this.props;
 
     return (
       <tr>
@@ -38,30 +25,37 @@ class EmployeeRow extends Component {
         <td>{employee.EmployeeRole.name}</td>
         <td>{employee.fullname}</td>
         <td>{employee.phone}</td>
-        {!employee.deletedAt && (
-          <td>
-            <div className="btn-group">
-              <button
-                onClick={() => this.handleEdit(employee.id)}
-                type="button"
-                className="btn btn-success"
-              >
-                Sửa
-              </button>
-
-              <button
-                onClick={() => this.handleDelete(employee.id)}
-                type="button"
-                className="btn btn-danger"
-              >
-                Xóa
-              </button>
-            </div>
-          </td>
-        )}
+        {!employee.deletedAt &&
+          (permissions.includes("editEmployee") ||
+            permissions.includes("deleteEmployee")) && (
+            <td>
+              <div className="btn-group">
+                {permissions.includes("editEmployee") && (
+                  <button
+                    onClick={() => this.handleEdit(employee.id)}
+                    type="button"
+                    className="btn btn-success"
+                  >
+                    Sửa
+                  </button>
+                )}
+                {permissions.includes("deleteEmployee") && (
+                  <button
+                    onClick={() => this.handleDelete(employee.id)}
+                    type="button"
+                    className="btn btn-danger"
+                  >
+                    Xóa
+                  </button>
+                )}
+              </div>
+            </td>
+          )}
       </tr>
     );
   }
 }
 
-export default connect(null, { deleteEmployee, pushHistory })(EmployeeRow);
+export default connect(mapStateToProps, { deleteEmployee, pushHistory })(
+  EmployeeRow
+);

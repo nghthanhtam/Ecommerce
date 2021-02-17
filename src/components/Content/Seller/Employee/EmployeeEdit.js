@@ -14,6 +14,7 @@ const mapStateToProps = (state, props) => {
     idShop: state.auth.role.idShop,
     roles: state.role.roles,
     isLoaded: state.role.isLoaded,
+    isUpdated: state.employee.isUpdated,
   };
 };
 
@@ -90,10 +91,15 @@ class EmployeeEdit extends Component {
       idShop,
     };
     this.props.updateEmployee(newEmployee);
-    //Quay về trang chính
-    this.props.history.push("/seller/employee");
   };
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { isUpdated } = this.props;
+    if (isUpdated && isUpdated !== prevProps.isUpdated) {
+      //quay ve danh sach nhan vien
+      this.props.history.push("/seller/employee");
+    }
+  }
   handleCancel = (e) => {
     this.props.history.push("/seller/employee");
   };

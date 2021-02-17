@@ -4,24 +4,6 @@ import { deleteProduct } from "../../../../state/actions/productActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
 class ReportRow extends Component {
-  convertDate = (date) => {
-    const newDate = new Date(date);
-    let year = newDate.getFullYear();
-    let month = newDate.getMonth() + 1;
-    let dt = newDate.getDate();
-
-    dt = dt < 10 ? `0${dt}` : dt;
-
-    month = month < 10 ? `0${month}` : month;
-
-    return year + "-" + month + "-" + dt;
-  };
-  handleEdit = (id) => {
-    this.props.pushHistory(`/payslip/edit/${id}`);
-  };
-  handleDelete = (id) => {
-    this.props.deletePaySlip(id);
-  };
   componentDidMount() {
     console.log(this.props.selectedReport);
     console.log(this.props.report);

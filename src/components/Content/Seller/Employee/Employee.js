@@ -28,6 +28,7 @@ class Employee extends Component {
   };
 
   componentDidMount() {
+    console.log("asdfaf");
     const { limit, page, query, deletedEmp, activeEmp } = this.state;
     const { idShop } = this.props;
     this.props.getEmployeesByShop({

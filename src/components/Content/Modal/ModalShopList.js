@@ -37,7 +37,6 @@ class ModalShopList extends Component {
         <div
           style={{
             background: "#fff",
-            padding: "10px",
           }}
           className="shoplist-box"
         >
@@ -66,6 +65,7 @@ class ModalShopList extends Component {
                 </button>
               </div>
             ) : null}
+
             {details.otherShops.map((shop) => {
               return (
                 <div className="shoplist-wrapper">

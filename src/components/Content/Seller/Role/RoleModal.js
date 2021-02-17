@@ -63,6 +63,7 @@ class RoleModal extends Component {
         { all } = { ...this.state };
       value = e.target.checked;
       if (name == "all") {
+        //neu user click vao o check all
         this.setState(
           {
             all: !all,
@@ -105,6 +106,8 @@ class RoleModal extends Component {
           }
         );
       } else {
+        //neu user click vao cac o khac check all
+        if (!value) this.setState({ all: false });
         this.setState({ [name]: value });
         for (let i in permissions) {
           if (permissions[i].permission == name) {
@@ -530,7 +533,7 @@ class RoleModal extends Component {
   };
 
   render() {
-    const { name, permissions } = this.state;
+    const { name, permissions, all } = this.state;
     return (
       <React.Fragment>
         <button
@@ -605,6 +608,7 @@ class RoleModal extends Component {
                       name="all"
                       type="checkbox"
                       onChange={this.onChange}
+                      checked={all}
                     />
                     <p>Chọn tất cả</p>
                   </label>
