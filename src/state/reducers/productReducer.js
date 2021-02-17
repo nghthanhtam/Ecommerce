@@ -16,6 +16,8 @@ import {
   GET_RECOMMENDED_PRODUCTS,
   GET_TRENDING_PRODUCTS,
   TRENDING_PRODUCTS_RECEIVED,
+  GET_SURVEY_PRODUCTS,
+  SURVEY_PRODUCTS_RECEIVED,
 } from "../actions/types";
 
 const initialState = {
@@ -27,6 +29,8 @@ const initialState = {
   isRec: false,
   isTrendingProductsLoaded: false,
   trendingProducts: [],
+  isSurveyProductsLoaded: false,
+  surveyProducts: [],
 };
 
 export default function (state = initialState, action) {
@@ -122,6 +126,17 @@ export default function (state = initialState, action) {
         ...state,
         trendingProducts: action.payload.data.items,
         isTrendingProductsLoaded: true,
+      };
+    case GET_SURVEY_PRODUCTS:
+      return {
+        ...state,
+        isSurveyProductsLoaded: false,
+      };
+    case SURVEY_PRODUCTS_RECEIVED:
+      return {
+        ...state,
+        surveyProducts: action.payload.data.items,
+        isSurveyProductsLoaded: true,
       };
     case GET_PRODUCTS_BY_IDSHOP:
       return {

@@ -2,6 +2,8 @@ import { takeEvery, put, call, select } from "redux-saga/effects";
 import axios from "axios";
 import { tokenConfig } from "../actions/authActions";
 import { tokenAdminConfig } from "../actions/authAdminActions";
+import { ADD_NOTIFICATION } from "react-redux-notify";
+import { NOTI_SUCCESS, NOTI_APPROVE_SUCCESS } from "./NotificationObject";
 import {
   GET_PRODUCTVARS,
   GET_PRODUCTVARS_BY_IDSHOP,
@@ -15,6 +17,7 @@ import {
   PRODUCTVAR_UPDATED,
   GET_PRODUCTVAR_BY_ID,
   PRODUCTVAR_RECEIVED,
+  SHOW_NOTI,
 } from "../actions/types";
 
 function* fetchProductVarByid(params) {
@@ -106,17 +109,25 @@ function* addProductVar(params) {
 }
 
 function* updateProductVarStatus(params) {
-  const state = yield select();
+  const state = yield select(),
+    { id } = params.newProductVar;
+  console.log(params.newProductVar);
+
   try {
     const response = yield call(() =>
       axios.put(
-        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/${params.newProductVar.id}/status`,
+        `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar/${id}/status`,
         params.newProductVar,
-        tokenConfig(state)
+        tokenAdminConfig(state)
       )
     );
 
     yield put({ type: PRODUCTVAR_UPDATED, payload: response.data });
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_APPROVE_SUCCESS,
+    });
     yield put({
       type: GET_PRODUCTVARS_BY_IDSHOP,
       pages: {

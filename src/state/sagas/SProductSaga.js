@@ -24,6 +24,8 @@ import {
   GET_RECOMMENDED_PRODUCTS,
   GET_TRENDING_PRODUCTS,
   TRENDING_PRODUCTS_RECEIVED,
+  GET_SURVEY_PRODUCTS,
+  SURVEY_PRODUCTS_RECEIVED,
 } from "../actions/types";
 
 function* sortProducts(params) {
@@ -99,6 +101,24 @@ function* fetchProducts(params) {
     );
 
     yield put({ type: PRODUCTS_RECEIVED, payload: response });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function* getSurveyProducts(params) {
+  console.log(params);
+  const state = yield select();
+  try {
+    const response = yield call(() =>
+      axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/product/search/survey`,
+          tokenUserConfig(state)
+        )
+        .catch((er) => console.log(er))
+    );
+    yield put({ type: SURVEY_PRODUCTS_RECEIVED, payload: response });
   } catch (error) {
     console.log(error);
   }
@@ -248,4 +268,5 @@ export default function* sProductSaga() {
   yield takeEvery(DELETE_PRODUCT, deleteProducts);
   yield takeEvery(GET_RECOMMENDED_PRODUCTS, getRecProducts);
   yield takeEvery(GET_TRENDING_PRODUCTS, getTrendingProducts);
+  yield takeEvery(GET_SURVEY_PRODUCTS, getSurveyProducts);
 }

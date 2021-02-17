@@ -49,7 +49,6 @@ class ProductRow extends Component {
       status,
       idShop,
       Images,
-      stockAmount,
     } = this.props.productVar;
     const { index } = this.props;
     const { statuses } = this.state;
@@ -81,7 +80,6 @@ class ProductRow extends Component {
             #{idShop}
           </td>
           <td>{this.convertPrice(price)}đ</td>
-          {/* <td>{stockAmount}</td> */}
 
           {(status == "active" || status == "inactive") && (
             <td>

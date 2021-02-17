@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 import {
   getProductById,
   getRecProducts,
+  getSurveyProducts,
 } from "../../../../state/actions/productActions";
 import { getProductVarById } from "../../../../state/actions/productVarActions";
 import { showModal } from "../../../../state/actions/modalActions";
@@ -50,6 +51,8 @@ const mapStateToProps = (state) => ({
   averageRating: state.rating.averageRating,
   isRec: state.product.isRec,
   recProducts: state.product.recProducts,
+  isSurveyProductsLoaded: state.product.isSurveyProductsLoaded,
+  surveyProducts: state.product.surveyProducts,
   history: state.history.history,
 });
 
@@ -80,6 +83,7 @@ class ProductDetail extends React.Component {
     errorMsg: "",
     nameObj: "",
     recproducts: [],
+    surveyProducts: [],
     questionMsg: false,
     ratingMsg: false,
     idQuestionBeing: "",
@@ -87,13 +91,32 @@ class ProductDetail extends React.Component {
   };
 
   componentDidMount() {
-    const { idProduct, idShop } = this.props.match.params;
+    const { idProduct, idShop } = this.props.match.params,
+      { user } = this.props;
     window.scrollTo(0, 0);
     this.setState({ idProduct });
     this.props.getProductById({ idShop, idProduct });
-    this.props.getRatingsByProduct({ idProduct, limit: 1000, page: 1 });
-    this.props.getQuestionsByProduct({ idProduct, limit: 1000, page: 1 });
-    if (this.props.user) this.props.getRecProducts();
+    this.props.getRatingsByProduct({
+      idProduct,
+      limit: 1000,
+      page: 1,
+      query: "",
+    });
+    this.props.getQuestionsByProduct({
+      idProduct,
+      limit: 1000,
+      page: 1,
+      query: "",
+    });
+    if (user) {
+      this.props.getSurveyProducts({
+        id: user.id,
+        limit: 1000,
+        page: 1,
+        query: "",
+      });
+      this.props.getRecProducts();
+    }
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -175,7 +198,31 @@ class ProductDetail extends React.Component {
           });
         }
       }
-      this.setState({ recproducts: tempArr });
+      this.setState({ recproducts: tempArr }, () => {
+        if (this.state.recproducts.length == 0) {
+          const { isSurveyProductsLoaded, surveyProducts } = this.props;
+          console.log(isSurveyProductsLoaded);
+          console.log(prevProps.isSurveyProductsLoaded);
+          if (isSurveyProductsLoaded) {
+            let tempArr = [...surveyProducts];
+
+            if (surveyProducts.length > 0 && surveyProducts.length < 5) {
+              const arrLength = surveyProducts.length;
+              for (let i = 0; i < 5 - arrLength + 1; i++) {
+                tempArr.push({
+                  id: "",
+                  name: "",
+                  brand: "",
+                  arrayImage: "",
+                  price: "",
+                });
+              }
+            }
+
+            this.setState({ surveyProducts: tempArr });
+          }
+        }
+      });
     }
   };
 
@@ -369,21 +416,23 @@ class ProductDetail extends React.Component {
 
         if (variants.length == product.variants.length) {
           for (let i = 0; i < productVars.length; i++) {
-            for (let j = 0; j < productVars[i].ProductDets.length; j++) {
-              if (
-                !convertVariants.includes(
-                  productVars[i].ProductDets[j].idVariantValue
-                )
-              ) {
-                console.log("del productVars: ", productVars[i]);
-                productVars.splice(i, 1);
-                i--;
-                break;
+            if (productVars[i].status == "active") {
+              for (let j = 0; j < productVars[i].ProductDets.length; j++) {
+                if (
+                  !convertVariants.includes(
+                    productVars[i].ProductDets[j].idVariantValue
+                  )
+                ) {
+                  console.log("del productVars: ", productVars[i]);
+                  productVars.splice(i, 1);
+                  i--;
+                  break;
+                }
               }
             }
           }
 
-          if (productVars.length == 1) {
+          if (productVars.length >= 1) {
             this.setState({ selectedProductVar: productVars[0] }, () => {
               console.log(
                 "selectedProductVar: ",
@@ -504,6 +553,7 @@ class ProductDetail extends React.Component {
       errorMsg,
       sameMovieProucts,
       recproducts,
+      surveyProducts,
       questionMsg,
       ratingMsg,
       idQuestionBeing,
@@ -523,6 +573,7 @@ class ProductDetail extends React.Component {
       questions,
       isQuestionsLoaded,
       isRec,
+      isSurveyProductsLoaded,
     } = this.props;
     const settings = {
       infinite: true,
@@ -554,9 +605,9 @@ class ProductDetail extends React.Component {
         <div
           style={{
             zIndex: 10,
-            marginBottom: "300px",
+            marginBottom: "280px",
             position: "relative",
-            backgroundColor: "#f7f7f7",
+            backgroundColor: "#f0f0f0",
           }}
         >
           <div className="nohome-section"></div>
@@ -747,7 +798,7 @@ class ProductDetail extends React.Component {
                             <i className="fa fa-plus"></i>
                           </div>
                         </div>
-                        {selectedProductVar && (
+                        {selectedProductVar !== "" && (
                           <div
                             style={{
                               color: "grey",
@@ -851,10 +902,41 @@ class ProductDetail extends React.Component {
                 </div>
               </div>
 
+              {isRec &&
+                recproducts.length == 0 &&
+                isSurveyProductsLoaded &&
+                surveyProducts.length > 0 && (
+                  <div className="recommend-wrapper">
+                    <h3
+                      className="recommend-pane"
+                      style={{ marginLeft: "auto" }}
+                    >
+                      SẢN PHẨM BẠN CÓ THỂ THÍCH
+                    </h3>
+                    <div className="sliderwrapper">
+                      <Slider
+                        style={{
+                          width: "107%",
+                          height: "370px",
+                          marginLeft: "-35px",
+                        }}
+                        {...settings}
+                        arrows={surveyProducts.length <= 6 ? false : true}
+                        slidesToShow={
+                          surveyProducts.length <= 5 ? surveyProducts.length : 5
+                        }
+                      >
+                        {surveyProducts.map((item, index) => {
+                          return <RecProduct item={item} key={index} />;
+                        })}
+                      </Slider>
+                    </div>
+                  </div>
+                )}
               {isRec && recproducts.length > 0 && (
                 <div className="recommend-wrapper">
                   <h3 className="recommend-pane" style={{ marginLeft: "auto" }}>
-                    NHỮNG SẢN PHẨM BẠN CÓ THỂ THÍCH
+                    SẢN PHẨM BẠN CÓ THỂ THÍCH
                   </h3>
                   <div className="sliderwrapper">
                     <Slider
@@ -1169,7 +1251,7 @@ class ProductDetail extends React.Component {
                         </div>
                         <div className="reply-wrapper">
                           <div className="comments">{rating.title}</div>
-                          <p>{rating.review}</p>
+                          <div>{rating.review}</div>
                           {rating.RatingImages.length > 0 && (
                             <div className="sku-grid">
                               {rating.RatingImages.map((image, index) => {
@@ -1297,4 +1379,5 @@ export default connect(mapStateToProps, {
   addQuestion,
   addAnswer,
   getRecProducts,
+  getSurveyProducts,
 })(ProductDetail);

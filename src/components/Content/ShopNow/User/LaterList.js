@@ -47,9 +47,9 @@ class LaterList extends React.Component {
         <div
           style={{
             zIndex: 10,
-            marginBottom: "300px",
+            marginBottom: "280px",
             position: "relative",
-            backgroundColor: "#f7f7f7",
+            backgroundColor: "#f0f0f0",
           }}
         >
           <div className="nohome-section"></div>

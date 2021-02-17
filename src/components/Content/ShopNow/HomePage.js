@@ -130,13 +130,6 @@ class HomePage extends React.Component {
       slidesToScroll: 4,
       className: "slider",
     };
-    const settingsHis = {
-      infinite: true,
-      speed: 1000,
-      slidesToShow: 5,
-      slidesToScroll: 3,
-      className: "slider",
-    };
 
     return (
       <Fragment>
@@ -146,9 +139,9 @@ class HomePage extends React.Component {
             <div
               style={{
                 zIndex: 10,
-                marginBottom: "300px",
+                marginBottom: "280px",
                 position: "relative",
-                backgroundColor: "#f7f7f7",
+                backgroundColor: "#f0f0f0",
                 justifyContent: "center",
                 alignItems: "center",
                 width: "100%",
@@ -172,9 +165,6 @@ class HomePage extends React.Component {
                           với những vật dụng mang màu sắc của nhân vật phim ảnh
                           mà bạn yêu thích.
                         </p>
-                        {/* <Link className="item" to="/shopnow">
-                          Tham quan các cửa hàng
-                        </Link> */}
                       </div>
                       <div className="imgBox">
                         <img src={this.state.picLink} alt="blue" />
@@ -360,23 +350,6 @@ class HomePage extends React.Component {
                   </div>
                 </div>
               </div>
-
-              {/* <div className="container-his">
-                <div className="title-his">SẢN PHẨM BẠN ĐÃ XEM</div>
-                <div className="sliderwrapper">
-                  <Slider
-                    style={{
-                      width: "94%",
-                      height: "350px",
-                    }}
-                    {...settingsHis}
-                  >
-                    {productList.map((item, index) => {
-                      return <RecProduct key={index} />;
-                    })}
-                  </Slider>
-                </div>
-              </div> */}
             </div>
             <Footer />
           </Fragment>

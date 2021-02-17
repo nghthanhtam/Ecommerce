@@ -26,7 +26,7 @@ const mapStateToProps = (state) => ({
 
 const APromotionModal = (props) => {
   useEffect(() => {
-    props.getPromotionTypes({ limit: 1000, page: 1 });
+    props.getPromotionTypes({ limit: 1000, page: 1, query: "" });
     props.getProductCates({ limit: 1000, page: 1, query: "" });
     props.getMovieCates({ limit: 1000, page: 1, query: "" });
   }, []);

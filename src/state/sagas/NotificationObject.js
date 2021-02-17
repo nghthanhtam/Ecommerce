@@ -8,3 +8,11 @@ export const NOTI_SUCCESS = {
   canDismiss: true,
   icon: <i className="fa fa-check" />,
 };
+
+export const NOTI_APPROVE_SUCCESS = {
+  message: "Duyệt thành công!",
+  type: NOTIFICATION_TYPE_SUCCESS,
+  duration: 2000,
+  canDismiss: true,
+  icon: <i className="fa fa-check" />,
+};

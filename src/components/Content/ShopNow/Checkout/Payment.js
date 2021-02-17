@@ -49,7 +49,6 @@ class Payment extends React.Component {
     recipient: "",
     phone: "",
     saleOffPercentage: "",
-
     isTransition: false,
   };
 
@@ -62,7 +61,7 @@ class Payment extends React.Component {
 
   componentDidUpdate() {
     if (this.props.isAdded) {
-      setTimeout(() => this.props.history.push("/shopnow/order-receipt"), 800);
+      setTimeout(() => this.props.history.push("/shopnow/order-receipt"), 400);
     }
   }
 
@@ -173,7 +172,7 @@ class Payment extends React.Component {
         <div
           style={{
             zIndex: 10,
-            marginBottom: "300px",
+            marginBottom: "280px",
             position: "relative",
             backgroundColor: "#fff",
           }}

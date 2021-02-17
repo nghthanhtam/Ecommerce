@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { deleteProduct } from "../../../../state/actions/productActions";
-import { updateProductVarStatus } from "../../../../state/actions/productVarActions";
 import { showModal } from "../../../../state/actions/modalActions";
 import { pushHistory } from "../../../../state/actions/historyActions";
 
@@ -20,12 +19,6 @@ class ProductRow extends Component {
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
     return year + "-" + month + "-" + dt;
-  };
-
-  approve = () => {
-    const { productVar } = this.props;
-    productVar.status = "active";
-    this.props.updateProductVarStatus(productVar);
   };
 
   render() {
@@ -119,6 +112,5 @@ class ProductRow extends Component {
 export default connect(mapStateToProps, {
   deleteProduct,
   pushHistory,
-  updateProductVarStatus,
   showModal,
 })(ProductRow);
