@@ -1,4 +1,4 @@
-import { takeEvery, put, call, select } from "redux-saga/effects";
+import { takeEvery, put, call, select, delay } from "redux-saga/effects";
 import axios from "axios";
 import { tokenUserConfig } from "../actions/authUserActions";
 import {
@@ -88,7 +88,7 @@ function* addCart(params) {
 
 function* updateCart(params) {
   const state = yield select();
-  console.log(params);
+  console.log("adsfasdfaf");
   try {
     const response = yield call(() =>
       axios.put(
@@ -100,7 +100,7 @@ function* updateCart(params) {
     yield put({ type: CART_UPDATED, payload: response.data });
     yield put({
       type: GET_CARTS_BY_IDUSER,
-      pages: { limit: 10000, page: 1, idUser: params.newCart.idUser },
+      pages: { limit: 1000, page: 1, idUser: params.newCart.idUser },
     });
   } catch (error) {
     console.log(error.response);

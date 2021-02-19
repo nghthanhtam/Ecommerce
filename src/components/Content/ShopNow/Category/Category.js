@@ -15,7 +15,11 @@ class Category extends React.Component {
             <h3>{cate.name}</h3>
             <p>{cate.description}</p>
             <Link
-              to={{ pathname: `./shopnow/product-list/idMovieCat/${cate.id}` }}
+              // to={{ pathname: `./shopnow/product-list/idMovieCat/${cate.id}` }}
+              to={{
+                pathname: "/shopnow/search",
+                search: `?movieCategory=${cate.id}`,
+              }}
               className="btn"
             >
               Xem thêm

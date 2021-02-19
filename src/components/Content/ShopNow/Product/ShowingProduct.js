@@ -37,7 +37,7 @@ class ShowingProduct extends React.Component {
     let productVar = item.ProductVars.filter((obj) => {
       return obj.id == item.arrayImage[0].idProductVar;
     });
-    return productVar[0].price;
+    return productVar[0] ? productVar[0].price : 0;
   };
 
   render() {

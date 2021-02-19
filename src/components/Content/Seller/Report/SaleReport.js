@@ -509,7 +509,7 @@ class SaleReport extends Component {
                       }}
                     >
                       <div>
-                        {/* <button
+                        <button
                           style={{
                             width: "100px",
                             float: "right",
@@ -518,8 +518,8 @@ class SaleReport extends Component {
                           type="button"
                           className="btn btn-block btn-success"
                         >
-                          Export
-                        </button> */}
+                          Xuất báo cáo
+                        </button>
                         <button
                           type="button"
                           style={{
@@ -758,7 +758,7 @@ class SaleReport extends Component {
                             id="example1_filter"
                             className="dataTables_filter"
                           >
-                            <label
+                            {/* <label
                               style={{
                                 float: "right",
                                 fontFamily: "Saira, sans-serif",
@@ -775,7 +775,7 @@ class SaleReport extends Component {
                                 onChange={this.handleOnChange}
                                 value={this.state.query}
                               />
-                            </label>
+                            </label> */}
                           </div>
                         </div>
                       </div>

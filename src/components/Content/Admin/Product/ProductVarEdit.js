@@ -158,6 +158,7 @@ class ProductVarEdit extends Component {
     const { id, name, SKU, marketPrice, price, status, images } = this.state;
     e.preventDefault();
 
+    console.log("abcccc");
     if (images.length < 3) {
       this.setState({ errUploadMsg: "Sản phẩm phải có ít nhất 3 hình" });
       return;

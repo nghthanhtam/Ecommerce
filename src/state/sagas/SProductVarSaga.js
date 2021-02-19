@@ -42,7 +42,7 @@ function* fetchProductVarByid(params) {
 function* fetchProductVars(params) {
   try {
     const state = yield select(),
-      { limit, page, arrayStatus } = params.pages;
+      { query, limit, page, arrayStatus } = params.pages;
 
     let tempString = "";
     for (let x = 0; x < arrayStatus.length; x++) {
@@ -52,7 +52,7 @@ function* fetchProductVars(params) {
     const response = yield call(() =>
       axios
         .get(
-          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar?limit=${limit}&page=${page}` +
+          `${process.env.REACT_APP_BACKEND_PRODUCT}/api/productvar?query=${query}&limit=${limit}&page=${page}` +
             tempString,
           tokenAdminConfig(state)
         )

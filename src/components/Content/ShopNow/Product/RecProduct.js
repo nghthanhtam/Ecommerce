@@ -33,6 +33,15 @@ class Product extends React.Component {
           <div className="product-btn">Chi tiết</div>
         </div>
       </div>
+
+      // <div className="recproduct-card">
+      //   <h1>test</h1>
+      //   <p>Thương hiệu: asdvas</p>
+      //   <img src={"./img/blue.png"} alt="product" />
+      //   <div className="product-info">
+      //     <div className="product-btn">Chi tiết</div>
+      //   </div>
+      // </div>
     );
   }
 }

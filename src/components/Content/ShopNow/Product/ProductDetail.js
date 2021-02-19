@@ -47,7 +47,6 @@ const mapStateToProps = (state) => ({
   questions: state.question.questions,
   totalRating: state.rating.totalDocuments,
   tokenUser: state.authUser.token,
-  isAuthenticated: state.authUser.isAuthenticated,
   averageRating: state.rating.averageRating,
   isRec: state.product.isRec,
   recProducts: state.product.recProducts,
@@ -63,7 +62,7 @@ class ProductDetail extends React.Component {
   }
 
   state = {
-    productList: [1, 2, 3, 4, 5, 6, 7],
+    productList: [1, 2, 3, 4, 5, 6],
     sameMovieProucts: [],
     replyBoxHidden: false,
     answerBoxHidden: false,
@@ -123,7 +122,9 @@ class ProductDetail extends React.Component {
     const { bigPhoto } = this.state;
     const { product, isProductLoaded } = this.props;
     if (bigPhoto == "" && isProductLoaded) {
-      this.setState({ bigPhoto: product.images[0].url });
+      this.setState({
+        bigPhoto: product.images[0] ? product.images[0].url : ".",
+      });
     }
 
     //get recommended movies by idMovie
@@ -170,6 +171,7 @@ class ProductDetail extends React.Component {
     }
 
     if (!prevProps.isProductLoaded && isProductLoaded) {
+      if (this.state.selectedProductVar == "") return;
       this.setState((prevState) => ({
         selectedProductVar: {
           // object that we want to update
@@ -186,9 +188,9 @@ class ProductDetail extends React.Component {
     if (prevProps.isRec !== isRec && isRec) {
       let tempArr = [...recProducts];
 
-      if (recProducts.length > 0 && recProducts.length < 5) {
+      if (recProducts.length > 0 && recProducts.length < 6) {
         const arrLength = recProducts.length;
-        for (let i = 0; i < 5 - arrLength + 1; i++) {
+        for (let i = 0; i < 6 - arrLength + 1; i++) {
           tempArr.push({
             id: "",
             name: "",
@@ -206,9 +208,9 @@ class ProductDetail extends React.Component {
           if (isSurveyProductsLoaded) {
             let tempArr = [...surveyProducts];
 
-            if (surveyProducts.length > 0 && surveyProducts.length < 5) {
+            if (surveyProducts.length > 0 && surveyProducts.length < 6) {
               const arrLength = surveyProducts.length;
-              for (let i = 0; i < 5 - arrLength + 1; i++) {
+              for (let i = 0; i < 6 - arrLength + 1; i++) {
                 tempArr.push({
                   id: "",
                   name: "",
@@ -218,7 +220,6 @@ class ProductDetail extends React.Component {
                 });
               }
             }
-
             this.setState({ surveyProducts: tempArr });
           }
         }
@@ -380,12 +381,12 @@ class ProductDetail extends React.Component {
     arr = variants.filter((o) => {
       return o.id == item.idVariant;
     });
-    unknownVariantText =
-      arr[0].name +
-      " " +
-      arr[0].VariantValues.filter((o) => {
-        return o.id == item.id;
-      })[0].value;
+    // unknownVariantText =
+    //   arr[0].name +
+    //   " " +
+    //   arr[0].VariantValues.filter((o) => {
+    //     return o.id == item.id;
+    //   })[0].value;
 
     this.setState(
       (state) => {
@@ -409,6 +410,7 @@ class ProductDetail extends React.Component {
         let productVars = [...this.props.product.productVars],
           { variants } = this.state;
 
+        console.log("-------------", productVars);
         //convert arr object variants thành arr gồm các phần tử là idVariantValue
         let convertVariants = variants.map(
           ({ idVariantValue }) => idVariantValue
@@ -416,22 +418,28 @@ class ProductDetail extends React.Component {
 
         if (variants.length == product.variants.length) {
           for (let i = 0; i < productVars.length; i++) {
-            if (productVars[i].status == "active") {
-              for (let j = 0; j < productVars[i].ProductDets.length; j++) {
-                if (
-                  !convertVariants.includes(
-                    productVars[i].ProductDets[j].idVariantValue
-                  )
-                ) {
-                  console.log("del productVars: ", productVars[i]);
-                  productVars.splice(i, 1);
-                  i--;
-                  break;
-                }
+            // if (productVars[i].status == "active") {
+            for (let j = 0; j < productVars[i].ProductDets.length; j++) {
+              if (
+                !convertVariants.includes(
+                  productVars[i].ProductDets[j].idVariantValue
+                )
+              ) {
+                console.log("del productVars: ", productVars[i]);
+                productVars.splice(i, 1);
+                i--;
+                break;
               }
             }
+            //}
           }
 
+          if (productVars.length > 1) {
+            productVars = productVars.filter(
+              (productVar) => productVar.ProductDets.length > 0
+            );
+          }
+          console.log("-------------", productVars);
           if (productVars.length >= 1) {
             this.setState({ selectedProductVar: productVars[0] }, () => {
               console.log(
@@ -446,7 +454,9 @@ class ProductDetail extends React.Component {
             bigPhotoArr = images.filter(
               (i) => i.ProductVar.id == productVars[0].id && i.isMain == true
             );
-            this.setState({ bigPhoto: bigPhotoArr[0].url });
+            this.setState({
+              bigPhoto: bigPhotoArr[0] ? bigPhotoArr[0].url : "",
+            });
           } else {
             this.setState({
               selectedProductVar: {
@@ -500,7 +510,8 @@ class ProductDetail extends React.Component {
   };
 
   convertPrice = (value) => {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if (value) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return 0;
   };
 
   convertDate = (date) => {
@@ -524,6 +535,8 @@ class ProductDetail extends React.Component {
         return "Ngôn ngữ";
       case "origin":
         return "Xuất xứ";
+      case "size":
+        return "Kích thước";
       default:
         return "Chi tiết";
     }
@@ -531,7 +544,11 @@ class ProductDetail extends React.Component {
 
   changeShop = (idShop) => {
     const { idProduct } = this.props.match.params;
+    this.props.history.push(
+      `/shopnow/product-detail/idProduct/${idProduct}/idShop/${idShop}`
+    );
     this.props.getProductById({ idShop, idProduct });
+    this.setState({ bigPhoto: "" });
   };
 
   render() {
@@ -655,14 +672,23 @@ class ProductDetail extends React.Component {
                   </div>
                 </div>
                 <div className="infor">
-                  <h1>{product.product.name}</h1>
+                  <h1>
+                    {selectedProductVar !== ""
+                      ? selectedProductVar.name
+                      : product.product.name}
+                  </h1>
                   <div className="availibity">
                     <div>Tình trạng:</div>
                     {selectedProductVar != "" &&
                     selectedProductVar.status == "active" ? (
                       <div>Đang kinh doanh</div>
                     ) : (
-                      <div>Ngừng kinh doanh</div>
+                      <div>
+                        {product.productVars[0] &&
+                        product.productVars[0].status == "active"
+                          ? "Đang kinh doanh"
+                          : "Ngưng kinh doanh"}
+                      </div>
                     )}
                   </div>
                   <div style={{ display: "flex", alignItems: "center" }}>
@@ -709,18 +735,38 @@ class ProductDetail extends React.Component {
                       {selectedProductVar && selectedProductVar.price !== "" ? (
                         <h2>{this.convertPrice(selectedProductVar.price)}đ</h2>
                       ) : (
-                        <h2>0đ</h2>
+                        <h2>
+                          {product.productVars[0]
+                            ? this.convertPrice(product.productVars[0].price)
+                            : 0}
+                          đ
+                        </h2>
                       )}
                     </div>
                     <div>
                       {selectedProductVar &&
-                      selectedProductVar.marketPrice !== "" ? (
-                        <h4>
-                          {this.convertPrice(selectedProductVar.marketPrice)}đ
-                        </h4>
-                      ) : (
-                        <h4>0đ</h4>
-                      )}
+                        selectedProductVar.marketPrice >
+                          selectedProductVar.price && (
+                          <>
+                            {selectedProductVar.marketPrice !== "" ? (
+                              <h4>
+                                {this.convertPrice(
+                                  selectedProductVar.marketPrice
+                                )}
+                                đ
+                              </h4>
+                            ) : (
+                              <h4>
+                                {product.productVars[0]
+                                  ? this.convertPrice(
+                                      product.productVars[0].marketPrice
+                                    )
+                                  : 0}
+                                đ
+                              </h4>
+                            )}
+                          </>
+                        )}
                     </div>
                   </div>
                   <div className="info-content">
@@ -810,14 +856,47 @@ class ProductDetail extends React.Component {
                         )}
                       </div>
                     </div>
-                    {selectedProductVar !== "" &&
-                    selectedProductVar.status == "active" ? (
-                      <div className="cart-btn" onClick={this.addToCart}>
-                        <i className="fa fa-shopping-cart"></i> Thêm vào giỏ
-                        hàng
-                      </div>
-                    ) : (
-                      <div className="cart-btn-stop">Ngưng kinh doanh</div>
+                    {tokenUser && (
+                      <>
+                        <>
+                          {selectedProductVar !== "" && (
+                            <>
+                              {selectedProductVar.status == "active" ? (
+                                <div
+                                  className="cart-btn"
+                                  onClick={this.addToCart}
+                                >
+                                  <i className="fa fa-shopping-cart"></i> Thêm
+                                  vào giỏ hàng
+                                </div>
+                              ) : (
+                                <div className="cart-btn-stop">
+                                  Ngưng kinh doanh
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </>
+                        <>
+                          {product.productVars[0] && selectedProductVar == "" && (
+                            <>
+                              {product.productVars[0].status == "active" ? (
+                                <div
+                                  className="cart-btn"
+                                  onClick={this.addToCart}
+                                >
+                                  <i className="fa fa-shopping-cart"></i> Thêm
+                                  vào giỏ hàng
+                                </div>
+                              ) : (
+                                <div className="cart-btn-stop">
+                                  Ngưng kinh doanh
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </>
+                      </>
                     )}
                   </div>
                   {stockErrorMsg !== "" && (
@@ -921,7 +1000,9 @@ class ProductDetail extends React.Component {
                           marginLeft: "-35px",
                         }}
                         {...settings}
-                        arrows={surveyProducts.length <= 6 ? false : true}
+                        arrows={
+                          this.props.surveyProducts.length <= 6 ? false : true
+                        }
                         slidesToShow={
                           surveyProducts.length <= 5 ? surveyProducts.length : 5
                         }
@@ -946,7 +1027,7 @@ class ProductDetail extends React.Component {
                         marginLeft: "-35px",
                       }}
                       {...settings}
-                      arrows={recproducts.length <= 6 ? false : true}
+                      arrows={this.props.recProducts.length <= 6 ? false : true}
                       slidesToShow={
                         recproducts.length <= 5 ? recproducts.length : 5
                       }
@@ -1271,7 +1352,6 @@ class ProductDetail extends React.Component {
                               })}
                             </div>
                           )}
-
                           <div className="review">
                             <Rating
                               name="size-small"

@@ -128,6 +128,7 @@ class AActiveList extends React.Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
+    console.log(query);
     this.props.getProductVars({
       limit,
       page,

@@ -21,9 +21,6 @@ class ModalShopList extends Component {
   changeShop = (idShop) => {
     this.props.showModal({ show: false });
     this.props.details.changeShop(idShop);
-    this.props.history.push(
-      `/shopnow/product-detail/idProduct/2/idShop/${idShop}`
-    );
   };
 
   visitShop = (idShop, shopName) => {
@@ -42,7 +39,7 @@ class ModalShopList extends Component {
         >
           <button
             onClick={() => this.props.showModal({ show: false })}
-            style={{ float: "right", marginTop: "-10px" }}
+            style={{ float: "right" }}
             type="button"
             className="close"
             data-dismiss="alert"
@@ -52,19 +49,6 @@ class ModalShopList extends Component {
           </button>
           <div className="login-box-body">
             <h2 className="login-box-msg">Các nhà bán khác</h2>
-            {this.state.msg ? (
-              <div className="alert alert-danger alert-dismissible">
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="alert"
-                  aria-hidden="true"
-                  onClick={() => showModal({ show: false })}
-                >
-                  ×
-                </button>
-              </div>
-            ) : null}
 
             {details.otherShops.map((shop) => {
               return (

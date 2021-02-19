@@ -494,9 +494,9 @@ class ProductList extends React.Component {
   renderCritName = (filter) => {
     if (filter.name == "idProductCategory" || filter.name == "rating")
       return filter.description;
-    if (filter.name == "minRange") {
-      return "> " + filter.value;
-    }
+
+    if (filter.name == "minRange") return "> " + filter.value;
+
     if (filter.name == "maxRange") return "< " + filter.value;
   };
 
@@ -743,19 +743,21 @@ class ProductList extends React.Component {
                                 key={index}
                                 style={{ padding: "10px 10px 10px 0" }}
                               >
-                                {f.value !== "" && f.name !== "query" && (
-                                  <div className="criteria">
-                                    <div className="cri-name">
-                                      {this.renderCritName(f)}{" "}
+                                {f.value !== "" &&
+                                  f.name !== "query" &&
+                                  f.name !== "idMovieCategory" && (
+                                    <div className="criteria">
+                                      <div className="cri-name">
+                                        {this.renderCritName(f)}{" "}
+                                      </div>
+                                      <span
+                                        onClick={() => this.clearFilter(f)}
+                                        aria-hidden="true"
+                                      >
+                                        ×
+                                      </span>
                                     </div>
-                                    <span
-                                      onClick={() => this.clearFilter(f)}
-                                      aria-hidden="true"
-                                    >
-                                      ×
-                                    </span>
-                                  </div>
-                                )}
+                                  )}
                               </div>
                             );
                           })}

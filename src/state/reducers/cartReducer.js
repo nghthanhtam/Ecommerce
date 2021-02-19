@@ -13,7 +13,7 @@ const initialState = {
   totalDocuments: 0,
   total: 0,
   totalCount: 0,
-  promotions: []
+  promotions: [],
 };
 
 export default function (state = initialState, action) {
@@ -21,6 +21,7 @@ export default function (state = initialState, action) {
     case GET_CARTS_BY_IDUSER:
       return {
         ...state,
+        isLoaded: false,
       };
     case CARTS_RECEIVED:
       return {
@@ -41,9 +42,7 @@ export default function (state = initialState, action) {
     case CART_DELETED:
       return {
         ...state,
-        carts: state.carts.filter(
-          (cart) => cart.id !== action.payload.id
-        ),
+        carts: state.carts.filter((cart) => cart.id !== action.payload.id),
       };
     case ADD_CART:
       return {
