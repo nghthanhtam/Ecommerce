@@ -34,14 +34,14 @@ class HomePage extends React.Component {
   state = {
     productList: [1, 2, 3, 4, 5, 6, 7, 8],
     keywords: [
-      { color: "kw-blue", value: "marvel" },
-      { color: "kw-violet", value: "iphone" },
-      { color: "kw-red", value: "iphone" },
-      { color: "kw-green", value: "zara" },
-      { color: "kw-blue", value: "psycho pass" },
-      { color: "kw-violet", value: "iphone" },
-      { color: "kw-red", value: "iphone" },
-      { color: "kw-green", value: "iphone" },
+      { color: "kw-blue", value: "Wonder Woman" },
+      { color: "kw-violet", value: "giày" },
+      { color: "kw-red", value: "Tom & Jerry" },
+      { color: "kw-green", value: "Wanda" },
+      { color: "kw-blue", value: "mô hình" },
+      { color: "kw-violet", value: "tiểu thuyết" },
+      { color: "kw-red", value: "súng" },
+      { color: "kw-green", value: "Wanda Vision" },
     ],
     header: "header",
     picLink: "./img/blue.png",
@@ -278,20 +278,18 @@ class HomePage extends React.Component {
                 </>
               )}
 
-              {isTrendingProductsLoaded &&
-                trendingProducts.length >
-                  0(
-                    <>
-                      <TitlePane title="Sản phẩm từ phim đang HOT" />
-                      <div className="list-wrapper">
-                        <div className="grid-home">
-                          {trendingProducts.map((item, index) => {
-                            return <ShowingProduct key={index} item={item} />;
-                          })}
-                        </div>
-                      </div>
-                    </>
-                  )}
+              {isTrendingProductsLoaded && trendingProducts.length > 0 && (
+                <>
+                  <TitlePane title="Sản phẩm từ phim đang HOT" />
+                  <div className="list-wrapper">
+                    <div className="grid-home">
+                      {trendingProducts.map((item, index) => {
+                        return <ShowingProduct key={index} item={item} />;
+                      })}
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div
                 style={{
