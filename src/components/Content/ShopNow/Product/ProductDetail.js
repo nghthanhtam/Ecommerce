@@ -439,7 +439,6 @@ class ProductDetail extends React.Component {
               (productVar) => productVar.ProductDets.length > 0
             );
           }
-          console.log("-------------", productVars);
           if (productVars.length >= 1) {
             this.setState({ selectedProductVar: productVars[0] }, () => {
               console.log(
@@ -1427,7 +1426,7 @@ class ProductDetail extends React.Component {
                                             />
                                           </div>
                                         ) : (
-                                          <div className="ava-reply">
+                                          <div className="ava-admin">
                                             <img
                                               src="./img/ava-shopnow.png"
                                               alt="ava"
@@ -1439,7 +1438,11 @@ class ProductDetail extends React.Component {
                                           {this.convertDate(cmt.createdAt)}
                                         </div>
                                       </div>
-                                      <div>{cmt.User.username}</div>
+                                      <div>
+                                        {cmt.isUser
+                                          ? cmt.User.username
+                                          : "ShopNow"}
+                                      </div>
                                     </div>
                                   )}
                               </div>
