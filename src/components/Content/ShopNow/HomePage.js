@@ -19,7 +19,7 @@ import { getProductsByFilters } from "../../../state/actions/productActions";
 
 const mapStateToProps = (state) => ({
   movieCates: state.movieCate.movieCates,
-  isLoadedMovieCate: state.movieCate.isLoaded,
+  isLoadedMovieCates: state.movieCate.isLoaded,
   show: state.modal.show,
   modalName: state.modal.modalName,
   isAuthenticated: state.authUser.isAuthenticated,
@@ -108,7 +108,7 @@ class HomePage extends React.Component {
     const { keywords } = this.state;
     const {
       movieCates,
-      isLoadedMovieCate,
+      isLoadedMovieCates,
       products,
       isProductsLoaded,
       isTrendingProductsLoaded,
@@ -134,7 +134,7 @@ class HomePage extends React.Component {
     return (
       <Fragment>
         <Header />
-        {isLoadedMovieCate ? (
+        {isLoadedMovieCates ? (
           <Fragment>
             <div
               style={{
@@ -258,15 +258,16 @@ class HomePage extends React.Component {
               <TitlePane title="Danh mục thể loại phim  " isNotShop={true} />
               <div className="list-wrapper">
                 <div className="cate-grid">
-                  {movieCates.map((cate, index) => {
-                    return <Category key={index} cate={cate} />;
-                  })}
+                  {isLoadedMovieCates &&
+                    movieCates.map((cate, index) => {
+                      return <Category key={index} cate={cate} />;
+                    })}
                 </div>
               </div>
 
               {isProductsLoaded && (
                 <>
-                  <TitlePane title="Sản phẩm bạn có thể thích" />
+                  <TitlePane title="Tham quan các cửa hàng" />
                   <div className="list-wrapper">
                     <div className="grid-home">
                       {products.map((item, index) => {
@@ -277,18 +278,20 @@ class HomePage extends React.Component {
                 </>
               )}
 
-              {isTrendingProductsLoaded && (
-                <>
-                  <TitlePane title="Sản phẩm từ phim đang HOT" />
-                  <div className="list-wrapper">
-                    <div className="grid-home">
-                      {trendingProducts.map((item, index) => {
-                        return <ShowingProduct key={index} item={item} />;
-                      })}
-                    </div>
-                  </div>
-                </>
-              )}
+              {isTrendingProductsLoaded &&
+                trendingProducts.length >
+                  0(
+                    <>
+                      <TitlePane title="Sản phẩm từ phim đang HOT" />
+                      <div className="list-wrapper">
+                        <div className="grid-home">
+                          {trendingProducts.map((item, index) => {
+                            return <ShowingProduct key={index} item={item} />;
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  )}
 
               <div
                 style={{

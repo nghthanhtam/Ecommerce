@@ -10,6 +10,7 @@ import {
   RESET_ORDER,
   GET_ORDERS_BY_PURCHASE,
   ORDERS_BY_PURCHASE_RECEIVED,
+  ADMIN_ORDERS_RECEIVED,
 } from "../actions/types";
 
 const initialState = {
@@ -17,6 +18,7 @@ const initialState = {
   total: 0,
   totalDocuments: 0,
   isLoaded: false,
+  isAdminOrdersLoaded: false,
   isOrderDetsLoaded: false,
   isAdded: false,
   ordersAdded: [],
@@ -28,6 +30,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isAdded: false,
+        isAdminOrdersLoaded: false,
       };
     case GET_ORDERS_BY_SHOP:
       return {
@@ -37,12 +40,23 @@ export default function (state = initialState, action) {
     case GET_ORDERS:
       return {
         ...state,
-        isLoaded: false,
+        isAdminOrdersLoaded: false,
+      };
+    case ADMIN_ORDERS_RECEIVED:
+      return {
+        ...state,
+        orders: action.payload.data.items.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        ),
+        totalDocuments: action.payload.data.total,
+        isAdminOrdersLoaded: true,
       };
     case GET_ORDERS_BY_PURCHASE:
       return {
         ...state,
         isLoaded: false,
+        isAdminOrdersLoaded: false,
       };
     case ORDERS_RECEIVED:
       return {

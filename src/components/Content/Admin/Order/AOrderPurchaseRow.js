@@ -59,7 +59,6 @@ class AOrderPurchaseRow extends Component {
           status: item.value,
           type: "admin",
         });
-        // window.location.reload();
       }
     }
   };
@@ -83,7 +82,6 @@ class AOrderPurchaseRow extends Component {
       shippingFee,
     } = this.props.order;
     const { statuses } = this.state;
-
     return (
       <tr>
         <td
@@ -165,6 +163,7 @@ class AOrderPurchaseRow extends Component {
                           id,
                           type: "admin",
                           createdAt,
+                          idPurchase: this.props.idPurchase,
                         },
                       })
                     }

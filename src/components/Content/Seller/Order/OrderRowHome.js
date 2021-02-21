@@ -31,14 +31,6 @@ class OrderRow extends Component {
     return dt + "/" + month + "/" + year;
   };
 
-  handleEdit = (id) => {
-    this.props.history.push(`/seller/order/edit/${id}`);
-  };
-
-  handleDelete = (id) => {
-    this.props.deleteEmployee(id);
-  };
-
   handleAction = (e, item) => {
     const { status, id } = this.props.order;
     const { pages, idShop } = this.props;
@@ -48,12 +40,17 @@ class OrderRow extends Component {
     )
       e.stopPropagation();
     else {
-      if (item.value == "status") {
+      if (item.value == "canceled") {
         this.props.showModal({
           show: true,
           modalName: "modalCancel",
-          details: { pages: this.props.pages },
+          details: {
+            pages: this.props.pages,
+            order: this.props.order,
+            type: "seller",
+          },
         });
+        return;
       }
 
       this.props.updateOrder({

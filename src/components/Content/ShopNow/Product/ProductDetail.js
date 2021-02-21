@@ -315,7 +315,7 @@ class ProductDetail extends React.Component {
     this.setState({ questionMsg: true });
     setTimeout(() => {
       this.setState({ questionMsg: false });
-    }, 2000);
+    }, 3000);
 
     this.setState({ question: "" });
     this.setState({ replyBoxHidden: false });
@@ -336,7 +336,7 @@ class ProductDetail extends React.Component {
     this.setState({ ratingMsg: true });
     setTimeout(() => {
       this.setState({ ratingMsg: false });
-    }, 2000);
+    }, 3000);
     this.setState({ title: "", review: "", selectedFiles: [], rate: 0 });
   };
 
@@ -1419,9 +1419,22 @@ class ProductDetail extends React.Component {
                                     <div className="reply-answer" key={cindex}>
                                       <p> {cmt.content} </p>
                                       <div className="cmt-wrapper">
-                                        <div className="ava-reply">
-                                          <img src="./img/ava.png" alt="ava" />
-                                        </div>
+                                        {cmt.isUser ? (
+                                          <div className="ava-reply">
+                                            <img
+                                              src="./img/ava.png"
+                                              alt="ava"
+                                            />
+                                          </div>
+                                        ) : (
+                                          <div className="ava-reply">
+                                            <img
+                                              src="./img/ava-shopnow.png"
+                                              alt="ava"
+                                            />
+                                          </div>
+                                        )}
+
                                         <div className="reply-date">
                                           {this.convertDate(cmt.createdAt)}
                                         </div>

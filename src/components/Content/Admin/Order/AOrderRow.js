@@ -30,15 +30,7 @@ class AOrderRow extends Component {
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return dt + "-" + month + "-" + year;
-  };
-
-  handleEdit = (id) => {
-    this.props.history.push(`/seller/order/edit/${id}`);
-  };
-
-  handleDelete = (id) => {
-    this.props.deleteEmployee(id);
+    return dt + "/" + month + "/" + year;
   };
 
   handleAction = (e, item) => {
@@ -85,9 +77,7 @@ class AOrderRow extends Component {
       cancelReason,
       id,
       shippingFee,
-      idShop,
       Purchase,
-      estimatedDeliveryTime,
       Ward,
       District,
       City,
@@ -121,12 +111,6 @@ class AOrderRow extends Component {
             ", " +
             City.city}
         </td>
-        {/* <td
-          onClick={() => this.props.history.push(`/admin/shop`)}
-          style={{ color: "blue", cursor: "pointer" }}
-        >
-          {idShop}
-        </td> */}
         <td>{this.convertPrice(totalAmount)}đ</td>
         <td>{this.convertDate(createdAt)}</td>
         <td>{this.convertPrice(shippingFee)}đ</td>

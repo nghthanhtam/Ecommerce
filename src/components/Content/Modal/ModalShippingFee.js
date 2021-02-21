@@ -25,14 +25,10 @@ class ModalShippingFee extends Component {
 
     dt = dt < 10 ? `0${dt}` : dt;
     month = month < 10 ? `0${month}` : month;
-    return year + "-" + month + "-" + dt;
+    return dt + "/" + month + "/" + year;
   };
 
-  componentDidMount() {
-    console.log(this.props.details);
-  }
   handleChange = (e) => {
-    console.log(e.target.value);
     const { name, value } = e.target;
     this.setState({ [name]: value });
   };
@@ -41,13 +37,14 @@ class ModalShippingFee extends Component {
     e.preventDefault();
     const { details, showModal, updateShippingFee } = this.props;
     const { shippingFee, estimatedDeliveryTime } = this.state;
-
+    console.log(details.idPurchase);
     if (details) {
       const newOrder = {
         shippingFee,
         type: details.type,
         estimatedDeliveryTime,
         id: details.id,
+        idPurchase: details.idPurchase,
         pages: details.pages ? details.pages : {},
       };
       updateShippingFee(newOrder);

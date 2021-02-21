@@ -34,7 +34,10 @@ export default function (state = initialState, action) {
     case PURCHASES_RECEIVED:
       return {
         ...state,
-        purchases: action.payload.data.items,
+        purchases: action.payload.data.items.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        ),
         totalDocuments: action.payload.data.total,
         isLoaded: true,
       };

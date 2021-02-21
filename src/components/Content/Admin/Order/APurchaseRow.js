@@ -7,7 +7,7 @@ const mapStateToProps = (state) => ({
   permissionAdmins: state.authAdmin.permissions,
 });
 
-class AOrderRow extends Component {
+class APurchaseRow extends Component {
   state = {
     statuses: [
       { value: "received", label: "Đã tiếp nhận" },
@@ -71,4 +71,4 @@ class AOrderRow extends Component {
   }
 }
 
-export default connect(mapStateToProps, { showModal })(AOrderRow);
+export default connect(mapStateToProps, { showModal })(APurchaseRow);

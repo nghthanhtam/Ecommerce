@@ -1,45 +1,41 @@
-import React, { Component, Fragment } from "react";
-import OrderRow from "../AOrderRow";
+import React from "react";
+import AOrderRow from "../AOrderRow";
 import Loader from "react-loader";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { getOrdersByShop } from "../../../../../state/actions/orderActions";
+import { getOrders } from "../../../../../state/actions/orderActions";
 
 const mapStateToProps = (state) => ({
   orders: state.order.orders,
-  isLoaded: state.order.isLoaded,
+  isAdminOrdersLoaded: state.order.isAdminOrdersLoaded,
   totalDocuments: state.order.totalDocuments,
-  idShop: state.auth.role.idShop,
   details: state.modal.details,
 });
 
 class ADoneList extends React.Component {
   state = {
-    sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
-    limit: 5,
+    sort: [{ value: 20 }, { value: 30 }, { value: 40 }],
+    limit: 20,
     page: 1,
     pages: [],
     query: "",
     start: 1,
-    end: 5,
+    end: 20,
     isNextBtnShow: true,
   };
 
   componentDidMount() {
     const { limit, page, query } = this.state;
-    const { idShop } = this.props;
-    this.props.getOrdersByShop({
+    this.props.getOrders({
       limit,
       page,
       query,
-      idShop,
-      done: true,
     });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { isLoaded } = this.props;
-    if (isLoaded == true && this.state.pages == prevState.pages) {
+    const { isAdminOrdersLoaded } = this.props;
+    if (isAdminOrdersLoaded == true && this.state.pages == prevState.pages) {
       this.getPages();
     }
   }
@@ -108,13 +104,10 @@ class ADoneList extends React.Component {
 
   rerenderPage = () => {
     const { limit, page, query } = this.state;
-    const { idShop } = this.props;
-    this.props.getOrdersByShop({
+    this.props.getOrders({
       limit,
       page,
       query,
-      idShop,
-      done: true,
     });
     this.getPages();
     this.getStartEndDocuments();
@@ -122,9 +115,9 @@ class ADoneList extends React.Component {
 
   renderOrders = () => {
     const { limit, page, query } = this.state;
-    const { orders, isLoaded, idShop } = this.props;
+    const { orders, isAdminOrdersLoaded } = this.props;
 
-    return !isLoaded ? (
+    return !isAdminOrdersLoaded ? (
       <tr>
         <td>
           <Loader></Loader>
@@ -132,43 +125,39 @@ class ADoneList extends React.Component {
       </tr>
     ) : (
       orders.map((order) => (
-        <OrderRow
+        <AOrderRow
           history={this.props.history}
           key={order.id}
           order={order}
-          pages={{ limit, page, query, idShop }}
+          pages={{ limit, page, query }}
         />
       ))
     );
   };
 
-  handleChoosePage = (e) => {
-    if (e === "...") return;
+  handleChoosePage = (e, pageNumber) => {
+    e.preventDefault();
+    if (pageNumber === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
     let pages = Math.floor(totalDocuments / limit),
       remainder = totalDocuments % limit;
     if (remainder !== 0) pages += 1;
 
-    console.log(page + " and " + pages);
-
-    if (e === -1) {
-      e = page + 1;
-      if (e === pages) this.setState({ isNextBtnShow: false });
+    if (pageNumber === -1) {
+      pageNumber = page + 1;
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
     } else {
-      if (e === pages) this.setState({ isNextBtnShow: false });
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
       else this.setState({ isNextBtnShow: true });
     }
 
-    this.setState({ page: e }, () => {
+    this.setState({ page: pageNumber }, () => {
       const { limit, page, query } = this.state;
-      const { idShop } = this.props;
-      this.props.getOrdersByShop({
+      this.props.getOrders({
         limit,
         page,
         query,
-        idShop,
-        done: true,
       });
       this.getStartEndDocuments();
     });
@@ -212,7 +201,7 @@ class ADoneList extends React.Component {
                 className="paga-link"
                 name="currentPage"
                 href="#"
-                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+                onClick={(e) => this.handleChoosePage(e, eachButton.pageNumber)}
               >
                 {eachButton.pageNumber}
               </a>
@@ -225,7 +214,7 @@ class ADoneList extends React.Component {
               }
               name="currentPage"
               href="#"
-              onClick={() => this.handleChoosePage(-1)}
+              onClick={(e) => this.handleChoosePage(e, -1)}
             >
               {">>"}
             </a>
@@ -368,11 +357,11 @@ class ADoneList extends React.Component {
 }
 
 ADoneList.propTypes = {
-  getOrdersByShop: PropTypes.func.isRequired,
+  getOrders: PropTypes.func.isRequired,
   orders: PropTypes.array.isRequired,
-  isLoaded: PropTypes.bool.isRequired,
+  isAdminOrdersLoaded: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, {
-  getOrdersByShop,
+  getOrders,
 })(ADoneList);

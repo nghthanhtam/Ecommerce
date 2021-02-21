@@ -353,23 +353,34 @@ class ModalStockHistory extends Component {
                         </div>
                         <div className="row">
                           <div className="col-sm-5">
-                            <div
-                              className="dataTables_info"
-                              id="example1_info"
-                              role="status"
-                              aria-live="polite"
-                            >
-                              Hiển thị{" "}
-                              {query == ""
-                                ? start +
-                                  " đến " +
-                                  (totalDocuments < end
-                                    ? totalDocuments
-                                    : end) +
-                                  " trong "
-                                : ""}{" "}
-                              {totalDocuments} kết quả
-                            </div>
+                            {totalDocuments == 0 ? (
+                              <div
+                                className="dataTables_info"
+                                id="example1_info"
+                                role="status"
+                                aria-live="polite"
+                              >
+                                Không có dữ liệu
+                              </div>
+                            ) : (
+                              <div
+                                className="dataTables_info"
+                                id="example1_info"
+                                role="status"
+                                aria-live="polite"
+                              >
+                                Hiển thị{" "}
+                                {query == ""
+                                  ? start +
+                                    " đến " +
+                                    (totalDocuments < end
+                                      ? totalDocuments
+                                      : end) +
+                                    " trong "
+                                  : ""}{" "}
+                                {totalDocuments} kết quả
+                              </div>
+                            )}
                           </div>
                           <div className="col-sm-7">
                             <div

@@ -15,13 +15,13 @@ const mapStateToProps = (state) => ({
 
 class APendingList extends React.Component {
   state = {
-    sort: [{ value: 5 }, { value: 10 }, { value: 20 }],
-    limit: 5,
+    sort: [{ value: 20 }, { value: 30 }, { value: 40 }],
+    limit: 20,
     page: 1,
     pages: [],
     query: "",
     start: 1,
-    end: 5,
+    end: 20,
     isNextBtnShow: true,
   };
 
@@ -138,7 +138,8 @@ class APendingList extends React.Component {
     );
   };
 
-  handleChoosePage = (e) => {
+  handleChoosePage = (e, pageNumber) => {
+    e.preventDefault();
     if (e === "...") return;
     const { totalDocuments } = this.props;
     const { limit, page } = this.state;
@@ -148,15 +149,15 @@ class APendingList extends React.Component {
 
     console.log(page + " and " + pages);
 
-    if (e === -1) {
-      e = page + 1;
-      if (e === pages) this.setState({ isNextBtnShow: false });
+    if (pageNumber === -1) {
+      pageNumber = page + 1;
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
     } else {
-      if (e === pages) this.setState({ isNextBtnShow: false });
+      if (pageNumber === pages) this.setState({ isNextBtnShow: false });
       else this.setState({ isNextBtnShow: true });
     }
 
-    this.setState({ page: e }, () => {
+    this.setState({ page: pageNumber }, () => {
       const { limit, page, query } = this.state;
       this.props.getPurchases({
         limit,
@@ -206,7 +207,7 @@ class APendingList extends React.Component {
                 className="paga-link"
                 name="currentPage"
                 href="#"
-                onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+                onClick={(e) => this.handleChoosePage(e, eachButton.pageNumber)}
               >
                 {eachButton.pageNumber}
               </a>
@@ -219,7 +220,7 @@ class APendingList extends React.Component {
               }
               name="currentPage"
               href="#"
-              onClick={() => this.handleChoosePage(-1)}
+              onClick={(e) => this.handleChoosePage(e, -1)}
             >
               {">>"}
             </a>

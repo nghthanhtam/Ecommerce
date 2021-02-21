@@ -433,7 +433,10 @@ class SaleReport extends Component {
         )
         .then((response) => {
           console.log(response.data);
-          this.setState({ reports: response.data });
+          this.setState({
+            reports: response.data,
+            colLabels: response.data.map(({ city }) => city),
+          });
         })
         .catch((er) => console.log(er.response));
     }
@@ -682,13 +685,7 @@ class SaleReport extends Component {
                 {reports.length > 0 && selectedReport == "CITY" && (
                   <Doughnut
                     data={{
-                      labels: [
-                        "Africa",
-                        "Asia",
-                        "Europe",
-                        "Latin America",
-                        "North America",
-                      ],
+                      labels: colLabels,
                       datasets: [
                         {
                           label: "Population (millions)",
@@ -699,7 +696,9 @@ class SaleReport extends Component {
                             "#e8c3b9",
                             "#c45850",
                           ],
-                          data: [2478, 5267, 734, 784, 433],
+                          data: reports.map(
+                            ({ data }) => data.totalAmountMoney
+                          ),
                         },
                       ],
                     }}

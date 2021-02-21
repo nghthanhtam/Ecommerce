@@ -100,10 +100,10 @@ class RShopNow extends Component {
             <ProductList />
           </Route>
           <Route exact path="/shopnow/search" component={ProductList} />
-          <Route
+          {/* <Route
             path={`/shopnow/product-list/idMovieCat/:idMovieCat`}
             component={ProductList}
-          />
+          /> */}
           <Route
             path={`/shopnow/product-detail/idProduct/:idProduct/idShop/:idShop`}
             component={ProductDetail}

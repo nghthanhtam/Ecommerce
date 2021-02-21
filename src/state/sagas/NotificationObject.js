@@ -16,3 +16,11 @@ export const NOTI_APPROVE_SUCCESS = {
   canDismiss: true,
   icon: <i className="fa fa-check" />,
 };
+
+export const NOTI_DEL_PROMOTION_SUCCESS = {
+  message: "Xóa mã giảm giá thành công!",
+  type: NOTIFICATION_TYPE_SUCCESS,
+  duration: 2000,
+  canDismiss: true,
+  icon: <i className="fa fa-check" />,
+};

@@ -18,6 +18,7 @@ const mapStateToProps = (state) => ({
   isLoaded: state.order.isLoaded,
   show: state.modal.show,
   modalName: state.modal.modalName,
+  history: state.history.history,
 });
 
 class OrderHistory extends React.Component {
@@ -310,7 +311,19 @@ class OrderHistory extends React.Component {
                                             width="80"
                                           />
                                         </td>
-                                        <td>{o.name}</td>
+                                        <td
+                                          style={{
+                                            cursor: "pointer",
+                                            color: "#3571a7",
+                                          }}
+                                          onClick={() =>
+                                            this.props.history.push(
+                                              `/shopnow/product-detail/idProduct/${o.idProduct}/idShop/${o.idShop}`
+                                            )
+                                          }
+                                        >
+                                          {o.name}
+                                        </td>
                                         <td>{o.quantity}</td>
                                         <td>{o.price}</td>
                                         <td>

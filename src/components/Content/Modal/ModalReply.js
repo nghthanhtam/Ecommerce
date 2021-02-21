@@ -10,6 +10,7 @@ const mapStateToProps = (state) => ({
   userToken: state.authUser.token,
   user: state.authUser.user,
   details: state.modal.details,
+  admin: state.authAdmin.admin,
 });
 
 class ModalReply extends Component {
@@ -40,20 +41,27 @@ class ModalReply extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { showModal, user, details, addComment, addAnswer } = this.props;
+    const {
+      showModal,
+      user,
+      details,
+      addComment,
+      addAnswer,
+      admin,
+    } = this.props;
     const { replyContent } = this.state;
     console.log(details);
     if (details.type == "comment") {
       const newReply = {
         idRating: details.idRating,
-        idUser: user.id,
+        idUser: user ? user.id : admin.id,
         content: replyContent,
       };
       addComment(newReply);
     } else {
       const newReply = {
         idQuestion: details.idQuestion,
-        idUser: user.id,
+        idUser: user ? user.id : admin.id,
         answer: replyContent,
       };
       addAnswer(newReply);

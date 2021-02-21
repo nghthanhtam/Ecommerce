@@ -20,7 +20,11 @@ import {
   DELETE_PROMOTIONINFOR,
   GET_ORDERS_BY_PURCHASE,
   ORDERS_BY_PURCHASE_RECEIVED,
+  ADMIN_ORDERS_RECEIVED,
+  SHOW_NOTI,
 } from "../actions/types";
+import { ADD_NOTIFICATION } from "react-redux-notify";
+import { NOTI_DEL_PROMOTION_SUCCESS } from "./NotificationObject";
 
 function* fetchOrders(params) {
   try {
@@ -33,7 +37,7 @@ function* fetchOrders(params) {
         tokenAdminConfig(state)
       )
     );
-    yield put({ type: ORDERS_RECEIVED, payload: response });
+    yield put({ type: ADMIN_ORDERS_RECEIVED, payload: response });
   } catch (error) {
     console.log(error);
     let err = { ...error };
@@ -213,7 +217,8 @@ function* updateOrder(params) {
 
 function* updateShippingFee(params) {
   const state = yield select();
-  const { type, pages, id } = params.newOrder;
+  const { type, pages, id, idPurchase } = params.newOrder;
+
   try {
     const response = yield call(() =>
       axios.put(
@@ -226,8 +231,8 @@ function* updateShippingFee(params) {
     yield put({ type: ORDER_UPDATED, payload: response.data });
     type == "admin"
       ? yield put({
-          type: GET_ORDERS,
-          pages: { page: 1, limit: 1000, query: "" },
+          type: GET_ORDERS_BY_PURCHASE,
+          pages: { id: idPurchase, page: 1, limit: 1000, query: "" },
         })
       : yield put({
           type: GET_ORDERS_BY_SHOP,
@@ -264,6 +269,11 @@ function* deletePromotionInfor(params) {
         tokenAdminConfig(state)
       )
     );
+    yield put({ type: SHOW_NOTI });
+    yield put({
+      type: ADD_NOTIFICATION,
+      notification: NOTI_DEL_PROMOTION_SUCCESS,
+    });
   } catch (error) {
     console.log(error);
   }

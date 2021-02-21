@@ -45,7 +45,6 @@ export default function (state = initialState, action) {
       return {
         ...state,
         movieCates: [action.payload, ...state.movieCates],
-        isLoaded: true,
       };
     case DELETE_MOVIE_CATE:
       return {

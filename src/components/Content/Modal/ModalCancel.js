@@ -49,7 +49,7 @@ class ModalCancel extends Component {
         cancelReason: cancelReason,
         type: details.type,
         id: details.order.id,
-        idUser: user.id,
+        idUser: user ? user.id : "",
         pages: details.pages ? details.pages : {},
       };
 
