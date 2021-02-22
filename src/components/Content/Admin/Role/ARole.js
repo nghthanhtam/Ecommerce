@@ -9,7 +9,7 @@ import Loader from "react-loader";
 const mapStateToProps = (state) => ({
   roleAdmins: state.roleAdmin.roleAdmins,
   isLoaded: state.roleAdmin.isLoaded,
-  permissions: state.auth.permissions,
+  permissions: state.authAdmin.permissions,
 });
 
 class ARole extends Component {

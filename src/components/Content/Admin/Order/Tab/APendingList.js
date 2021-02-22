@@ -9,7 +9,6 @@ const mapStateToProps = (state) => ({
   purchases: state.purchase.purchases,
   isLoaded: state.purchase.isLoaded,
   totalDocuments: state.purchase.totalDocuments,
-  idShop: state.auth.role.idShop,
   details: state.modal.details,
 });
 
@@ -118,7 +117,7 @@ class APendingList extends React.Component {
 
   renderPurchases = () => {
     const { limit, page, query } = this.state;
-    const { purchases, isLoaded, idShop } = this.props;
+    const { purchases, isLoaded } = this.props;
 
     return !isLoaded ? (
       <tr>
@@ -132,7 +131,7 @@ class APendingList extends React.Component {
           history={this.props.history}
           key={purchase.id}
           purchase={purchase}
-          pages={{ limit, page, query, idShop }}
+          pages={{ limit, page, query }}
         />
       ))
     );

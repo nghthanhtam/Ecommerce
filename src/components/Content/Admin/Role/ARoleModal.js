@@ -5,7 +5,6 @@ import { getPermissions } from "../../../../state/actions/permissionActions";
 
 const mapStateToProps = (state) => ({
   permissions: state.permission.permissions,
-  idShop: state.auth.role.idShop,
 });
 
 class ARoleModal extends Component {
@@ -153,7 +152,7 @@ class ARoleModal extends Component {
   };
 
   onSubmit = (e) => {
-    const { idShop, addRoleAdmin, pages } = this.props;
+    const { addRoleAdmin, pages } = this.props;
     const { name, permissions } = this.state;
     e.preventDefault();
     if (!permissions.length > 0) {
@@ -161,9 +160,8 @@ class ARoleModal extends Component {
       this.setState({ msg, inputErrors: true });
       return;
     }
-    console.log(pages);
+
     const newPer = {
-      idShop,
       name,
       permissions,
       pages,
